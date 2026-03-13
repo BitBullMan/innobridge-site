@@ -1,0 +1,35 @@
+[
+  {
+    "id": "crypto-crime-2025-record-high",
+    "title": "2025 Crypto Crime Surged to $158 Billion — What It Means for AML Teams in 2026",
+    "excerpt": "Illicit crypto flows nearly tripled last year, yet the industry's share of criminal volume actually fell. We break down the key trends, from the Bybit mega-hack to AI-powered scams, and what compliance teams should prioritize now.",
+    "tag": "Industry Report",
+    "date": "2026-03-10",
+    "readTime": "7 min read",
+    "featured": true,
+    "thumb": "t1",
+    "file": "crypto-crime-2025-record-high.html"
+  },
+  {
+    "id": "fatf-travel-rule-gaps",
+    "title": "FATF Travel Rule in 2025: 99 Jurisdictions Adopted It — Only 40 Got It Right",
+    "excerpt": "Despite broad adoption, enforcement gaps persist. We examine the most common compliance failures VASPs make around originator data, beneficiary screening, and sunrise issues.",
+    "tag": "Compliance",
+    "date": "2026-02-18",
+    "readTime": "6 min read",
+    "featured": false,
+    "thumb": "t2",
+    "file": "fatf-travel-rule-gaps.html"
+  },
+  {
+    "id": "cross-chain-tracing-bridges",
+    "title": "Cross-Chain Bridge Tracing: Why Hopping Chains No Longer Hides Stolen Funds",
+    "excerpt": "Modern forensic tools can follow assets across Wormhole, Stargate, and 20+ bridge protocols. Here's how investigators reconstruct cross-chain laundering paths.",
+    "tag": "Tracing",
+    "date": "2026-01-25",
+    "readTime": "8 min read",
+    "featured": false,
+    "thumb": "t3",
+    "file": "cross-chain-tracing-bridges.html"
+  }
+]
