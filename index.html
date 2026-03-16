@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -596,54 +596,186 @@ updateAuthUI();
 
 // ==================== AML RISK CHECK (with auth + rate limit) ====================
 // TODO: Replace demo logic with real API call to your label database
-// fetch('https://api.innobridge.io/v1/check', {
-//   method: 'POST',
-//   headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer YOUR_KEY' },
-//   body: JSON.stringify({ address: addr, chain: chain.value })
-// }).then(r => r.json()).then(data => { displayResult(data); });
+// fetch('https:/// ==================== AML DATABASE (Google Sheets) + ON-CHAIN CHECK ====================
+var GSHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQlH4BzyKgk9u26gObmBwcQF4JdytYXYMPpZaJ1BeyWfMJv2CBlBgjUQ3faBnYj5A/pub?gid=432471327&single=true&output=csv';
 
-function runAMLCheck(){
-  var user=getCurrentUser();
-  if(!user){ document.getElementById('auth-overlay').classList.remove('hidden'); return; }
+var _amlDb = null;
 
-  var remaining=getRemainingChecks(user);
-  if(remaining<=0){
-    alert('Daily check limit reached ('+DAILY_LIMIT+'/day). Limits reset at midnight UTC.\n\nNeed more? Submit verified illicit address reports to earn bonus credits, or contact us for API access.');
+function parseCSVRow(row) {
+  var result = []; var current = ''; var inQuotes = false;
+  for (var i = 0; i < row.length; i++) {
+    var ch = row[i];
+    if (ch === '"') { inQuotes = !inQuotes; }
+    else if (ch === ',' && !inQuotes) { result.push(current.trim()); current = ''; }
+    else { current += ch; }
+  }
+  result.push(current.trim());
+  return result;
+}
+
+function loadAmlDb() {
+  if (_amlDb) return Promise.resolve(_amlDb);
+
+  return fetch(GSHEET_CSV_URL)
+    .then(function(r) { return r.text(); })
+    .then(function(csv) {
+      var lines = csv.split('\n').filter(function(l) { return l.trim(); });
+      if (lines.length < 2) throw new Error('Empty sheet');
+      var headers = parseCSVRow(lines[0]).map(function(h) { return h.replace(/"/g, '').trim().toLowerCase(); });
+      var db = { addresses: {}, onChainChecks: {} };
+
+      for (var i = 1; i < lines.length; i++) {
+        var cols = parseCSVRow(lines[i]);
+        if (cols.length < 5) continue;
+        var obj = {};
+        headers.forEach(function(h, idx) { obj[h] = (cols[idx] || '').replace(/^"|"$/g, ''); });
+
+        var addr = (obj.address || '').toLowerCase();
+        if (!addr) continue;
+
+        db.addresses[addr] = {
+          entity: obj.entity || 'Unknown',
+          label: obj.label || 'UNKNOWN',
+          category: (obj.label || '').toLowerCase(),
+          riskScore: parseInt(obj.risk_score) || 0,
+          confidence: obj.confidence || 'LOW',
+          chain: obj.chain || 'ETH',
+          sources: (obj.sources || '').split(',').map(function(s) { return s.trim(); }),
+          sanctions: (obj.sanctions || '').split(',').map(function(s) { return s.trim(); }),
+          description: obj.description || '',
+          updatedAt: obj.last_updated || obj.date_added || ''
+        };
+      }
+
+      _amlDb = db;
+      return db;
+    })
+    .catch(function(err) {
+      console.warn('Google Sheets fetch failed, trying local fallback:', err);
+      // Fallback: try local JSON if Google Sheets is unreachable
+      return fetch('data/aml-db.json')
+        .then(function(r) { return r.json(); })
+        .then(function(db) { _amlDb = db; return db; })
+        .catch(function() { _amlDb = { addresses: {}, onChainChecks: {} }; return _amlDb; });
+    });
+}
+
+// Preload database silently on page ready
+loadAmlDb();
+
+function detectAddrChain(addr) {
+  addr = addr.toLowerCase();
+  if (/^0x[0-9a-f]{40}$/.test(addr)) return 'ETH';
+  if (/^(1|3)[a-km-z1-9]{25,34}$/.test(addr) || /^bc1[a-z0-9]{6,87}$/.test(addr)) return 'BTC';
+  if (/^t[a-z0-9]{33}$/i.test(addr)) return 'TRX';
+  return null;
+}
+
+async function checkOnChain(addrLower) {
+  if (detectAddrChain(addrLower) !== 'ETH') return [];
+  var rpc = 'https://eth.llamarpc.com';
+  var selector = '0xfe575a87'; // isBlacklisted(address)
+  var padded = addrLower.replace(/^0x/, '').padStart(64, '0');
+  var callData = selector + padded;
+  var contracts = [
+    { contract: '0xdAC17F958D2ee523a2206206994597C13D831ec7', label: 'USDT_FREEZE', name: 'Tether USDT', score: 92 },
+    { contract: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', label: 'USDC_FREEZE', name: 'Circle USDC', score: 90 }
+  ];
+  var hits = [];
+  for (var i = 0; i < contracts.length; i++) {
+    var c = contracts[i];
+    try {
+      var resp = await fetch(rpc, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ jsonrpc:'2.0', id:1, method:'eth_call',
+          params: [{ to: c.contract, data: callData }, 'latest'] })
+      });
+      var json = await resp.json();
+      if (json.result && json.result !== '0x' && parseInt(json.result, 16) === 1) {
+        hits.push(c);
+      }
+    } catch(e) { /* ignore RPC timeout */ }
+  }
+  return hits;
+}
+
+async function runAMLCheck() {
+  var user = getCurrentUser();
+  if (!user) { document.getElementById('auth-overlay').classList.remove('hidden'); return; }
+
+  var remaining = getRemainingChecks(user);
+  if (remaining <= 0) {
+    alert('Daily check limit reached (' + DAILY_LIMIT + '/day). Limits reset at midnight UTC.\n\nNeed more? Submit verified illicit address reports to earn bonus credits, or contact us for API access.');
     return;
   }
 
-  var addr=document.getElementById('aml-address').value.trim();
-  var chain=document.getElementById('aml-chain');
-  var chainName=chain.options[chain.selectedIndex].text;
-  if(!addr){
-    document.getElementById('aml-address').style.borderColor='#ef4444';
-    setTimeout(function(){document.getElementById('aml-address').style.borderColor=''},2000);
+  var addr = document.getElementById('aml-address').value.trim();
+  var chainSel = document.getElementById('aml-chain');
+  var chainName = chainSel.options[chainSel.selectedIndex].text;
+  if (!addr) {
+    document.getElementById('aml-address').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById('aml-address').style.borderColor = ''; }, 2000);
     return;
   }
 
-  // Increment check count
   incrementCheck(user);
   updateAuthUI();
 
-  // Demo results (replace with real API)
-  var demos=[
-    {entity:'Sanctioned Mixer',label:'OFAC_SDN',score:97,conf:'HIGH',cls:'danger'},
-    {entity:'Known Exchange',label:'CEX_HOT_WALLET',score:12,conf:'HIGH',cls:'safe'},
-    {entity:'Suspected Scam',label:'PHISHING',score:78,conf:'MEDIUM',cls:'warning'},
-    {entity:'DeFi Protocol',label:'DEX_ROUTER',score:5,conf:'HIGH',cls:'safe'},
-    {entity:'Darknet Market',label:'DNM_DEPOSIT',score:95,conf:'HIGH',cls:'danger'}
-  ];
-  var d=demos[Math.floor(Math.random()*demos.length)];
-  document.getElementById('r-addr').textContent=addr.length>20?addr.substring(0,10)+'...'+addr.slice(-6):addr;
-  document.getElementById('r-chain').textContent=chainName;
-  document.getElementById('r-entity').textContent=d.entity;
-  document.getElementById('r-entity').className='result-val '+d.cls;
-  document.getElementById('r-label').textContent=d.label;
-  document.getElementById('r-label').className='result-val '+d.cls;
-  document.getElementById('r-score').textContent=d.score+' / 100';
-  document.getElementById('r-score').className='result-val '+d.cls;
-  document.getElementById('r-conf').textContent=d.conf;
-  document.getElementById('aml-result').classList.add('show');
+  // Show loading state
+  var btn = document.querySelector('.aml-btn');
+  btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Checking\u2026';
+  btn.disabled = true;
+
+  try {
+    var db = await loadAmlDb();
+    var addrLower = addr.toLowerCase();
+    var dbEntry = (db.addresses || {})[addrLower];
+    var onChainHits = await checkOnChain(addrLower);
+    var autoChain = detectAddrChain(addrLower) || chainName;
+
+    var entity, label, score, conf, cls, sources;
+
+    if (dbEntry) {
+      entity  = dbEntry.entity || 'Sanctioned Entity';
+      label   = dbEntry.label  || 'OFAC_SDN';
+      score   = dbEntry.riskScore || 95;
+      conf    = dbEntry.confidence || 'HIGH';
+      autoChain = dbEntry.chain || autoChain;
+      sources = (dbEntry.sources || []).concat(onChainHits.map(function(h){ return h.name; }));
+      cls     = score >= 90 ? 'danger' : score >= 60 ? 'warning' : 'safe';
+    } else if (onChainHits.length > 0) {
+      entity  = onChainHits.map(function(h){ return h.name; }).join(' + ') + ' Blacklist';
+      label   = onChainHits[0].label;
+      score   = onChainHits[0].score;
+      conf    = 'HIGH';
+      sources = onChainHits.map(function(h){ return h.name; });
+      cls     = 'danger';
+    } else {
+      entity  = 'No match found';
+      label   = 'CLEAN';
+      score   = 0;
+      conf    = 'N/A';
+      sources = ['OFAC-SDN', 'Tether', 'USDC'];
+      cls     = 'safe';
+    }
+
+    document.getElementById('r-addr').textContent = addr.length > 22 ? addr.substring(0,10) + '\u2026' + addr.slice(-6) : addr;
+    document.getElementById('r-chain').textContent = autoChain;
+    document.getElementById('r-entity').textContent = entity;
+    document.getElementById('r-entity').className = 'result-val ' + cls;
+    document.getElementById('r-label').textContent = label;
+    document.getElementById('r-label').className = 'result-val ' + cls;
+    document.getElementById('r-score').textContent = score + ' / 100';
+    document.getElementById('r-score').className = 'result-val ' + cls;
+    document.getElementById('r-conf').textContent = conf;
+    document.getElementById('r-sources').textContent = sources.join(', ');
+    document.getElementById('aml-result').classList.add('show');
+
+  } finally {
+    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Run AML Risk Check';
+    btn.disabled = false;
+  }
 }
 
 // ==================== CONTACT FORM ====================
@@ -752,4 +884,4 @@ document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
 });
 </script>
 </body>
-</html>
+</html>GSHEET_CSV_URL
