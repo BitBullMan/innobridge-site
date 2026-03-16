@@ -681,7 +681,7 @@ function handleSignup() {
   btn.textContent = 'Creating account...';
 
   auth.createUserWithEmailAndPassword(email, pass)
-    .then(function(resultI {
+    .then(function(result) {
       var user = result.user;
       // Send email verification
       return user.sendEmailVerification().then(function() {
@@ -735,7 +735,7 @@ function handleLogin() {
   btn.textContent = 'Signing in...';
 
   auth.signInWithEmailAndPassword(email, pass)
-    .then(function(resultI {
+    .then(function(result) {
       var user = result.user;
       btn.disabled = false;
       btn.textContent = originalText;
@@ -780,7 +780,7 @@ function handleLogin() {
 function handleGoogleSignIn() {
   var provider = new firebase.auth.GoogleAuthProvider();
   auth.signInWithPopup(provider)
-    .then(function(resultI {
+    .then(function(result) {
       var user = result.user;
       // Email is automatically verified with Google auth
       updateAuthUI();
@@ -796,7 +796,53 @@ function handleGoogleSignIn() {
 
 // ===== FIREBASE FORGOT PASSWORD =====
 function handleForgotPassword() {
-  var email = document.getElementById('firepass'r���f"W'$V��F�7V�V�B�vWDV�V�V�D'��B�vf�&v�B�W'&�"r����W'$V��FW�D6��FV�B�rs����b�V����W'$V��FW�D6��FV�B�u�V6RV�FW"��W"V����s��&WGW&㰢Р�f"'F��F�7V�V�B�VW'�6V�V7F�"�r6WF��6&B�f�&v�B�WF��'F�r���f"�&�v���FW�B�'F��FW�D6��FV�C��'F��F�6&�VB�G'VS��'F��FW�D6��FV�B�u6V�F��r���s���WF��6V�E77v�&E&W6WDV��V����F�V�gV�7F��ₒ��'F��F�6&�VB�f�6S��'F��FW�D6��FV�B��&�v���FW�C���f"�6tV��F�7V�V�B�7&VFTV�V�V�B�vF�br����6tV��6�74��R�vWF���W76vRWF��7V66W72s���6tV��FW�D6��FV�B�u77v�&B&W6WBV���6V�B6�V6���W"��&���s��W'$V��&V�DV�V�V�B��6W'D&Vf�&R��6tV��W'$V���W�E6�&Ɩ�r����F�7V�V�B�vWDV�V�V�D'��B�v�&v�B�V���r��f�VR�rs���6WEF��V�WB�gV�7F��ₒ��F�vv�TWF��v��v��r�����3���Ґ��6F6��gV�7F���W'&�"���'F��F�6&�VB�f�6S��'F��FW�D6��FV�B��&�v���FW�C����b�W'&�"�6�FR���vWF��W6W"���B�f�V�Br���W'$V��FW�D6��FV�B�t��66�V�Bf�V�Bv�F�F��2V����s���V�6R��W'$V��FW�D6��FV�B�W'&�"��W76vR��tf��VBF�6V�B&W6WBV����s��Тғ��Р��������d�$T$4R4�t��UB����ЦgV�7F�����F�T��v�WB����WF��6�v��WB���F�V�gV�7F��ₒ��F�7V�V�B�vWDV�V�V�D'��B�v-result').classList.remove('show');
+  var email = document.getElementById('forgot-email').value.trim();
+  var errEl = document.getElementById('forgot-error');
+
+  errEl.textContent = '';
+
+  if (!email) {
+    errEl.textContent = 'Please enter your email.';
+    return;
+  }
+
+  var btn = document.querySelector('#auth-card-forgot .auth-btn');
+  var originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  auth.sendPasswordResetEmail(email)
+    .then(function() {
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      var msgEl = document.createElement('div');
+      msgEl.className = 'auth-message auth-success';
+      msgEl.textContent = 'Password reset email sent! Check your inbox.';
+      errEl.parentElement.insertBefore(msgEl, errEl.nextSibling);
+
+      document.getElementById('forgot-email').value = '';
+
+      setTimeout(function() {
+        toggleAuth('login');
+      }, 3000);
+    })
+    .catch(function(error) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      if (error.code === 'auth/user-not-found') {
+        errEl.textContent = 'No account found with this email.';
+      } else {
+        errEl.textContent = error.message || 'Failed to send reset email.';
+      }
+    });
+}
+
+// ===== FIREBASE SIGN OUT =====
+function handleLogout() {
+  auth.signOut().then(function() {
+    document.getElementById('aml-result').classList.remove('show');
     updateAuthUI();
   }).catch(function(error) {
     console.error('Logout error:', error);
@@ -836,7 +882,7 @@ function loadAmlDb() {
 
       for (var i = 1; i < lines.length; i++) {
         var cols = parseCSVRow(lines[i]);
-        if (cols.length < 5 )continue;
+        if (cols.length < 5) continue;
         var obj = {};
         headers.forEach(function(h, idx) { obj[h] = (cols[idx] || '').replace(/^"|"$/g, ''); });
 
@@ -920,12 +966,12 @@ async function runAMLCheck() {
     return;
   }
 
-  var addr = document.getElementById(aml-address p) } [];
-  var chainSel = document.getElementById(aml-chain');
+  var addr = document.getElementById('aml-address').value.trim();
+  var chainSel = document.getElementById('aml-chain');
   var chainName = chainSel.options[chainSel.selectedIndex].text;
   if (!addr) {
-    document.getElementById(aml-address').style.borderColor = '#ef4444';
-    setTimeout(function(){ document.getElementById(aml-address').style.borderColor = ''; }, 2000);
+    document.getElementById('aml-address').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById('aml-address').style.borderColor = ''; }, 2000);
     return;
   }
 
@@ -970,16 +1016,17 @@ async function runAMLCheck() {
       cls     = 'safe';
     }
 
-    document.getElementById('r6addr') }uttContent = addr.length > 22 ? addr.substring(0,10) + '\u2026& + addr.slice(-6) : addr;
-    document.getElementById(r-chain ontent = autoChain;
-    document.getElementById(r-entity'-name = 'result-val ' + cls;
-    document.getElementById(r-label').textContent = label;
-    document.getElementById(r-label').className = 'result-val ' + cls;
-    document.getElementById(r-score').textContent = score + ' / 100';
-    document.getElementById(r-score').className = 'result-val ' + cls;
-    document.getElementById(r-conf').textContent = conf;
-    document.getElementById(r-sources').textContent = sources.join(', ');
-    document.getElementById(aml-result').classList.add('show');
+    document.getElementById('r-addr').textContent = addr.length > 22 ? addr.substring(0,10) + '\u2026' + addr.slice(-6) : addr;
+    document.getElementById('r-chain').textContent = autoChain;
+    document.getElementById('r-entity').textContent = entity;
+    document.getElementById('r-entity').className = 'result-val ' + cls;
+    document.getElementById('r-label').textContent = label;
+    document.getElementById('r-label').className = 'result-val ' + cls;
+    document.getElementById('r-score').textContent = score + ' / 100';
+    document.getElementById('r-score').className = 'result-val ' + cls;
+    document.getElementById('r-conf').textContent = conf;
+    document.getElementById('r-sources').textContent = sources.join(', ');
+    document.getElementById('aml-result').classList.add('show');
 
   } finally {
     btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Run AML Risk Check';
@@ -988,7 +1035,7 @@ async function runAMLCheck() {
 }
 
 // ==================== CONTACT FORM ====================
-document.getElementById(contact-form').addEventListener('submit', function(e){
+document.getElementById('contact-form').addEventListener('submit', function(e){
   // If Formspree is not configured yet, fall back to mailto
   var action = this.getAttribute('action');
   if(action.indexOf('YOUR_FORM_ID') !== -1){
