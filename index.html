@@ -561,7 +561,7 @@ try {
   var auth = firebase.auth();
 
   // Set up auth state listener for persistent login
-  firebase.auth().onAuthStateChanged(function(suer) {
+  firebase.auth().onAuthStateChanged(function(user) {
     currentFirebaseUser = user;
     updateAuthUI();
   });
