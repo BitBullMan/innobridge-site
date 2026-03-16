@@ -3,11 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Innobridge — Blockchain AML Intelligence</title>
+<title>Innobridge â Blockchain AML Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<!-- ==================== FIREBASE AUTH SDKs (Compat v10.x) ==================== -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0padding:0}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
   --bg:#0a0e17;--bg2:#111827;--bg3:#1a2235;--surface:#1e293b;
   --text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;
@@ -98,6 +102,15 @@ h2{font-size:clamp(28px,3.5vw,44px);font-weight:700;line-height:1.12;letter-spac
 .auth-toggle a:hover{text-decoration:underline}
 .auth-error{font-size:12px;color:var(--danger);margin-top:8px;min-height:18px}
 .auth-earn{margin-top:20px;padding:12px 16px;background:rgba(6,214,160,0.06);border:1px solid rgba(6,214,160,0.15);border-radius:var(--radius-sm);font-size:11px;color:var(--accent3);line-height:1.6;text-align:left}
+.auth-link{color:var(--accent);text-decoration:none;cursor:pointer;font-size:12px;margin-top:8px}
+.auth-link:hover{text-decoration:underline}
+.auth-google-btn{width:100%;font-size:14px;font-weight:600;color:var(--text);background:var(--bg2);border:1px solid var(--border);padding:12px;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font);transition:border-color .2s;margin-top:12px;display:flex;align-items:center;justify-content:center;gap:8px}
+.auth-google-btn:hover{border-color:var(--accent)}
+.auth-divider{font-size:12px;color:var(--text3);margin:14px 0;position:relative}
+.auth-divider::before{content:'';position:absolute;left:0;top:50%;width:100%;height:1px;background:var(--border)}
+.auth-divider span{position:relative;background:var(--bg);padding:0 8px}
+.auth-message{font-size:12px;color:var(--accent3);margin-top:12px;padding:8px 12px;background:rgba(6,214,160,0.08);border:1px solid rgba(6,214,160,0.15);border-radius:var(--radius-sm);line-height:1.5}
+.auth-success{color:var(--success);background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.15)}
 
 .card-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px}
 .card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px}
@@ -246,7 +259,13 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
           <div class="fl"><label>Email</label><input type="email" id="signup-email" placeholder="you@company.com"></div>
           <div class="fl"><label>Password</label><input type="password" id="signup-pass" placeholder="Min 6 characters"></div>
           <div class="auth-error" id="signup-error"></div>
-          <button class="auth-btn" onclick="handleSignup()">Create Account</button>
+          <div class="auth-message" id="signup-message" style="display:none"></div>
+          <button class="auth-btn" id="signup-btn" onclick="handleSignup()">Create Account</button>
+          <div class="auth-divider"><span>or</span></div>
+          <button type="button" class="auth-google-btn" onclick="handleGoogleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg>
+            Sign up with Google
+          </button>
           <div class="auth-toggle">Already have an account? <a onclick="toggleAuth('login')">Sign in</a></div>
           <div class="auth-earn">
             <strong>Earn free checks:</strong> Submit verified reports of illicit addresses (with supporting evidence) to earn additional daily check credits. <a href="#contact" style="color:var(--accent3)">Contact us</a> to learn more.
@@ -259,7 +278,21 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
           <div class="fl"><label>Password</label><input type="password" id="login-pass" placeholder="Your password"></div>
           <div class="auth-error" id="login-error"></div>
           <button class="auth-btn" onclick="handleLogin()">Sign In</button>
+          <a class="auth-link" onclick="showForgotPassword()">Forgot password?</a>
+          <div class="auth-divider"><span>or</span></div>
+          <button type="button" class="auth-google-btn" onclick="handleGoogleSignIn()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1"/><circle cx="15" cy="9" r="1"/></svg>
+            Sign in with Google
+          </button>
           <div class="auth-toggle">Don't have an account? <a onclick="toggleAuth('signup')">Create one</a></div>
+        </div>
+        <div class="auth-card" id="auth-card-forgot" style="display:none">
+          <h3>Reset Password</h3>
+          <p>Enter your email to receive password reset instructions.</p>
+          <div class="fl"><label>Email</label><input type="email" id="forgot-email" placeholder="you@company.com"></div>
+          <div class="auth-error" id="forgot-error"></div>
+          <button class="auth-btn" onclick="handleForgotPassword()">Send Reset Email</button>
+          <div class="auth-toggle"><a onclick="toggleAuth('login')">Back to sign in</a></div>
         </div>
       </div>
 
@@ -296,9 +329,10 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
           <div class="result-row"><span class="result-key">Label</span><span class="result-val" id="r-label">-</span></div>
           <div class="result-row"><span class="result-key">Risk Score</span><span class="result-val" id="r-score">-</span></div>
           <div class="result-row"><span class="result-key">Confidence</span><span class="result-val" id="r-conf">-</span></div>
+          <div class="result-row"><span class="result-key">Sources</span><span class="result-val" id="r-sources">-</span></div>
         </div>
       </div>
-      <p class="aml-note">* Demo mode — results are simulated. Live API integration coming soon.</p>
+      <p class="aml-note">* Live data: OFAC SDN list (auto-synced daily) + Tether &amp; Circle on-chain blacklists queried in real time.</p>
     </div>
   </div>
 </section>
@@ -445,7 +479,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
       </div>
       <div class="contact-items">
         <div class="c-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21! M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
           info@innobridge.io
         </div>
         <div class="c-item">
@@ -456,7 +490,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
     </div>
     <!-- Contact form: submissions sent to info@innobridge.io via Formspree -->
     <!-- TODO: Register at https://formspree.io and replace YOUR_FORM_ID below -->
-    <form class="form-group reveal" id="contact-form" action="https://formspree.io/f/xgonyjpk" method="POST">
+    <form class="form-group reveal" id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
       <div class="fl-row">
         <div class="fl"><label>First Name</label><input type="text" name="first_name" placeholder="Jane" required></div>
         <div class="fl"><label>Last Name</label><input type="text" name="last_name" placeholder="Smith" required></div>
@@ -505,98 +539,274 @@ document.querySelectorAll('.reveal').forEach(function(el){
   io.observe(el);
 });
 
-// ==================== AUTH SYSTEM (localStorage) ====================
+// ==================== FIREBASE AUTH SYSTEM ====================
 var DAILY_LIMIT = 3;
+var currentFirebaseUser = null;
+var userCheckCounts = {}; // In-memory storage for daily check counts
 
-function getUsers(){ try{ return JSON.parse(localStorage.getItem('ib_users')||'{}'); }catch(e){ return {}; } }
-function saveUsers(u){ localStorage.setItem('ib_users', JSON.stringify(u)); }
-function getCurrentUser(){ return localStorage.getItem('ib_current_user')||null; }
-function setCurrentUser(email){ localStorage.setItem('ib_current_user', email); }
+// ===== FIREBASE CONFIGURATION =====
+// Replace these placeholder values with your actual Firebase credentials from Firebase Console
+const firebaseConfig = {
+  apiKey: "YOUR_FIREBASE_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
 
-function getTodayKey(){ return new Date().toISOString().split('T')[0]; }
-function getCheckCount(email){
-  var users=getUsers(); var u=users[email];
-  if(!u) return 0;
-  if(u.lastCheckDate!==getTodayKey()){ u.checksToday=0; u.lastCheckDate=getTodayKey(); saveUsers(users); }
-  return u.checksToday||0;
+// Initialize Firebase
+try {
+  firebase.initializeApp(firebaseConfig);
+  var auth = firebase.auth();
+
+  // Set up auth state listener for persistent login
+  firebase.auth().onAuthStateChanged(function(suer) {
+    currentFirebaseUser = user;
+    updateAuthUI();
+  });
+} catch(e) {
+  console.error('Firebase initialization error. Make sure to add your Firebase config:', e);
 }
-function incrementCheck(email){
-  var users=getUsers(); var u=users[email];
-  if(!u) return;
-  if(u.lastCheckDate!==getTodayKey()){ u.checksToday=0; u.lastCheckDate=getTodayKey(); }
-  u.checksToday=(u.checksToday||0)+1;
-  saveUsers(users);
+
+// ===== AUTH STATE MANAGEMENT =====
+function getCurrentUser() {
+  return currentFirebaseUser ? currentFirebaseUser.email : null;
 }
-function getBonusCredits(email){
-  var users=getUsers(); var u=users[email];
-  return (u&&u.bonusCredits)||0;
+
+function getCurrentUserUID() {
+  return currentFirebaseUser ? currentFirebaseUser.uid : null;
 }
-function getRemainingChecks(email){
-  var used=getCheckCount(email);
-  var bonus=getBonusCredits(email);
+
+function getTodayKey() {
+  return new Date().toISOString().split('T')[0];
+}
+
+// Daily check tracking using UID as key
+function getCheckCountKey() {
+  var uid = getCurrentUserUID();
+  if (!uid) return null;
+  return 'checks_' + uid + '_' + getTodayKey();
+}
+
+function getCheckCount() {
+  var key = getCheckCountKey();
+  if (!key) return 0;
+  return parseInt(localStorage.getItem(key) || '0');
+}
+
+function incrementCheck() {
+  var key = getCheckCountKey();
+  if (!key) return;
+  var current = getCheckCount();
+  localStorage.setItem(key, (current + 1).toString());
+}
+
+function getBonusCredits() {
+  var uid = getCurrentUserUID();
+  if (!uid) return 0;
+  return parseInt(localStorage.getItem('bonus_' + uid) || '0');
+}
+
+function getRemainingChecks() {
+  var used = getCheckCount();
+  var bonus = getBonusCredits();
   return Math.max(0, DAILY_LIMIT + bonus - used);
 }
 
-function updateAuthUI(){
-  var user=getCurrentUser();
-  var overlay=document.getElementById('auth-overlay');
-  var quotaDisplay=document.getElementById('aml-quota-display');
-  if(user){
+// ===== UI UPDATE FUNCTION =====
+function updateAuthUI() {
+  var overlay = document.getElementById('auth-overlay');
+  var quotaDisplay = document.getElementById('aml-quota-display');
+
+  if (currentFirebaseUser) {
+    // User is logged in
     overlay.classList.add('hidden');
-    quotaDisplay.style.display='inline-flex';
-    var remaining=getRemainingChecks(user);
-    document.getElementById('quota-text').textContent=remaining+'/'+(DAILY_LIMIT+getBonusCredits(user))+' checks remaining today';
+    quotaDisplay.style.display = 'inline-flex';
+
+    var remaining = getRemainingChecks();
+    var total = DAILY_LIMIT + getBonusCredits();
+    document.getElementById('quota-text').textContent = remaining + '/' + total + ' checks remaining today';
+
+    // Hide auth cards
+    document.getElementById('auth-card-signup').style.display = 'none';
+    document.getElementById('auth-card-login').style.display = 'none';
+    document.getElementById('auth-card-forgot').style.display = 'none';
   } else {
+    // User is logged out
     overlay.classList.remove('hidden');
-    quotaDisplay.style.display='none';
+    quotaDisplay.style.display = 'none';
+    document.getElementById('auth-card-signup').style.display = 'block';
   }
 }
 
-function toggleAuth(mode){
-  document.getElementById('auth-card-signup').style.display = mode==='signup'?'block':'none';
-  document.getElementById('auth-card-login').style.display = mode==='login'?'block':'none';
-  document.getElementById('signup-error').textContent='';
-  document.getElementById('login-error').textContent='';
+// ===== AUTH CARD TOGGLE =====
+function toggleAuth(mode) {
+  document.getElementById('auth-card-signup').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-card-login').style.display = mode === 'login' ? 'block' : 'none';
+  document.getElementById('auth-card-forgot').style.display = mode === 'forgot' ? 'block' : 'none';
+  document.getElementById('signup-error').textContent = '';
+  document.getElementById('signup-message').style.display = 'none';
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('forgot-error').textContent = '';
 }
 
-function handleSignup(){
-  var email=document.getElementById('signup-email').value.trim();
-  var pass=document.getElementById('signup-pass').value;
-  var errEl=document.getElementById('signup-error');
-  if(!email||!email.includes('@')){ errEl.textContent='Please enter a valid email.'; return; }
-  if(pass.length<6){ errEl.textContent='Password must be at least 6 characters.'; return; }
-  var users=getUsers();
-  if(users[email]){ errEl.textContent='Account already exists. Please sign in.'; return; }
-  users[email]={pass:btoa(pass),checksToday:0,lastCheckDate:getTodayKey(),bonusCredits:0,created:new Date().toISOString()};
-  saveUsers(users);
-  setCurrentUser(email);
-  updateAuthUI();
+function showForgotPassword() {
+  toggleAuth('forgot');
 }
 
-function handleLogin(){
-  var email=document.getElementById('login-email').value.trim();
-  var pass=document.getElementById('login-pass').value;
-  var errEl=document.getElementById('login-error');
-  if(!email){ errEl.textContent='Please enter your email.'; return; }
-  var users=getUsers();
-  if(!users[email]){ errEl.textContent='Account not found. Please sign up first.'; return; }
-  if(users[email].pass!==btoa(pass)){ errEl.textContent='Incorrect password.'; return; }
-  setCurrentUser(email);
-  updateAuthUI();
+// ===== FIREBASE SIGN UP =====
+function handleSignup() {
+  var email = document.getElementById('signup-email').value.trim();
+  var pass = document.getElementById('signup-pass').value;
+  var errEl = document.getElementById('signup-error');
+  var msgEl = document.getElementById('signup-message');
+
+  errEl.textContent = '';
+  msgEl.style.display = 'none';
+
+  if (!email || !email.includes('@')) {
+    errEl.textContent = 'Please enter a valid email.';
+    return;
+  }
+  if (pass.length < 6) {
+    errEl.textContent = 'Password must be at least 6 characters.';
+    return;
+  }
+
+  // Disable button during signup
+  var btn = document.getElementById('signup-btn');
+  var originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Creating account...';
+
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(function(resultI {
+      var user = result.user;
+      // Send email verification
+      return user.sendEmailVerification().then(function() {
+        btn.disabled = false;
+        btn.textContent = originalText;
+
+        msgEl.classList.add('auth-success');
+        msgEl.textContent = 'Account created! Check your email to verify your address. You can log in after verification.';
+        msgEl.style.display = 'block';
+
+        // Clear form
+        document.getElementById('signup-email').value = '';
+        document.getElementById('signup-pass').value = '';
+
+        // Redirect to login after 3 seconds
+        setTimeout(function() {
+          toggleAuth('login');
+        }, 3000);
+      });
+    })
+    .catch(function(error) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      if (error.code === 'auth/email-already-in-use') {
+        errEl.textContent = 'Account already exists. Please sign in instead.';
+      } else if (error.code === 'auth/weak-password') {
+        errEl.textContent = 'Password is too weak. Use at least 6 characters.';
+      } else {
+        errEl.textContent = error.message || 'Signup failed. Please try again.';
+      }
+    });
 }
 
-function handleLogout(){
-  localStorage.removeItem('ib_current_user');
-  document.getElementById('aml-result').classList.remove('show');
-  updateAuthUI();
+// ===== FIREBASE SIGN IN =====
+function handleLogin() {
+  var email = document.getElementById('login-email').value.trim();
+  var pass = document.getElementById('login-pass').value;
+  var errEl = document.getElementById('login-error');
+
+  errEl.textContent = '';
+
+  if (!email) {
+    errEl.textContent = 'Please enter your email.';
+    return;
+  }
+
+  var btn = document.querySelector('#auth-card-login .auth-btn');
+  var originalText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(function(resultI {
+      var user = result.user;
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      if (!user.emailVerified) {
+        errEl.textContent = 'Please verify your email first. ';
+        var resendLink = document.createElement('a');
+        resendLink.textContent = 'Resend verification email';
+        resendLink.style.color = 'var(--accent)';
+        resendLink.style.cursor = 'pointer';
+        resendLink.onclick = function() {
+          user.sendEmailVerification().then(function() {
+            errEl.textContent = 'Verification email sent! Check your inbox.';
+          });
+        };
+        errEl.textContent = '';
+        errEl.appendChild(document.createTextNode('Please verify your email first. '));
+        errEl.appendChild(resendLink);
+        return;
+      }
+
+      // Clear form and show AML check
+      document.getElementById('login-email').value = '';
+      document.getElementById('login-pass').value = '';
+      updateAuthUI();
+    })
+    .catch(function(error) {
+      btn.disabled = false;
+      btn.textContent = originalText;
+
+      if (error.code === 'auth/user-not-found') {
+        errEl.textContent = 'Account not found. Please sign up first.';
+      } else if (error.code === 'auth/wrong-password') {
+        errEl.textContent = 'Incorrect password.';
+      } else {
+        errEl.textContent = error.message || 'Sign in failed. Please try again.';
+      }
+    });
+}
+
+// ===== FIREBASE GOOGLE SIGN IN =====
+function handleGoogleSignIn() {
+  var provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then(function(resultI {
+      var user = result.user;
+      // Email is automatically verified with Google auth
+      updateAuthUI();
+    })
+    .catch(function(error) {
+      if (error.code !== 'auth/popup-cancelled-by-user') {
+        var mode = document.getElementById('auth card-signup').style.display === 'block' ? 'signup' : 'login';
+        var errEl = document.getElementById(mode === 'signup' ? 'signup-error' : 'login-error');
+        errEl.textContent = 'Google sign in failed: ' + (error.message || 'Unknown error');
+      }
+    });
+}
+
+// ===== FIREBASE FORGOT PASSWORD =====
+function handleForgotPassword() {
+  var email = document.getElementById('firepass'r°¢f"W'$VÂÒFö7VÖVçBævWDVÆVÖVçD'Bvf÷&v÷BÖW'&÷"r° ¢W'$VÂçFWD6öçFVçBÒrs° ¢bVÖÂ°¢W'$VÂçFWD6öçFVçBÒuÆV6RVçFW"÷W"VÖÂâs°¢&WGW&ã°¢Ð ¢f"'FâÒFö7VÖVçBçVW'6VÆV7F÷"r6WFÖ6&BÖf÷&v÷BæWFÖ'Fâr°¢f"÷&væÅFWBÒ'FâçFWD6öçFVçC°¢'FâæF6&ÆVBÒG'VS°¢'FâçFWD6öçFVçBÒu6VæFærâââs° ¢WFç6VæE77v÷&E&W6WDVÖÂVÖÂ¢çFVâgVæ7Föâ°¢'FâæF6&ÆVBÒfÇ6S°¢'FâçFWD6öçFVçBÒ÷&væÅFWC° ¢f"×6tVÂÒFö7VÖVçBæ7&VFTVÆVÖVçBvFbr°¢×6tVÂæ6Æ74æÖRÒvWFÖÖW76vRWF×7V66W72s°¢×6tVÂçFWD6öçFVçBÒu77v÷&B&W6WBVÖÂ6VçB6V6²÷W"æ&÷âs°¢W'$VÂç&VçDVÆVÖVçBæç6W'D&Vf÷&R×6tVÂÂW'$VÂææWE6&Æær° ¢Fö7VÖVçBævWDVÆVÖVçD'Bv÷&v÷BÖVÖÂrçfÇVRÒrs° ¢6WEFÖV÷WBgVæ7Föâ°¢FövvÆTWFvÆövâr°¢ÒÂ3°¢Ò¢æ6F6gVæ7FöâW'&÷"°¢'FâæF6&ÆVBÒfÇ6S°¢'FâçFWD6öçFVçBÒ÷&væÅFWC° ¢bW'&÷"æ6öFRÓÓÒvWF÷W6W"Öæ÷BÖf÷VæBr°¢W'$VÂçFWD6öçFVçBÒtæò66÷VçBf÷VæBvFF2VÖÂâs°¢ÒVÇ6R°¢W'$VÂçFWD6öçFVçBÒW'&÷"æÖW76vRÇÂtfÆVBFò6VæB&W6WBVÖÂâs°¢Ð¢Ò°§Ð ¢òòÓÓÓÓÒd$T$4R4tâõUBÓÓÓÓÐ¦gVæ7FöâæFÆTÆöv÷WB°¢WFç6vä÷WBçFVâgVæ7Föâ°¢Fö7VÖVçBævWDVÆVÖVçD'Bv-result').classList.remove('show');
+    updateAuthUI();
+  }).catch(function(error) {
+    console.error('Logout error:', error);
+  });
 }
 
 // Initialize auth state on page load
-updateAuthUI();
+// (This is handled by onAuthStateChanged listener above)
 
-// ==================== AML RISK CHECK (with auth + rate limit) ====================
-// TODO: Replace demo logic with real API call to your label database
-// fetch('https:/// ==================== AML DATABASE (Google Sheets) + ON-CHAIN CHECK ====================
+// ==================== AML DATABASE (Google Sheets) + ON-CHAIN CHECK ====================
 var GSHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQlH4BzyKgk9u26gObmBwcQF4JdytYXYMPpZaJ1BeyWfMJv2CBlBgjUQ3faBnYj5A/pub?gid=432471327&single=true&output=csv';
 
 var _amlDb = null;
@@ -626,7 +836,7 @@ function loadAmlDb() {
 
       for (var i = 1; i < lines.length; i++) {
         var cols = parseCSVRow(lines[i]);
-        if (cols.length < 5) continue;
+        if (cols.length < 5 )continue;
         var obj = {};
         headers.forEach(function(h, idx) { obj[h] = (cols[idx] || '').replace(/^"|"$/g, ''); });
 
@@ -704,22 +914,22 @@ async function runAMLCheck() {
   var user = getCurrentUser();
   if (!user) { document.getElementById('auth-overlay').classList.remove('hidden'); return; }
 
-  var remaining = getRemainingChecks(user);
+  var remaining = getRemainingChecks();
   if (remaining <= 0) {
     alert('Daily check limit reached (' + DAILY_LIMIT + '/day). Limits reset at midnight UTC.\n\nNeed more? Submit verified illicit address reports to earn bonus credits, or contact us for API access.');
     return;
   }
 
-  var addr = document.getElementById('aml-address').value.trim();
-  var chainSel = document.getElementById('aml-chain');
+  var addr = document.getElementById(aml-address p) } [];
+  var chainSel = document.getElementById(aml-chain');
   var chainName = chainSel.options[chainSel.selectedIndex].text;
   if (!addr) {
-    document.getElementById('aml-address').style.borderColor = '#ef4444';
-    setTimeout(function(){ document.getElementById('aml-address').style.borderColor = ''; }, 2000);
+    document.getElementById(aml-address').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById(aml-address').style.borderColor = ''; }, 2000);
     return;
   }
 
-  incrementCheck(user);
+  incrementCheck();
   updateAuthUI();
 
   // Show loading state
@@ -760,17 +970,16 @@ async function runAMLCheck() {
       cls     = 'safe';
     }
 
-    document.getElementById('r-addr').textContent = addr.length > 22 ? addr.substring(0,10) + '\u2026' + addr.slice(-6) : addr;
-    document.getElementById('r-chain').textContent = autoChain;
-    document.getElementById('r-entity').textContent = entity;
-    document.getElementById('r-entity').className = 'result-val ' + cls;
-    document.getElementById('r-label').textContent = label;
-    document.getElementById('r-label').className = 'result-val ' + cls;
-    document.getElementById('r-score').textContent = score + ' / 100';
-    document.getElementById('r-score').className = 'result-val ' + cls;
-    document.getElementById('r-conf').textContent = conf;
-    document.getElementById('r-sources').textContent = sources.join(', ');
-    document.getElementById('aml-result').classList.add('show');
+    document.getElementById('r6addr') }uttContent = addr.length > 22 ? addr.substring(0,10) + '\u2026& + addr.slice(-6) : addr;
+    document.getElementById(r-chain ontent = autoChain;
+    document.getElementById(r-entity'-name = 'result-val ' + cls;
+    document.getElementById(r-label').textContent = label;
+    document.getElementById(r-label').className = 'result-val ' + cls;
+    document.getElementById(r-score').textContent = score + ' / 100';
+    document.getElementById(r-score').className = 'result-val ' + cls;
+    document.getElementById(r-conf').textContent = conf;
+    document.getElementById(r-sources').textContent = sources.join(', ');
+    document.getElementById(aml-result').classList.add('show');
 
   } finally {
     btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Run AML Risk Check';
@@ -779,7 +988,7 @@ async function runAMLCheck() {
 }
 
 // ==================== CONTACT FORM ====================
-document.getElementById('contact-form').addEventListener('submit', function(e){
+document.getElementById(contact-form').addEventListener('submit', function(e){
   // If Formspree is not configured yet, fall back to mailto
   var action = this.getAttribute('action');
   if(action.indexOf('YOUR_FORM_ID') !== -1){
