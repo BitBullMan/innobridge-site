@@ -236,7 +236,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
       <a href="#contact" class="btn-ghost">Talk to an Analyst</a>
     </div>
     <div class="stats-bar">
-      <div class="stat-item"><div class="stat-num">Multi-Chain</div><div class="stat-label">Coverage</div></div>
+      
       <div class="stat-item"><div class="stat-num">Real-Time</div><div class="stat-label">Risk Scoring</div></div>
       <div class="stat-item"><div class="stat-num">Sanctions</div><div class="stat-label">Screening</div></div>
       <div class="stat-item"><div class="stat-num">On-Chain</div><div class="stat-label">Intelligence</div></div>
@@ -986,7 +986,7 @@ var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-9
       var resultDiv=document.getElementById('aml-result');
       if(!addr){resultDiv.innerHTML='<div style="padding:16px;color:var(--danger);">Please enter an address</div>';resultDiv.classList.add('show');return;}
       btn.disabled=true;
-      btn.textContent='Scanning database...';
+      btn.textContent='Checking...';
       resultDiv.classList.remove('show');
 
       var url = APPS_SCRIPT_URL + '?address=' + encodeURIComponent(addr);
