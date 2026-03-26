@@ -960,45 +960,79 @@ async function checkOnChain(addrLower) {
 // AML Risk Check - LIVE MODE (Google Sheets API)
 var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-94ttFEuc91u6HzcHs_dBoRSuzHWHRy8rDP96b0-HqaH51DbO0dzbw/exec';
 
-function runAMLCheck(){
-  var addr=document.getElementById('aml-address').value.trim();
-  var chain=document.getElementById('aml-chain');
-  var chainName=chain.options[chain.selectedIndex].text;
-  var btn=document.querySelector('.aml-btn');
-  var resultDiv=document.getElementById('aml-result');
-  if(!addr){document.getElementById('aml-address').style.borderColor='#ef4444';setTimeout(function(){document.getElementById('aml-address').style.borderColor=''},2000);return;}
-  btn.disabled=true;
-  btn.textContent='Scanning database...';
-  resultDiv.classList.remove('show');
-  fetch(APPS_SCRIPT_URL+'?address='+encodeURIComponent(addr)).then(function(r){return r.json();}).then(function(data){
-    btn.disabled=false;btn.textContent='Run AML Risk Check';
-    if(data.success&&data.found&&data.results.length>0){
-      var m=data.results;m.sort(function(a,b){return(parseInt(b.risk_score)||0)-(parseInt(a.risk_score)||0);});
-      var d=m[0];var score=parseInt(d.risk_score)||0;var cls=score>=70?'danger':score>=30?'warning':'safe';
-      document.getElementById('r-addr').textContent=addr.length>20?addr.substring(0,10)+'...'+addr.slice(-6):addr;
-      document.getElementById('r-chain').textContent=d.chain||chainName;
-      document.getElementById('r-entity').textContent=d.entity||'Unknown';document.getElementById('r-entity').className='result-val '+cls;
-      document.getElementById('r-label').textContent=d.label||'N/A';document.getElementById('r-label').className='result-val '+cls;
-      document.getElementById('r-score').textContent=score+' / 100';document.getElementById('r-score').className='result-val '+cls;
-      document.getElementById('r-conf').textContent=d.confidence||'N/A';
-      var src=m.map(function(x){return x.sources;}).filter(Boolean);var u=src.filter(function(v,i,a){return a.indexOf(v)===i;});
-      document.querySelector('.aml-note').textContent=u.length>1?'Flagged by '+u.length+' sources: '+u.join(', '):'Source: '+(u[0]||'N/A');
-    } else {
-      document.getElementById('r-addr').textContent=addr.length>20?addr.substring(0,10)+'...'+addr.slice(-6):addr;
-      document.getElementById('r-chain').textContent=chainName;
-      document.getElementById('r-entity').textContent='No matches found';document.getElementById('r-entity').className='result-val safe';
-      document.getElementById('r-label').textContent='CLEAN';document.getElementById('r-label').className='result-val safe';
-      document.getElementById('r-score').textContent='0 / 100';document.getElementById('r-score').className='result-val safe';
-      document.getElementById('r-conf').textContent='N/A';
-      document.querySelector('.aml-note').textContent='Address not found in AML database. This does not guarantee safety.';
+    // JSONP helper - bypasses CORS by loading data as a script tag
+    function amlJSONP(url, callback) {
+      var callbackName = '_amlCb_' + Date.now();
+      var script = document.createElement('script');
+      window[callbackName] = function(data) {
+        delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        callback(null, data);
+      };
+      script.onerror = function() {
+        delete window[callbackName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+        callback(new Error('Failed to load'));
+      };
+      script.src = url + '&callback=' + callbackName;
+      document.body.appendChild(script);
+      // Timeout after 15 seconds
+      setTimeout(function() {
+        if (window[callbackName]) {
+          delete window[callbackName];
+          if (script.parentNode) script.parentNode.removeChild(script);
+          callback(new Error('Request timed out'));
+        }
+      }, 15000);
     }
-    resultDiv.classList.add('show');
-  }).catch(function(){
-    btn.disabled=false;btn.textContent='Run AML Risk Check';
-    document.getElementById('r-entity').textContent='Service unavailable';document.getElementById('r-entity').className='result-val warning';
-    resultDiv.classList.add('show');
-  });
-}
+
+    function runAMLCheck(){
+      var addr=document.getElementById('aml-address').value.trim();
+      var chain=document.getElementById('aml-chain');
+      var chainName=chain.options[chain.selectedIndex].text;
+      var btn=document.querySelector('.aml-btn');
+      var resultDiv=document.getElementById('aml-result');
+      if(!addr){resultDiv.innerHTML='<div style="padding:16px;color:var(--danger);">Please enter an address</div>';resultDiv.classList.add('show');return;}
+      btn.disabled=true;
+      btn.textContent='Scanning database...';
+      resultDiv.classList.remove('show');
+
+      var url = APPS_SCRIPT_URL + '?address=' + encodeURIComponent(addr);
+
+      amlJSONP(url, function(err, data) {
+        btn.disabled=false;
+        btn.textContent='Run AML Check';
+        if(err || !data || !data.success){
+          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:20px;color:var(--danger);font-weight:700;">Service Unavailable</div><div style="color:var(--text2);margin-top:8px;">Unable to reach AML database. Please try again later.</div></div>';
+          resultDiv.classList.add('show');
+          return;
+        }
+        if(data.found && data.results && data.results.length > 0){
+          var r = data.results[0];
+          var score = parseInt(r.risk_score) || 0;
+          for(var i=0;i<data.results.length;i++){var s=parseInt(data.results[i].risk_score)||0;if(s>score){score=s;r=data.results[i];}}
+          var color = score>=80?'var(--danger)':score>=50?'var(--warning)':'var(--accent)';
+          var label = score>=80?'HIGH RISK':score>=50?'MEDIUM RISK':'LOW RISK';
+          var html='<div style="padding:20px;">';
+          html+='<div style="text-align:center;margin-bottom:16px;"><div style="display:inline-block;width:80px;height:80px;border-radius:50%;border:4px solid '+color+';line-height:80px;font-size:28px;font-weight:800;color:'+color+';">'+score+'</div></div>';
+          html+='<div style="text-align:center;font-size:18px;font-weight:700;color:'+color+';margin-bottom:16px;">'+label+'</div>';
+          html+='<div style="background:rgba(0,0,0,0.2);border-radius:8px;padding:12px;font-size:13px;line-height:1.8;">';
+          html+='<div><span style="color:var(--text2);">Entity:</span> <span style="color:var(--text);">'+(r.entity||'Unknown')+'</span></div>';
+          html+='<div><span style="color:var(--text2);">Label:</span> <span style="color:var(--text);">'+(r.label||'N/A')+'</span></div>';
+          html+='<div><span style="color:var(--text2);">Chain:</span> <span style="color:var(--text);">'+(r.chain||chainName)+'</span></div>';
+          html+='<div><span style="color:var(--text2);">Sources:</span> <span style="color:var(--text);">'+(r.sources||'N/A')+'</span></div>';
+          if(r.sanctions && r.sanctions!=='none' && r.sanctions!=='')html+='<div><span style="color:var(--text2);">Sanctions:</span> <span style="color:var(--danger);font-weight:600;">'+r.sanctions+'</span></div>';
+          if(r.description)html+='<div style="margin-top:8px;"><span style="color:var(--text2);">Description:</span> <span style="color:var(--text);">'+r.description+'</span></div>';
+          html+='</div>';
+          html+='<div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text3);">Checked against '+data.total_records+' records | '+new Date(data.checked_at).toLocaleString()+'</div>';
+          html+='</div>';
+          resultDiv.innerHTML=html;
+        }else{
+          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:48px;margin-bottom:8px;">&#9989;</div><div style="font-size:20px;color:var(--success);font-weight:700;">CLEAN</div><div style="color:var(--text2);margin-top:8px;">No matches found in '+data.total_records+' records</div><div style="color:var(--text3);font-size:12px;margin-top:4px;">'+new Date(data.checked_at).toLocaleString()+'</div></div>';
+        }
+        resultDiv.classList.add('show');
+      });
+    }
 
 // ==================== CONTACT FORM ====================
 document.getElementById('contact-form').addEventListener('submit', function(e){
