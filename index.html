@@ -237,10 +237,10 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
       <a href="#contact" class="btn-ghost">Talk to an Analyst</a>
     </div>
     <div class="stats-bar">
-      <div class="stat-item"><div class="stat-num">10M+</div><div class="stat-label">Labeled Addresses</div></div>
-      <div class="stat-item"><div class="stat-num">40+</div><div class="stat-label">Chains Covered</div></div>
-      <div class="stat-item"><div class="stat-num">$2.1B+</div><div class="stat-label">Funds Traced</div></div>
-      <div class="stat-item"><div class="stat-num">48h</div><div class="stat-label">Report Turnaround</div></div>
+      <div class="stat-item"><div class="stat-num">Multi-Chain</div><div class="stat-label">Coverage</div></div>
+      <div class="stat-item"><div class="stat-num">Real-Time</div><div class="stat-label">Risk Scoring</div></div>
+      <div class="stat-item"><div class="stat-num">Sanctions</div><div class="stat-label">Screening</div></div>
+      <div class="stat-item"><div class="stat-num">On-Chain</div><div class="stat-label">Intelligence</div></div>
     </div>
   </div>
 </section>
@@ -454,21 +454,6 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
   </div>
 </section>
 
-<!-- ==================== BLOG (Dynamic from posts/index.json) ==================== -->
-<section id="insights">
-  <div class="reveal">
-    <div class="sec-label">Blog &amp; Insights</div>
-    <h2>Intelligence in the open.</h2>
-    <p class="sec-intro">Case studies, investigative breakdowns, and compliance insights from our team.</p>
-  </div>
-  <div id="featured-container"></div>
-  <div class="blog-grid" id="blog-grid-container"></div>
-  <div class="reveal" style="margin-top:24px;display:flex;align-items:center;justify-content:space-between;padding:20px 24px;background:var(--bg2);border:1px solid var(--border);border-radius:16px">
-    <span style="font-size:13px;color:var(--text3)">New articles published regularly</span>
-    <a href="#contact" style="font-size:13px;font-weight:500;color:var(--accent);text-decoration:none;display:inline-flex;align-items:center;gap:6px">Get notified &#8594;</a>
-  </div>
-</section>
-
 <!-- ==================== CONTACT (Email: info@innobridge.io via Formspree) ==================== -->
 <section id="contact">
   <div class="contact-grid">
@@ -480,7 +465,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
       </div>
       <div class="contact-items">
         <div class="c-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21! M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8 M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
           info@innobridge.io
         </div>
         <div class="c-item">
@@ -520,11 +505,19 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
 <footer>
   <span class="f-copy">&copy; 2026 Innobridge. All rights reserved.</span>
   <ul class="f-links">
-    <li><a href="#">Privacy</a></li>
-    <li><a href="#">Terms</a></li>
-    <li><a href="#">Disclaimer</a></li>
+    <li><a href="#" onclick="showLegal('privacy');return false;">Privacy</a></li>
+    <li><a href="#" onclick="showLegal('terms');return false;">Terms</a></li>
+    <li><a href="#" onclick="showLegal('disclaimer');return false;">Disclaimer</a></li>
   </ul>
 </footer>
+
+<!-- Legal Modal -->
+<div id="legal-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);z-index:9999;justify-content:center;align-items:center;">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;max-width:700px;width:90%;max-height:80vh;overflow-y:auto;padding:32px;position:relative;margin:auto;margin-top:10vh;">
+    <button onclick="document.getElementById('legal-modal').style.display='none'" style="position:absolute;top:12px;right:16px;background:none;border:none;color:var(--text2);font-size:24px;cursor:pointer;">&times;</button>
+    <div id="legal-content"></div>
+  </div>
+</div>
 
 <script>
 // ==================== SCROLL REVEAL ====================
@@ -1024,11 +1017,11 @@ var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-9
           if(r.sanctions && r.sanctions!=='none' && r.sanctions!=='')html+='<div><span style="color:var(--text2);">Sanctions:</span> <span style="color:var(--danger);font-weight:600;">'+r.sanctions+'</span></div>';
           if(r.description)html+='<div style="margin-top:8px;"><span style="color:var(--text2);">Description:</span> <span style="color:var(--text);">'+r.description+'</span></div>';
           html+='</div>';
-          html+='<div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text3);">Checked against '+data.total_records+' records | '+new Date(data.checked_at).toLocaleString()+'</div>';
+          html+='<div style="text-align:center;margin-top:12px;font-size:11px;color:var(--text3);">Checked at '+new Date(data.checked_at).toLocaleString()+'</div>';
           html+='</div>';
           resultDiv.innerHTML=html;
         }else{
-          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:48px;margin-bottom:8px;">&#9989;</div><div style="font-size:20px;color:var(--success);font-weight:700;">CLEAN</div><div style="color:var(--text2);margin-top:8px;">No matches found in '+data.total_records+' records</div><div style="color:var(--text3);font-size:12px;margin-top:4px;">'+new Date(data.checked_at).toLocaleString()+'</div></div>';
+          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:48px;margin-bottom:8px;">&#9989;</div><div style="font-size:20px;color:var(--success);font-weight:700;">CLEAN</div><div style="color:var(--text2);margin-top:8px;">No matches found in our database</div><div style="color:var(--text3);font-size:12px;margin-top:4px;">'+new Date(data.checked_at).toLocaleString()+'</div></div>';
         }
         resultDiv.classList.add('show');
       });
@@ -1138,6 +1131,57 @@ document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
     if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth'})}
   });
 });
-</script>
+
+
+    // ==================== LEGAL PAGES ====================
+    function showLegal(page) {
+      var content = '';
+      var titles = {privacy: 'Privacy Policy', terms: 'Terms of Service', disclaimer: 'Disclaimer'};
+      if (page === 'privacy') {
+        content = '<h2 style="color:var(--accent);margin-bottom:16px;">Privacy Policy</h2>'
+          + '<p style="color:var(--text2);margin-bottom:12px;font-size:13px;">Last updated: March 2026</p>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:16px;">Innobridge ("we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and safeguard your information when you use our AML intelligence platform and website at innobridge.io.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Information We Collect</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">We collect information you provide directly, including your email address when you register for an account. When you use our AML Risk Check feature, we process the blockchain addresses you submit for analysis. We do not store the addresses you query beyond what is necessary to provide the service and prevent abuse.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">How We Use Your Information</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">We use your information to provide and maintain our AML intelligence services, enforce usage limits, improve our platform, and communicate important updates. We do not sell your personal information to third parties.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Data Security</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">We implement appropriate technical and organizational measures to protect your information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Cookies</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">We use essential cookies and local storage to manage authentication and session state. We do not use advertising or tracking cookies.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Contact</h3>'
+          + '<p style="color:var(--text);line-height:1.8;">For privacy-related inquiries, contact us at info@innobridge.io.</p>';
+      } else if (page === 'terms') {
+        content = '<h2 style="color:var(--accent);margin-bottom:16px;">Terms of Service</h2>'
+          + '<p style="color:var(--text2);margin-bottom:12px;font-size:13px;">Last updated: March 2026</p>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:16px;">By accessing or using the Innobridge platform and services, you agree to be bound by these Terms of Service. If you do not agree, please do not use our services.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Service Description</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">Innobridge provides blockchain AML (Anti-Money Laundering) intelligence services, including risk scoring, sanctions screening, and on-chain analytics. Our services are designed for compliance professionals, financial institutions, and blockchain businesses.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Acceptable Use</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">You agree to use our services only for lawful purposes and in accordance with applicable regulations. You may not attempt to reverse-engineer, scrape, or abuse our API or database. Free accounts are limited to 3 risk checks per day.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Intellectual Property</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">All content, data, and technology on the Innobridge platform are the property of Innobridge or its licensors. You may not reproduce, distribute, or create derivative works from our content without prior written consent.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Limitation of Liability</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">Innobridge provides its services on an "as is" basis. We shall not be liable for any indirect, incidental, or consequential damages arising from your use of our services. Our total liability shall not exceed the amount you have paid us in the 12 months preceding the claim.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Modifications</h3>'
+          + '<p style="color:var(--text);line-height:1.8;">We reserve the right to modify these terms at any time. Continued use of our services after changes constitutes acceptance of the updated terms.</p>';
+      } else if (page === 'disclaimer') {
+        content = '<h2 style="color:var(--accent);margin-bottom:16px;">Disclaimer</h2>'
+          + '<p style="color:var(--text2);margin-bottom:12px;font-size:13px;">Last updated: March 2026</p>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:16px;">The information provided by Innobridge is for informational and compliance-assistance purposes only. It does not constitute legal, financial, or regulatory advice.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">No Guarantee of Accuracy</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">While we strive to maintain accurate and up-to-date AML intelligence data, we make no warranties or representations regarding the completeness, accuracy, or reliability of any information provided through our platform. Blockchain data and sanctions lists are subject to frequent changes, and our database may not reflect the most recent updates at all times.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Not a Substitute for Professional Compliance</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">Our risk scores and screening results should be used as one component of a comprehensive AML/KYC compliance program. They should not be relied upon as the sole basis for compliance decisions. Users are responsible for conducting their own due diligence and should consult qualified compliance professionals for specific regulatory guidance.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Third-Party Data</h3>'
+          + '<p style="color:var(--text);line-height:1.8;margin-bottom:12px;">Our database aggregates information from multiple public sources, including OFAC SDN lists, on-chain blacklist events, and other publicly available data. We are not responsible for errors or omissions in third-party source data.</p>'
+          + '<h3 style="color:var(--text);margin:16px 0 8px;">Limitation</h3>'
+          + '<p style="color:var(--text);line-height:1.8;">A "clean" result from our risk check does not guarantee that an address is safe or compliant. Absence of data in our system does not imply absence of risk. Always exercise caution and apply appropriate due diligence measures.</p>';
+      }
+      document.getElementById('legal-content').innerHTML = content;
+      document.getElementById('legal-modal').style.display = 'flex';
+    }
+
+    </script>
 </body>
 </html>
