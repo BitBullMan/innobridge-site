@@ -39,6 +39,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-glow);border:1px solid var(--border2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:500;color:var(--accent);margin-bottom:28px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes spin{to{transform:rotate(360deg)}}
 h1{font-size:clamp(40px,5.5vw,72px);font-weight:800;line-height:1.05;letter-spacing:-0.03em;margin-bottom:24px}
 h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .hero-sub{font-size:18px;color:var(--text2);max-width:600px;margin:0 auto 40px;line-height:1.7}
@@ -332,7 +333,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
           <div class="result-row"><span class="result-key">Sources</span><span class="result-val" id="r-sources">-</span></div>
         </div>
       </div>
-      <p class="aml-note">* Live data: OFAC SDN list (auto-synced daily) + Tether &amp; Circle on-chain blacklists queried in real time.</p>
+      <p class="aml-note">Powered by Innobridge AML Intelligence Database</p>
     </div>
   </div>
 </section>
@@ -956,82 +957,47 @@ async function checkOnChain(addrLower) {
   return hits;
 }
 
-async function runAMLCheck() {
-  var user = getCurrentUser();
-  if (!user) { document.getElementById('auth-overlay').classList.remove('hidden'); return; }
+async // AML Risk Check - LIVE MODE (Google Sheets API)
+var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-94ttFEuc91u6HzcHs_dBoRSuzHWHRy8rDP96b0-HqaH51DbO0dzbw/exec';
 
-  var remaining = getRemainingChecks();
-  if (remaining <= 0) {
-    alert('Daily check limit reached (' + DAILY_LIMIT + '/day). Limits reset at midnight UTC.\n\nNeed more? Submit verified illicit address reports to earn bonus credits, or contact us for API access.');
-    return;
-  }
-
-  var addr = document.getElementById('aml-address').value.trim();
-  var chainSel = document.getElementById('aml-chain');
-  var chainName = chainSel.options[chainSel.selectedIndex].text;
-  if (!addr) {
-    document.getElementById('aml-address').style.borderColor = '#ef4444';
-    setTimeout(function(){ document.getElementById('aml-address').style.borderColor = ''; }, 2000);
-    return;
-  }
-
-  incrementCheck();
-  updateAuthUI();
-
-  // Show loading state
-  var btn = document.querySelector('.aml-btn');
-  btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Checking\u2026';
-  btn.disabled = true;
-
-  try {
-    var db = await loadAmlDb();
-    var addrLower = addr.toLowerCase();
-    var dbEntry = (db.addresses || {})[addrLower];
-    var onChainHits = await checkOnChain(addrLower);
-    var autoChain = detectAddrChain(addrLower) || chainName;
-
-    var entity, label, score, conf, cls, sources;
-
-    if (dbEntry) {
-      entity  = dbEntry.entity || 'Sanctioned Entity';
-      label   = dbEntry.label  || 'OFAC_SDN';
-      score   = dbEntry.riskScore || 95;
-      conf    = dbEntry.confidence || 'HIGH';
-      autoChain = dbEntry.chain || autoChain;
-      sources = (dbEntry.sources || []).concat(onChainHits.map(function(h){ return h.name; }));
-      cls     = score >= 90 ? 'danger' : score >= 60 ? 'warning' : 'safe';
-    } else if (onChainHits.length > 0) {
-      entity  = onChainHits.map(function(h){ return h.name; }).join(' + ') + ' Blacklist';
-      label   = onChainHits[0].label;
-      score   = onChainHits[0].score;
-      conf    = 'HIGH';
-      sources = onChainHits.map(function(h){ return h.name; });
-      cls     = 'danger';
+function runAMLCheck(){
+  var addr=document.getElementById('aml-address').value.trim();
+  var chain=document.getElementById('aml-chain');
+  var chainName=chain.options[chain.selectedIndex].text;
+  var btn=document.querySelector('.aml-btn');
+  var resultDiv=document.getElementById('aml-result');
+  if(!addr){document.getElementById('aml-address').style.borderColor='#ef4444';setTimeout(function(){document.getElementById('aml-address').style.borderColor=''},2000);return;}
+  btn.disabled=true;
+  btn.textContent='Scanning database...';
+  resultDiv.classList.remove('show');
+  fetch(APPS_SCRIPT_URL+'?address='+encodeURIComponent(addr)).then(function(r){return r.json();}).then(function(data){
+    btn.disabled=false;btn.textContent='Run AML Risk Check';
+    if(data.success&&data.found&&data.results.length>0){
+      var m=data.results;m.sort(function(a,b){return(parseInt(b.risk_score)||0)-(parseInt(a.risk_score)||0);});
+      var d=m[0];var score=parseInt(d.risk_score)||0;var cls=score>=70?'danger':score>=30?'warning':'safe';
+      document.getElementById('r-addr').textContent=addr.length>20?addr.substring(0,10)+'...'+addr.slice(-6):addr;
+      document.getElementById('r-chain').textContent=d.chain||chainName;
+      document.getElementById('r-entity').textContent=d.entity||'Unknown';document.getElementById('r-entity').className='result-val '+cls;
+      document.getElementById('r-label').textContent=d.label||'N/A';document.getElementById('r-label').className='result-val '+cls;
+      document.getElementById('r-score').textContent=score+' / 100';document.getElementById('r-score').className='result-val '+cls;
+      document.getElementById('r-conf').textContent=d.confidence||'N/A';
+      var src=m.map(function(x){return x.sources;}).filter(Boolean);var u=src.filter(function(v,i,a){return a.indexOf(v)===i;});
+      document.querySelector('.aml-note').textContent=u.length>1?'Flagged by '+u.length+' sources: '+u.join(', '):'Source: '+(u[0]||'N/A');
     } else {
-      entity  = 'No match found';
-      label   = 'CLEAN';
-      score   = 0;
-      conf    = 'N/A';
-      sources = ['OFAC-SDN', 'Tether', 'USDC'];
-      cls     = 'safe';
+      document.getElementById('r-addr').textContent=addr.length>20?addr.substring(0,10)+'...'+addr.slice(-6):addr;
+      document.getElementById('r-chain').textContent=chainName;
+      document.getElementById('r-entity').textContent='No matches found';document.getElementById('r-entity').className='result-val safe';
+      document.getElementById('r-label').textContent='CLEAN';document.getElementById('r-label').className='result-val safe';
+      document.getElementById('r-score').textContent='0 / 100';document.getElementById('r-score').className='result-val safe';
+      document.getElementById('r-conf').textContent='N/A';
+      document.querySelector('.aml-note').textContent='Address not found in AML database. This does not guarantee safety.';
     }
-
-    document.getElementById('r-addr').textContent = addr.length > 22 ? addr.substring(0,10) + '\u2026' + addr.slice(-6) : addr;
-    document.getElementById('r-chain').textContent = autoChain;
-    document.getElementById('r-entity').textContent = entity;
-    document.getElementById('r-entity').className = 'result-val ' + cls;
-    document.getElementById('r-label').textContent = label;
-    document.getElementById('r-label').className = 'result-val ' + cls;
-    document.getElementById('r-score').textContent = score + ' / 100';
-    document.getElementById('r-score').className = 'result-val ' + cls;
-    document.getElementById('r-conf').textContent = conf;
-    document.getElementById('r-sources').textContent = sources.join(', ');
-    document.getElementById('aml-result').classList.add('show');
-
-  } finally {
-    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Run AML Risk Check';
-    btn.disabled = false;
-  }
+    resultDiv.classList.add('show');
+  }).catch(function(){
+    btn.disabled=false;btn.textContent='Run AML Risk Check';
+    document.getElementById('r-entity').textContent='Service unavailable';document.getElementById('r-entity').className='result-val warning';
+    resultDiv.classList.add('show');
+  });
 }
 
 // ==================== CONTACT FORM ====================
