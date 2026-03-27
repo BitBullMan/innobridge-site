@@ -34,7 +34,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .nav-btn{font-size:13px;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:10px 22px;border-radius:8px;text-decoration:none;transition:opacity .2s;border:none;cursor:pointer}
 .nav-btn:hover{opacity:0.85}
 
-#hero{padding:140px 48px 80px;text-align:center;position:relative;overflow:hidden}
+#hero{padding:140px 48px 40px;text-align:center;position:relative;overflow:hidden}
 #hero::before{content:'';position:absolute;top:-200px;left:50%;transform:translateX(-50%);width:800px;height:800px;background:radial-gradient(circle,rgba(0,212,255,0.08) 0%,rgba(124,58,237,0.04) 40%,transparent 70%);pointer-events:none}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-glow);border:1px solid var(--border2);border-radius:20px;padding:6px 16px;font-size:12px;font-weight:500;color:var(--accent);margin-bottom:28px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
@@ -49,7 +49,7 @@ h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(
 .btn-ghost{font-size:14px;font-weight:500;color:var(--text);background:transparent;padding:14px 32px;border-radius:10px;text-decoration:none;border:1px solid var(--border);transition:border-color .2s}
 .btn-ghost:hover{border-color:var(--accent)}
 
-.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);max-width:900px;margin:60px auto 0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
+.stats-bar{display:grid;grid-template-columns:repeat(3,1fr);max-width:900px;margin:24px auto 0;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius)}
 .stat-item{padding:24px;text-align:center;border-right:1px solid var(--border)}
 .stat-item:last-child{border-right:none}
 .stat-num{font-size:28px;font-weight:700;color:var(--accent);font-family:var(--mono)}
@@ -984,7 +984,23 @@ var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-9
       var chainName=chain.options[chain.selectedIndex].text;
       var btn=document.querySelector('.aml-btn');
       var resultDiv=document.getElementById('aml-result');
+
+      // Address format validation
       if(!addr){resultDiv.innerHTML='<div style="padding:16px;color:var(--danger);">Please enter an address</div>';resultDiv.classList.add('show');return;}
+
+      var isValid=false;
+      if(/^0x[0-9a-fA-F]{40}$/.test(addr))isValid=true;       // EVM (ETH/BSC/Polygon etc)
+      if(/^T[1-9A-HJ-NP-Za-km-z]{33}$/.test(addr))isValid=true; // TRON Base58
+      if(/^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/.test(addr))isValid=true; // BTC legacy
+      if(/^bc1[a-zA-HJ-NP-Z0-9]{25,90}$/.test(addr))isValid=true;     // BTC bech32
+      if(/^(sol)[a-zA-Z0-9]{40,50}$/.test(addr)||/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(addr)&&addr.length>=32&&addr.length<=44&&!/^0x/.test(addr)&&!/^T/.test(addr)&&!/^[13]/.test(addr)&&!/^bc1/.test(addr))isValid=true; // SOL
+
+      if(!isValid){
+        resultDiv.innerHTML='<div style="padding:16px;color:var(--warning);">Invalid address format. Please enter a valid blockchain address.</div>';
+        resultDiv.classList.add('show');
+        return;
+      }
+
       btn.disabled=true;
       btn.textContent='Checking...';
       resultDiv.classList.remove('show');
@@ -1025,6 +1041,15 @@ var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-9
         resultDiv.classList.add('show');
       });
     }
+
+    // Auto-detect chain from address input
+    document.getElementById('aml-address').addEventListener('input', function(){
+      var addr = this.value.trim();
+      var chain = document.getElementById('aml-chain');
+      if(/^0x[0-9a-fA-F]{0,40}$/.test(addr) && addr.length > 2) chain.value = 'eth';
+      else if(/^T[1-9A-HJ-NP-Za-km-z]/.test(addr)) chain.value = 'trx';
+      else if(/^bc1/.test(addr) || /^[13][a-km-zA-HJ-NP-Z1-9]/.test(addr)) chain.value = 'btc';
+    })
 
 // ==================== CONTACT FORM ====================
 document.getElementById('contact-form').addEventListener('submit', function(e){
