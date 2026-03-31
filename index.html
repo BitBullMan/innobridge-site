@@ -221,6 +221,28 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
 }
 
 @keyframes assocPulse{0%{width:30%}50%{width:80%}100%{width:30%}}
+.sanctions-alert{background:linear-gradient(135deg,rgba(255,0,0,0.15),rgba(255,60,60,0.08));border:1px solid rgba(255,60,60,0.5);border-radius:10px;padding:16px;margin:12px 0;animation:sanctionsPulse 2s ease-in-out infinite}
+.sanctions-alert-header{display:flex;align-items:center;gap:8px;font-weight:700;color:#ff4444;font-size:14px;margin-bottom:8px}
+.sanctions-alert-body{color:var(--text);font-size:12px;line-height:1.6}
+@keyframes sanctionsPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,60,60,0.2)}50%{box-shadow:0 0 12px 4px rgba(255,60,60,0.15)}}
+.score-dimensions{display:grid;grid-template-columns:1fr;gap:8px;margin:12px 0}
+.score-dim{display:flex;align-items:center;gap:10px;padding:8px 12px;background:rgba(0,0,0,0.2);border-radius:8px;font-size:12px}
+.score-dim-label{color:var(--text2);min-width:110px;flex-shrink:0}
+.score-dim-bar{flex:1;height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden}
+.score-dim-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.score-dim-val{color:var(--text);font-weight:600;min-width:40px;text-align:right}
+.cat-breakdown{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0}
+.cat-tag{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.cat-tag.tier1{background:rgba(255,0,0,0.2);color:#ff4444;border:1px solid rgba(255,0,0,0.3)}
+.cat-tag.tier2{background:rgba(255,100,0,0.15);color:#ff8844;border:1px solid rgba(255,100,0,0.3)}
+.cat-tag.tier3{background:rgba(255,170,0,0.15);color:#ffaa44;border:1px solid rgba(255,170,0,0.3)}
+.cat-tag.tier4{background:rgba(255,220,0,0.12);color:#ddaa00;border:1px solid rgba(255,220,0,0.25)}
+.cat-tag.tier5{background:rgba(100,100,255,0.12);color:#8888ff;border:1px solid rgba(100,100,255,0.25)}
+.cat-tag.tier6{background:rgba(150,150,150,0.12);color:#aaa;border:1px solid rgba(150,150,150,0.25)}
+.assoc-summary{background:rgba(0,0,0,0.2);border-radius:8px;padding:12px;margin:10px 0;font-size:12px;line-height:1.7;color:var(--text2)}
+.cp-table-header{display:grid;grid-template-columns:1fr 100px 70px 60px;padding:8px 10px;font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.cp-row{display:grid;grid-template-columns:1fr 100px 70px 60px;padding:8px 10px;font-size:12px;border-bottom:1px solid rgba(255,255,255,0.03);align-items:center}
+.cp-row:hover{background:rgba(255,255,255,0.02)}
 </style>
 </head>
 <body>
@@ -1055,10 +1077,11 @@ var N8N_WEBHOOK_URL = 'https://innobridge.app.n8n.cloud/webhook/aml-analyze';
           html+='</div>';
           resultDiv.innerHTML=html;
         }else{
-          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:48px;margin-bottom:8px;">&#9989;</div><div style="font-size:20px;color:var(--success);font-weight:700;">NOT DIRECTLY FLAGGED</div><div style="color:var(--text2);margin-top:8px;">This address is not directly listed in our database.</div><div style="color:var(--text3);font-size:12px;margin-top:4px;">'+new Date(data.checked_at).toLocaleString()+'</div><div id="assoc-loading" style="margin-top:20px;padding:16px;background:var(--bg2);border-radius:8px;border:1px solid var(--border);"><div style="color:var(--accent);font-weight:600;font-size:13px;">Analyzing on-chain associations...</div><div style="color:var(--text3);font-size:12px;margin-top:4px;">Checking counterparty risk via transaction history</div><div style="margin-top:12px;"><div style="width:100%;height:4px;background:var(--bg);border-radius:2px;overflow:hidden;"><div style="width:60%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;animation:assocPulse 1.5s ease infinite;"></div></div></div></div></div>';
+          resultDiv.innerHTML='<div style="padding:20px;text-align:center;"><div style="font-size:48px;margin-bottom:8px;">&#128270;</div><div style="font-size:18px;color:var(--warning);font-weight:700;">NOT DIRECTLY FLAGGED</div><div style="color:var(--text2);margin-top:8px;font-size:13px;">This address is not found in OFAC SDN lists, international sanctions databases, or Innobridge threat intelligence.</div><div style="color:var(--text2);margin-top:4px;font-size:12px;">Running on-chain association analysis to check counterparty risk...</div><div style="margin-top:16px;"><div style="display:inline-block;width:40px;height:40px;border:3px solid rgba(0,212,255,0.2);border-top-color:var(--accent);border-radius:50%;animation:assocPulse 1s linear infinite;"></div></div><div style="color:var(--text3);font-size:11px;margin-top:8px;">Scanning counterparties against OFAC, EU sanctions lists &amp; threat databases...</div></div>';
           resultDiv.classList.add('show');
+          var el=document.createElement('div');el.style.marginTop='16px';resultDiv.appendChild(el);
           runAssociationAnalysis(addr, chain.value, chainName, resultDiv);
-         }
+        }
         resultDiv.classList.add('show');
          });
     }
@@ -1099,48 +1122,86 @@ var N8N_WEBHOOK_URL = 'https://innobridge.app.n8n.cloud/webhook/aml-analyze';
     function renderAssociationReport(data, container, chainName) {
       var score = data.risk_score || 0;
       var level = data.risk_level || 'Clean';
-      var color = score >= 80 ? 'var(--danger)' : score >= 50 ? 'var(--warning)' : score >= 25 ? '#f59e0b' : score >= 10 ? 'var(--accent)' : 'var(--success)';
-      var borderCol = score >= 80 ? '#ef4444' : score >= 50 ? '#f59e0b' : score >= 25 ? '#f59e0b' : score >= 10 ? '#00d4ff' : '#10b981';
+      var colorMap = {'Severe':'#ff4444','High':'#ff8844','Medium':'#ffaa44','Low':'#06d6a0','Clean':'#00d4ff'};
+      var color = colorMap[level] || '#00d4ff';
+      var iconMap = {sanctions:'\u26D4',terrorism:'\u2622',darknet:'\uD83D\uDD76',ransomware:'\uD83D\uDD12',theft:'\uD83D\uDCB0',fraud:'\u26A0',gambling:'\uD83C\uDFB0',laundering:'\uD83C\uDF00',mixer:'\uD83D\uDD00',exchange:'\uD83C\uDFE6',suspicious:'\uD83D\uDD0D','default':'\u26A0'};
 
-      var h = '<div class="assoc-report" style="border-color:' + borderCol + ';">';
+      var h = '<div class="assoc-report">';
       h += '<div class="assoc-header">';
-      h += '<div class="assoc-score-ring" style="border:3px solid ' + color + ';color:' + color + ';">' + score + '</div>';
-      h += '<div class="assoc-meta"><h4>Association Risk: ' + level + '</h4>';
-      h += '<p>' + (data.total_transactions || 0) + ' transactions analyzed | ' + (data.unique_counterparties || 0) + ' unique counterparties</p></div></div>';
-
-      // Risk bar
+      h += '<div class="assoc-score-ring" style="border-color:' + color + ';"><span style="color:' + color + ';">' + score + '</span></div>';
+      h += '<div><div style="font-size:18px;font-weight:700;color:' + color + ';">Association Risk: ' + level + '</div>';
+      h += '<div class="assoc-meta">' + (data.total_transactions || 0) + ' transactions analyzed | ' + (data.unique_counterparties || 0) + ' unique counterparties</div>';
+      h += '</div></div>';
       h += '<div class="assoc-bar"><div class="assoc-bar-fill" style="width:' + Math.min(score, 100) + '%;background:' + color + ';"></div></div>';
 
-      // Risk factors
-      if (data.risk_factors) {
+      if (data.sanctions_alert) {
+        var sa = data.sanctions_alert;
+        h += '<div class="sanctions-alert"><div class="sanctions-alert-header">\u26D4 SANCTIONS EXPOSURE DETECTED</div>';
+        h += '<div class="sanctions-alert-body">' + sa.message;
+        if (sa.programs && sa.programs.length > 0) h += '<br><strong>Sanctions Programs:</strong> ' + sa.programs.join(', ');
+        if (sa.entities && sa.entities.length > 0) {
+          h += '<br><strong>Sanctioned entities:</strong>';
+          for (var si = 0; si < Math.min(sa.entities.length, 3); si++) {
+            h += '<br>&nbsp;&nbsp;- ' + sa.entities[si].entity + ' (' + sa.entities[si].address.substring(0, 10) + '...)';
+          }
+        }
+        h += '</div></div>';
+      }
+
+      if (data.risk_summary) h += '<div class="assoc-summary">' + data.risk_summary + '</div>';
+
+      if (data.category_breakdown && data.category_breakdown.length > 0) {
+        h += '<div style="font-size:12px;color:var(--text2);margin:12px 0 6px;font-weight:600;">Risk Categories Detected</div><div class="cat-breakdown">';
+        for (var ci = 0; ci < data.category_breakdown.length; ci++) {
+          var cat = data.category_breakdown[ci];
+          var catIcon = iconMap[cat.icon] || iconMap['default'];
+          h += '<span class="cat-tag tier' + cat.tier + '">' + catIcon + ' ' + cat.category + ' (' + cat.count + ')</span>';
+        }
+        h += '</div>';
+      }
+
+      if (data.score_breakdown) {
+        var sb = data.score_breakdown;
+        var dims = [{key:'entity_risk',label:'Entity Risk',d:sb.entity_risk},{key:'exposure_breadth',label:'Exposure Breadth',d:sb.exposure_breadth},{key:'transaction_ratio',label:'Tx Risk Ratio',d:sb.transaction_ratio},{key:'value_exposure',label:'Value Exposure',d:sb.value_exposure},{key:'recency',label:'Recency',d:sb.recency}];
+        h += '<div style="font-size:12px;color:var(--text2);margin:14px 0 6px;font-weight:600;">Score Breakdown</div><div class="score-dimensions">';
+        for (var di = 0; di < dims.length; di++) {
+          if (!dims[di].d) continue;
+          var pct = dims[di].d.max > 0 ? (dims[di].d.score / dims[di].d.max) * 100 : 0;
+          var dc = pct >= 75 ? '#ff4444' : pct >= 50 ? '#ff8844' : pct >= 25 ? '#ffaa44' : '#06d6a0';
+          h += '<div class="score-dim"><span class="score-dim-label">' + dims[di].label + '</span><div class="score-dim-bar"><div class="score-dim-fill" style="width:' + pct + '%;background:' + dc + ';"></div></div><span class="score-dim-val">' + dims[di].d.score + '/' + dims[di].d.max + '</span></div>';
+        }
+        h += '</div>';
+      } else if (data.risk_factors) {
         var rf = data.risk_factors;
         h += '<div class="assoc-factors">';
-        h += '<div class="assoc-factor"><div class="label">Flagged Counterparties</div><div class="val" style="color:' + (rf.flagged_count > 0 ? 'var(--danger)' : 'var(--success)') + ';">' + (rf.flagged_count || 0) + ' / ' + (data.unique_counterparties || 0) + '</div></div>';
+        h += '<div class="assoc-factor"><div class="label">Flagged Counterparties</div><div class="val">' + (rf.flagged_count || 0) + ' / ' + (data.unique_counterparties || 0) + '</div></div>';
         h += '<div class="assoc-factor"><div class="label">Risk Tx Ratio</div><div class="val">' + ((rf.risk_tx_ratio || 0) * 100).toFixed(1) + '%</div></div>';
         h += '<div class="assoc-factor"><div class="label">Risk Amount Ratio</div><div class="val">' + ((rf.risk_amount_ratio || 0) * 100).toFixed(1) + '%</div></div>';
         h += '<div class="assoc-factor"><div class="label">Max Severity</div><div class="val">' + (rf.max_severity || 'None') + '</div></div>';
         h += '</div>';
       }
 
-      // Flagged counterparties table
       if (data.flagged_counterparties && data.flagged_counterparties.length > 0) {
-        h += '<div style="margin-top:16px;font-size:13px;font-weight:600;color:var(--text);">Flagged Counterparties</div>';
-        h += '<table class="assoc-table"><thead><tr><th>Address</th><th>Entity</th><th>Label</th><th>Txns</th><th>Risk</th></tr></thead><tbody>';
-        for (var i = 0; i < data.flagged_counterparties.length && i < 10; i++) {
-          var cp = data.flagged_counterparties[i];
-          var addr = cp.address || '';
-          var shortAddr = addr.length > 12 ? addr.substring(0, 6) + '...' + addr.substring(addr.length - 4) : addr;
-          var riskColor = (parseInt(cp.risk_score) || 0) >= 80 ? 'var(--danger)' : (parseInt(cp.risk_score) || 0) >= 50 ? 'var(--warning)' : 'var(--accent)';
-          h += '<tr><td style="font-family:var(--mono);font-size:11px;">' + shortAddr + '</td>';
-          h += '<td>' + (cp.entity || 'Unknown') + '</td>';
-          h += '<td><span class="assoc-tag" style="background:rgba(239,68,68,0.15);color:var(--danger);">' + (cp.label || 'N/A') + '</span></td>';
-          h += '<td>' + (cp.tx_count || 0) + '</td>';
-          h += '<td style="color:' + riskColor + ';font-weight:600;">' + (cp.risk_score || 0) + '</td></tr>';
+        h += '<div style="font-size:12px;color:var(--text2);margin:14px 0 6px;font-weight:600;">Flagged Counterparties (' + data.flagged_counterparties.length + ')</div>';
+        h += '<div style="background:rgba(0,0,0,0.2);border-radius:8px;overflow:hidden;">';
+        h += '<div class="cp-table-header"><span>Address / Entity</span><span>Category</span><span>Risk</span><span>Txs</span></div>';
+        var maxShow = Math.min(data.flagged_counterparties.length, 10);
+        for (var fi = 0; fi < maxShow; fi++) {
+          var cp = data.flagged_counterparties[fi];
+          var cpColor = cp.tier <= 1 ? '#ff4444' : cp.tier <= 2 ? '#ff8844' : cp.tier <= 3 ? '#ffaa44' : cp.tier <= 4 ? '#ddaa00' : '#8888ff';
+          var cpIcon = iconMap[cp.category_icon] || iconMap['default'];
+          var shortAddr = cp.address.substring(0, 8) + '...' + cp.address.substring(cp.address.length - 6);
+          h += '<div class="cp-row"><div><div style="color:var(--text);font-family:monospace;font-size:11px;">' + shortAddr + '</div><div style="font-size:10px;color:var(--text3);">' + (cp.entity || 'Unknown') + '</div></div>';
+          h += '<div style="color:' + cpColor + ';font-size:11px;">' + cpIcon + ' ' + (cp.category || cp.label || 'Flagged') + '</div>';
+          h += '<div style="color:' + cpColor + ';font-weight:600;">' + (cp.risk_score || cp.severity_weight || 0) + '</div>';
+          h += '<div style="color:var(--text2);">' + (cp.tx_count || 0) + '</div></div>';
         }
-        h += '</tbody></table>';
+        if (data.flagged_counterparties.length > 10) h += '<div style="padding:8px 10px;font-size:11px;color:var(--text3);text-align:center;">+ ' + (data.flagged_counterparties.length - 10) + ' more flagged counterparties</div>';
+        h += '</div>';
       }
 
-      h += '<div style="text-align:center;margin-top:12px;font-size:10px;color:var(--text3);">Association analysis powered by Innobridge On-Chain Intelligence</div>';
+      h += '<div style="margin-top:14px;padding:10px;background:rgba(0,0,0,0.15);border-radius:6px;font-size:10px;color:var(--text3);line-height:1.6;"><strong>Compliance Notice:</strong> This association risk analysis is based on on-chain transaction data cross-referenced against OFAC SDN lists, international sanctions databases, and Innobridge threat intelligence. Results should be used as part of a comprehensive AML/KYC compliance program. <a href="javascript:showLegal(\'disclaimer\')" style="color:var(--accent);text-decoration:underline;">Full disclaimer</a></div>';
+      h += '<div style="text-align:center;margin-top:10px;font-size:10px;color:var(--text3);">Association analysis powered by Innobridge On-Chain Intelligence v3</div>';
       h += '</div>';
       container.innerHTML = h;
     }
