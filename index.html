@@ -1111,7 +1111,7 @@ var N8N_WEBHOOK_URL = 'https://innobridge.app.n8n.cloud/webhook/aml-analyze';
           el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;">Association analysis unavailable at this time.</div>';
           return;
         }
-        renderAssociationReport(data, el, chainName);
+        renderAssociationReport(data, resultDiv, chainName);
       })
       .catch(function(err) {
         var el = document.getElementById('assoc-loading');
