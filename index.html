@@ -1105,17 +1105,15 @@ var N8N_WEBHOOK_URL = 'https://innobridge.app.n8n.cloud/webhook/aml-analyze';
       })
       .then(function(r) { return r.json(); })
       .then(function(data) {
-        var el = document.getElementById('assoc-loading');
-        if (!el) return;
         if (!data || !data.success) {
-          el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;">Association analysis unavailable at this time.</div>';
+          resultDiv.innerHTML += '<div style="color:var(--text3);font-size:12px;text-align:center;margin-top:12px;">Association analysis unavailable at this time.</div>';
           return;
         }
         renderAssociationReport(data, resultDiv, chainName);
       })
       .catch(function(err) {
-        var el = document.getElementById('assoc-loading');
-        if (el) el.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;">Association analysis unavailable.</div>';
+        console.error('Association analysis error:', err);
+        resultDiv.innerHTML += '<div style="color:var(--text3);font-size:12px;text-align:center;margin-top:12px;">Association analysis temporarily unavailable.</div>';
       });
     }
 
