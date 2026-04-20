@@ -130,8 +130,7 @@
         <a href="/dashboard.html" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
         <ul class="nav-links">
             <li><a href="/dashboard.html">Dashboard</a></li>
-            <li><a href="/check.html">AML Check</a></li>
-            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="/detail.html">Address Lookup</a></li>
         </ul>
         <div class="nav-right">
             <a href="/dashboard.html" class="btn btn-outline">Back to Dashboard</a>
@@ -385,7 +384,7 @@ function renderNotFound(address) {
     html += '<p style="font-family:monospace; color:var(--blue); margin:12px auto; word-break:break-all; font-size:13px;">' + address + '</p>';
     html += '<p>This address is not currently flagged in our stablecoin blacklist database. This does not guarantee the address is safe.</p>';
     html += '<div style="margin-top:20px;">';
-    html += '<a href="check.html?address=' + encodeURIComponent(address) + '" class="btn btn-fill" style="text-decoration:none;">Run Full AML Risk Check &rarr;</a>';
+    html += '<a href="/dashboard.html" class="btn btn-fill" style="text-decoration:none;">Back to Dashboard</a>';
     html += '</div>';
     html += '</div>';
     document.getElementById('content').innerHTML = html;

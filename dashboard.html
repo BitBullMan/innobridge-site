@@ -164,8 +164,7 @@
         <a href="/" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
         <ul class="nav-links">
             <li><a href="/" class="active">Dashboard</a></li>
-            <li><a href="/check.html">AML Check</a></li>
-            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="/detail.html">Address Lookup</a></li>
         </ul>
         <div class="nav-right" id="navRight">
             <button class="btn btn-outline" onclick="showLoginModal()">Sign In</button>
@@ -292,7 +291,7 @@ function updateNavAuth() {
     const nr = document.getElementById('navRight');
     if (currentUser) {
         const i = (currentUser.email||'U').charAt(0).toUpperCase();
-        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">'+i+'</div><div class="user-menu" id="userMenu"><div class="user-menu-email">'+currentUser.email+'</div><div class="user-menu-item" onclick="location.href=\'/check.html\'">AML Risk Check</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
+        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">'+i+'</div><div class="user-menu" id="userMenu"><div class="user-menu-email">'+currentUser.email+'</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
     } else {
         nr.innerHTML = '<button class="btn btn-outline" onclick="showLoginModal()">Sign In</button><button class="btn btn-fill" onclick="showRegisterModal()">Register</button>';
     }
