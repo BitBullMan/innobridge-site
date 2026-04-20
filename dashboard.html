@@ -8,784 +8,224 @@
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
     <style>
-        /* ========== CSS Variables ========== */
         :root {
-            --bg-primary: #0a0e17;
-            --bg-secondary: #111827;
-            --bg-card: #1a2236;
-            --bg-card-hover: #1f2a42;
-            --bg-input: #151d2e;
-            --border-color: #2a3650;
-            --border-hover: #3b4f73;
-            --text-primary: #e8ecf4;
-            --text-secondary: #8893a7;
-            --text-muted: #5a6478;
-            --accent-blue: #3b82f6;
-            --accent-cyan: #06b6d4;
-            --accent-purple: #8b5cf6;
-            --accent-green: #10b981;
-            --accent-red: #ef4444;
-            --accent-orange: #f59e0b;
-            --accent-pink: #ec4899;
-            --gradient-main: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            --gradient-red: linear-gradient(135deg, #ef4444, #f97316);
-            --gradient-cyan: linear-gradient(135deg, #06b6d4, #3b82f6);
-            --gradient-green: linear-gradient(135deg, #10b981, #06b6d4);
-            --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
-            --shadow-glow: 0 0 30px rgba(59,130,246,0.15);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --bg-hover: #f5f5f5;
+            --bg-input: #f0f0f0;
+            --border: #e8e8e8;
+            --text: #1a1a1a;
+            --text-2: #666;
+            --text-3: #999;
+            --blue: #4f6ef7;
+            --green: #34c759;
+            --red: #ff3b30;
+            --orange: #ff9500;
+            --teal: #30b0c7;
+            --purple: #af52de;
+            --r: 14px;
         }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; }
 
-        /* ========== Reset ========== */
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
+        /* Nav */
+        nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; position:sticky; top:0; z-index:50; }
+        .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
+        .logo { font-size:18px; font-weight:800; color:var(--text); text-decoration:none; display:flex; align-items:center; gap:6px; }
+        .logo-tag { font-size:10px; font-weight:700; color:var(--blue); background:#eef1ff; padding:2px 7px; border-radius:6px; }
+        .nav-links { display:flex; gap:24px; list-style:none; }
+        .nav-links a { color:var(--text-2); text-decoration:none; font-size:13px; font-weight:500; }
+        .nav-links a:hover, .nav-links a.active { color:var(--text); }
+        .nav-right { display:flex; gap:8px; align-items:center; }
+        .btn { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; }
+        .btn-outline { background:#fff; color:var(--text-2); border:1px solid var(--border); }
+        .btn-outline:hover { border-color:#ccc; }
+        .btn-fill { background:var(--text); color:#fff; }
+        .btn-fill:hover { background:#333; }
+        .avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; }
+        .user-dropdown { position:relative; }
+        .user-menu { display:none; position:absolute; top:40px; right:0; background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:6px; min-width:180px; box-shadow:0 8px 30px rgba(0,0,0,.08); z-index:99; }
+        .user-menu.show { display:block; }
+        .user-menu-email { padding:8px 10px; font-size:11px; color:var(--text-3); border-bottom:1px solid var(--border); margin-bottom:4px; }
+        .user-menu-item { padding:7px 10px; border-radius:8px; font-size:13px; color:var(--text-2); cursor:pointer; }
+        .user-menu-item:hover { background:var(--bg); }
+        .plan-badge { font-size:11px; color:var(--green); background:#eafbef; padding:3px 10px; border-radius:20px; font-weight:600; }
 
-        /* ========== Navigation ========== */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(10, 14, 23, 0.92);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0 24px;
-        }
-        .nav-inner {
-            max-width: 1280px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 64px;
-        }
-        .nav-brand {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-decoration: none;
-        }
-        .nav-logo {
-            font-size: 22px;
-            font-weight: 800;
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: -0.5px;
-        }
-        .nav-badge {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent-cyan);
-            background: rgba(6,182,212,0.12);
-            border: 1px solid rgba(6,182,212,0.25);
-            padding: 2px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .nav-links {
-            display: flex;
-            gap: 32px;
-            list-style: none;
-            align-items: center;
-        }
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-        .nav-links a:hover, .nav-links a.active { color: var(--text-primary); }
-        .nav-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: none;
-            font-family: inherit;
-            text-decoration: none;
-        }
-        .btn-ghost {
-            background: transparent;
-            color: var(--text-secondary);
-            border: 1px solid var(--border-color);
-        }
-        .btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
-        .btn-primary {
-            background: var(--gradient-main);
-            color: #fff;
-            box-shadow: 0 2px 12px rgba(59,130,246,0.3);
-        }
-        .btn-primary:hover { box-shadow: 0 4px 20px rgba(59,130,246,0.45); transform: translateY(-1px); }
-        .btn-small { padding: 6px 12px; font-size: 12px; }
-        .btn-upgrade {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            color: #fff;
-            font-size: 12px;
-            padding: 6px 14px;
-        }
-        .user-avatar {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--gradient-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 700;
-            color: #fff;
-            cursor: pointer;
-        }
-        .user-dropdown {
-            position: relative;
-        }
-        .user-menu {
-            display: none;
-            position: absolute;
-            top: 44px;
-            right: 0;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 8px;
-            min-width: 180px;
-            box-shadow: var(--shadow-card);
-            z-index: 200;
-        }
-        .user-menu.show { display: block; }
-        .user-menu-item {
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .user-menu-item:hover { background: var(--bg-card-hover); color: var(--text-primary); }
-        .user-menu-email {
-            padding: 8px 12px;
-            font-size: 11px;
-            color: var(--text-muted);
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 4px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+        /* Hero */
+        .hero { text-align:center; padding:48px 24px 36px; }
+        .hero h1 { font-size:28px; font-weight:800; letter-spacing:-.5px; margin-bottom:6px; }
+        .hero h1 span { color:var(--blue); }
+        .hero p { color:var(--text-2); font-size:14px; margin-bottom:24px; }
+        .search-wrap { max-width:520px; margin:0 auto; display:flex; background:#fff; border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
+        .search-wrap:focus-within { border-color:var(--blue); }
+        .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:monospace; background:transparent; }
+        .search-wrap input::placeholder { color:#bbb; }
+        .search-wrap button { background:var(--text); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
+        .search-wrap button:hover { background:#333; }
+        .search-hint { font-size:11px; color:var(--text-3); margin-top:8px; }
+        .query-badge { display:inline-flex; align-items:center; gap:4px; margin-top:10px; padding:3px 10px; background:#eafbef; border-radius:20px; font-size:11px; color:var(--green); font-weight:600; }
 
-        /* ========== Hero / Search Section ========== */
-        .hero-section {
-            text-align: center;
-            padding: 56px 24px 40px;
-            background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 60%);
-        }
-        .hero-title {
-            font-size: 36px;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 10px;
-        }
-        .hero-title .highlight {
-            background: var(--gradient-main);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-subtitle {
-            color: var(--text-secondary);
-            font-size: 16px;
-            margin-bottom: 32px;
-        }
-        .search-container {
-            max-width: 640px;
-            margin: 0 auto;
-            position: relative;
-        }
-        .search-box {
-            width: 100%;
-            display: flex;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .search-box:focus-within {
-            border-color: var(--accent-blue);
-            box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
-        }
-        .search-icon {
-            display: flex;
-            align-items: center;
-            padding: 0 16px;
-            color: var(--text-muted);
-        }
-        .search-input {
-            flex: 1;
-            padding: 14px 0;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-primary);
-            font-size: 15px;
-            font-family: 'Inter', monospace;
-        }
-        .search-input::placeholder { color: var(--text-muted); }
-        .search-btn {
-            background: var(--gradient-main);
-            border: none;
-            color: #fff;
-            padding: 0 24px;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            font-family: inherit;
-        }
-        .search-btn:hover { opacity: 0.9; }
-        .search-hint {
-            margin-top: 10px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .query-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            margin-top: 12px;
-            padding: 4px 12px;
-            background: rgba(16,185,129,0.1);
-            border: 1px solid rgba(16,185,129,0.2);
-            border-radius: 20px;
-            font-size: 12px;
-            color: var(--accent-green);
-        }
+        /* Stats */
+        .stats-section { max-width:1100px; margin:0 auto; padding:0 24px 32px; }
+        .stats-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+        .stats-title { font-size:14px; font-weight:700; color:var(--text); }
+        .stats-update { font-size:11px; color:var(--text-3); }
+        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+        .stat-card { background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:18px; transition:box-shadow .2s; }
+        .stat-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.04); }
+        .stat-emoji { font-size:24px; margin-bottom:8px; }
+        .stat-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; font-weight:600; margin-bottom:2px; }
+        .stat-value { font-size:26px; font-weight:800; letter-spacing:-.5px; }
+        .stat-change { font-size:11px; font-weight:600; color:var(--green); margin-top:2px; }
 
-        /* ========== Stats Section ========== */
-        .stats-section {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px 40px;
-        }
-        .stats-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .stats-title {
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .stats-update {
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-        }
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            transition: all 0.25s;
-            position: relative;
-            overflow: hidden;
-        }
-        .stat-card:hover {
-            border-color: var(--border-hover);
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-card);
-        }
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-        }
-        .stat-card.red::before { background: var(--gradient-red); }
-        .stat-card.blue::before { background: var(--gradient-cyan); }
-        .stat-card.green::before { background: var(--gradient-green); }
-        .stat-card.purple::before { background: var(--gradient-main); }
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
-        .stat-icon.red { background: rgba(239,68,68,0.12); color: var(--accent-red); }
-        .stat-icon.blue { background: rgba(6,182,212,0.12); color: var(--accent-cyan); }
-        .stat-icon.green { background: rgba(16,185,129,0.12); color: var(--accent-green); }
-        .stat-icon.purple { background: rgba(139,92,246,0.12); color: var(--accent-purple); }
-        .stat-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-        .stat-value {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-        }
-        .stat-change {
-            font-size: 12px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-        }
-        .stat-change.up { color: var(--accent-green); }
-        .stat-change.down { color: var(--accent-red); }
+        /* Tags */
+        .tags-section { max-width:1100px; margin:0 auto; padding:0 24px 20px; }
+        .tags-row { display:flex; gap:8px; flex-wrap:wrap; }
+        .tag-chip { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; background:#fff; border:1px solid var(--border); color:var(--text-2); }
+        .tag-chip:hover { background:var(--bg-hover); }
+        .tag-chip.active { background:var(--text); color:#fff; border-color:var(--text); }
 
-        /* ========== Tags ========== */
-        .tags-section {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px 32px;
-        }
-        .tags-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .tag-chip {
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid var(--border-color);
-            background: var(--bg-card);
-            color: var(--text-secondary);
-        }
-        .tag-chip:hover, .tag-chip.active {
-            color: #fff;
-            border-color: transparent;
-        }
-        .tag-chip.usdt-eth { --tag-bg: rgba(239,68,68,0.15); --tag-active: #ef4444; }
-        .tag-chip.usdt-eth:hover, .tag-chip.usdt-eth.active { background: var(--tag-active); }
-        .tag-chip.usdt-tron { --tag-bg: rgba(6,182,212,0.15); --tag-active: #06b6d4; }
-        .tag-chip.usdt-tron:hover, .tag-chip.usdt-tron.active { background: var(--tag-active); }
-        .tag-chip.usdc { --tag-bg: rgba(59,130,246,0.15); --tag-active: #3b82f6; }
-        .tag-chip.usdc:hover, .tag-chip.usdc.active { background: var(--tag-active); }
-        .tag-chip.all { --tag-active: rgba(139,92,246,0.8); }
-        .tag-chip.all:hover, .tag-chip.all.active { background: var(--tag-active); }
+        /* Table */
+        .table-section { max-width:1100px; margin:0 auto; padding:0 24px 48px; }
+        .table-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+        .table-title { font-size:14px; font-weight:700; }
+        .table-count { font-size:12px; color:var(--text-3); }
+        .table-wrapper { background:#fff; border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
+        table { width:100%; border-collapse:collapse; }
+        thead th { padding:10px 14px; text-align:left; font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; background:var(--bg); border-bottom:1px solid var(--border); }
+        tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+        tbody tr:last-child { border-bottom:none; }
+        tbody tr:hover { background:var(--bg-hover); }
+        tbody td { padding:11px 14px; font-size:13px; }
+        .addr-cell { font-family:monospace; font-size:12px; color:var(--blue); cursor:pointer; text-decoration:none; }
+        .addr-cell:hover { text-decoration:underline; }
+        .chain-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700; }
+        .chain-badge.eth { background:#f3f0ff; color:var(--purple); }
+        .chain-badge.tron { background:#fff0f0; color:var(--red); }
+        .risk-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; }
+        .risk-badge.high { background:#fff0f0; color:var(--red); }
+        .risk-badge.medium { background:#fff8e6; color:var(--orange); }
+        .risk-badge.low { background:#eafbef; color:var(--green); }
+        .risk-dot { width:6px; height:6px; border-radius:50%; }
+        .risk-dot.high { background:var(--red); }
+        .risk-dot.medium { background:var(--orange); }
+        .risk-dot.low { background:var(--green); }
+        .amount-cell { font-weight:600; font-variant-numeric:tabular-nums; }
+        .amount-cell .currency { color:var(--text-3); font-weight:400; font-size:11px; margin-left:3px; }
+        .time-cell { color:var(--text-2); font-size:12px; white-space:nowrap; }
 
-        /* ========== Recent Table ========== */
-        .table-section {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 24px 60px;
-        }
-        .table-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .table-title {
-            font-size: 18px;
-            font-weight: 700;
-        }
-        .table-count {
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        .table-wrapper {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        thead th {
-            padding: 14px 16px;
-            text-align: left;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid var(--border-color);
-        }
-        tbody tr {
-            border-bottom: 1px solid rgba(42,54,80,0.5);
-            transition: background 0.15s;
-        }
-        tbody tr:last-child { border-bottom: none; }
-        tbody tr:hover { background: var(--bg-card-hover); }
-        tbody td {
-            padding: 14px 16px;
-            font-size: 14px;
-        }
-        .addr-cell {
-            font-family: 'SF Mono', 'Fira Code', monospace;
-            font-size: 13px;
-            color: var(--accent-cyan);
-            cursor: pointer;
-            transition: color 0.15s;
-        }
-        .addr-cell:hover { color: #fff; text-decoration: underline; }
-        .chain-badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-        .chain-badge.eth { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
-        .chain-badge.tron { background: rgba(239,68,68,0.15); color: var(--accent-red); }
-        .risk-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .risk-badge.high { background: rgba(239,68,68,0.12); color: var(--accent-red); }
-        .risk-badge.medium { background: rgba(245,158,11,0.12); color: var(--accent-orange); }
-        .risk-badge.low { background: rgba(16,185,129,0.12); color: var(--accent-green); }
-        .risk-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .risk-dot.high { background: var(--accent-red); }
-        .risk-dot.medium { background: var(--accent-orange); }
-        .risk-dot.low { background: var(--accent-green); }
-        .amount-cell {
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
-        .amount-cell .currency {
-            color: var(--text-muted);
-            font-weight: 400;
-            font-size: 12px;
-            margin-left: 4px;
-        }
-        .time-cell {
-            color: var(--text-secondary);
-            font-size: 13px;
-            white-space: nowrap;
-        }
+        /* Pagination */
+        .pagination { display:flex; align-items:center; justify-content:center; gap:4px; padding:12px; border-top:1px solid var(--border); }
+        .page-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px solid var(--border); background:#fff; color:var(--text-2); font-size:12px; cursor:pointer; font-family:inherit; transition:all .1s; }
+        .page-btn:hover { background:var(--bg-hover); }
+        .page-btn.active { background:var(--text); color:#fff; border-color:var(--text); }
+        .page-btn:disabled { opacity:.3; cursor:not-allowed; }
 
-        /* ========== Pagination ========== */
-        .pagination {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 16px;
-            border-top: 1px solid var(--border-color);
-        }
-        .page-btn {
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.15s;
-            font-family: inherit;
-        }
-        .page-btn:hover { border-color: var(--accent-blue); color: var(--text-primary); }
-        .page-btn.active {
-            background: var(--accent-blue);
-            border-color: var(--accent-blue);
-            color: #fff;
-        }
-        .page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        /* Footer */
+        .footer { text-align:center; padding:24px; border-top:1px solid var(--border); color:var(--text-3); font-size:11px; }
+        .footer-note { font-size:11px; color:var(--text-3); }
 
-        /* ========== Footer ========== */
-        .footer {
-            text-align: center;
-            padding: 32px 24px;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-        .footer-note {
-            margin-top: 6px;
-            color: var(--text-muted);
-            font-size: 11px;
-        }
+        /* Modal */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:500; align-items:center; justify-content:center; }
+        .modal-overlay.show { display:flex; }
+        .modal-box { background:#fff; border-radius:16px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.12); position:relative; }
+        .modal-title { font-size:20px; font-weight:700; margin-bottom:4px; }
+        .modal-desc { color:var(--text-2); font-size:13px; margin-bottom:20px; }
+        .modal-input { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:10px; font-size:13px; font-family:inherit; outline:none; margin-bottom:10px; }
+        .modal-input:focus { border-color:var(--blue); }
+        .modal-divider { display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--text-3); font-size:11px; }
+        .modal-divider::before, .modal-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+        .btn-google { width:100%; padding:10px; background:#fff; color:#333; border:1px solid var(--border); border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; }
+        .btn-google:hover { background:var(--bg); }
+        .modal-close { position:absolute; top:12px; right:14px; background:none; border:none; color:var(--text-3); font-size:20px; cursor:pointer; }
 
-        /* ========== Login Modal ========== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(4px);
-            z-index: 500;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-xl);
-            padding: 40px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: var(--shadow-card);
-        }
-        .modal-title {
-            font-size: 22px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .modal-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-        .modal-input {
-            width: 100%;
-            padding: 12px 16px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-sm);
-            color: var(--text-primary);
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            margin-bottom: 12px;
-            transition: border-color 0.2s;
-        }
-        .modal-input:focus { border-color: var(--accent-blue); }
-        .modal-divider {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin: 16px 0;
-            color: var(--text-muted);
-            font-size: 12px;
-        }
-        .modal-divider::before, .modal-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border-color);
-        }
-        .btn-google {
-            width: 100%;
-            padding: 12px;
-            background: #fff;
-            color: #333;
-            border: none;
-            border-radius: var(--radius-sm);
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: inherit;
-            transition: background 0.2s;
-        }
-        .btn-google:hover { background: #f0f0f0; }
-        .modal-close {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 20px;
-            cursor: pointer;
-        }
+        /* Skeleton */
+        .skeleton { background:linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
+        @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+        .skel-addr { height:14px; width:120px; }
+        .skel-badge { height:18px; width:45px; }
+        .skel-amount { height:14px; width:80px; }
+        .skel-time { height:14px; width:100px; }
 
-        /* ========== Loading & Skeleton ========== */
-        .skeleton {
-            background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-card-hover) 50%, var(--bg-card) 75%);
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
+        @media (max-width:768px) {
+            .nav-links { display:none; }
+            .stats-grid { grid-template-columns:repeat(2,1fr); }
+            .table-wrapper { overflow-x:auto; }
+            table { min-width:600px; }
+            .hero h1 { font-size:22px; }
         }
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        .loading-row td { padding: 16px; }
-        .skel-addr { height: 16px; width: 140px; }
-        .skel-badge { height: 22px; width: 50px; }
-        .skel-amount { height: 16px; width: 100px; }
-        .skel-time { height: 16px; width: 120px; }
-
-        /* ========== Responsive ========== */
-        @media (max-width: 768px) {
-            .nav-links { display: none; }
-            .hero-title { font-size: 26px; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .stat-value { font-size: 22px; }
-            .table-wrapper { overflow-x: auto; }
-            table { min-width: 680px; }
-        }
-        @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
-        }
-
-        /* ========== Animate in ========== */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(12px);
-            animation: fadeInUp 0.5s forwards;
-        }
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.35s; }
+        @media (max-width:480px) { .stats-grid { grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
 
-<!-- ========== Navbar ========== -->
-<nav class="navbar">
+<nav>
     <div class="nav-inner">
-        <a href="/" class="nav-brand">
-            <span class="nav-logo">Innobridge</span>
-            <span class="nav-badge">Blacklist</span>
-        </a>
+        <a href="/" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
         <ul class="nav-links">
             <li><a href="/" class="active">Dashboard</a></li>
             <li><a href="/check.html">AML Check</a></li>
             <li><a href="#pricing">Pricing</a></li>
         </ul>
         <div class="nav-right" id="navRight">
-            <!-- Auth buttons injected by JS -->
-            <button class="btn btn-ghost btn-small" onclick="showLoginModal()" id="btnLogin">Sign In</button>
-            <button class="btn btn-primary btn-small" onclick="showRegisterModal()" id="btnRegister">Register</button>
+            <button class="btn btn-outline" onclick="showLoginModal()">Sign In</button>
+            <button class="btn btn-fill" onclick="showRegisterModal()">Register</button>
         </div>
     </div>
 </nav>
 
-<!-- ========== Hero / Search ========== -->
-<section class="hero-section">
-    <h1 class="hero-title fade-in">
-        Stablecoin <span class="highlight">Freeze Intelligence</span>
-    </h1>
-    <p class="hero-subtitle fade-in delay-1">Real-time USDT/USDC blacklist monitoring across Ethereum & Tron networks</p>
-    <div class="search-container fade-in delay-2">
-        <div class="search-box">
-            <div class="search-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            </div>
-            <input type="text" class="search-input" id="searchInput" placeholder="Search by address (0x... or T...)" autocomplete="off" spellcheck="false">
-            <button class="search-btn" id="searchBtn" onclick="doSearch()">Search</button>
-        </div>
-        <div class="search-hint">Supports Ethereum (0x) and Tron (T) addresses</div>
-        <div class="query-badge" id="queryBadge" style="display:none;">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="queryText">3/3 Free Queries Left</span>
-        </div>
+<section class="hero">
+    <h1>Stablecoin <span>Freeze Intelligence</span></h1>
+    <p>Real-time USDT / USDC blacklist monitoring across Ethereum & Tron</p>
+    <div class="search-wrap">
+        <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" autocomplete="off" spellcheck="false">
+        <button onclick="doSearch()">Search</button>
+    </div>
+    <div class="search-hint">Supports Ethereum (0x) and Tron (T) addresses</div>
+    <div class="query-badge" id="queryBadge" style="display:none;">
+        <span id="queryText">3 Free Queries / Day</span>
     </div>
 </section>
 
-<!-- ========== Stats ========== -->
 <section class="stats-section">
     <div class="stats-header">
-        <div class="stats-title">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            USDT / USDC Frozen Address Statistics
-        </div>
-        <div class="stats-update" id="statsUpdate">Updated: Loading...</div>
+        <div class="stats-title">Frozen Address Statistics</div>
+        <div class="stats-update" id="statsUpdate">Updated: loading...</div>
     </div>
-    <div class="stats-grid" id="statsGrid">
-        <div class="stat-card red fade-in delay-1">
-            <div class="stat-icon red">&#9632;</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-emoji">&#x1F534;</div>
             <div class="stat-label">USDT (Ethereum)</div>
             <div class="stat-value" id="statUsdtEth">--</div>
-            <div class="stat-change up" id="statUsdtEthChange"></div>
         </div>
-        <div class="stat-card blue fade-in delay-2">
-            <div class="stat-icon blue">&#9632;</div>
+        <div class="stat-card">
+            <div class="stat-emoji">&#x1F535;</div>
             <div class="stat-label">USDT (Tron)</div>
             <div class="stat-value" id="statUsdtTron">--</div>
-            <div class="stat-change up" id="statUsdtTronChange"></div>
         </div>
-        <div class="stat-card green fade-in delay-3">
-            <div class="stat-icon green">&#9632;</div>
+        <div class="stat-card">
+            <div class="stat-emoji">&#x1F7E2;</div>
             <div class="stat-label">USDC (Ethereum)</div>
             <div class="stat-value" id="statUsdcEth">--</div>
-            <div class="stat-change up" id="statUsdcEthChange"></div>
         </div>
-        <div class="stat-card purple fade-in delay-4">
-            <div class="stat-icon purple">$</div>
+        <div class="stat-card">
+            <div class="stat-emoji">&#x1F4B0;</div>
             <div class="stat-label">Total Frozen Funds</div>
             <div class="stat-value" id="statTotalFrozen">--</div>
-            <div class="stat-change up" id="statTotalChange"></div>
+            <div class="stat-change" id="statTotalChange"></div>
         </div>
     </div>
 </section>
 
-<!-- ========== Filter Tags ========== -->
 <section class="tags-section">
     <div class="tags-row">
-        <span class="tag-chip all active" data-filter="all" onclick="filterChain('all', this)">All Chains</span>
-        <span class="tag-chip usdt-eth" data-filter="usdt-eth" onclick="filterChain('usdt-eth', this)">#USDT Ethereum</span>
-        <span class="tag-chip usdt-tron" data-filter="usdt-tron" onclick="filterChain('usdt-tron', this)">#USDT Tron</span>
-        <span class="tag-chip usdc" data-filter="usdc" onclick="filterChain('usdc', this)">#USDC Ethereum</span>
+        <span class="tag-chip active" onclick="filterChain('all', this)">All Chains</span>
+        <span class="tag-chip" onclick="filterChain('usdt-eth', this)">#USDT Ethereum</span>
+        <span class="tag-chip" onclick="filterChain('usdt-tron', this)">#USDT Tron</span>
+        <span class="tag-chip" onclick="filterChain('usdc', this)">#USDC Ethereum</span>
     </div>
 </section>
 
-<!-- ========== Recent Table ========== -->
 <section class="table-section">
     <div class="table-header">
         <div class="table-title">Recent Blacklisted Addresses</div>
@@ -793,20 +233,8 @@
     </div>
     <div class="table-wrapper">
         <table>
-            <thead>
-                <tr>
-                    <th>Address</th>
-                    <th>Chain</th>
-                    <th>Asset</th>
-                    <th>Risk Level</th>
-                    <th>Freeze Balance</th>
-                    <th>Freeze Time</th>
-                </tr>
-            </thead>
+            <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Freeze Balance</th><th>Freeze Time</th></tr></thead>
             <tbody id="recentTableBody">
-                <!-- Loading skeleton rows -->
-                <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
-                <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
@@ -814,41 +242,35 @@
         </table>
         <div class="pagination" id="pagination"></div>
     </div>
-    <div style="text-align:center; margin-top:12px;">
-        <span class="footer-note">Partial recent data is shown for reference only. For complete data, use the address search.</span>
+    <div style="text-align:center; margin-top:10px;">
+        <span class="footer-note">Partial recent data shown for reference only.</span>
     </div>
 </section>
 
-<!-- ========== Footer ========== -->
 <footer class="footer">
-    <div>Innobridge Blacklist &copy; 2026. Stablecoin freeze intelligence for compliance & risk management.</div>
-    <div class="footer-note">Data sourced from on-chain issuer blacklist events (USDT, USDC). Updates every 12 hours.</div>
+    Innobridge Blacklist &copy; 2026 &middot; Data from on-chain issuer blacklist events &middot; Updates every 12h
 </footer>
 
-<!-- ========== Login Modal ========== -->
 <div class="modal-overlay" id="loginModal">
-    <div class="modal-box" style="position:relative;">
+    <div class="modal-box">
         <button class="modal-close" onclick="closeModals()">&times;</button>
         <div class="modal-title" id="modalTitle">Sign In</div>
         <div class="modal-desc" id="modalDesc">Access address risk checks with your free account</div>
         <input type="email" class="modal-input" id="authEmail" placeholder="Email address">
         <input type="password" class="modal-input" id="authPassword" placeholder="Password">
-        <button class="btn btn-primary" style="width:100%; padding:12px; margin-top:4px;" onclick="doEmailAuth()" id="authSubmitBtn">Sign In</button>
+        <button class="btn btn-fill" style="width:100%;padding:10px;font-size:13px;" onclick="doEmailAuth()" id="authSubmitBtn">Sign In</button>
         <div class="modal-divider">or</div>
         <button class="btn-google" onclick="doGoogleAuth()">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
             Continue with Google
         </button>
-        <div style="margin-top:16px; font-size:12px; color:var(--text-muted);">
-            <span id="authToggle">Don't have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--accent-blue);">Register</a></span>
+        <div style="margin-top:14px;font-size:11px;color:var(--text-3);">
+            <span id="authToggle">Don't have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue);">Register</a></span>
         </div>
     </div>
 </div>
 
 <script>
-// ============================================
-// Firebase Configuration
-// ============================================
 const firebaseConfig = {
     apiKey: "AIzaSyBLpp1N4RE_sR15LqknkIhuIKk-w6Ckmak",
     authDomain: "innobridge-5a89a.firebaseapp.com",
@@ -859,357 +281,82 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-
-// ============================================
-// Google Apps Script API URL
-// ============================================
 const GAS_BASE = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-94ttFEuc91u6HzcHs_dBoRSuzHWHRy8rDP96b0-HqaH51DbO0dzbw/exec';
 
-// ============================================
-// State
-// ============================================
-let currentUser = null;
-let allRecent = [];
-let filteredRecent = [];
-let currentPage = 1;
+let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
 const PAGE_SIZE = 10;
-let currentFilter = 'all';
-let isLoginMode = true;
 
-// ============================================
-// Auth Functions
-// ============================================
-auth.onAuthStateChanged(function(user) {
-    currentUser = user;
-    updateNavAuth();
-});
+auth.onAuthStateChanged(function(u) { currentUser = u; updateNavAuth(); });
 
 function updateNavAuth() {
-    const navRight = document.getElementById('navRight');
+    const nr = document.getElementById('navRight');
     if (currentUser) {
-        const initial = (currentUser.email || 'U').charAt(0).toUpperCase();
-        navRight.innerHTML = `
-            <div class="query-badge" style="display:inline-flex;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Free Plan</div>
-            <div class="user-dropdown">
-                <div class="user-avatar" onclick="toggleUserMenu()">${initial}</div>
-                <div class="user-menu" id="userMenu">
-                    <div class="user-menu-email">${currentUser.email}</div>
-                    <div class="user-menu-item" onclick="window.location.href='/check.html'">AML Risk Check</div>
-                    <div class="user-menu-item" onclick="doLogout()">Sign Out</div>
-                </div>
-            </div>
-        `;
+        const i = (currentUser.email||'U').charAt(0).toUpperCase();
+        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">'+i+'</div><div class="user-menu" id="userMenu"><div class="user-menu-email">'+currentUser.email+'</div><div class="user-menu-item" onclick="location.href=\'/check.html\'">AML Risk Check</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
     } else {
-        navRight.innerHTML = `
-            <button class="btn btn-ghost btn-small" onclick="showLoginModal()">Sign In</button>
-            <button class="btn btn-primary btn-small" onclick="showRegisterModal()">Register Free</button>
-        `;
+        nr.innerHTML = '<button class="btn btn-outline" onclick="showLoginModal()">Sign In</button><button class="btn btn-fill" onclick="showRegisterModal()">Register</button>';
     }
-    updateQueryBadge();
+    var b = document.getElementById('queryBadge');
+    if (currentUser) { b.style.display='inline-flex'; document.getElementById('queryText').textContent='3 Free Queries / Day'; } else { b.style.display='none'; }
 }
-
-function toggleUserMenu() {
-    document.getElementById('userMenu').classList.toggle('show');
-}
-document.addEventListener('click', function(e) {
-    const menu = document.getElementById('userMenu');
-    if (menu && !e.target.closest('.user-dropdown')) menu.classList.remove('show');
-});
-
-function showLoginModal() { isLoginMode = true; openAuthModal(); }
-function showRegisterModal() { isLoginMode = false; openAuthModal(); }
+function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
+document.addEventListener('click', function(e) { var m=document.getElementById('userMenu'); if(m&&!e.target.closest('.user-dropdown')) m.classList.remove('show'); });
+function showLoginModal() { isLoginMode=true; openAuthModal(); }
+function showRegisterModal() { isLoginMode=false; openAuthModal(); }
 function openAuthModal() {
     document.getElementById('loginModal').classList.add('show');
     document.getElementById('modalTitle').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('modalDesc').textContent = isLoginMode ?
-        'Access address risk checks with your free account' :
-        'Get 3 free daily queries after sign-up';
+    document.getElementById('modalDesc').textContent = isLoginMode ? 'Access address risk checks with your free account' : 'Get 3 free daily queries after sign-up';
     document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('authToggle').innerHTML = isLoginMode ?
-        'Don\'t have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--accent-blue);">Register</a>' :
-        'Already have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--accent-blue);">Sign In</a>';
+    document.getElementById('authToggle').innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Register</a>' : 'Already have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Sign In</a>';
 }
-function closeModals() {
-    document.getElementById('loginModal').classList.remove('show');
-}
-function toggleAuthMode(e) {
-    e.preventDefault();
-    isLoginMode = !isLoginMode;
-    openAuthModal();
-}
-
+function closeModals() { document.getElementById('loginModal').classList.remove('show'); }
+function toggleAuthMode(e) { e.preventDefault(); isLoginMode=!isLoginMode; openAuthModal(); }
 function doEmailAuth() {
-    const email = document.getElementById('authEmail').value.trim();
-    const pass = document.getElementById('authPassword').value;
-    if (!email || !pass) return alert('Please enter email and password.');
-    const fn = isLoginMode ? auth.signInWithEmailAndPassword(email, pass) : auth.createUserWithEmailAndPassword(email, pass);
-    fn.then(function() { closeModals(); }).catch(function(err) { alert(err.message); });
+    var em=document.getElementById('authEmail').value.trim(), pw=document.getElementById('authPassword').value;
+    if(!em||!pw) return alert('Please enter email and password.');
+    (isLoginMode ? auth.signInWithEmailAndPassword(em,pw) : auth.createUserWithEmailAndPassword(em,pw)).then(function(){closeModals();}).catch(function(e){alert(e.message);});
 }
+function doGoogleAuth() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function(){closeModals();}).catch(function(e){alert(e.message);}); }
+function doLogout() { auth.signOut(); }
+function doSearch() { var a=document.getElementById('searchInput').value.trim(); if(a) location.href='detail.html?address='+encodeURIComponent(a); }
+document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
 
-function doGoogleAuth() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function() { closeModals(); }).catch(function(err) { alert(err.message); });
+let jsonpCounter=0;
+function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
+
+async function loadDashboardData(){
+    try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
+    try{var rd=await jsonpFetch(GAS_BASE+'?action=recent&limit=100');if(rd&&rd.success){allRecent=rd.results||[];filteredRecent=allRecent.slice();renderTable();}else{loadRecentFallback();}}catch(e){console.warn('recent fail',e);loadRecentFallback();}
 }
-
-function doLogout() {
-    auth.signOut();
+function loadRecentFallback(){document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">Loading data... If this persists, API may need updating.</td></tr>';}
+function renderStats(data){
+    var s=data.stats||data;
+    var fmt=function(n){return n==null?'--':Number(n).toLocaleString('en-US');};
+    var fmtM=function(n){if(!n)return'--';var v=Number(n);if(v>=1e9)return'$'+(v/1e9).toFixed(2)+'B';if(v>=1e6)return'$'+(v/1e6).toFixed(2)+'M';if(v>=1e3)return'$'+(v/1e3).toFixed(1)+'K';return'$'+fmt(v);};
+    document.getElementById('statUsdtEth').textContent=fmt(s.usdt_eth_count);
+    document.getElementById('statUsdtTron').textContent=fmt(s.usdt_tron_count);
+    document.getElementById('statUsdcEth').textContent=fmt(s.usdc_eth_count);
+    document.getElementById('statTotalFrozen').textContent=fmtM(s.total_frozen_amount);
+    if(s.today_new_count)document.getElementById('statTotalChange').textContent='+'+s.today_new_count+' today';
+    if(s.last_updated)document.getElementById('statsUpdate').textContent='Updated: '+s.last_updated;
 }
-
-function updateQueryBadge() {
-    const badge = document.getElementById('queryBadge');
-    if (currentUser) {
-        badge.style.display = 'inline-flex';
-        document.getElementById('queryText').textContent = '3 Free Queries / Day';
-    } else {
-        badge.style.display = 'none';
-    }
+function renderTable(){
+    var tb=document.getElementById('recentTableBody'),total=filteredRecent.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    if(currentPage>pages)currentPage=pages;var start=(currentPage-1)*PAGE_SIZE,items=filteredRecent.slice(start,start+PAGE_SIZE);
+    document.getElementById('tableCount').textContent='Showing '+Math.min(start+PAGE_SIZE,total)+' of '+total;
+    if(!items.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
+    var h='';for(var i=0;i<items.length;i++){var r=items[i],addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr,chain=(r.chain||'').toUpperCase(),asset=(r.asset||'USDT').toUpperCase(),cCls=chain==='TRON'?'tron':'eth',cLbl=chain==='TRON'?'TRC20':'ERC20',rl=(r.risk_level||'HIGH').toUpperCase(),rCls=rl==='HIGH'?'high':rl==='MEDIUM'?'medium':'low';
+    var fa='';if(r.frozen_amount&&Number(r.frozen_amount)>0)fa=Number(r.frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});else if(r.frozen_amount_display)fa=r.frozen_amount_display;else fa='--';
+    var ft=r.firstSeen||r.added_date||r.date_added||'--';
+    h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
+    tb.innerHTML=h;renderPagination(pages);
 }
-
-// ============================================
-// Search
-// ============================================
-function doSearch() {
-    const addr = document.getElementById('searchInput').value.trim();
-    if (!addr) return;
-    // Navigate to detail page with address
-    window.location.href = 'detail.html?address=' + encodeURIComponent(addr);
-}
-document.getElementById('searchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') doSearch();
-});
-
-// ============================================
-// JSONP Helper
-// ============================================
-let jsonpCounter = 0;
-function jsonpFetch(url) {
-    return new Promise(function(resolve, reject) {
-        const cbName = '_innobridgeCb_' + (++jsonpCounter) + '_' + Date.now();
-        const timeout = setTimeout(function() {
-            delete window[cbName];
-            reject(new Error('JSONP timeout'));
-        }, 15000);
-        window[cbName] = function(data) {
-            clearTimeout(timeout);
-            delete window[cbName];
-            resolve(data);
-        };
-        const script = document.createElement('script');
-        const sep = url.indexOf('?') >= 0 ? '&' : '?';
-        script.src = url + sep + 'callback=' + cbName;
-        script.onerror = function() {
-            clearTimeout(timeout);
-            delete window[cbName];
-            reject(new Error('JSONP load error'));
-        };
-        document.head.appendChild(script);
-        script.onload = function() { document.head.removeChild(script); };
-    });
-}
-
-// ============================================
-// Load Dashboard Data
-// ============================================
-async function loadDashboardData() {
-    try {
-        // Fetch stats endpoint
-        const statsData = await jsonpFetch(GAS_BASE + '?action=stats');
-        if (statsData && statsData.success) {
-            renderStats(statsData);
-        }
-    } catch (err) {
-        console.warn('Stats load failed, using fallback:', err);
-        // Try loading recent data directly
-    }
-
-    try {
-        // Fetch recent 100 addresses
-        const recentData = await jsonpFetch(GAS_BASE + '?action=recent&limit=100');
-        if (recentData && recentData.success) {
-            allRecent = recentData.results || [];
-            filteredRecent = allRecent.slice();
-            renderTable();
-        } else {
-            // If no action=recent endpoint yet, use fallback approach
-            loadRecentFallback();
-        }
-    } catch (err) {
-        console.warn('Recent load failed, trying fallback:', err);
-        loadRecentFallback();
-    }
-}
-
-// Fallback: if the new API endpoints aren't deployed yet, show a message
-function loadRecentFallback() {
-    // Generate mock/sample data from the known format
-    document.getElementById('recentTableBody').innerHTML = `
-        <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">
-            <div style="margin-bottom:8px;">Loading blacklist data...</div>
-            <div style="font-size:12px;">If this persists, the API endpoints may need to be updated. Use the Address Search above to check individual addresses.</div>
-        </td></tr>
-    `;
-}
-
-// ============================================
-// Render Stats
-// ============================================
-function renderStats(data) {
-    const s = data.stats || data;
-    const fmt = function(n) {
-        if (n === undefined || n === null) return '--';
-        return Number(n).toLocaleString('en-US');
-    };
-    const fmtMoney = function(n) {
-        if (!n) return '--';
-        const num = Number(n);
-        if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
-        if (num >= 1e6) return '$' + (num / 1e6).toFixed(2) + 'M';
-        if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
-        return '$' + fmt(num);
-    };
-
-    document.getElementById('statUsdtEth').textContent = fmt(s.usdt_eth_count);
-    document.getElementById('statUsdtTron').textContent = fmt(s.usdt_tron_count);
-    document.getElementById('statUsdcEth').textContent = fmt(s.usdc_eth_count);
-    document.getElementById('statTotalFrozen').textContent = fmtMoney(s.total_frozen_amount);
-
-    if (s.today_new_count) {
-        document.getElementById('statTotalChange').innerHTML = '&#9650; +' + s.today_new_count + ' today';
-    }
-
-    if (s.last_updated) {
-        document.getElementById('statsUpdate').textContent = 'Updated: ' + s.last_updated;
-    }
-}
-
-// ============================================
-// Render Table
-// ============================================
-function renderTable() {
-    const tbody = document.getElementById('recentTableBody');
-    const totalItems = filteredRecent.length;
-    const totalPages = Math.max(1, Math.ceil(totalItems / PAGE_SIZE));
-    if (currentPage > totalPages) currentPage = totalPages;
-
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const pageItems = filteredRecent.slice(start, start + PAGE_SIZE);
-
-    document.getElementById('tableCount').textContent = 'Showing ' + Math.min(start + PAGE_SIZE, totalItems) + ' of ' + totalItems;
-
-    if (pageItems.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">No addresses found matching filter.</td></tr>';
-        document.getElementById('pagination').innerHTML = '';
-        return;
-    }
-
-    let html = '';
-    for (let i = 0; i < pageItems.length; i++) {
-        const r = pageItems[i];
-        const addr = r.address || '';
-        const shortAddr = addr.length > 16 ? addr.substring(0, 8) + '...' + addr.substring(addr.length - 6) : addr;
-        const chain = (r.chain || '').toUpperCase();
-        const asset = (r.asset || 'USDT').toUpperCase();
-        const chainClass = chain === 'TRON' ? 'tron' : 'eth';
-        const chainLabel = chain === 'TRON' ? 'TRC20' : 'ERC20';
-        const riskLevel = (r.risk_level || 'HIGH').toUpperCase();
-        const riskClass = riskLevel === 'HIGH' ? 'high' : riskLevel === 'MEDIUM' ? 'medium' : 'low';
-
-        let frozenAmt = '';
-        if (r.frozen_amount && Number(r.frozen_amount) > 0) {
-            frozenAmt = Number(r.frozen_amount).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-        } else if (r.frozen_amount_display) {
-            frozenAmt = r.frozen_amount_display;
-        } else {
-            frozenAmt = '--';
-        }
-
-        const freezeTime = r.firstSeen || r.added_date || r.date_added || '--';
-
-        // Build explorer link
-        let explorerUrl = '#';
-        if (chain === 'TRON' && addr.startsWith('T')) {
-            explorerUrl = 'https://tronscan.org/#/address/' + addr;
-        } else if (addr.startsWith('0x')) {
-            explorerUrl = 'https://etherscan.io/address/' + addr;
-        }
-
-        html += '<tr>';
-        html += '<td><a class="addr-cell" href="check.html?address=' + encodeURIComponent(addr) + '" title="' + addr + '">' + shortAddr + '</a></td>';
-        html += '<td><span class="chain-badge ' + chainClass + '">' + chainLabel + '</span></td>';
-        html += '<td><span style="font-weight:600;">' + asset + '</span></td>';
-        html += '<td><span class="risk-badge ' + riskClass + '"><span class="risk-dot ' + riskClass + '"></span> ' + riskLevel.charAt(0) + riskLevel.slice(1).toLowerCase() + '</span></td>';
-        html += '<td class="amount-cell">' + frozenAmt + (frozenAmt !== '--' ? '<span class="currency">' + asset + '</span>' : '') + '</td>';
-        html += '<td class="time-cell">' + formatTime(freezeTime) + '</td>';
-        html += '</tr>';
-    }
-    tbody.innerHTML = html;
-
-    // Pagination
-    renderPagination(totalPages);
-}
-
-function formatTime(t) {
-    if (!t || t === '--') return '--';
-    try {
-        const d = new Date(t);
-        if (isNaN(d.getTime())) return t;
-        const pad = function(n) { return n < 10 ? '0' + n : '' + n; };
-        return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes()) + ':' + pad(d.getSeconds());
-    } catch (e) { return t; }
-}
-
-function renderPagination(totalPages) {
-    const container = document.getElementById('pagination');
-    if (totalPages <= 1) { container.innerHTML = ''; return; }
-
-    let html = '<button class="page-btn" onclick="goPage(' + (currentPage-1) + ')" ' + (currentPage <= 1 ? 'disabled' : '') + '>&laquo;</button>';
-    for (let p = 1; p <= totalPages; p++) {
-        if (totalPages > 7 && p > 3 && p < totalPages - 1 && Math.abs(p - currentPage) > 1) {
-            if (p === 4 || p === totalPages - 2) html += '<span style="color:var(--text-muted);padding:0 4px;">...</span>';
-            continue;
-        }
-        html += '<button class="page-btn' + (p === currentPage ? ' active' : '') + '" onclick="goPage(' + p + ')">' + p + '</button>';
-    }
-    html += '<button class="page-btn" onclick="goPage(' + (currentPage+1) + ')" ' + (currentPage >= totalPages ? 'disabled' : '') + '>&raquo;</button>';
-    container.innerHTML = html;
-}
-
-function goPage(p) {
-    const totalPages = Math.ceil(filteredRecent.length / PAGE_SIZE);
-    if (p < 1 || p > totalPages) return;
-    currentPage = p;
-    renderTable();
-    document.querySelector('.table-section').scrollIntoView({behavior: 'smooth', block: 'start'});
-}
-
-// ============================================
-// Filter
-// ============================================
-function filterChain(filter, el) {
-    currentFilter = filter;
-    document.querySelectorAll('.tag-chip').forEach(function(c) { c.classList.remove('active'); });
-    if (el) el.classList.add('active');
-
-    if (filter === 'all') {
-        filteredRecent = allRecent.slice();
-    } else if (filter === 'usdt-eth') {
-        filteredRecent = allRecent.filter(function(r) { return (r.chain || '').toUpperCase() === 'ETH' && (r.asset || '').toUpperCase() === 'USDT'; });
-    } else if (filter === 'usdt-tron') {
-        filteredRecent = allRecent.filter(function(r) { return (r.chain || '').toUpperCase() === 'TRON'; });
-    } else if (filter === 'usdc') {
-        filteredRecent = allRecent.filter(function(r) { return (r.asset || '').toUpperCase() === 'USDC'; });
-    }
-
-    currentPage = 1;
-    renderTable();
-}
-
-// ============================================
-// Initialize
-// ============================================
-document.addEventListener('DOMContentLoaded', function() {
-    loadDashboardData();
-});
+function formatTime(t){if(!t||t==='--')return'--';try{var d=new Date(t);if(isNaN(d.getTime()))return t;var p=function(n){return n<10?'0'+n:''+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}catch(e){return t;}}
+function renderPagination(tp){var c=document.getElementById('pagination');if(tp<=1){c.innerHTML='';return;}var h='<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#171;</button>';for(var p=1;p<=tp;p++){if(tp>7&&p>3&&p<tp-1&&Math.abs(p-currentPage)>1){if(p===4||p===tp-2)h+='<span style="color:var(--text-3);padding:0 4px">...</span>';continue;}h+='<button class="page-btn'+(p===currentPage?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';}h+='<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=tp?'disabled':'')+'>&#187;</button>';c.innerHTML=h;}
+function goPage(p){var tp=Math.ceil(filteredRecent.length/PAGE_SIZE);if(p<1||p>tp)return;currentPage=p;renderTable();document.querySelector('.table-section').scrollIntoView({behavior:'smooth',block:'start'});}
+function filterChain(f,el){document.querySelectorAll('.tag-chip').forEach(function(c){c.classList.remove('active');});if(el)el.classList.add('active');if(f==='all')filteredRecent=allRecent.slice();else if(f==='usdt-eth')filteredRecent=allRecent.filter(function(r){return(r.chain||'').toUpperCase()==='ETH'&&(r.asset||'').toUpperCase()==='USDT';});else if(f==='usdt-tron')filteredRecent=allRecent.filter(function(r){return(r.chain||'').toUpperCase()==='TRON';});else if(f==='usdc')filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});currentPage=1;renderTable();}
+document.addEventListener('DOMContentLoaded',function(){loadDashboardData();});
 </script>
 </body>
 </html>
