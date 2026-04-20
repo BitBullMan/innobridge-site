@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Detail - Innobridge Blacklist</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #111827;
+            --bg-card: #1a2236;
+            --bg-card-hover: #1f2a42;
+            --bg-input: #151d2e;
+            --border-color: #2a3650;
+            --border-hover: #3b4f73;
+            --text-primary: #e8ecf4;
+            --text-secondary: #8893a7;
+            --text-muted: #5a6478;
+            --accent-blue: #3b82f6;
+            --accent-cyan: #06b6d4;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-orange: #f59e0b;
+            --gradient-main: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            --shadow-card: 0 4px 24px rgba(0,0,0,0.3);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navbar (same as dashboard) */
+        .navbar {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(10, 14, 23, 0.92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+        }
+        .nav-inner {
+            max-width: 1280px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 64px;
+        }
+        .nav-brand { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .nav-logo {
+            font-size: 22px; font-weight: 800;
+            background: var(--gradient-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .nav-badge {
+            font-size: 11px; font-weight: 700; color: var(--accent-cyan);
+            background: rgba(6,182,212,0.12); border: 1px solid rgba(6,182,212,0.25);
+            padding: 2px 8px; border-radius: 6px; text-transform: uppercase;
+        }
+        .nav-links { display: flex; gap: 32px; list-style: none; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+        .nav-right { display: flex; gap: 12px; align-items: center; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+            border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+            cursor: pointer; border: none; font-family: inherit; text-decoration: none; transition: all 0.2s;
+        }
+        .btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border-color); }
+        .btn-ghost:hover { border-color: var(--border-hover); color: var(--text-primary); }
+        .btn-primary { background: var(--gradient-main); color: #fff; }
+        .btn-small { padding: 6px 12px; font-size: 12px; }
+
+        /* Main Content */
+        .main { max-width: 900px; margin: 0 auto; padding: 32px 24px 64px; }
+
+        /* Search Bar */
+        .search-bar {
+            display: flex; margin-bottom: 28px;
+            background: var(--bg-input); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden;
+        }
+        .search-bar:focus-within { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(59,130,246,0.12); }
+        .search-bar input {
+            flex: 1; padding: 12px 16px; background: transparent; border: none; outline: none;
+            color: var(--text-primary); font-size: 14px; font-family: monospace;
+        }
+        .search-bar input::placeholder { color: var(--text-muted); }
+        .search-bar button {
+            background: var(--gradient-main); border: none; color: #fff; padding: 0 20px;
+            font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+        }
+
+        /* Address Header */
+        .addr-header {
+            display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+            margin-bottom: 24px;
+        }
+        .addr-chain-badge {
+            padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700; text-transform: uppercase;
+        }
+        .addr-chain-badge.eth { background: rgba(139,92,246,0.15); color: var(--accent-purple); }
+        .addr-chain-badge.tron { background: rgba(239,68,68,0.15); color: var(--accent-red); }
+        .freeze-badge {
+            display: inline-flex; align-items: center; gap: 4px;
+            padding: 4px 12px; border-radius: 6px;
+            font-size: 12px; font-weight: 700;
+        }
+        .freeze-badge.frozen {
+            background: rgba(239,68,68,0.15); color: var(--accent-red);
+            border: 1px solid rgba(239,68,68,0.3);
+        }
+        .freeze-badge.safe {
+            background: rgba(16,185,129,0.15); color: var(--accent-green);
+            border: 1px solid rgba(16,185,129,0.3);
+        }
+        .addr-full {
+            font-family: 'SF Mono', 'Fira Code', monospace;
+            font-size: 14px; color: var(--accent-cyan);
+            word-break: break-all;
+        }
+
+        /* Risk Score Gauge */
+        .gauge-section {
+            display: grid; grid-template-columns: 200px 1fr; gap: 24px;
+            margin-bottom: 28px; align-items: start;
+        }
+        .gauge-container {
+            text-align: center;
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 24px; display: flex; flex-direction: column; align-items: center;
+        }
+        .gauge-svg { width: 160px; height: 100px; margin-bottom: 8px; }
+        .gauge-label {
+            font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .gauge-score { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
+        .gauge-desc { font-size: 13px; font-weight: 600; margin-top: 2px; }
+        .gauge-desc.severe { color: var(--accent-red); }
+        .gauge-desc.high { color: var(--accent-orange); }
+        .gauge-desc.medium { color: var(--accent-orange); }
+        .gauge-desc.low { color: var(--accent-green); }
+
+        .risk-note-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: var(--radius-md); padding: 20px;
+        }
+        .risk-note-card .note-label {
+            font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .risk-note-card .note-text { font-size: 14px; color: var(--text-secondary); }
+
+        /* Info Cards */
+        .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); margin-bottom: 20px; overflow: hidden; }
+        .card-title {
+            padding: 16px 20px; font-size: 15px; font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .card-body { padding: 0; }
+
+        /* Overview Table */
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .info-row {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 20px; border-bottom: 1px solid rgba(42,54,80,0.5);
+        }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-size: 13px; color: var(--text-muted); }
+        .info-value { font-size: 14px; font-weight: 600; text-align: right; }
+        .info-value.highlight { color: var(--accent-cyan); }
+        .info-value.red { color: var(--accent-red); }
+        .info-value.green { color: var(--accent-green); }
+
+        /* Freeze Sanction Table */
+        .freeze-table { width: 100%; border-collapse: collapse; }
+        .freeze-table th {
+            padding: 12px 16px; text-align: left; font-size: 11px; font-weight: 600;
+            color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;
+            background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border-color);
+        }
+        .freeze-table td {
+            padding: 12px 16px; font-size: 13px; border-bottom: 1px solid rgba(42,54,80,0.5);
+        }
+        .freeze-table tr:last-child td { border-bottom: none; }
+        .tx-link {
+            color: var(--accent-cyan); text-decoration: none; font-family: monospace; font-size: 12px;
+        }
+        .tx-link:hover { text-decoration: underline; }
+
+        /* Not Found State */
+        .not-found {
+            text-align: center; padding: 60px 20px;
+            background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
+        }
+        .not-found-icon { font-size: 48px; margin-bottom: 16px; color: var(--accent-green); }
+        .not-found h2 { font-size: 20px; margin-bottom: 8px; }
+        .not-found p { color: var(--text-secondary); font-size: 14px; max-width: 400px; margin: 0 auto; }
+
+        /* Loading */
+        .loading-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+        .spinner {
+            width: 32px; height: 32px; border: 3px solid var(--border-color);
+            border-top-color: var(--accent-blue); border-radius: 50%;
+            animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        @media (max-width: 768px) {
+            .gauge-section { grid-template-columns: 1fr; }
+            .info-grid { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="/dashboard.html" class="nav-brand">
+            <span class="nav-logo">Innobridge</span>
+            <span class="nav-badge">Blacklist</span>
+        </a>
+        <ul class="nav-links">
+            <li><a href="/dashboard.html">Dashboard</a></li>
+            <li><a href="/check.html">AML Check</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+        </ul>
+        <div class="nav-right" id="navRight">
+            <button class="btn btn-ghost btn-small" onclick="location.href='/dashboard.html'">Back to Dashboard</button>
+        </div>
+    </div>
+</nav>
+
+<div class="main">
+    <!-- Search -->
+    <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" spellcheck="false">
+        <button onclick="doSearch()">Search</button>
+    </div>
+
+    <!-- Content Area -->
+    <div id="content">
+        <div class="loading-state" id="loadingState">
+            <div class="spinner"></div>
+            <div>Looking up address...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+const firebaseConfig = {
+    apiKey: "AIzaSyBLpp1N4RE_sR15LqknkIhuIKk-w6Ckmak",
+    authDomain: "innobridge-5a89a.firebaseapp.com",
+    projectId: "innobridge-5a89a",
+    storageBucket: "innobridge-5a89a.firebasestorage.app",
+    messagingSenderId: "506523742424",
+    appId: "1:506523742424:web:8a668a918d515ec9e7a7ad"
+};
+firebase.initializeApp(firebaseConfig);
+
+const GAS_BASE = 'https://script.google.com/macros/s/AKfycbxL3IUiSneCxmCw-94ttFEuc91u6HzcHs_dBoRSuzHWHRy8rDP96b0-HqaH51DbO0dzbw/exec';
+
+// JSONP
+let _jcnt = 0;
+function jsonpFetch(url) {
+    return new Promise(function(resolve, reject) {
+        const cb = '_ib_cb_' + (++_jcnt) + '_' + Date.now();
+        const t = setTimeout(function() { delete window[cb]; reject(new Error('Timeout')); }, 15000);
+        window[cb] = function(d) { clearTimeout(t); delete window[cb]; resolve(d); };
+        const s = document.createElement('script');
+        s.src = url + (url.indexOf('?')>=0?'&':'?') + 'callback=' + cb;
+        s.onerror = function() { clearTimeout(t); delete window[cb]; reject(new Error('Load error')); };
+        document.head.appendChild(s);
+        s.onload = function() { document.head.removeChild(s); };
+    });
+}
+
+function doSearch() {
+    const addr = document.getElementById('searchInput').value.trim();
+    if (!addr) return;
+    window.location.href = 'detail.html?address=' + encodeURIComponent(addr);
+}
+document.getElementById('searchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') doSearch();
+});
+
+// Get address from URL
+function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+}
+
+// Draw SVG gauge arc
+function buildGaugeSVG(score) {
+    score = Math.max(0, Math.min(100, parseInt(score) || 0));
+    // Arc from 180 deg to 0 deg (left to right semicircle)
+    const cx = 80, cy = 85, r = 65;
+    const startAngle = Math.PI; // 180 deg
+    const endAngle = 0;
+    const scoreAngle = Math.PI - (score / 100) * Math.PI;
+
+    function polarToCart(angle) {
+        return { x: cx + r * Math.cos(angle), y: cy - r * Math.sin(angle) };
+    }
+
+    const bgStart = polarToCart(startAngle);
+    const bgEnd = polarToCart(endAngle);
+    const scoreEnd = polarToCart(scoreAngle);
+
+    // Color stops
+    let color;
+    if (score >= 80) color = '#ef4444';
+    else if (score >= 60) color = '#f97316';
+    else if (score >= 40) color = '#f59e0b';
+    else if (score >= 20) color = '#10b981';
+    else color = '#22c55e';
+
+    const largeArc = score > 50 ? 1 : 0;
+
+    return `<svg viewBox="0 0 160 100" class="gauge-svg">
+        <defs>
+            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#22c55e"/>
+                <stop offset="40%" stop-color="#f59e0b"/>
+                <stop offset="70%" stop-color="#f97316"/>
+                <stop offset="100%" stop-color="#ef4444"/>
+            </linearGradient>
+        </defs>
+        <path d="M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 1 1 ${bgEnd.x} ${bgEnd.y}"
+              fill="none" stroke="#2a3650" stroke-width="10" stroke-linecap="round"/>
+        ${score > 0 ? `<path d="M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArc} 1 ${scoreEnd.x} ${scoreEnd.y}"
+              fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>` : ''}
+        <circle cx="${scoreEnd.x}" cy="${scoreEnd.y}" r="5" fill="${color}"/>
+    </svg>`;
+}
+
+function getRiskDesc(score) {
+    score = parseInt(score) || 0;
+    if (score >= 80) return { text: 'Severe Risk', cls: 'severe' };
+    if (score >= 60) return { text: 'High Risk', cls: 'high' };
+    if (score >= 40) return { text: 'Medium Risk', cls: 'medium' };
+    return { text: 'Low Risk', cls: 'low' };
+}
+
+function fmtAmount(n) {
+    if (!n || n === '0' || n === '') return '--';
+    return Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
+}
+
+function explorerLink(chain, addr) {
+    if ((chain || '').toUpperCase() === 'TRON' || (addr && addr.startsWith('T'))) {
+        return 'https://tronscan.org/#/address/' + addr;
+    }
+    return 'https://etherscan.io/address/' + addr;
+}
+
+function txExplorerLink(chain, hash) {
+    if (!hash) return '#';
+    if ((chain || '').toUpperCase() === 'TRON') return 'https://tronscan.org/#/transaction/' + hash;
+    return 'https://etherscan.io/tx/' + hash;
+}
+
+function shortHash(h) {
+    if (!h || h.length < 16) return h || '--';
+    return h.substring(0, 10) + '...' + h.substring(h.length - 6);
+}
+
+// ============================================
+// Render Found Address
+// ============================================
+function renderFound(data) {
+    const r = data.results[0]; // First match
+    const chain = (r.chain || '').toUpperCase();
+    const chainClass = chain === 'TRON' ? 'tron' : 'eth';
+    const chainLabel = chain === 'TRON' ? 'TRON' : 'Ethereum';
+    const asset = (r.asset || 'USDT').toUpperCase();
+    const score = parseInt(r.risk_score) || 95;
+    const riskInfo = getRiskDesc(score);
+    const isFrozen = true; // If in our blacklist DB, it's frozen
+    const frozenAmt = fmtAmount(r.frozen_amount);
+    const addr = r.address || data.address;
+
+    let html = '';
+
+    // Address Header
+    html += '<div class="addr-header">';
+    html += '<span class="addr-chain-badge ' + chainClass + '">' + chainLabel + '</span>';
+    html += '<span class="freeze-badge frozen">&#128274; Freeze</span>';
+    html += '<span style="font-size:12px; color:var(--text-muted);">' + asset + '</span>';
+    html += '</div>';
+    html += '<div class="addr-full" style="margin-bottom:24px;">' + addr + '</div>';
+
+    // Gauge + Risk Note
+    html += '<div class="gauge-section">';
+    html += '<div class="gauge-container">';
+    html += buildGaugeSVG(score);
+    html += '<div class="gauge-label">Risk Score</div>';
+    html += '<div class="gauge-score">' + score + '</div>';
+    html += '<div class="gauge-desc ' + riskInfo.cls + '">' + riskInfo.text + '</div>';
+    html += '</div>';
+
+    html += '<div class="risk-note-card">';
+    html += '<div class="note-label">Risk Assessment</div>';
+    html += '<div class="note-text" style="margin-bottom:12px;">This address has been <strong style="color:var(--accent-red);">blacklisted by the token issuer</strong> (' + asset + '). ';
+    html += 'Funds at this address are permanently frozen and cannot be transferred.</div>';
+    html += '<div class="note-label">Category</div>';
+    html += '<div class="note-text">' + (r.category || r.label || 'Issuer Blacklist') + '</div>';
+    if (r.description) {
+        html += '<div class="note-label" style="margin-top:12px;">Description</div>';
+        html += '<div class="note-text">' + r.description + '</div>';
+    }
+    html += '</div>';
+    html += '</div>';
+
+    // Overview Card
+    html += '<div class="card">';
+    html += '<div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg> Overview</div>';
+    html += '<div class="card-body">';
+
+    const rows = [
+        ['Frozen Balance', frozenAmt !== '--' ? frozenAmt + ' ' + asset : 'Unknown', frozenAmt !== '--' ? 'red' : ''],
+        ['Chain', chainLabel, ''],
+        ['Asset', asset, ''],
+        ['Source', r.source || 'On-Chain / Issuer', ''],
+        ['First Seen', r.firstseen || r.firstSeen || r.added_date || r.date_added || '--', 'highlight'],
+        ['Date Added', r.added_date || r.date_added || '--', ''],
+        ['Status', (r.status || 'active').toUpperCase(), r.status === 'active' ? 'red' : 'green'],
+        ['Block Number', r.blocknumber || r.blockNumber || '--', ''],
+    ];
+
+    for (let i = 0; i < rows.length; i++) {
+        const cls = rows[i][2] ? ' ' + rows[i][2] : '';
+        html += '<div class="info-row">';
+        html += '<div class="info-label">' + rows[i][0] + '</div>';
+        html += '<div class="info-value' + cls + '">' + rows[i][1] + '</div>';
+        html += '</div>';
+    }
+
+    html += '</div></div>';
+
+    // Freeze Sanction Card
+    const txHash = r.txhash || r.txHash || '';
+    html += '<div class="card">';
+    html += '<div class="card-title"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg> Freeze Sanction</div>';
+    html += '<div class="card-body" style="overflow-x:auto;">';
+    html += '<table class="freeze-table">';
+    html += '<thead><tr><th>Type</th><th>Operation Time</th><th>Amount</th><th>Chain</th><th>TxHash</th></tr></thead>';
+    html += '<tbody>';
+    html += '<tr>';
+    html += '<td><span style="color:var(--accent-red); font-weight:600;">Freeze</span></td>';
+    html += '<td>' + (r.firstseen || r.firstSeen || r.added_date || '--') + '</td>';
+    html += '<td style="color:var(--accent-red); font-weight:600;">' + frozenAmt + (frozenAmt !== '--' ? ' ' + asset : '') + '</td>';
+    html += '<td>' + chainLabel + '</td>';
+    if (txHash) {
+        html += '<td><a class="tx-link" href="' + txExplorerLink(chain, txHash) + '" target="_blank" rel="noopener">' + shortHash(txHash) + '</a></td>';
+    } else {
+        html += '<td>--</td>';
+    }
+    html += '</tr>';
+    html += '</tbody></table>';
+    html += '</div></div>';
+
+    // Explorer Link
+    html += '<div style="text-align:center; margin-top:20px;">';
+    html += '<a href="' + explorerLink(chain, addr) + '" target="_blank" rel="noopener" class="btn btn-ghost" style="text-decoration:none;">';
+    html += 'View on ' + (chain === 'TRON' ? 'Tronscan' : 'Etherscan') + ' &rarr;</a>';
+    html += '</div>';
+
+    document.getElementById('content').innerHTML = html;
+}
+
+// ============================================
+// Render Not Found
+// ============================================
+function renderNotFound(address) {
+    let html = '<div class="not-found">';
+    html += '<div class="not-found-icon">&#9989;</div>';
+    html += '<h2>Not Found in Blacklist Database</h2>';
+    html += '<p style="font-family:monospace; color:var(--accent-cyan); margin:12px auto; word-break:break-all; font-size:13px;">' + address + '</p>';
+    html += '<p>This address is not currently flagged in our stablecoin blacklist database. This does not guarantee the address is safe — it simply means no issuer-level freeze has been detected.</p>';
+    html += '<div style="margin-top:20px;">';
+    html += '<a href="check.html?address=' + encodeURIComponent(address) + '" class="btn btn-primary" style="text-decoration:none;">Run Full AML Risk Check &rarr;</a>';
+    html += '</div>';
+    html += '</div>';
+    document.getElementById('content').innerHTML = html;
+}
+
+// ============================================
+// Render Error
+// ============================================
+function renderError(msg) {
+    document.getElementById('content').innerHTML = '<div class="not-found"><div class="not-found-icon" style="color:var(--accent-red);">&#9888;</div><h2>Error</h2><p>' + msg + '</p></div>';
+}
+
+// ============================================
+// Load Address
+// ============================================
+async function loadAddress(address) {
+    document.getElementById('searchInput').value = address;
+    document.getElementById('content').innerHTML = '<div class="loading-state"><div class="spinner"></div><div>Looking up address...</div></div>';
+
+    try {
+        const data = await jsonpFetch(GAS_BASE + '?address=' + encodeURIComponent(address.toLowerCase()));
+        if (data && data.success) {
+            if (data.found && data.results && data.results.length > 0) {
+                renderFound(data);
+            } else {
+                renderNotFound(address);
+            }
+        } else {
+            renderError('Failed to query database. Please try again.');
+        }
+    } catch (err) {
+        renderError('Network error: ' + err.message);
+    }
+}
+
+// ============================================
+// Init
+// ============================================
+document.addEventListener('DOMContentLoaded', function() {
+    const address = getQueryParam('address');
+    if (address) {
+        loadAddress(address);
+    } else {
+        document.getElementById('content').innerHTML = '<div class="not-found"><div class="not-found-icon" style="color:var(--accent-blue);">&#128269;</div><h2>Enter an Address</h2><p>Use the search bar above to look up any Ethereum or Tron address in the blacklist database.</p></div>';
+    }
+});
+</script>
+</body>
+</html>
