@@ -281,8 +281,11 @@ const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ5
 
 let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
 const PAGE_SIZE = 10;
-let totalServerRows = 0; // total rows available on server
-let activeFilter = 'all'; // current chain filter
+const BATCH_SIZE = 100; // fetch 100 rows per API call, paginate locally
+let totalServerRows = 0;
+let activeFilter = 'all';
+let batchOffset = 0; // which server offset the current batch starts at
+let batchData = []; // the current batch of rows from server
 
 auth.onAuthStateChanged(function(u) {
     var wasLoggedIn = !!currentUser;
@@ -344,17 +347,16 @@ async function buildApiUrl(params){
 
 async function loadDashboardData(){
     try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
-    // Load first page via server-side pagination
     currentPage=1;
-    await loadPage(1);
+    batchOffset=0;
+    await fetchBatch(0);
 }
-async function loadPage(page){
-    var offset=(page-1)*PAGE_SIZE;
+// Fetch a batch of BATCH_SIZE rows from server starting at serverOffset
+async function fetchBatch(serverOffset){
     try{
-        var url=await buildApiUrl('action=recent&limit='+PAGE_SIZE+'&offset='+offset);
+        var url=await buildApiUrl('action=recent&limit='+BATCH_SIZE+'&offset='+serverOffset);
         var rd=await jsonpFetch(url);
         if(rd&&rd.error==='AUTH_REQUIRED'){
-            // Not logged in, show login prompt instead of table
             document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">Sign in to browse frozen addresses</div><div style="font-size:12px;color:var(--text-2);margin-bottom:14px;">Create a free account to access the full database</div><button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button> <button class="btn btn-outline" onclick="showLoginModal()" style="padding:8px 24px;font-size:13px;margin-left:8px;">Sign In</button></td></tr>';
             document.getElementById('pagination').innerHTML='';
             document.getElementById('tableCount').textContent='Sign in required';
@@ -366,15 +368,20 @@ async function loadPage(page){
         }
         if(rd&&rd.success){
             totalServerRows=rd.total||0;
-            allRecent=rd.results||[];
-            // Apply active filter to page data
-            if(activeFilter==='usdt') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDT';});
-            else if(activeFilter==='usdc') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});
-            else filteredRecent=allRecent.slice();
-            currentPage=page;
-            renderTable();
+            batchOffset=serverOffset;
+            batchData=rd.results||[];
+            renderCurrentPage();
         }else{loadRecentFallback();}
     }catch(e){console.warn('recent fail',e);loadRecentFallback();}
+}
+// Render the current page from the local batch (instant, no API call)
+function renderCurrentPage(){
+    var localIndex=(currentPage-1)*PAGE_SIZE - batchOffset;
+    allRecent=batchData.slice(localIndex, localIndex+PAGE_SIZE);
+    if(activeFilter==='usdt') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDT';});
+    else if(activeFilter==='usdc') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});
+    else filteredRecent=allRecent.slice();
+    renderTable();
 }
 function loadRecentFallback(){document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">Loading data... If this persists, API may need updating.</td></tr>';}
 function renderStats(data){
@@ -415,17 +422,25 @@ function renderPagination(tp){var c=document.getElementById('pagination');if(tp<
 function goPage(p){
     var totalPages=Math.max(1,Math.ceil(totalServerRows/PAGE_SIZE));
     if(p<1||p>totalPages)return;
-    loadPage(p);
+    currentPage=p;
+    // Check if requested page is within the current batch
+    var globalStart=(p-1)*PAGE_SIZE; // global row index for start of page
+    var batchEnd=batchOffset+batchData.length;
+    if(globalStart>=batchOffset && globalStart<batchEnd){
+        // Page is fully within current batch — render instantly
+        renderCurrentPage();
+    } else {
+        // Need to fetch a new batch from server
+        var newOffset=Math.floor(globalStart/BATCH_SIZE)*BATCH_SIZE;
+        fetchBatch(newOffset);
+    }
     document.querySelector('.table-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function filterChain(f,el){
     document.querySelectorAll('.tag-chip').forEach(function(c){c.classList.remove('active');});
     if(el)el.classList.add('active');
     activeFilter=f;
-    if(f==='all') filteredRecent=allRecent.slice();
-    else if(f==='usdt') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDT';});
-    else if(f==='usdc') filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});
-    renderTable();
+    renderCurrentPage();
 }
 document.addEventListener('DOMContentLoaded',function(){loadDashboardData();});
 </script>
