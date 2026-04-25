@@ -281,7 +281,6 @@ const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ5
 
 let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
 const PAGE_SIZE = 10;
-const MAX_FREE_PAGES = 2; // non-logged-in users see max 2 pages
 let totalServerRows = 0; // total rows available on server
 let activeFilter = 'all'; // current chain filter
 
@@ -330,6 +329,19 @@ document.getElementById('searchInput').addEventListener('keydown',function(e){if
 let jsonpCounter=0;
 function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
 
+// Get Firebase ID token for authenticated API calls
+async function getAuthToken(){
+    if(!currentUser) return '';
+    try{ return await currentUser.getIdToken(); }catch(e){ return ''; }
+}
+// Build API URL with optional auth token
+async function buildApiUrl(params){
+    var url=GAS_BASE+'?'+params;
+    var token=await getAuthToken();
+    if(token) url+='&token='+encodeURIComponent(token);
+    return url;
+}
+
 async function loadDashboardData(){
     try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
     // Load first page via server-side pagination
@@ -339,7 +351,19 @@ async function loadDashboardData(){
 async function loadPage(page){
     var offset=(page-1)*PAGE_SIZE;
     try{
-        var rd=await jsonpFetch(GAS_BASE+'?action=recent&limit='+PAGE_SIZE+'&offset='+offset);
+        var url=await buildApiUrl('action=recent&limit='+PAGE_SIZE+'&offset='+offset);
+        var rd=await jsonpFetch(url);
+        if(rd&&rd.error==='AUTH_REQUIRED'){
+            // Not logged in, show login prompt instead of table
+            document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">Sign in to browse frozen addresses</div><div style="font-size:12px;color:var(--text-2);margin-bottom:14px;">Create a free account to access the full database</div><button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button> <button class="btn btn-outline" onclick="showLoginModal()" style="padding:8px 24px;font-size:13px;margin-left:8px;">Sign In</button></td></tr>';
+            document.getElementById('pagination').innerHTML='';
+            document.getElementById('tableCount').textContent='Sign in required';
+            return;
+        }
+        if(rd&&rd.error==='RATE_LIMITED'){
+            alert('请求太频繁，请 '+rd.retryAfter+' 秒后重试。');
+            return;
+        }
         if(rd&&rd.success){
             totalServerRows=rd.total||0;
             allRecent=rd.results||[];
@@ -372,41 +396,25 @@ function renderStats(data){
 }
 function renderTable(){
     var tb=document.getElementById('recentTableBody');
-    var items=filteredRecent; // already a single page from server
+    var items=filteredRecent;
     var totalPages=Math.max(1,Math.ceil(totalServerRows/PAGE_SIZE));
-    // For non-logged-in users, cap pages
-    var maxPages=currentUser?totalPages:Math.min(totalPages,MAX_FREE_PAGES);
     var showEnd=Math.min(currentPage*PAGE_SIZE,totalServerRows);
     var showStart=(currentPage-1)*PAGE_SIZE+1;
-    if(currentUser){
-        document.getElementById('tableCount').textContent='Showing '+showStart+'-'+showEnd+' of '+totalServerRows.toLocaleString();
-    } else {
-        document.getElementById('tableCount').textContent='Showing '+showStart+'-'+showEnd+' of '+totalServerRows.toLocaleString()+' (register to view all)';
-    }
+    document.getElementById('tableCount').textContent='Showing '+showStart+'-'+showEnd+' of '+totalServerRows.toLocaleString();
     if(!items.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
     var h='';for(var i=0;i<items.length;i++){var r=items[i],addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr,chain=(r.chain||'').toUpperCase(),asset=(r.asset||'USDT').toUpperCase(),cCls=chain==='TRON'?'tron':'eth',cLbl=chain==='TRON'?'TRC20':'ERC20',rl=(r.risk_level||'HIGH').toUpperCase(),rCls=rl==='HIGH'?'high':rl==='MEDIUM'?'medium':'low';
     var fa='';if(r.frozen_amount&&Number(r.frozen_amount)>0)fa=Number(r.frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});else if(r.frozen_amount_display)fa=r.frozen_amount_display;else fa='--';
     var ft=r.firstSeen||r.added_date||r.date_added||'--';
     h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
-    // If not logged in and at the last free page, show login prompt
-    if(!currentUser && currentPage>=maxPages && totalServerRows>MAX_FREE_PAGES*PAGE_SIZE){
-        h+='<tr><td colspan="6" style="text-align:center;padding:24px;background:#fafafa;"><div style="font-size:14px;font-weight:600;margin-bottom:4px;">Register to access all '+totalServerRows.toLocaleString()+' addresses</div><div style="font-size:12px;color:var(--text-2);margin-bottom:12px;">Free account unlocks the full database with unlimited browsing</div><button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button></td></tr>';
-    }
-    tb.innerHTML=h;renderPagination(maxPages);
+    tb.innerHTML=h;renderPagination(totalPages);
     var fnEl=document.getElementById('footerNoteText');
-    if(fnEl){
-        if(currentUser) fnEl.textContent='Full database access enabled for registered users.';
-        else fnEl.textContent='Register for free to unlock the full database.';
-    }
+    if(fnEl) fnEl.textContent='Full database access enabled for registered users.';
 }
 function formatTime(t){if(!t||t==='--')return'--';try{var d=new Date(t);if(isNaN(d.getTime()))return t;var p=function(n){return n<10?'0'+n:''+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}catch(e){return t;}}
 function renderPagination(tp){var c=document.getElementById('pagination');if(tp<=1){c.innerHTML='';return;}var h='<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#171;</button>';for(var p=1;p<=tp;p++){if(tp>7&&p>3&&p<tp-1&&Math.abs(p-currentPage)>1){if(p===4||p===tp-2)h+='<span style="color:var(--text-3);padding:0 4px">...</span>';continue;}h+='<button class="page-btn'+(p===currentPage?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';}h+='<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=tp?'disabled':'')+'>&#187;</button>';c.innerHTML=h;}
 function goPage(p){
     var totalPages=Math.max(1,Math.ceil(totalServerRows/PAGE_SIZE));
-    var maxPages=currentUser?totalPages:Math.min(totalPages,MAX_FREE_PAGES);
-    if(p<1||p>maxPages)return;
-    // If not logged in and trying to go beyond free limit, show login
-    if(!currentUser&&p>MAX_FREE_PAGES){showRegisterModal();return;}
+    if(p<1||p>totalPages)return;
     loadPage(p);
     document.querySelector('.table-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
