@@ -70,7 +70,7 @@
         .stats-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
         .stats-title { font-size:14px; font-weight:700; color:var(--text); }
         .stats-update { font-size:11px; color:var(--text-3); }
-        .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+        .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
         .stat-card { background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:18px; transition:box-shadow .2s; }
         .stat-card:hover { box-shadow:0 4px 20px rgba(0,0,0,.04); }
         .stat-emoji { font-size:24px; margin-bottom:8px; }
@@ -193,22 +193,20 @@
     </div>
     <div class="stats-grid">
         <div class="stat-card">
-            <div class="stat-emoji">&#x1F534;</div>
-            <div class="stat-label">USDT (Ethereum)</div>
-            <div class="stat-value" id="statUsdtEth">--</div>
+            <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#fff"/></svg></div>
+            <div class="stat-label">USDT (Tether)</div>
+            <div class="stat-value" id="statUsdt">--</div>
+            <div class="stat-sub" id="statUsdtSub" style="font-size:11px;color:var(--text-3);margin-top:2px;"></div>
+            <div class="stat-change" id="statUsdtDaily" style="font-size:11px;"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-emoji">&#x1F535;</div>
-            <div class="stat-label">USDT (Tron)</div>
-            <div class="stat-value" id="statUsdtTron">--</div>
+            <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#2775CA"/><path d="M20.398 17.189c0-2.047-1.263-2.75-3.789-3.045-.529-.074-1.812-.295-1.812-1.181 0-.738.558-1.108 1.562-1.108.887 0 1.445.295 1.709.96a.435.435 0 00.41.296h.94a.395.395 0 00.41-.37v-.073a2.94 2.94 0 00-2.576-2.306v-1.33a.434.434 0 00-.41-.443h-.862a.434.434 0 00-.41.444v1.256c-1.855.222-3.05 1.33-3.05 2.712 0 1.922 1.263 2.625 3.789 2.92.603.074 1.812.37 1.812 1.306 0 .738-.676 1.256-1.636 1.256-1.263 0-1.709-.517-1.855-1.182a.45.45 0 00-.41-.295h-1.014a.395.395 0 00-.41.369v.074c.265 1.404 1.116 2.306 3.197 2.58v1.33a.434.434 0 00.41.444h.862a.434.434 0 00.41-.444v-1.33c1.855-.296 3.123-1.404 3.123-2.86z" fill="#fff"/><path d="M12.724 24.843a9.385 9.385 0 01-5.546-5.546.381.381 0 00-.486-.222l-.96.37a.39.39 0 00-.222.517 11.18 11.18 0 006.696 6.696.381.381 0 00.518-.222l.37-.96a.41.41 0 00-.222-.518l-.148-.115zm6.552-17.686a9.385 9.385 0 015.546 5.546.381.381 0 00.486.222l.96-.37a.39.39 0 00.222-.517 11.18 11.18 0 00-6.696-6.696.381.381 0 00-.518.222l-.37.96a.41.41 0 00.222.518l.148.115z" fill="#fff"/></svg></div>
+            <div class="stat-label">USDC (Circle)</div>
+            <div class="stat-value" id="statUsdc">--</div>
+            <div class="stat-change" id="statUsdcDaily" style="font-size:11px;"></div>
         </div>
         <div class="stat-card">
-            <div class="stat-emoji">&#x1F7E2;</div>
-            <div class="stat-label">USDC (Ethereum)</div>
-            <div class="stat-value" id="statUsdcEth">--</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-emoji">&#x1F4B0;</div>
+            <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#1a1a1a"/><text x="16" y="21" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold" font-family="Inter,sans-serif">$</text></svg></div>
             <div class="stat-label">Total Frozen Funds</div>
             <div class="stat-value" id="statTotalFrozen">--</div>
             <div class="stat-change" id="statTotalChange"></div>
@@ -219,15 +217,14 @@
 <section class="tags-section">
     <div class="tags-row">
         <span class="tag-chip active" onclick="filterChain('all', this)">All Chains</span>
-        <span class="tag-chip" onclick="filterChain('usdt-eth', this)">#USDT Ethereum</span>
-        <span class="tag-chip" onclick="filterChain('usdt-tron', this)">#USDT Tron</span>
-        <span class="tag-chip" onclick="filterChain('usdc', this)">#USDC Ethereum</span>
+        <span class="tag-chip" onclick="filterChain('usdt', this)">#USDT</span>
+        <span class="tag-chip" onclick="filterChain('usdc', this)">#USDC</span>
     </div>
 </section>
 
 <section class="table-section">
     <div class="table-header">
-        <div class="table-title">Recent Blacklisted Addresses</div>
+        <div class="table-title">Recent Frozen Addresses</div>
         <div class="table-count" id="tableCount">Showing 0 of 0</div>
     </div>
     <div class="table-wrapper">
@@ -241,8 +238,8 @@
         </table>
         <div class="pagination" id="pagination"></div>
     </div>
-    <div style="text-align:center; margin-top:10px;">
-        <span class="footer-note">Partial recent data shown for reference only.</span>
+    <div style="text-align:center; margin-top:10px;" id="tableFooterNote">
+        <span class="footer-note" id="footerNoteText"></span>
     </div>
 </section>
 
@@ -284,8 +281,15 @@ const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ5
 
 let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
 const PAGE_SIZE = 10;
+const MAX_FREE_ROWS = 20; // non-logged-in users see max 20 rows (2 pages)
 
-auth.onAuthStateChanged(function(u) { currentUser = u; updateNavAuth(); });
+auth.onAuthStateChanged(function(u) {
+    var wasLoggedIn = !!currentUser;
+    currentUser = u;
+    updateNavAuth();
+    // Reload data when auth state changes (login/logout) so limits update
+    if(!!u !== wasLoggedIn) loadDashboardData();
+});
 
 function updateNavAuth() {
     const nr = document.getElementById('navRight');
@@ -326,35 +330,76 @@ function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++j
 
 async function loadDashboardData(){
     try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
-    try{var rd=await jsonpFetch(GAS_BASE+'?action=recent&limit=100');if(rd&&rd.success){allRecent=rd.results||[];filteredRecent=allRecent.slice();renderTable();}else{loadRecentFallback();}}catch(e){console.warn('recent fail',e);loadRecentFallback();}
+    var fetchLimit = currentUser ? 10000 : 100;
+    try{var rd=await jsonpFetch(GAS_BASE+'?action=recent&limit='+fetchLimit);if(rd&&rd.success){allRecent=rd.results||[];filteredRecent=allRecent.slice();renderTable();}else{loadRecentFallback();}}catch(e){console.warn('recent fail',e);loadRecentFallback();}
 }
 function loadRecentFallback(){document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">Loading data... If this persists, API may need updating.</td></tr>';}
 function renderStats(data){
     var s=data.stats||data;
     var fmt=function(n){return n==null?'--':Number(n).toLocaleString('en-US');};
     var fmtM=function(n){if(!n)return'--';var v=Number(n);if(v>=1e9)return'$'+(v/1e9).toFixed(2)+'B';if(v>=1e6)return'$'+(v/1e6).toFixed(2)+'M';if(v>=1e3)return'$'+(v/1e3).toFixed(1)+'K';return'$'+fmt(v);};
-    document.getElementById('statUsdtEth').textContent=fmt(s.usdt_eth_count);
-    document.getElementById('statUsdtTron').textContent=fmt(s.usdt_tron_count);
-    document.getElementById('statUsdcEth').textContent=fmt(s.usdc_eth_count);
+    var usdtTotal = (Number(s.usdt_eth_count)||0) + (Number(s.usdt_tron_count)||0);
+    document.getElementById('statUsdt').textContent=fmt(usdtTotal);
+    document.getElementById('statUsdtSub').textContent='ETH: '+fmt(s.usdt_eth_count)+' / TRON: '+fmt(s.usdt_tron_count);
+    document.getElementById('statUsdc').textContent=fmt(s.usdc_eth_count);
     document.getElementById('statTotalFrozen').textContent=fmtM(s.total_frozen_amount);
     if(s.today_new_count)document.getElementById('statTotalChange').textContent='+'+s.today_new_count+' today';
     if(s.last_updated)document.getElementById('statsUpdate').textContent='Updated: '+s.last_updated;
+    // Calculate per-asset daily new counts from recent data
+    setTimeout(function(){calcDailyNew();},500);
 }
 function renderTable(){
-    var tb=document.getElementById('recentTableBody'),total=filteredRecent.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
-    if(currentPage>pages)currentPage=pages;var start=(currentPage-1)*PAGE_SIZE,items=filteredRecent.slice(start,start+PAGE_SIZE);
-    document.getElementById('tableCount').textContent='Showing '+Math.min(start+PAGE_SIZE,total)+' of '+total;
+    var tb=document.getElementById('recentTableBody');
+    // For non-logged-in users, restrict visible data
+    var visibleData = filteredRecent;
+    if(!currentUser && filteredRecent.length > MAX_FREE_ROWS){
+        visibleData = filteredRecent.slice(0, MAX_FREE_ROWS);
+    }
+    var total=visibleData.length,pages=Math.max(1,Math.ceil(total/PAGE_SIZE));
+    if(currentPage>pages)currentPage=pages;var start=(currentPage-1)*PAGE_SIZE,items=visibleData.slice(start,start+PAGE_SIZE);
+    if(currentUser){
+        document.getElementById('tableCount').textContent='Showing '+Math.min(start+PAGE_SIZE,total)+' of '+filteredRecent.length;
+    } else {
+        document.getElementById('tableCount').textContent='Showing '+Math.min(start+PAGE_SIZE,total)+' of '+filteredRecent.length+' (register to view all)';
+    }
     if(!items.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
     var h='';for(var i=0;i<items.length;i++){var r=items[i],addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr,chain=(r.chain||'').toUpperCase(),asset=(r.asset||'USDT').toUpperCase(),cCls=chain==='TRON'?'tron':'eth',cLbl=chain==='TRON'?'TRC20':'ERC20',rl=(r.risk_level||'HIGH').toUpperCase(),rCls=rl==='HIGH'?'high':rl==='MEDIUM'?'medium':'low';
     var fa='';if(r.frozen_amount&&Number(r.frozen_amount)>0)fa=Number(r.frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});else if(r.frozen_amount_display)fa=r.frozen_amount_display;else fa='--';
     var ft=r.firstSeen||r.added_date||r.date_added||'--';
     h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
+    // If not logged in and there's more data beyond the free limit, show login prompt
+    if(!currentUser && filteredRecent.length > MAX_FREE_ROWS && currentPage >= pages){
+        h+='<tr><td colspan="6" style="text-align:center;padding:24px;background:#fafafa;"><div style="font-size:14px;font-weight:600;margin-bottom:4px;">Register to access all '+filteredRecent.length.toLocaleString()+' addresses</div><div style="font-size:12px;color:var(--text-2);margin-bottom:12px;">Free account unlocks the full database with unlimited browsing</div><button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button></td></tr>';
+    }
     tb.innerHTML=h;renderPagination(pages);
+    var fnEl=document.getElementById('footerNoteText');
+    if(fnEl){
+        if(currentUser) fnEl.textContent='Full database access enabled for registered users.';
+        else fnEl.textContent='Register for free to unlock the full database.';
+    }
 }
 function formatTime(t){if(!t||t==='--')return'--';try{var d=new Date(t);if(isNaN(d.getTime()))return t;var p=function(n){return n<10?'0'+n:''+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}catch(e){return t;}}
 function renderPagination(tp){var c=document.getElementById('pagination');if(tp<=1){c.innerHTML='';return;}var h='<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#171;</button>';for(var p=1;p<=tp;p++){if(tp>7&&p>3&&p<tp-1&&Math.abs(p-currentPage)>1){if(p===4||p===tp-2)h+='<span style="color:var(--text-3);padding:0 4px">...</span>';continue;}h+='<button class="page-btn'+(p===currentPage?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';}h+='<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=tp?'disabled':'')+'>&#187;</button>';c.innerHTML=h;}
 function goPage(p){var tp=Math.ceil(filteredRecent.length/PAGE_SIZE);if(p<1||p>tp)return;currentPage=p;renderTable();document.querySelector('.table-section').scrollIntoView({behavior:'smooth',block:'start'});}
-function filterChain(f,el){document.querySelectorAll('.tag-chip').forEach(function(c){c.classList.remove('active');});if(el)el.classList.add('active');if(f==='all')filteredRecent=allRecent.slice();else if(f==='usdt-eth')filteredRecent=allRecent.filter(function(r){return(r.chain||'').toUpperCase()==='ETH'&&(r.asset||'').toUpperCase()==='USDT';});else if(f==='usdt-tron')filteredRecent=allRecent.filter(function(r){return(r.chain||'').toUpperCase()==='TRON';});else if(f==='usdc')filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});currentPage=1;renderTable();}
+function calcDailyNew(){
+    if(!allRecent.length) return;
+    var today = new Date().toISOString().slice(0,10);
+    var usdtNew = 0, usdcNew = 0;
+    for(var i=0; i<allRecent.length; i++){
+        var r = allRecent[i];
+        var d = (r.added_date || r.firstSeen || '').substring(0,10);
+        if(d === today){
+            var asset = (r.asset||'').toUpperCase();
+            if(asset === 'USDT') usdtNew++;
+            else if(asset === 'USDC') usdcNew++;
+        }
+    }
+    var usdtEl = document.getElementById('statUsdtDaily');
+    var usdcEl = document.getElementById('statUsdcDaily');
+    if(usdtEl) usdtEl.textContent = usdtNew > 0 ? '+'+usdtNew+' today' : '';
+    if(usdcEl) usdcEl.textContent = usdcNew > 0 ? '+'+usdcNew+' today' : '';
+}
+function filterChain(f,el){document.querySelectorAll('.tag-chip').forEach(function(c){c.classList.remove('active');});if(el)el.classList.add('active');if(f==='all')filteredRecent=allRecent.slice();else if(f==='usdt')filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDT';});else if(f==='usdc')filteredRecent=allRecent.filter(function(r){return(r.asset||'').toUpperCase()==='USDC';});currentPage=1;renderTable();}
 document.addEventListener('DOMContentLoaded',function(){loadDashboardData();});
 </script>
 </body>
