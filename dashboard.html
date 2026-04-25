@@ -281,7 +281,7 @@ const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ5
 
 let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
 const PAGE_SIZE = 10;
-const BATCH_SIZE = 100; // fetch 100 rows per API call, paginate locally
+const BATCH_SIZE = 50; // fetch 50 rows per API call (API max is 50), paginate locally
 let totalServerRows = 0;
 let activeFilter = 'all';
 let batchOffset = 0; // which server offset the current batch starts at
