@@ -28,31 +28,40 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; min-height:100vh; }
 
-        /* Nav - same as dashboard */
+        /* Nav */
         nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; position:sticky; top:0; z-index:50; }
         .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
         .logo { font-size:18px; font-weight:800; color:var(--text); text-decoration:none; display:flex; align-items:center; gap:6px; }
         .logo-tag { font-size:10px; font-weight:700; color:var(--blue); background:#eef1ff; padding:2px 7px; border-radius:6px; }
         .nav-links { display:flex; gap:24px; list-style:none; }
         .nav-links a { color:var(--text-2); text-decoration:none; font-size:13px; font-weight:500; }
-        .nav-links a:hover { color:var(--text); }
+        .nav-links a:hover, .nav-links a.active { color:var(--text); }
         .nav-right { display:flex; gap:8px; align-items:center; }
         .btn { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; text-decoration:none; display:inline-flex; align-items:center; gap:6px; }
         .btn-outline { background:#fff; color:var(--text-2); border:1px solid var(--border); }
         .btn-outline:hover { border-color:#ccc; }
         .btn-fill { background:var(--text); color:#fff; }
         .btn-fill:hover { background:#333; }
+        .avatar { width:30px; height:30px; border-radius:50%; background:var(--blue); color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; }
+        .user-dropdown { position:relative; }
+        .user-menu { display:none; position:absolute; top:40px; right:0; background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:6px; min-width:180px; box-shadow:0 8px 30px rgba(0,0,0,.08); z-index:99; }
+        .user-menu.show { display:block; }
+        .user-menu-email { padding:8px 10px; font-size:11px; color:var(--text-3); border-bottom:1px solid var(--border); margin-bottom:4px; }
+        .user-menu-item { padding:7px 10px; border-radius:8px; font-size:13px; color:var(--text-2); cursor:pointer; }
+        .user-menu-item:hover { background:var(--bg); }
+        .plan-badge { font-size:11px; color:var(--green); background:#eafbef; padding:3px 10px; border-radius:20px; font-weight:600; }
 
         /* Main Content */
         .main { max-width:900px; margin:0 auto; padding:32px 24px 64px; }
 
         /* Search Bar */
-        .search-wrap { display:flex; background:#fff; border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; margin-bottom:28px; }
+        .search-wrap { display:flex; background:#fff; border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; margin-bottom:12px; }
         .search-wrap:focus-within { border-color:var(--blue); }
         .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:monospace; background:transparent; }
         .search-wrap input::placeholder { color:#bbb; }
         .search-wrap button { background:var(--text); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
         .search-wrap button:hover { background:#333; }
+        .query-badge { display:none; align-items:center; gap:4px; margin-bottom:20px; padding:3px 10px; background:#eafbef; border-radius:20px; font-size:11px; color:var(--green); font-weight:600; width:fit-content; }
 
         /* Address Header */
         .addr-header { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px; }
@@ -117,6 +126,20 @@
         /* Footer */
         .footer { text-align:center; padding:24px; border-top:1px solid var(--border); color:var(--text-3); font-size:11px; max-width:900px; margin:0 auto; }
 
+        /* Modal */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:500; align-items:center; justify-content:center; }
+        .modal-overlay.show { display:flex; }
+        .modal-box { background:#fff; border-radius:16px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.12); position:relative; }
+        .modal-title { font-size:20px; font-weight:700; margin-bottom:4px; }
+        .modal-desc { color:var(--text-2); font-size:13px; margin-bottom:20px; }
+        .modal-input { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:10px; font-size:13px; font-family:inherit; outline:none; margin-bottom:10px; }
+        .modal-input:focus { border-color:var(--blue); }
+        .modal-divider { display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--text-3); font-size:11px; }
+        .modal-divider::before, .modal-divider::after { content:''; flex:1; height:1px; background:var(--border); }
+        .btn-google { width:100%; padding:10px; background:#fff; color:#333; border:1px solid var(--border); border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; }
+        .btn-google:hover { background:var(--bg); }
+        .modal-close { position:absolute; top:12px; right:14px; background:none; border:none; color:var(--text-3); font-size:20px; cursor:pointer; }
+
         @media (max-width:768px) {
             .gauge-section { grid-template-columns:1fr; }
             .nav-links { display:none; }
@@ -127,13 +150,14 @@
 
 <nav>
     <div class="nav-inner">
-        <a href="/dashboard.html" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
+        <a href="/" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
         <ul class="nav-links">
-            <li><a href="/dashboard.html">Dashboard</a></li>
-            <li><a href="/detail.html">Address Lookup</a></li>
+            <li><a href="/">Dashboard</a></li>
+            <li><a href="/detail.html" class="active">Address Lookup</a></li>
         </ul>
-        <div class="nav-right">
-            <a href="/dashboard.html" class="btn btn-outline">Back to Dashboard</a>
+        <div class="nav-right" id="navRight">
+            <button class="btn btn-outline" onclick="showLoginModal()">Sign In</button>
+            <button class="btn btn-fill" onclick="showRegisterModal()">Register</button>
         </div>
     </div>
 </nav>
@@ -143,6 +167,9 @@
     <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" spellcheck="false">
         <button onclick="doSearch()">Search</button>
+    </div>
+    <div class="query-badge" id="queryBadge">
+        <span id="queryText">3 Free Queries / Day</span>
     </div>
 
     <!-- Content Area -->
@@ -158,6 +185,26 @@
     Innobridge Blacklist &copy; 2026 &middot; Data from on-chain issuer blacklist events
 </div>
 
+<!-- Login/Register Modal -->
+<div class="modal-overlay" id="loginModal">
+    <div class="modal-box">
+        <button class="modal-close" onclick="closeModals()">&times;</button>
+        <div class="modal-title" id="modalTitle">Sign In</div>
+        <div class="modal-desc" id="modalDesc">Access address risk checks with your free account</div>
+        <input type="email" class="modal-input" id="authEmail" placeholder="Email address">
+        <input type="password" class="modal-input" id="authPassword" placeholder="Password">
+        <button class="btn btn-fill" style="width:100%;padding:10px;font-size:13px;" onclick="doEmailAuth()" id="authSubmitBtn">Sign In</button>
+        <div class="modal-divider">or</div>
+        <button class="btn-google" onclick="doGoogleAuth()">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            Continue with Google
+        </button>
+        <div style="margin-top:14px;font-size:11px;color:var(--text-3);">
+            <span id="authToggle">Don't have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue);">Register</a></span>
+        </div>
+    </div>
+</div>
+
 <script>
 const firebaseConfig = {
     apiKey: "AIzaSyBLpp1N4RE_sR15LqknkIhuIKk-w6Ckmak",
@@ -168,10 +215,68 @@ const firebaseConfig = {
     appId: "1:506523742424:web:8a668a918d515ec9e7a7ad"
 };
 firebase.initializeApp(firebaseConfig);
-
+const auth = firebase.auth();
 const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ57uLIq0uYtQ77el8F-HI9BMFne_qzFyjb0wMyahyBUgGmxMA/exec';
 
-// JSONP
+let currentUser = null;
+let isLoginMode = true;
+let pendingAddress = null; // address waiting for auth before lookup
+
+// ============================================
+// Auth State
+// ============================================
+auth.onAuthStateChanged(function(u) {
+    currentUser = u;
+    updateNavAuth();
+    // If there's a pending address waiting for auth, load it now
+    if (u && pendingAddress) {
+        var addr = pendingAddress;
+        pendingAddress = null;
+        loadAddress(addr);
+    }
+});
+
+function updateNavAuth() {
+    var nr = document.getElementById('navRight');
+    if (currentUser) {
+        var i = (currentUser.email || 'U').charAt(0).toUpperCase();
+        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">' + i + '</div><div class="user-menu" id="userMenu"><div class="user-menu-email">' + currentUser.email + '</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
+        document.getElementById('queryBadge').style.display = 'inline-flex';
+        document.getElementById('queryText').textContent = '3 Free Queries / Day';
+    } else {
+        nr.innerHTML = '<button class="btn btn-outline" onclick="showLoginModal()">Sign In</button><button class="btn btn-fill" onclick="showRegisterModal()">Register</button>';
+        document.getElementById('queryBadge').style.display = 'none';
+    }
+}
+
+function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
+document.addEventListener('click', function(e) { var m = document.getElementById('userMenu'); if (m && !e.target.closest('.user-dropdown')) m.classList.remove('show'); });
+
+// ============================================
+// Auth Modal
+// ============================================
+function showLoginModal() { isLoginMode = true; openAuthModal(); }
+function showRegisterModal() { isLoginMode = false; openAuthModal(); }
+function openAuthModal() {
+    document.getElementById('loginModal').classList.add('show');
+    document.getElementById('modalTitle').textContent = isLoginMode ? 'Sign In' : 'Create Account';
+    document.getElementById('modalDesc').textContent = isLoginMode ? 'Access address risk checks with your free account' : 'Get 3 free daily queries after sign-up';
+    document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Sign In' : 'Create Account';
+    document.getElementById('authToggle').innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Register</a>' : 'Already have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Sign In</a>';
+}
+function closeModals() { document.getElementById('loginModal').classList.remove('show'); }
+function toggleAuthMode(e) { e.preventDefault(); isLoginMode = !isLoginMode; openAuthModal(); }
+function doEmailAuth() {
+    var em = document.getElementById('authEmail').value.trim(), pw = document.getElementById('authPassword').value;
+    if (!em || !pw) return alert('Please enter email and password.');
+    (isLoginMode ? auth.signInWithEmailAndPassword(em, pw) : auth.createUserWithEmailAndPassword(em, pw)).then(function() { closeModals(); }).catch(function(e) { alert(e.message); });
+}
+function doGoogleAuth() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function() { closeModals(); }).catch(function(e) { alert(e.message); }); }
+function doLogout() { auth.signOut(); }
+
+// ============================================
+// JSONP + Auth Token
+// ============================================
 let _jcnt = 0;
 function jsonpFetch(url) {
     return new Promise(function(resolve, reject) {
@@ -179,17 +284,34 @@ function jsonpFetch(url) {
         const t = setTimeout(function() { delete window[cb]; reject(new Error('Timeout')); }, 15000);
         window[cb] = function(d) { clearTimeout(t); delete window[cb]; resolve(d); };
         const s = document.createElement('script');
-        s.src = url + (url.indexOf('?')>=0?'&':'?') + 'callback=' + cb;
+        s.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cb;
         s.onerror = function() { clearTimeout(t); delete window[cb]; reject(new Error('Load error')); };
         document.head.appendChild(s);
         s.onload = function() { document.head.removeChild(s); };
     });
 }
 
+async function getAuthToken() {
+    if (!currentUser) return '';
+    try { return await currentUser.getIdToken(); } catch (e) { return ''; }
+}
+
+async function buildApiUrl(params) {
+    var url = GAS_BASE + '?' + params;
+    var token = await getAuthToken();
+    if (token) url += '&token=' + encodeURIComponent(token);
+    return url;
+}
+
+// ============================================
+// Search
+// ============================================
 function doSearch() {
-    const addr = document.getElementById('searchInput').value.trim();
+    var addr = document.getElementById('searchInput').value.trim();
     if (!addr) return;
-    window.location.href = 'detail.html?address=' + encodeURIComponent(addr);
+    // Update URL without reload for bookmarkability
+    history.pushState(null, '', 'detail.html?address=' + encodeURIComponent(addr));
+    loadAddress(addr);
 }
 document.getElementById('searchInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') doSearch();
@@ -199,45 +321,27 @@ function getQueryParam(name) {
     return new URLSearchParams(window.location.search).get(name);
 }
 
-// SVG gauge arc
+// ============================================
+// SVG Gauge
+// ============================================
 function buildGaugeSVG(score) {
     score = Math.max(0, Math.min(100, parseInt(score) || 0));
-    const cx = 80, cy = 85, r = 65;
-    const startAngle = Math.PI;
-    const scoreAngle = Math.PI - (score / 100) * Math.PI;
-
-    function polar(angle) {
-        return { x: cx + r * Math.cos(angle), y: cy - r * Math.sin(angle) };
-    }
-
-    const bgStart = polar(Math.PI);
-    const bgEnd = polar(0);
-    const scoreEnd = polar(scoreAngle);
-
-    let color;
-    if (score >= 80) color = '#ff3b30';
-    else if (score >= 60) color = '#ff9500';
-    else if (score >= 40) color = '#ff9500';
-    else if (score >= 20) color = '#34c759';
-    else color = '#34c759';
-
-    const largeArc = score > 50 ? 1 : 0;
-
-    return `<svg viewBox="0 0 160 100" class="gauge-svg">
-        <defs>
-            <linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="#34c759"/>
-                <stop offset="40%" stop-color="#ff9500"/>
-                <stop offset="70%" stop-color="#ff9500"/>
-                <stop offset="100%" stop-color="#ff3b30"/>
-            </linearGradient>
-        </defs>
-        <path d="M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 1 1 ${bgEnd.x} ${bgEnd.y}"
-              fill="none" stroke="#e8e8e8" stroke-width="10" stroke-linecap="round"/>
-        ${score > 0 ? `<path d="M ${bgStart.x} ${bgStart.y} A ${r} ${r} 0 ${largeArc} 1 ${scoreEnd.x} ${scoreEnd.y}"
-              fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>` : ''}
-        <circle cx="${scoreEnd.x}" cy="${scoreEnd.y}" r="5" fill="${color}"/>
-    </svg>`;
+    var cx = 80, cy = 85, r = 65;
+    function polar(angle) { return { x: cx + r * Math.cos(angle), y: cy - r * Math.sin(angle) }; }
+    var bgStart = polar(Math.PI);
+    var bgEnd = polar(0);
+    var scoreAngle = Math.PI - (score / 100) * Math.PI;
+    var scoreEnd = polar(scoreAngle);
+    var largeArc = score > 50 ? 1 : 0;
+    return '<svg viewBox="0 0 160 100" class="gauge-svg">' +
+        '<defs><linearGradient id="gaugeGrad" x1="0" y1="0" x2="1" y2="0">' +
+        '<stop offset="0%" stop-color="#34c759"/><stop offset="40%" stop-color="#ff9500"/>' +
+        '<stop offset="70%" stop-color="#ff9500"/><stop offset="100%" stop-color="#ff3b30"/>' +
+        '</linearGradient></defs>' +
+        '<path d="M ' + bgStart.x + ' ' + bgStart.y + ' A ' + r + ' ' + r + ' 0 1 1 ' + bgEnd.x + ' ' + bgEnd.y + '" fill="none" stroke="#e8e8e8" stroke-width="10" stroke-linecap="round"/>' +
+        (score > 0 ? '<path d="M ' + bgStart.x + ' ' + bgStart.y + ' A ' + r + ' ' + r + ' 0 ' + largeArc + ' 1 ' + scoreEnd.x + ' ' + scoreEnd.y + '" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round"/>' : '') +
+        '<circle cx="' + scoreEnd.x + '" cy="' + scoreEnd.y + '" r="5" fill="' + (score >= 60 ? '#ff3b30' : score >= 40 ? '#ff9500' : '#34c759') + '"/>' +
+        '</svg>';
 }
 
 function getRiskDesc(score) {
@@ -250,13 +354,11 @@ function getRiskDesc(score) {
 
 function fmtAmount(n) {
     if (!n || n === '0' || n === '') return '--';
-    return Number(n).toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 6});
+    return Number(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 6 });
 }
 
 function explorerLink(chain, addr) {
-    if ((chain || '').toUpperCase() === 'TRON' || (addr && addr.startsWith('T'))) {
-        return 'https://tronscan.org/#/address/' + addr;
-    }
+    if ((chain || '').toUpperCase() === 'TRON' || (addr && addr.startsWith('T'))) return 'https://tronscan.org/#/address/' + addr;
     return 'https://etherscan.io/address/' + addr;
 }
 
@@ -272,22 +374,55 @@ function shortHash(h) {
 }
 
 // ============================================
-// Render Found Address
+// Render: Auth Required
+// ============================================
+function renderAuthRequired(address) {
+    pendingAddress = address; // save so we can auto-load after login
+    var html = '<div class="empty-state">';
+    html += '<div class="empty-icon">&#128274;</div>';
+    html += '<h2>Sign In Required</h2>';
+    html += '<p>Create a free account to look up address risk data. You get 3 free queries per day.</p>';
+    html += '<div style="margin-top:20px;">';
+    html += '<button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button>';
+    html += ' <button class="btn btn-outline" onclick="showLoginModal()" style="padding:8px 24px;font-size:13px;margin-left:8px;">Sign In</button>';
+    html += '</div></div>';
+    document.getElementById('content').innerHTML = html;
+}
+
+// ============================================
+// Render: Quota Exceeded
+// ============================================
+function renderQuotaExceeded() {
+    var html = '<div class="empty-state">';
+    html += '<div class="empty-icon">&#9203;</div>';
+    html += '<h2>Daily Query Limit Reached</h2>';
+    html += '<p>You\'ve used all 3 free queries for today. Your quota resets at midnight UTC.</p>';
+    html += '<div style="margin-top:20px;">';
+    html += '<a href="/" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Dashboard</a>';
+    html += '</div></div>';
+    document.getElementById('content').innerHTML = html;
+}
+
+// ============================================
+// Render: Found
 // ============================================
 function renderFound(data) {
-    const r = data.results[0];
-    const chain = (r.chain || '').toUpperCase();
-    const chainClass = chain === 'TRON' ? 'tron' : 'eth';
-    const chainLabel = chain === 'TRON' ? 'TRON' : 'Ethereum';
-    const asset = (r.asset || 'USDT').toUpperCase();
-    const score = parseInt(r.risk_score) || 95;
-    const riskInfo = getRiskDesc(score);
-    const frozenAmt = fmtAmount(r.frozen_amount);
-    const addr = r.address || data.address;
+    var r = data.results[0];
+    var chain = (r.chain || '').toUpperCase();
+    var chainClass = chain === 'TRON' ? 'tron' : 'eth';
+    var chainLabel = chain === 'TRON' ? 'TRON' : 'Ethereum';
+    var asset = (r.asset || 'USDT').toUpperCase();
+    var score = parseInt(r.risk_score) || 95;
+    var riskInfo = getRiskDesc(score);
+    var frozenAmt = fmtAmount(r.frozen_amount);
+    var addr = r.address || data.address;
 
-    let html = '';
+    // Update remaining queries display
+    if (typeof data.remaining !== 'undefined') {
+        document.getElementById('queryText').textContent = data.remaining + ' Queries Remaining Today';
+    }
 
-    // Address Header
+    var html = '';
     html += '<div class="addr-header">';
     html += '<span class="chain-badge ' + chainClass + '">' + chainLabel + '</span>';
     html += '<span class="freeze-badge frozen">&#128274; Frozen</span>';
@@ -295,7 +430,6 @@ function renderFound(data) {
     html += '</div>';
     html += '<div class="addr-full">' + addr + '</div>';
 
-    // Gauge + Risk Note
     html += '<div class="gauge-section">';
     html += '<div class="gauge-container">';
     html += buildGaugeSVG(score);
@@ -306,23 +440,20 @@ function renderFound(data) {
 
     html += '<div class="risk-note-card">';
     html += '<div class="note-label">Risk Assessment</div>';
-    html += '<div class="note-text" style="margin-bottom:14px;">This address has been <strong style="color:var(--red);">blacklisted by the token issuer</strong> (' + asset + '). ';
-    html += 'Funds at this address are permanently frozen and cannot be transferred.</div>';
+    html += '<div class="note-text" style="margin-bottom:14px;">This address has been <strong style="color:var(--red);">blacklisted by the token issuer</strong> (' + asset + '). Funds at this address are permanently frozen and cannot be transferred.</div>';
     html += '<div class="note-label">Category</div>';
     html += '<div class="note-text">' + (r.category || r.label || 'Issuer Blacklist') + '</div>';
     if (r.description) {
         html += '<div class="note-label" style="margin-top:14px;">Description</div>';
         html += '<div class="note-text">' + r.description + '</div>';
     }
-    html += '</div>';
-    html += '</div>';
+    html += '</div></div>';
 
-    // Overview Card
     html += '<div class="card">';
     html += '<div class="card-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg> Overview</div>';
     html += '<div class="card-body">';
 
-    const rows = [
+    var rows = [
         ['Frozen Balance', frozenAmt !== '--' ? frozenAmt + ' ' + asset : 'Unknown', frozenAmt !== '--' ? 'red' : ''],
         ['Chain', chainLabel, ''],
         ['Asset', asset, ''],
@@ -332,88 +463,93 @@ function renderFound(data) {
         ['Status', (r.status || 'active').toUpperCase(), r.status === 'active' ? 'red' : 'green'],
         ['Block Number', r.blocknumber || r.blockNumber || '--', ''],
     ];
-
-    for (let i = 0; i < rows.length; i++) {
-        const cls = rows[i][2] ? ' ' + rows[i][2] : '';
-        html += '<div class="info-row">';
-        html += '<div class="info-label">' + rows[i][0] + '</div>';
-        html += '<div class="info-value' + cls + '">' + rows[i][1] + '</div>';
-        html += '</div>';
+    for (var i = 0; i < rows.length; i++) {
+        var cls = rows[i][2] ? ' ' + rows[i][2] : '';
+        html += '<div class="info-row"><div class="info-label">' + rows[i][0] + '</div><div class="info-value' + cls + '">' + rows[i][1] + '</div></div>';
     }
-
     html += '</div></div>';
 
-    // Freeze Sanction Card
-    const txHash = r.txhash || r.txHash || '';
+    var txHash = r.txhash || r.txHash || '';
     html += '<div class="card">';
-    html += '<div class="card-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="' + 'var(--red)' + '" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg> Freeze Sanction</div>';
+    html += '<div class="card-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2"><path d="M12 9v4"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg> Freeze Sanction</div>';
     html += '<div class="card-body" style="overflow-x:auto;">';
-    html += '<table class="freeze-table">';
-    html += '<thead><tr><th>Type</th><th>Operation Time</th><th>Amount</th><th>Chain</th><th>TxHash</th></tr></thead>';
-    html += '<tbody>';
+    html += '<table class="freeze-table"><thead><tr><th>Type</th><th>Operation Time</th><th>Amount</th><th>Chain</th><th>TxHash</th></tr></thead><tbody>';
     html += '<tr>';
     html += '<td><span style="color:var(--red); font-weight:600;">Freeze</span></td>';
     html += '<td>' + (r.firstseen || r.firstSeen || r.added_date || '--') + '</td>';
     html += '<td style="color:var(--red); font-weight:600;">' + frozenAmt + (frozenAmt !== '--' ? ' ' + asset : '') + '</td>';
     html += '<td>' + chainLabel + '</td>';
-    if (txHash) {
-        html += '<td><a class="tx-link" href="' + txExplorerLink(chain, txHash) + '" target="_blank" rel="noopener">' + shortHash(txHash) + '</a></td>';
-    } else {
-        html += '<td style="color:var(--text-3);">--</td>';
-    }
-    html += '</tr>';
-    html += '</tbody></table>';
-    html += '</div></div>';
+    html += txHash ? '<td><a class="tx-link" href="' + txExplorerLink(chain, txHash) + '" target="_blank" rel="noopener">' + shortHash(txHash) + '</a></td>' : '<td style="color:var(--text-3);">--</td>';
+    html += '</tr></tbody></table></div></div>';
 
-    // Explorer Link
     html += '<div style="text-align:center; margin-top:20px;">';
-    html += '<a href="' + explorerLink(chain, addr) + '" target="_blank" rel="noopener" class="btn btn-outline" style="text-decoration:none;">';
-    html += 'View on ' + (chain === 'TRON' ? 'Tronscan' : 'Etherscan') + ' &rarr;</a>';
+    html += '<a href="' + explorerLink(chain, addr) + '" target="_blank" rel="noopener" class="btn btn-outline" style="text-decoration:none;">View on ' + (chain === 'TRON' ? 'Tronscan' : 'Etherscan') + ' &rarr;</a>';
     html += '</div>';
 
     document.getElementById('content').innerHTML = html;
 }
 
 // ============================================
-// Render Not Found
+// Render: Not Found
 // ============================================
-function renderNotFound(address) {
-    let html = '<div class="empty-state">';
+function renderNotFound(address, data) {
+    if (typeof data.remaining !== 'undefined') {
+        document.getElementById('queryText').textContent = data.remaining + ' Queries Remaining Today';
+    }
+    var html = '<div class="empty-state">';
     html += '<div class="empty-icon">&#9989;</div>';
     html += '<h2>Not Found in Blacklist Database</h2>';
     html += '<p style="font-family:monospace; color:var(--blue); margin:12px auto; word-break:break-all; font-size:13px;">' + address + '</p>';
     html += '<p>This address is not currently flagged in our stablecoin blacklist database. This does not guarantee the address is safe.</p>';
-    html += '<div style="margin-top:20px;">';
-    html += '<a href="/dashboard.html" class="btn btn-fill" style="text-decoration:none;">Back to Dashboard</a>';
-    html += '</div>';
+    html += '<div style="margin-top:20px;"><a href="/" class="btn btn-fill" style="text-decoration:none;">Back to Dashboard</a></div>';
     html += '</div>';
     document.getElementById('content').innerHTML = html;
 }
 
 // ============================================
-// Render Error
+// Render: Error
 // ============================================
 function renderError(msg) {
     document.getElementById('content').innerHTML = '<div class="empty-state"><div class="empty-icon" style="color:var(--red);">&#9888;</div><h2>Error</h2><p>' + msg + '</p></div>';
 }
 
 // ============================================
-// Load Address
+// Load Address (with auth token)
 // ============================================
 async function loadAddress(address) {
     document.getElementById('searchInput').value = address;
     document.getElementById('content').innerHTML = '<div class="loading-state"><div class="spinner"></div><div>Looking up address...</div></div>';
 
+    // If not logged in, show auth required
+    if (!currentUser) {
+        renderAuthRequired(address);
+        return;
+    }
+
     try {
-        const data = await jsonpFetch(GAS_BASE + '?address=' + encodeURIComponent(address.toLowerCase()));
+        var url = await buildApiUrl('address=' + encodeURIComponent(address.toLowerCase()));
+        var data = await jsonpFetch(url);
+
+        if (data && data.error === 'AUTH_REQUIRED') {
+            renderAuthRequired(address);
+            return;
+        }
+        if (data && data.error === 'RATE_LIMITED') {
+            renderError('Too many requests. Please wait ' + (data.retryAfter || 60) + ' seconds and try again.');
+            return;
+        }
+        if (data && data.error === 'QUOTA_EXCEEDED') {
+            renderQuotaExceeded();
+            return;
+        }
         if (data && data.success) {
             if (data.found && data.results && data.results.length > 0) {
                 renderFound(data);
             } else {
-                renderNotFound(address);
+                renderNotFound(address, data);
             }
         } else {
-            renderError('Failed to query database. Please try again.');
+            renderError('Failed to query database. ' + (data && data.message ? data.message : 'Please try again.'));
         }
     } catch (err) {
         renderError('Network error: ' + err.message);
@@ -421,12 +557,27 @@ async function loadAddress(address) {
 }
 
 // ============================================
-// Init
+// Init — wait for auth before loading address
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
-    const address = getQueryParam('address');
+    var address = getQueryParam('address');
     if (address) {
-        loadAddress(address);
+        document.getElementById('searchInput').value = address;
+        // Don't load immediately — wait for onAuthStateChanged
+        // If user is already signed in, onAuthStateChanged fires quickly
+        // If not signed in, show auth required after a brief wait
+        pendingAddress = address;
+        // Safety timeout: if onAuthStateChanged hasn't fired in 2s, check state
+        setTimeout(function() {
+            if (pendingAddress) {
+                // Auth state determined by now; if still no user, show auth required
+                if (!currentUser) {
+                    renderAuthRequired(address);
+                    pendingAddress = null;
+                }
+                // If currentUser exists, onAuthStateChanged should have handled it
+            }
+        }, 2000);
     } else {
         document.getElementById('content').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128269;</div><h2>Enter an Address</h2><p>Use the search bar above to look up any Ethereum or Tron address in the blacklist database.</p></div>';
     }
