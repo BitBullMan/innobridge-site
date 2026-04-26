@@ -286,13 +286,13 @@ let totalServerRows = 0;
 let activeFilter = 'all';
 let batchOffset = 0; // which server offset the current batch starts at
 let batchData = []; // the current batch of rows from server
+let isLoadingData = false; // prevent concurrent data loads
 
 auth.onAuthStateChanged(function(u) {
-    var wasLoggedIn = !!currentUser;
     currentUser = u;
     updateNavAuth();
-    // Reload data when auth state changes (login/logout) so limits update
-    if(!!u !== wasLoggedIn) loadDashboardData();
+    // Always reload table data when auth state is determined (login, logout, or initial load)
+    loadDashboardData();
 });
 
 function updateNavAuth() {
@@ -346,10 +346,13 @@ async function buildApiUrl(params){
 }
 
 async function loadDashboardData(){
-    try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
+    // Stats loaded separately in DOMContentLoaded; this only handles table data
+    if(isLoadingData) return; // prevent concurrent loads
+    isLoadingData=true;
     currentPage=1;
     batchOffset=0;
     await fetchBatch(0);
+    isLoadingData=false;
 }
 // Fetch a batch of BATCH_SIZE rows from server starting at serverOffset
 async function fetchBatch(serverOffset){
@@ -442,7 +445,10 @@ function filterChain(f,el){
     activeFilter=f;
     renderCurrentPage();
 }
-document.addEventListener('DOMContentLoaded',function(){loadDashboardData();});
+// Stats are public — load immediately. Table data waits for onAuthStateChanged.
+document.addEventListener('DOMContentLoaded',async function(){
+    try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
+});
 </script>
 </body>
 </html>
