@@ -223,8 +223,10 @@ let isLoginMode = true;
 let pendingAddress = null; // address waiting for auth before lookup
 
 // ============================================
-// Auth State
+// Auth State — handle redirect result first
 // ============================================
+auth.getRedirectResult().catch(function(e) { console.log('Redirect auth error:', e.message); });
+
 auth.onAuthStateChanged(function(u) {
     currentUser = u;
     updateNavAuth();
@@ -271,7 +273,7 @@ function doEmailAuth() {
     if (!em || !pw) return alert('Please enter email and password.');
     (isLoginMode ? auth.signInWithEmailAndPassword(em, pw) : auth.createUserWithEmailAndPassword(em, pw)).then(function() { closeModals(); }).catch(function(e) { alert(e.message); });
 }
-function doGoogleAuth() { auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then(function() { closeModals(); }).catch(function(e) { alert(e.message); }); }
+function doGoogleAuth() { closeModals(); auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); }
 function doLogout() { auth.signOut(); }
 
 // ============================================
@@ -414,7 +416,7 @@ function renderFound(data) {
     var asset = (r.asset || 'USDT').toUpperCase();
     var score = parseInt(r.risk_score) || 95;
     var riskInfo = getRiskDesc(score);
-    var frozenAmt = fmtAmount(r.frozen_amount);
+    var frozenAmt = fmtAmount(r.frozen_amount_raw || r.frozen_amount || r.frozen_amount_display);
     var addr = r.address || data.address;
 
     // Update remaining queries display
