@@ -225,8 +225,6 @@ let pendingAddress = null; // address waiting for auth before lookup
 // ============================================
 // Auth State — handle redirect result first
 // ============================================
-auth.getRedirectResult().catch(function(e) { console.log('Redirect auth error:', e.message); });
-
 auth.onAuthStateChanged(function(u) {
     currentUser = u;
     updateNavAuth();
@@ -273,7 +271,14 @@ function doEmailAuth() {
     if (!em || !pw) return alert('Please enter email and password.');
     (isLoginMode ? auth.signInWithEmailAndPassword(em, pw) : auth.createUserWithEmailAndPassword(em, pw)).then(function() { closeModals(); }).catch(function(e) { alert(e.message); });
 }
-function doGoogleAuth() { closeModals(); auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); }
+function doGoogleAuth() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function() { closeModals(); }).catch(function(e) {
+        if (e.code === 'auth/popup-closed-by-user') return; // user just closed it, no alert
+        if (e.code === 'auth/popup-blocked') { alert('Popup was blocked. Please allow popups for this site and try again.'); return; }
+        alert(e.message);
+    });
+}
 function doLogout() { auth.signOut(); }
 
 // ============================================

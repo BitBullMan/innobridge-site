@@ -288,8 +288,6 @@ let batchOffset = 0; // which server offset the current batch starts at
 let batchData = []; // the current batch of rows from server
 let isLoadingData = false; // prevent concurrent data loads
 
-auth.getRedirectResult().catch(function(e) { console.log('Redirect auth error:', e.message); });
-
 auth.onAuthStateChanged(function(u) {
     currentUser = u;
     updateNavAuth();
@@ -326,7 +324,14 @@ function doEmailAuth() {
     if(!em||!pw) return alert('Please enter email and password.');
     (isLoginMode ? auth.signInWithEmailAndPassword(em,pw) : auth.createUserWithEmailAndPassword(em,pw)).then(function(){closeModals();}).catch(function(e){alert(e.message);});
 }
-function doGoogleAuth() { closeModals(); auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider()); }
+function doGoogleAuth() {
+    var provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider).then(function() { closeModals(); }).catch(function(e) {
+        if (e.code === 'auth/popup-closed-by-user') return;
+        if (e.code === 'auth/popup-blocked') { alert('Popup was blocked. Please allow popups for this site and try again.'); return; }
+        alert(e.message);
+    });
+}
 function doLogout() { auth.signOut(); }
 function doSearch() { var a=document.getElementById('searchInput').value.trim(); if(a) location.href='detail.html?address='+encodeURIComponent(a); }
 document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
