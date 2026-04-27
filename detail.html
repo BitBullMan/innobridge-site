@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Detail - Innobridge Blacklist</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
             --bg: #fafafa;
@@ -156,8 +155,6 @@
             <li><a href="/detail.html" class="active">Address Lookup</a></li>
         </ul>
         <div class="nav-right" id="navRight">
-            <button class="btn btn-outline" onclick="showLoginModal()">Sign In</button>
-            <button class="btn btn-fill" onclick="showRegisterModal()">Register</button>
         </div>
     </div>
 </nav>
@@ -168,8 +165,8 @@
         <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" spellcheck="false">
         <button onclick="doSearch()">Search</button>
     </div>
-    <div class="query-badge" id="queryBadge">
-        <span id="queryText">3 Free Queries / Day</span>
+    <div class="query-badge" id="queryBadge" style="display:none;">
+        <span id="queryText"></span>
     </div>
 
     <!-- Content Area -->
@@ -185,104 +182,12 @@
     Innobridge Blacklist &copy; 2026 &middot; Data from on-chain issuer blacklist events
 </div>
 
-<!-- Login/Register Modal -->
-<div class="modal-overlay" id="loginModal">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModals()">&times;</button>
-        <div class="modal-title" id="modalTitle">Sign In</div>
-        <div class="modal-desc" id="modalDesc">Access address risk checks with your free account</div>
-        <input type="email" class="modal-input" id="authEmail" placeholder="Email address">
-        <input type="password" class="modal-input" id="authPassword" placeholder="Password">
-        <button class="btn btn-fill" style="width:100%;padding:10px;font-size:13px;" onclick="doEmailAuth()" id="authSubmitBtn">Sign In</button>
-        <div class="modal-divider">or</div>
-        <button class="btn-google" onclick="doGoogleAuth()">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Continue with Google
-        </button>
-        <div style="margin-top:14px;font-size:11px;color:var(--text-3);">
-            <span id="authToggle">Don't have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue);">Register</a></span>
-        </div>
-    </div>
-</div>
 
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBLpp1N4RE_sR15LqknkIhuIKk-w6Ckmak",
-    authDomain: "innobridge-5a89a.firebaseapp.com",
-    projectId: "innobridge-5a89a",
-    storageBucket: "innobridge-5a89a.firebasestorage.app",
-    messagingSenderId: "506523742424",
-    appId: "1:506523742424:web:8a668a918d515ec9e7a7ad"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ57uLIq0uYtQ77el8F-HI9BMFne_qzFyjb0wMyahyBUgGmxMA/exec';
 
-let currentUser = null;
-let isLoginMode = true;
-let pendingAddress = null; // address waiting for auth before lookup
-
 // ============================================
-// Auth State — handle redirect result first
-// ============================================
-auth.onAuthStateChanged(function(u) {
-    currentUser = u;
-    updateNavAuth();
-    // If there's a pending address waiting for auth, load it now
-    if (u && pendingAddress) {
-        var addr = pendingAddress;
-        pendingAddress = null;
-        loadAddress(addr);
-    }
-});
-
-function updateNavAuth() {
-    var nr = document.getElementById('navRight');
-    if (currentUser) {
-        var i = (currentUser.email || 'U').charAt(0).toUpperCase();
-        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">' + i + '</div><div class="user-menu" id="userMenu"><div class="user-menu-email">' + currentUser.email + '</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
-        document.getElementById('queryBadge').style.display = 'inline-flex';
-        document.getElementById('queryText').textContent = '3 Free Queries / Day';
-    } else {
-        nr.innerHTML = '<button class="btn btn-outline" onclick="showLoginModal()">Sign In</button><button class="btn btn-fill" onclick="showRegisterModal()">Register</button>';
-        document.getElementById('queryBadge').style.display = 'none';
-    }
-}
-
-function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
-document.addEventListener('click', function(e) { var m = document.getElementById('userMenu'); if (m && !e.target.closest('.user-dropdown')) m.classList.remove('show'); });
-
-// ============================================
-// Auth Modal
-// ============================================
-function showLoginModal() { isLoginMode = true; openAuthModal(); }
-function showRegisterModal() { isLoginMode = false; openAuthModal(); }
-function openAuthModal() {
-    document.getElementById('loginModal').classList.add('show');
-    document.getElementById('modalTitle').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('modalDesc').textContent = isLoginMode ? 'Access address risk checks with your free account' : 'Get 3 free daily queries after sign-up';
-    document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('authToggle').innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Register</a>' : 'Already have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Sign In</a>';
-}
-function closeModals() { document.getElementById('loginModal').classList.remove('show'); }
-function toggleAuthMode(e) { e.preventDefault(); isLoginMode = !isLoginMode; openAuthModal(); }
-function doEmailAuth() {
-    var em = document.getElementById('authEmail').value.trim(), pw = document.getElementById('authPassword').value;
-    if (!em || !pw) return alert('Please enter email and password.');
-    (isLoginMode ? auth.signInWithEmailAndPassword(em, pw) : auth.createUserWithEmailAndPassword(em, pw)).then(function() { closeModals(); }).catch(function(e) { alert(e.message); });
-}
-function doGoogleAuth() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function() { closeModals(); }).catch(function(e) {
-        if (e.code === 'auth/popup-closed-by-user') return; // user just closed it, no alert
-        if (e.code === 'auth/popup-blocked') { alert('Popup was blocked. Please allow popups for this site and try again.'); return; }
-        alert(e.message);
-    });
-}
-function doLogout() { auth.signOut(); }
-
-// ============================================
-// JSONP + Auth Token
+// JSONP
 // ============================================
 let _jcnt = 0;
 function jsonpFetch(url) {
@@ -298,16 +203,8 @@ function jsonpFetch(url) {
     });
 }
 
-async function getAuthToken() {
-    if (!currentUser) return '';
-    try { return await currentUser.getIdToken(); } catch (e) { return ''; }
-}
-
-async function buildApiUrl(params) {
-    var url = GAS_BASE + '?' + params;
-    var token = await getAuthToken();
-    if (token) url += '&token=' + encodeURIComponent(token);
-    return url;
+function buildApiUrl(params) {
+    return GAS_BASE + '?' + params;
 }
 
 // ============================================
@@ -381,29 +278,13 @@ function shortHash(h) {
 }
 
 // ============================================
-// Render: Auth Required
+// Render: Rate Limited
 // ============================================
-function renderAuthRequired(address) {
-    pendingAddress = address; // save so we can auto-load after login
-    var html = '<div class="empty-state">';
-    html += '<div class="empty-icon">&#128274;</div>';
-    html += '<h2>Sign In Required</h2>';
-    html += '<p>Create a free account to look up address risk data. You get 3 free queries per day.</p>';
-    html += '<div style="margin-top:20px;">';
-    html += '<button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button>';
-    html += ' <button class="btn btn-outline" onclick="showLoginModal()" style="padding:8px 24px;font-size:13px;margin-left:8px;">Sign In</button>';
-    html += '</div></div>';
-    document.getElementById('content').innerHTML = html;
-}
-
-// ============================================
-// Render: Quota Exceeded
-// ============================================
-function renderQuotaExceeded() {
+function renderRateLimited(retryAfter) {
     var html = '<div class="empty-state">';
     html += '<div class="empty-icon">&#9203;</div>';
-    html += '<h2>Daily Query Limit Reached</h2>';
-    html += '<p>You\'ve used all 3 free queries for today. Your quota resets at midnight UTC.</p>';
+    html += '<h2>Too Many Requests</h2>';
+    html += '<p>Please wait ' + (retryAfter || 60) + ' seconds before trying again.</p>';
     html += '<div style="margin-top:20px;">';
     html += '<a href="/" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Dashboard</a>';
     html += '</div></div>';
@@ -527,26 +408,12 @@ async function loadAddress(address) {
     document.getElementById('searchInput').value = address;
     document.getElementById('content').innerHTML = '<div class="loading-state"><div class="spinner"></div><div>Looking up address...</div></div>';
 
-    // If not logged in, show auth required
-    if (!currentUser) {
-        renderAuthRequired(address);
-        return;
-    }
-
     try {
-        var url = await buildApiUrl('address=' + encodeURIComponent(address.toLowerCase()));
+        var url = buildApiUrl('address=' + encodeURIComponent(address.toLowerCase()));
         var data = await jsonpFetch(url);
 
-        if (data && data.error === 'AUTH_REQUIRED') {
-            renderAuthRequired(address);
-            return;
-        }
         if (data && data.error === 'RATE_LIMITED') {
-            renderError('Too many requests. Please wait ' + (data.retryAfter || 60) + ' seconds and try again.');
-            return;
-        }
-        if (data && data.error === 'QUOTA_EXCEEDED') {
-            renderQuotaExceeded();
+            renderRateLimited(data.retryAfter);
             return;
         }
         if (data && data.success) {
@@ -564,27 +431,13 @@ async function loadAddress(address) {
 }
 
 // ============================================
-// Init — wait for auth before loading address
+// Init — load address directly, no auth needed
 // ============================================
 document.addEventListener('DOMContentLoaded', function() {
     var address = getQueryParam('address');
     if (address) {
         document.getElementById('searchInput').value = address;
-        // Don't load immediately — wait for onAuthStateChanged
-        // If user is already signed in, onAuthStateChanged fires quickly
-        // If not signed in, show auth required after a brief wait
-        pendingAddress = address;
-        // Safety timeout: if onAuthStateChanged hasn't fired in 2s, check state
-        setTimeout(function() {
-            if (pendingAddress) {
-                // Auth state determined by now; if still no user, show auth required
-                if (!currentUser) {
-                    renderAuthRequired(address);
-                    pendingAddress = null;
-                }
-                // If currentUser exists, onAuthStateChanged should have handled it
-            }
-        }, 2000);
+        loadAddress(address);
     } else {
         document.getElementById('content').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128269;</div><h2>Enter an Address</h2><p>Use the search bar above to look up any Ethereum or Tron address in the blacklist database.</p></div>';
     }

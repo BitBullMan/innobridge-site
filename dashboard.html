@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innobridge Blacklist - Stablecoin Freeze Intelligence</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-auth-compat.js"></script>
+    <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
             --bg: #fafafa;
@@ -166,10 +165,7 @@
             <li><a href="/" class="active">Dashboard</a></li>
             <li><a href="/detail.html">Address Lookup</a></li>
         </ul>
-        <div class="nav-right" id="navRight">
-            <button class="btn btn-outline" onclick="showLoginModal()">Sign In</button>
-            <button class="btn btn-fill" onclick="showRegisterModal()">Register</button>
-        </div>
+        <div class="nav-right" id="navRight"></div>
     </div>
 </nav>
 
@@ -181,9 +177,6 @@
         <button onclick="doSearch()">Search</button>
     </div>
     <div class="search-hint">Supports Ethereum (0x) and Tron (T) addresses</div>
-    <div class="query-badge" id="queryBadge" style="display:none;">
-        <span id="queryText">3 Free Queries / Day</span>
-    </div>
 </section>
 
 <section class="stats-section">
@@ -247,137 +240,45 @@
     Innobridge Blacklist &copy; 2026 &middot; Data from on-chain issuer blacklist events &middot; Updates every 12h
 </footer>
 
-<div class="modal-overlay" id="loginModal">
-    <div class="modal-box">
-        <button class="modal-close" onclick="closeModals()">&times;</button>
-        <div class="modal-title" id="modalTitle">Sign In</div>
-        <div class="modal-desc" id="modalDesc">Access address risk checks with your free account</div>
-        <input type="email" class="modal-input" id="authEmail" placeholder="Email address">
-        <input type="password" class="modal-input" id="authPassword" placeholder="Password">
-        <button class="btn btn-fill" style="width:100%;padding:10px;font-size:13px;" onclick="doEmailAuth()" id="authSubmitBtn">Sign In</button>
-        <div class="modal-divider">or</div>
-        <button class="btn-google" onclick="doGoogleAuth()">
-            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
-            Continue with Google
-        </button>
-        <div style="margin-top:14px;font-size:11px;color:var(--text-3);">
-            <span id="authToggle">Don't have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue);">Register</a></span>
-        </div>
-    </div>
-</div>
 
 <script>
-const firebaseConfig = {
-    apiKey: "AIzaSyBLpp1N4RE_sR15LqknkIhuIKk-w6Ckmak",
-    authDomain: "innobridge-5a89a.firebaseapp.com",
-    projectId: "innobridge-5a89a",
-    storageBucket: "innobridge-5a89a.firebasestorage.app",
-    messagingSenderId: "506523742424",
-    appId: "1:506523742424:web:8a668a918d515ec9e7a7ad"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ57uLIq0uYtQ77el8F-HI9BMFne_qzFyjb0wMyahyBUgGmxMA/exec';
 
-let currentUser = null, allRecent = [], filteredRecent = [], currentPage = 1, isLoginMode = true;
+let allRecent = [], filteredRecent = [], currentPage = 1;
 const PAGE_SIZE = 10;
-const BATCH_SIZE = 50; // fetch 50 rows per API call (API max is 50), paginate locally
+const BATCH_SIZE = 50;
+const MAX_PAGES = 10; // limit frontend to 10 pages max
 let totalServerRows = 0;
 let activeFilter = 'all';
-let batchOffset = 0; // which server offset the current batch starts at
-let batchData = []; // the current batch of rows from server
-let isLoadingData = false; // prevent concurrent data loads
+let batchOffset = 0;
+let batchData = [];
+let isLoadingData = false;
 
-auth.onAuthStateChanged(function(u) {
-    currentUser = u;
-    updateNavAuth();
-    // Always reload table data when auth state is determined (login, logout, or initial load)
-    loadDashboardData();
-});
-
-function updateNavAuth() {
-    const nr = document.getElementById('navRight');
-    if (currentUser) {
-        const i = (currentUser.email||'U').charAt(0).toUpperCase();
-        nr.innerHTML = '<span class="plan-badge">Free Plan</span><div class="user-dropdown"><div class="avatar" onclick="toggleUserMenu()">'+i+'</div><div class="user-menu" id="userMenu"><div class="user-menu-email">'+currentUser.email+'</div><div class="user-menu-item" onclick="doLogout()">Sign Out</div></div></div>';
-    } else {
-        nr.innerHTML = '<button class="btn btn-outline" onclick="showLoginModal()">Sign In</button><button class="btn btn-fill" onclick="showRegisterModal()">Register</button>';
-    }
-    var b = document.getElementById('queryBadge');
-    if (currentUser) { b.style.display='inline-flex'; document.getElementById('queryText').textContent='3 Free Queries / Day'; } else { b.style.display='none'; }
-}
-function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
-document.addEventListener('click', function(e) { var m=document.getElementById('userMenu'); if(m&&!e.target.closest('.user-dropdown')) m.classList.remove('show'); });
-function showLoginModal() { isLoginMode=true; openAuthModal(); }
-function showRegisterModal() { isLoginMode=false; openAuthModal(); }
-function openAuthModal() {
-    document.getElementById('loginModal').classList.add('show');
-    document.getElementById('modalTitle').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('modalDesc').textContent = isLoginMode ? 'Access address risk checks with your free account' : 'Get 3 free daily queries after sign-up';
-    document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Sign In' : 'Create Account';
-    document.getElementById('authToggle').innerHTML = isLoginMode ? 'Don\'t have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Register</a>' : 'Already have an account? <a href="#" onclick="toggleAuthMode(event)" style="color:var(--blue)">Sign In</a>';
-}
-function closeModals() { document.getElementById('loginModal').classList.remove('show'); }
-function toggleAuthMode(e) { e.preventDefault(); isLoginMode=!isLoginMode; openAuthModal(); }
-function doEmailAuth() {
-    var em=document.getElementById('authEmail').value.trim(), pw=document.getElementById('authPassword').value;
-    if(!em||!pw) return alert('Please enter email and password.');
-    (isLoginMode ? auth.signInWithEmailAndPassword(em,pw) : auth.createUserWithEmailAndPassword(em,pw)).then(function(){closeModals();}).catch(function(e){alert(e.message);});
-}
-function doGoogleAuth() {
-    var provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider).then(function() { closeModals(); }).catch(function(e) {
-        if (e.code === 'auth/popup-closed-by-user') return;
-        if (e.code === 'auth/popup-blocked') { alert('Popup was blocked. Please allow popups for this site and try again.'); return; }
-        alert(e.message);
-    });
-}
-function doLogout() { auth.signOut(); }
 function doSearch() { var a=document.getElementById('searchInput').value.trim(); if(a) location.href='detail.html?address='+encodeURIComponent(a); }
 document.getElementById('searchInput').addEventListener('keydown',function(e){if(e.key==='Enter')doSearch();});
 
 let jsonpCounter=0;
 function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
 
-// Get Firebase ID token for authenticated API calls
-async function getAuthToken(){
-    if(!currentUser) return '';
-    try{ return await currentUser.getIdToken(); }catch(e){ return ''; }
-}
-// Build API URL with optional auth token
-async function buildApiUrl(params){
-    var url=GAS_BASE+'?'+params;
-    var token=await getAuthToken();
-    if(token) url+='&token='+encodeURIComponent(token);
-    return url;
-}
-
 async function loadDashboardData(){
-    // Stats loaded separately in DOMContentLoaded; this only handles table data
-    if(isLoadingData) return; // prevent concurrent loads
+    if(isLoadingData) return;
     isLoadingData=true;
     currentPage=1;
     batchOffset=0;
     await fetchBatch(0);
     isLoadingData=false;
 }
-// Fetch a batch of BATCH_SIZE rows from server starting at serverOffset
 async function fetchBatch(serverOffset){
     try{
-        var url=await buildApiUrl('action=recent&limit='+BATCH_SIZE+'&offset='+serverOffset);
+        var url=GAS_BASE+'?action=recent&limit='+BATCH_SIZE+'&offset='+serverOffset;
         var rd=await jsonpFetch(url);
-        if(rd&&rd.error==='AUTH_REQUIRED'){
-            document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;"><div style="font-size:14px;font-weight:600;margin-bottom:6px;">Sign in to browse frozen addresses</div><div style="font-size:12px;color:var(--text-2);margin-bottom:14px;">Create a free account to access the full database</div><button class="btn btn-fill" onclick="showRegisterModal()" style="padding:8px 24px;font-size:13px;">Create Free Account</button> <button class="btn btn-outline" onclick="showLoginModal()" style="padding:8px 24px;font-size:13px;margin-left:8px;">Sign In</button></td></tr>';
-            document.getElementById('pagination').innerHTML='';
-            document.getElementById('tableCount').textContent='Sign in required';
-            return;
-        }
         if(rd&&rd.error==='RATE_LIMITED'){
-            alert('请求太频繁，请 '+rd.retryAfter+' 秒后重试。');
+            alert('Too many requests. Please wait '+rd.retryAfter+' seconds.');
             return;
         }
         if(rd&&rd.success){
-            totalServerRows=rd.total||0;
+            // Cap total rows to MAX_PAGES * PAGE_SIZE for frontend display
+            totalServerRows=Math.min(rd.total||0, MAX_PAGES*PAGE_SIZE);
             batchOffset=serverOffset;
             batchData=rd.results||[];
             renderCurrentPage();
@@ -425,7 +326,7 @@ function renderTable(){
     h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
     tb.innerHTML=h;renderPagination(totalPages);
     var fnEl=document.getElementById('footerNoteText');
-    if(fnEl) fnEl.textContent='Full database access enabled for registered users.';
+    if(fnEl) fnEl.textContent='';
 }
 function formatTime(t){if(!t||t==='--')return'--';try{var d=new Date(t);if(isNaN(d.getTime()))return t;var p=function(n){return n<10?'0'+n:''+n;};return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds());}catch(e){return t;}}
 function renderPagination(tp){var c=document.getElementById('pagination');if(tp<=1){c.innerHTML='';return;}var h='<button class="page-btn" onclick="goPage('+(currentPage-1)+')" '+(currentPage<=1?'disabled':'')+'>&#171;</button>';for(var p=1;p<=tp;p++){if(tp>7&&p>3&&p<tp-1&&Math.abs(p-currentPage)>1){if(p===4||p===tp-2)h+='<span style="color:var(--text-3);padding:0 4px">...</span>';continue;}h+='<button class="page-btn'+(p===currentPage?' active':'')+'" onclick="goPage('+p+')">'+p+'</button>';}h+='<button class="page-btn" onclick="goPage('+(currentPage+1)+')" '+(currentPage>=tp?'disabled':'')+'>&#187;</button>';c.innerHTML=h;}
@@ -452,9 +353,10 @@ function filterChain(f,el){
     activeFilter=f;
     renderCurrentPage();
 }
-// Stats are public — load immediately. Table data waits for onAuthStateChanged.
+// Load stats and table data immediately — no auth required
 document.addEventListener('DOMContentLoaded',async function(){
     try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
+    loadDashboardData();
 });
 </script>
 </body>
