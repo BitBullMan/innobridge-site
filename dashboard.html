@@ -354,8 +354,8 @@ function filterChain(f,el){
     fetchBatch(0);
 }
 // Load stats and table data immediately — no auth required
-document.addEventListener('DOMContentLoaded',async function(){
-    try{var sd=await jsonpFetch(GAS_BASE+'?action=stats');if(sd&&sd.success)renderStats(sd);}catch(e){console.warn('stats fail',e);}
+document.addEventListener('DOMContentLoaded',function(){
+    jsonpFetch(GAS_BASE+'?action=stats').then(function(sd){if(sd&&sd.success)renderStats(sd);}).catch(function(e){console.warn('stats fail',e);});
     loadDashboardData();
 });
 </script>
