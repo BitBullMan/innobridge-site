@@ -163,14 +163,13 @@
         <a href="/" class="logo">Innobridge <span class="logo-tag">Blacklist</span></a>
         <ul class="nav-links">
             <li><a href="/" class="active">Dashboard</a></li>
-            <li><a href="/detail.html">Address Lookup</a></li>
         </ul>
         <div class="nav-right" id="navRight"></div>
     </div>
 </nav>
 
 <section class="hero">
-    <h1>Stablecoin <span>Freeze Intelligence</span></h1>
+    <h1>Stablecoin <span>Freeze & Blacklist Monitor</span></h1>
     <p>Real-time USDT / USDC blacklist monitoring across Ethereum & Tron</p>
     <div class="search-wrap">
         <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" autocomplete="off" spellcheck="false">
@@ -303,7 +302,7 @@ function renderStats(data){
     document.getElementById('statUsdtSub').textContent='ETH: '+fmt(s.usdt_eth_count)+' / TRON: '+fmt(s.usdt_tron_count);
     document.getElementById('statUsdc').textContent=fmt(s.usdc_eth_count);
     document.getElementById('statTotalFrozen').textContent=fmtM(s.total_frozen_amount);
-    if(s.today_new_frozen_amount){var fa=Number(s.today_new_frozen_amount);var faStr=fa>=1e6?'$'+(fa/1e6).toFixed(2)+'M':fa>=1e3?'$'+(fa/1e3).toFixed(1)+'K':'$'+fa.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});document.getElementById('statTotalChange').textContent='+'+faStr+' today';}else if(s.today_new_count){document.getElementById('statTotalChange').textContent='+'+s.today_new_count+' addresses today';}
+    if(s.today_new_frozen_amount&&Number(s.today_new_frozen_amount)>0){document.getElementById('statTotalChange').textContent='+$'+Number(s.today_new_frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' today';}else{document.getElementById('statTotalChange').textContent='';}
     if(s.last_updated)document.getElementById('statsUpdate').textContent='Updated: '+s.last_updated;
     // Per-asset daily new counts from stats API
     var usdtDailyEl=document.getElementById('statUsdtDaily');
