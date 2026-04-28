@@ -248,7 +248,7 @@ const GAS_BASE = 'https://script.google.com/macros/s/AKfycbwVXb0P-J6OlDeWz0f-aZ5
 
 let allRecent = [], filteredRecent = [], currentPage = 1;
 const PAGE_SIZE = 10;
-const BATCH_SIZE = 50;
+const BATCH_SIZE = 100;
 const MAX_PAGES = 10; // limit frontend to 10 pages max
 let totalServerRows = 0;
 let activeFilter = 'all';
@@ -304,7 +304,7 @@ function renderStats(data){
     document.getElementById('statUsdt').textContent=fmt(usdtTotal);
     document.getElementById('statUsdtSub').textContent='ETH: '+fmt(s.usdt_eth_count)+' / TRON: '+fmt(s.usdt_tron_count);
     document.getElementById('statUsdc').textContent=fmt(s.usdc_eth_count);
-    document.getElementById('statTotalFrozen').textContent=fmtM(s.total_frozen_amount);
+    document.getElementById('statTotalFrozen').textContent=s.total_frozen_amount?'$'+Number(s.total_frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'--';
     if(s.today_new_frozen_amount&&Number(s.today_new_frozen_amount)>0){document.getElementById('statTotalChange').textContent='+$'+Number(s.today_new_frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' today';}else{document.getElementById('statTotalChange').textContent='';}
     if(s.last_updated)document.getElementById('statsUpdate').textContent='Updated: '+s.last_updated;
     // Per-asset daily new counts from stats API
