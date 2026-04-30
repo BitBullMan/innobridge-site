@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Detail - Innobridge Blacklist</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Firebase removed: public access with rate limiting -->
     <style>
@@ -302,7 +303,15 @@ function renderFound(data) {
     var asset = (r.asset || 'USDT').toUpperCase();
     var score = parseInt(r.risk_score) || 95;
     var riskInfo = getRiskDesc(score);
-    var frozenAmt = fmtAmount(r.frozen_amount_raw || r.frozen_amount || r.frozen_amount_display);
+    // 优先用 frozen_amount_display（已格式化的正确值），避免读到未除decimals的原始值
+    var frozenAmt = '--';
+    if (r.frozen_amount_display && r.frozen_amount_display !== '0' && r.frozen_amount_display !== '0.00 USDT' && r.frozen_amount_display !== '0.00 USDC') {
+      var dp = parseFloat(r.frozen_amount_display);
+      if (!isNaN(dp) && dp > 0) frozenAmt = fmtAmount(dp);
+    }
+    if (frozenAmt === '--' && r.frozen_amount) {
+      frozenAmt = fmtAmount(r.frozen_amount);
+    }
     var addr = r.address || data.address;
 
     // Update remaining queries display
