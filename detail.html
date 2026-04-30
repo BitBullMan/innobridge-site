@@ -303,15 +303,20 @@ function renderFound(data) {
     var asset = (r.asset || 'USDT').toUpperCase();
     var score = parseInt(r.risk_score) || 95;
     var riskInfo = getRiskDesc(score);
-    // 优先用 frozen_amount_display（已格式化的正确值），避免读到未除decimals的原始值
-    var frozenAmt = '--';
-    if (r.frozen_amount_display && r.frozen_amount_display !== '0' && r.frozen_amount_display !== '0.00 USDT' && r.frozen_amount_display !== '0.00 USDC') {
-      var dp = parseFloat(r.frozen_amount_display);
-      if (!isNaN(dp) && dp > 0) frozenAmt = fmtAmount(dp);
+    // 智能处理 frozen_amount：检测是否为未除decimals的原始值
+    var faVal = Number(r.frozen_amount) || 0;
+    // USDT/USDC 最大冻结额不可能超过10亿，超过的一定是未除10^6的原始值
+    if (faVal > 1000000000) faVal = faVal / 1000000;
+    // 如果 frozen_amount 为0，尝试从 display 解析
+    if (!faVal && r.frozen_amount_display) {
+      var dpStr = (r.frozen_amount_display + '').replace(/[^0-9.]/g, '');
+      var dp = Number(dpStr);
+      if (!isNaN(dp) && dp > 0) {
+        if (dp > 1000000000) dp = dp / 1000000;
+        faVal = dp;
+      }
     }
-    if (frozenAmt === '--' && r.frozen_amount) {
-      frozenAmt = fmtAmount(r.frozen_amount);
-    }
+    var frozenAmt = faVal > 0 ? fmtAmount(faVal) : '--';
     var addr = r.address || data.address;
 
     // Update remaining queries display
