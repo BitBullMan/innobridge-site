@@ -423,7 +423,7 @@ async function loadAddress(address) {
     document.getElementById('content').innerHTML = '<div class="loading-state"><div class="spinner"></div><div>Looking up address...</div></div>';
 
     try {
-        var url = buildApiUrl('address=' + encodeURIComponent(address.toLowerCase()));
+        var url = buildApiUrl('address=' + encodeURIComponent(address));
         var data = await jsonpFetch(url);
 
         if (data && data.error === 'RATE_LIMITED') {
