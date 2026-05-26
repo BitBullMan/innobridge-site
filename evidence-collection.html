@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Exchange Evidence Collection Hub — Innobridge</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;
+  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
+  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
+  --accent-soft:rgba(79,110,247,0.08);
+  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
+  --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:16px;--radius-sm:10px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.7}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-text{font-size:16px;font-weight:800;color:var(--text)}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s;text-decoration:none}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
+.lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{background:var(--accent);color:#fff}
+
+.hero{padding:110px 40px 48px;text-align:center}
+.hero h1{font-size:clamp(28px,4vw,44px);font-weight:900;margin-bottom:12px}
+.hero p{font-size:16px;color:var(--text2);max-width:600px;margin:0 auto 28px;font-weight:500}
+.hero .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+
+.search-bar{max-width:600px;margin:0 auto 16px;display:flex;gap:10px}
+.search-input{flex:1;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;color:var(--text);outline:none;background:var(--bg2);transition:border-color .2s;font-weight:500}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--text3)}
+
+.filter-tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:32px}
+.filter-tab{padding:7px 18px;border-radius:20px;font-size:13px;font-weight:700;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .2s}
+.filter-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+.stats-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px}
+.stat-chip{padding:8px 16px;border-radius:var(--radius-sm);background:var(--bg2);border:1.5px solid var(--border);font-size:13px;font-weight:700;color:var(--text2)}
+.stat-chip strong{color:var(--accent);margin-right:4px}
+
+.content{max-width:1100px;margin:0 auto;padding:0 40px 80px}
+
+.category-section{margin-bottom:48px}
+.category-title{font-size:20px;font-weight:800;margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:2px solid var(--border)}
+.category-title .emoji{font-size:24px}
+.category-count{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:12px}
+
+.exchange-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px}
+
+.ex-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px;transition:border-color .2s,box-shadow .2s}
+.ex-card:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.ex-card.defunct{opacity:0.6}
+.ex-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.ex-name{font-size:16px;font-weight:800}
+.ex-entity{font-size:11px;color:var(--text3);font-weight:600;font-family:var(--mono)}
+.ex-method{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px}
+.ex-method .tag{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.ex-method .tag.email{background:rgba(79,110,247,0.1);color:#4f6ef7}
+.ex-method .tag.ticket{background:rgba(168,85,247,0.1);color:#a855f7}
+.ex-method .tag.portal{background:rgba(34,201,151,0.1);color:#22c997}
+.ex-method .tag.defunct{background:rgba(239,68,68,0.1);color:#ef4444}
+.ex-contact{font-family:var(--mono);font-size:12px;color:var(--text2);word-break:break-all;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:6px}
+.ex-contact a{color:var(--accent);text-decoration:none}
+.ex-contact a:hover{text-decoration:underline}
+.ex-docs{font-size:12px;color:var(--text3);line-height:1.6;font-weight:500}
+.ex-docs strong{color:var(--text2)}
+.ex-notes{margin-top:8px;font-size:11px;color:var(--text3);padding:8px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:6px;line-height:1.5;font-weight:500}
+
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
+.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+.f-links{display:flex;gap:20px;list-style:none}
+.f-links a{font-size:12px;color:var(--text3);font-weight:600;text-decoration:none;transition:color .2s}
+.f-links a:hover{color:var(--accent)}
+
+@media(max-width:768px){
+  nav{padding:12px 20px}
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .hero{padding:90px 20px 32px}
+  .content{padding:0 20px 60px}
+  .exchange-grid{grid-template-columns:1fr}
+  .search-bar{flex-direction:column}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px">
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="#" class="active" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<div class="hero">
+  <h1><span data-i18n="hero.title1">Exchange </span><span class="gradient" data-i18n="hero.title2">Evidence Collection</span><span data-i18n="hero.title3"> Hub</span></h1>
+  <p data-i18n="hero.desc">Comprehensive directory of law enforcement evidence request procedures for 80+ crypto platforms. Contact methods, required documents, and important notes.</p>
+  <div class="search-bar">
+    <input class="search-input" id="search" type="text" placeholder="Search exchanges, wallets, emails..." data-i18n-ph="search.ph" oninput="filterCards()">
+  </div>
+  <div class="filter-tabs">
+    <button class="filter-tab active" onclick="setFilter('all',this)" data-i18n="tab.all">All</button>
+    <button class="filter-tab" onclick="setFilter('exchange',this)" data-i18n="tab.exchanges">Exchanges</button>
+    <button class="filter-tab" onclick="setFilter('wallet',this)" data-i18n="tab.wallets">Wallets</button>
+    <button class="filter-tab" onclick="setFilter('swap',this)" data-i18n="tab.swap">Swap</button>
+    <button class="filter-tab" onclick="setFilter('crosschain',this)" data-i18n="tab.crosschain">Cross-chain</button>
+    <button class="filter-tab" onclick="setFilter('mining',this)" data-i18n="tab.mining">Mining Pools</button>
+    <button class="filter-tab" onclick="setFilter('unsupported',this)" data-i18n="tab.nosupport">Not Supported</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat-chip"><strong>68</strong> Exchanges</div>
+    <div class="stat-chip"><strong>10</strong> Wallets</div>
+    <div class="stat-chip"><strong>4</strong> Swap Platforms</div>
+    <div class="stat-chip"><strong>3</strong> Mining Pools</div>
+    <div class="stat-chip"><strong>1</strong> Cross-chain</div>
+  </div>
+</div>
+
+<div class="content" id="content"></div>
+
+<footer>
+  <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+  <ul class="f-links">
+    <li><a href="privacy.html" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a></li>
+  </ul>
+</footer>
+
+<script>
+// ===== EXCHANGE DATA =====
+var exchanges = [
+// === EXCHANGES (Email) ===
+{name:"Binance",cat:"exchange",method:"portal",entity:"Nest Services Limited",contact:"https://app.kodexglobal.com/binance-cn/signup",contactLabel:"Kodex Portal",docs:"立案决定书, 调取证据通知书(抬头: Nest Services Limited), 两名警官证正反面",notes:"2023/2/2起不再接受邮件请求，需通过Kodex平台提交。使用Chrome浏览器，勿用VPN。审核约1-2天。"},
+{name:"OKX",cat:"exchange",method:"email",entity:"Aux Cayes FinTech Co. Ltd.",contact:"evidence@okx.com",docs:"立案决定书, 调证通知书(抬头: Aux Cayes FinTech Co. Ltd.), 警官证(原件或加盖公章复印件)",notes:"调取信息请提供Excel格式表。非中国大陆电话需提供区号。哈希/地址请列明公链信息。"},
+{name:"HTX (Huobi)",cat:"exchange",method:"email",entity:"Huobi Global Limited",contact:"ls@htx-inc.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证(加盖公章+有效期内), 受案登记表或立案决定书, 联系信息",notes:"查询范围30天内1个工作日反馈，超过需3-5个工作日。地址/证件号需以表格形式发送。"},
+{name:"MEXC Global",cat:"exchange",method:"ticket",entity:"MEXC Global Ltd.",contact:"https://www.mexc.com/zh-CN/support/requests/legal",contactLabel:"MEXC Legal Portal",docs:"立案证明, 调证通知书(详细写明账号/哈希/地址/邮箱/电话/身份证号), 两名警官证复印件加盖公章, 司法调证信息附件表格"},
+{name:"Gate.io",cat:"exchange",method:"email",entity:"Gate Technology Inc.",contact:"support@gateio.zendesk.com",docs:"立案决定书, 调证通知书, 受案登记表(注意脱敏), 两名警官证复印件加盖公章",notes:"调证后需腾讯会议核实警方身份。注意接听国外/英国电话。同一案件同一邮箱认证后不需再次认证。"},
+{name:"KuCoin",cat:"exchange",method:"ticket",entity:"KuCoin",contact:"https://www.kucoin.com/legal/requests",contactLabel:"KuCoin Legal Portal",contactAlt:"rbenquiries@kucoin.com (邮件调证周期长)",docs:"执法机构名称, 两名警官证复印件, 立案决定书, 调证通知书",notes:"文件和邮件应为英文。冻结默认30天，需指定冻结期限。所有内容需可复制格式(PDF/Word/Excel)。"},
+{name:"Bybit",cat:"exchange",method:"email",entity:"",contact:"law_enforcement@bybit.com",docs:"执法机构名称, 身份证明(徽章号/内部ID), 政府域名邮箱, 联系信息, 传票/法院命令/搜查令, 加密货币类型+地址(文本/Excel格式)",notes:"紧急请求(生命危险)请在主题行注明。需使用警方授权邮箱。"},
+{name:"Bitget",cat:"exchange",method:"email",entity:"",contact:"support@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案例描述"},
+{name:"OKCoin",cat:"exchange",method:"email",entity:"OKCoin Technology Company Limited",contact:"support@okcoin.com",docs:"执法机关名称, 授权证明+职位, 身份证明(徽章号), 政府域名邮箱, 请求详细信息(Excel格式)",notes:"紧急请求在主题行说明。"},
+{name:"Bitfinex",cat:"exchange",method:"email",entity:"",contact:"inforequests@bitfinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方电子邮件查询并提供身份证明。"},
+{name:"Gemini",cat:"exchange",method:"email",entity:"",contact:"lawenforcement@gemini.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Kraken",cat:"exchange",method:"email",entity:"",contact:"support@kraken.com",docs:"官方执法邮箱, 法院传票或相关文件",notes:"合作基于收到相关法院系统的法院命令。"},
+{name:"Bitstamp",cat:"exchange",method:"email",entity:"",contact:"compliance@bitstamp.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"正式请求应由授权官员签署。"},
+{name:"BitMEX",cat:"exchange",method:"email",entity:"HDR Global Trading Ltd",contact:"directorfiu@gov.sc (塞舌尔FIU)",docs:"职级/头衔/部门/联系方式(官方警察邮箱), BitMEX账户信息",notes:"HDR在塞舌尔注册，需先联系塞舌尔金融情报机构(FIU)。未经塞舌尔当局批准无法披露客户信息。"},
+{name:"中币 (ZB.COM)",cat:"exchange",method:"email",entity:"ZBNetwork Technology Limited",contact:"inforequests@zb.com",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称, 请求内容"},
+{name:"Hoo (虎符)",cat:"exchange",method:"email",entity:"Hoo Pay Limited",contact:"support@hoo.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Poloniex",cat:"exchange",method:"email",entity:"",contact:"compliance@poloniex.com",docs:"彩色扫描副本(带标志), 请求官员全名/固定电话, 嫌疑人信息(姓名/邮箱/身份证/国籍), 交易哈希/地址, 授权证明",notes:"必须通过政府/警方官方邮箱发送。不接受黑白扫描件。"},
+{name:"HitBTC",cat:"exchange",method:"email",entity:"HiTech Digital Business Ltd",contact:"legal@hitbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱/地址/电话",notes:"仅以清晰英语提出。请给至少15天审查时间。"},
+{name:"CoinW (币赢)",cat:"exchange",method:"email",entity:"",contact:"support@coinw.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"ZT",cat:"exchange",method:"email",entity:"",contact:"servicetur@ztb.im",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。"},
+{name:"Hotcoin Global",cat:"exchange",method:"email",entity:"",contact:"Casecn@hotcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案件需协助调查内容"},
+{name:"Dcoin (大币网)",cat:"exchange",method:"email",entity:"",contact:"support@dcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"ZBG",cat:"exchange",method:"email",entity:"ZBG.com",contact:"vip@zbg.group",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称"},
+{name:"Digifinex",cat:"exchange",method:"email",entity:"",contact:"support@digifinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Tokencan",cat:"exchange",method:"email",entity:"",contact:"service@tokencan.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BigONE",cat:"exchange",method:"email",entity:"",contact:"fraud-report@bigone.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"通常5-10个工作日反馈。"},
+{name:"CoinTiger",cat:"exchange",method:"email",entity:"",contact:"support@cointiger.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"CCFOX",cat:"exchange",method:"email",entity:"",contact:"support@ccfox.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"No.7 Exchange",cat:"exchange",method:"email",entity:"",contact:"7ex.services@gmail.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Bithumb",cat:"exchange",method:"email",entity:"",contact:"help@bithumb.pro",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BKEX",cat:"exchange",method:"email",entity:"",contact:"support@bkex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 所需调查内容"},
+{name:"PeerCoin",cat:"exchange",method:"email",entity:"",contact:"foundation@peercoin.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"XT.COM",cat:"exchange",method:"email",entity:"",contact:"inforequests@XT.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 法律主体名称, 合理截止日期"},
+{name:"LBank",cat:"exchange",method:"email",entity:"",contact:"service@lbank.info",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"AscendEX",cat:"exchange",method:"email",entity:"",contact:"legal@ascendex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"AEX",cat:"exchange",method:"email",entity:"",contact:"service@ogmail.aex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"WhiteBIT",cat:"exchange",method:"email",entity:"",contact:"legal@whitebit.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。"},
+{name:"CoinEx",cat:"exchange",method:"email",entity:"",contact:"developer@coinex.org",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"PandaFe",cat:"exchange",method:"email",entity:"",contact:"service@pandafe.cloud",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BingX",cat:"exchange",method:"email",entity:"",contact:"support@bingx.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"SWFT",cat:"exchange",method:"email",entity:"EXPLORERX DIGITAL LIMITED",contact:"support@swftcoin.org",docs:"调证通知书(需说明时间范围+公章), 两名警官证复印件(加盖公章+有效期内), 立案决定书, 联系信息",notes:"单次最多查询5个用户，默认30天数据(1个工作日)，超过需3-5天。最长12个月。SWFT属去中心化协议，无法限制/划转资产。"},
+{name:"FatBTC",cat:"exchange",method:"email",entity:"",contact:"123@fatbtc.com",contactAlt:"https://www.fatbtc.com/help (工单)",docs:"执法机构名称, 授权证明+职位, 身份证明, 政府域名邮箱, 联系信息, 法人实体名称, 传票标识/地址/哈希(文本/Excel格式)"},
+{name:"Exmo",cat:"exchange",method:"email",entity:"",contact:"developer@coinex.org",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"要求正式调查请求。"},
+{name:"Bitcoinwin",cat:"exchange",method:"email",entity:"",contact:"service@bitcoinwin.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Newton",cat:"exchange",method:"email",entity:"",contact:"Investigations@newton.co",docs:"仅回复官方执法邮箱"},
+{name:"BW",cat:"exchange",method:"email",entity:"",contact:"support@bw.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"ProEX",cat:"exchange",method:"email",entity:"",contact:"support@proex.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BTC Markets",cat:"exchange",method:"email",entity:"",contact:"compliance@btcmarkets.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Bitforex",cat:"exchange",method:"email",entity:"",contact:"support@bitforex2.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 地址/哈希(文本/Excel格式)"},
+{name:"Bibox",cat:"exchange",method:"email",entity:"",contact:"support@bibox.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"OTCBTC",cat:"exchange",method:"email",entity:"",contact:"support@otcbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BTCC",cat:"exchange",method:"email",entity:"",contact:"support@btcc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Bitcoke",cat:"exchange",method:"email",entity:"",contact:"support@bitcoke.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"PEXPAY",cat:"exchange",method:"email",entity:"",contact:"lerequest@pexpay.com / dpo@pexpay.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"ChBtc",cat:"exchange",method:"email",entity:"",contact:"support@chbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Yunbi",cat:"exchange",method:"email",entity:"",contact:"have-a-good-day@yunbi.support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Zaif",cat:"exchange",method:"email",entity:"",contact:"zaifhelp@fcce.jp",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Luno",cat:"exchange",method:"email",entity:"",contact:"support@luno.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需通过政府域邮箱发送。"},
+{name:"BitZ",cat:"exchange",method:"email",entity:"",contact:"service@bitz.email",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BlockTrades",cat:"exchange",method:"email",entity:"",contact:"support@blocktrade.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Hopoo",cat:"exchange",method:"email",entity:"",contact:"service@hopoo.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"CoinCola",cat:"exchange",method:"email",entity:"CoinCola",contact:"evidence@coincola.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱发送",notes:"具体调用内容另写在Excel或邮件正文中。"},
+{name:"Tbitex",cat:"exchange",method:"email",entity:"",contact:"support@Tbitex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BTSE",cat:"exchange",method:"email",entity:"",contact:"compliance@btse.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"所有文件要有中文翻译。"},
+{name:"BitHub",cat:"exchange",method:"email",entity:"",contact:"hello@bithub.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Maskex",cat:"exchange",method:"email",entity:"MASK GLOBAL MARKET CO., LTD.",contact:"legal@maskex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"文书需英文翻译版本，邮件正文需英文。"},
+{name:"Pionex",cat:"exchange",method:"email",entity:"Pionex",contact:"service@pionex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 交易哈希"},
+{name:"Changelly",cat:"exchange",method:"email",entity:"Fintechvision Ltd.",contact:"legal@changelly.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 单位名称/联系方式",notes:"需通过官方邮箱发送。"},
+// === EXCHANGES (Ticket) ===
+{name:"Bittrex",cat:"exchange",method:"ticket",entity:"",contact:"https://bittrexglobal.zendesk.com/hc/en-us/requests/new",contactLabel:"Bittrex Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"Bittrex已于2023年关闭运营，此渠道可能不再有效。"},
+{name:"Coinbase Pro",cat:"exchange",method:"ticket",entity:"",contact:"https://help.coinbase.com/en/contact-us.html",contactLabel:"Coinbase Help",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需注册登陆后才可提交工单。"},
+{name:"BitFlyer",cat:"exchange",method:"ticket",entity:"",contact:"https://bitflyer.com/ja-jp/contact",contactLabel:"BitFlyer Contact",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BitMart",cat:"exchange",method:"ticket",entity:"",contact:"https://www.bitmart.com/support",contactLabel:"BitMart Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Coinone",cat:"exchange",method:"ticket",entity:"",contact:"",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"ALPEX",cat:"exchange",method:"ticket",entity:"",contact:"https://genfisupport.zendesk.com/hc/zh-cn/requests/new",contactLabel:"ALPEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Biking (币王)",cat:"exchange",method:"ticket",entity:"",contact:"https://1500644.s5.udesk.cn/hc/submit_a_request",contactLabel:"Biking Ticket",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Hotbit",cat:"exchange",method:"ticket",entity:"",contact:"https://hotbit.zendesk.com/hc/zh-cn/requests/new",contactLabel:"Hotbit Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需创建账号登陆。"},
+{name:"CITEX",cat:"exchange",method:"ticket",entity:"",contact:"https://citex.zendesk.com/hc/zh-tw/requests/new",contactLabel:"CITEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Asproex",cat:"exchange",method:"ticket",entity:"",contact:"https://asproplus.zendesk.com/hc/zh-cn/requests/new",contactLabel:"Asproex Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BitGlobal",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bithumb.pro/hc/en-us/requests/new",contactLabel:"BitGlobal Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Jubi",cat:"exchange",method:"ticket",entity:"",contact:"https://support.jusp.ws/hc/zh-cn/requests/new",contactLabel:"Jubi Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BITMAIN",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bitmain.com/hc/en-us/requests/new",contactLabel:"BITMAIN Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+// === WALLETS ===
+{name:"imToken",cat:"wallet",method:"email",entity:"IMTOKEN PTE.LTD.",contact:"hack@token.im / support@token.im",docs:"立案决定书, 调取证据通知书(抬头: IMTOKEN PTE.LTD.), 警方证件复印件, 杭州网警协查函",notes:"两种途径：1)线下杭州网警外协窗口取联系单 2)内部线上系统发送协查手续。单个案件只需提交一次协查函。"},
+{name:"Bixin (币信)",cat:"wallet",method:"email",entity:"BIXIN GLOBAL CO., LTD",contact:"legal@bixin.im",docs:"两名警官证正反面(加盖公章), 调查取证函(带公章+文号)",notes:"邮件标题格式：《XXXX公安机关/刑侦大队调查取证》"},
+{name:"BitPie",cat:"wallet",method:"email",entity:"BITPIE LIMITED",contact:"support@bitpie.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证复印件加盖公章, 立案决定书, 联系信息",notes:"地址/币种/证件号/手机号需以表格形式发送。"},
+{name:"TokenPocket",cat:"wallet",method:"email",entity:"TP GLOBAL LTD",contact:"legalsupport@tokenpocket.pro",docs:"调证通知书(需说明时间范围+公章), 立案决定书(加盖公章), 两名警官证复印件加盖公章, 联系信息",notes:"单次最多5个用户，30天内1个工作日，超过需3-5天。地址需以表格形式发送。"},
+{name:"MathWallet",cat:"wallet",method:"email",entity:"MathWallet",contact:"hello@mathwallet.org",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章",notes:"可提供信息：用户创建钱包的时间/IP地址/注册设备/设备号。"},
+{name:"Coldlar (库神)",cat:"wallet",method:"email",entity:"库神",contact:"service@coldlar.com",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章"},
+{name:"SafePal",cat:"wallet",method:"email",entity:"SafePal Ltd.",contact:"legal@safepal.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法文件原件+英文翻译件"},
+{name:"BitKeep",cat:"wallet",method:"email",entity:"BitKeep Global Inc.",contact:"support.web3@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Cobo",cat:"wallet",method:"email",entity:"Cobo Global Limited",contact:"regulatoryinquiry@cobo.com",docs:"与嫌疑人有关的授权令, 两名警官证复印件加盖公章",notes:"邮件标题：《XXXX公安机关/刑侦大队调取平台资料》"},
+{name:"Atomic Wallet",cat:"wallet",method:"email",entity:"Atomic Wallet",contact:"support@atomicwallet.io",docs:"通过官方邮箱发送, 附上确认邮件来源的证明"},
+// === SWAP PLATFORMS ===
+{name:"ChangeNow",cat:"swap",method:"email",entity:"CHN Group LLC",contact:"compliance@changenow.io",docs:"立案证明, 调证通知书(全英文版), 两名警官证复印件加盖公章, 案件基本情况, 交易和地址信息",notes:"交易哈希和地址需在单独的.xlsx/.csv电子表格中提供。"},
+{name:"SimpleSwap",cat:"swap",method:"email",entity:"SimpleSwap Ltd.",contact:"security@simpleswap.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"FixedFloat",cat:"swap",method:"email",entity:"FixedFloat",contact:"info@fixedfloat.com",docs:"立案证明, 全英文版调证通知书(含案件说明), 两名警官证复印件加盖公章, 交易哈希/地址(.xlsx/.csv)",notes:"邮件正文需全英文。抬头：To head of the FixedFloat company。"},
+{name:"SWFT Blockchain",cat:"swap",method:"email",entity:"EXPLORERX DIGITAL LIMITED",contact:"support@swftcoin.org",docs:"调证通知书(时间范围+公章), 两名警官证复印件(加盖公章+有效期内), 立案决定书",notes:"去中心化协议，无法限制/划转资产。单次最多5个用户，默认30天(1个工作日)，最长12个月。"},
+// === CROSS-CHAIN ===
+{name:"SideShift.ai",cat:"crosschain",method:"email",entity:"",contact:"legal@sideshift.ai",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法机构详细信息, 请求信息详情(地址/交易ID/IP/时间日期)"},
+// === MINING POOLS ===
+{name:"Ethermine",cat:"mining",method:"email",entity:"",contact:"privacy@bitfly.at",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Poolin (币印)",cat:"mining",method:"email",entity:"",contact:"support@blockin-wallethelp.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"BTC.com",cat:"mining",method:"email",entity:"",contact:"support@btc.com",docs:"立案证明, 调证通知书, 两名警官正反面复印件加盖公章, 政府域名邮箱, 法律主体名称, 地址/交易ID(文本/Excel)",notes:"紧急请求在主题行说明。"},
+// === UNSUPPORTED ===
+{name:"AOFEX, WBFex, Upbit, BiKi, Bione, LOEX, Orangex, CoinBene, ZGYE, BINVET, GIBXChange, Coincheck, BFX, HKEx.one, Kine Protocol, BQB, BitWell, 78EX, Bitbank, CKcoin, EXX, DeerBit, Sunbit, COINBIG, BitFx, WhaleEx, WankeJia, Tokok, BBKX, BTCBOX, CyberBank, Bitop, CoinMate, FCoin, BCEX, Deepcoin, PearCoin, GOKO, Paxful, AAX",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"目前不支持调证",notes:"这些交易所目前不支持执法调证程序。"},
+{name:"Metamask, Coinbase Wallet, AToken, kcash, Ledger, Trust Wallet, Robinhood 等",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"钱包平台目前不支持调证",notes:"去中心化钱包/硬件钱包通常无法提供用户信息。"}
+];
+
+var currentFilter = 'all';
+var categoryLabels = {
+  exchange:{emoji:'&#x1F3E6;',label:'Exchanges'},
+  wallet:{emoji:'&#x1F4B3;',label:'Wallet Platforms'},
+  swap:{emoji:'&#x1F504;',label:'Swap Platforms'},
+  crosschain:{emoji:'&#x1F310;',label:'Cross-chain Platforms'},
+  mining:{emoji:'&#x26CF;&#xFE0F;',label:'Mining Pools'},
+  unsupported:{emoji:'&#x274C;',label:'Not Currently Supported'}
+};
+
+function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+function renderCards(items){
+  var content = document.getElementById('content');
+  var grouped = {};
+  items.forEach(function(ex){
+    if(!grouped[ex.cat]) grouped[ex.cat]=[];
+    grouped[ex.cat].push(ex);
+  });
+
+  var order = ['exchange','wallet','swap','crosschain','mining','unsupported'];
+  var html = '';
+  order.forEach(function(cat){
+    if(!grouped[cat] || grouped[cat].length===0) return;
+    var info = categoryLabels[cat]||{emoji:'',label:cat};
+    html += '<div class="category-section" data-cat="'+cat+'">';
+    html += '<div class="category-title"><span class="emoji">'+info.emoji+'</span> '+info.label+' <span class="category-count">'+grouped[cat].length+'</span></div>';
+    html += '<div class="exchange-grid">';
+    grouped[cat].forEach(function(ex){
+      var methodTag = ex.method==='email'?'<span class="tag email">Email</span>':
+                      ex.method==='ticket'?'<span class="tag ticket">Ticket</span>':
+                      ex.method==='portal'?'<span class="tag portal">Portal</span>':
+                      '<span class="tag defunct">N/A</span>';
+      var contactHtml = '';
+      if(ex.contact){
+        if(ex.contact.startsWith('http')){
+          contactHtml = '<a href="'+ex.contact+'" target="_blank">'+(ex.contactLabel||ex.contact)+'</a>';
+        } else {
+          contactHtml = ex.contact;
+        }
+      }
+      if(ex.contactAlt){
+        contactHtml += '<br>Alt: '+ex.contactAlt;
+      }
+      html += '<div class="ex-card'+(ex.method==='defunct'?' defunct':'')+'" data-name="'+escHtml(ex.name).toLowerCase()+'" data-cat="'+ex.cat+'">';
+      html += '<div class="ex-header"><span class="ex-name">'+escHtml(ex.name)+'</span>'+methodTag+'</div>';
+      if(ex.entity) html += '<div class="ex-entity">'+escHtml(ex.entity)+'</div>';
+      if(contactHtml) html += '<div class="ex-contact">'+contactHtml+'</div>';
+      html += '<div class="ex-docs"><strong>Required:</strong> '+escHtml(ex.docs)+'</div>';
+      if(ex.notes) html += '<div class="ex-notes">'+escHtml(ex.notes)+'</div>';
+      html += '</div>';
+    });
+    html += '</div></div>';
+  });
+  content.innerHTML = html;
+}
+
+function setFilter(cat, btn){
+  currentFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(function(t){t.classList.remove('active')});
+  if(btn) btn.classList.add('active');
+  filterCards();
+}
+
+function filterCards(){
+  var query = document.getElementById('search').value.toLowerCase();
+  var filtered = exchanges.filter(function(ex){
+    if(currentFilter!=='all' && ex.cat!==currentFilter) return false;
+    if(query){
+      var searchable = (ex.name+' '+ex.entity+' '+ex.contact+' '+(ex.contactAlt||'')+' '+ex.docs+' '+(ex.notes||'')).toLowerCase();
+      return searchable.indexOf(query)!==-1;
+    }
+    return true;
+  });
+  renderCards(filtered);
+}
+
+// Initial render
+renderCards(exchanges);
+
+// ===== i18n =====
+var I18N = {
+  en: {
+    'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+    'hero.title1':'Exchange ','hero.title2':'Evidence Collection','hero.title3':' Hub',
+    'hero.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto platforms. Contact methods, required documents, and important notes.',
+    'search.ph':'Search exchanges, wallets, emails...',
+    'tab.all':'All','tab.exchanges':'Exchanges','tab.wallets':'Wallets','tab.swap':'Swap','tab.crosschain':'Cross-chain','tab.mining':'Mining Pools','tab.nosupport':'Not Supported',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
+  },
+  cn: {
+    'nav.home':'首页','nav.news':'新闻','nav.dashboard':'仪表盘','nav.evidence':'取证中心','nav.contact':'联系我们',
+    'hero.title1':'交易所','hero.title2':'取证流程','hero.title3':'大全',
+    'hero.desc':'80+ 加密平台执法取证请求流程大全。联系方式、所需文件和重要提示。',
+    'search.ph':'搜索交易所、钱包、邮箱...',
+    'tab.all':'全部','tab.exchanges':'交易所','tab.wallets':'钱包','tab.swap':'闪兑','tab.crosschain':'跨链','tab.mining':'矿池','tab.nosupport':'不支持',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
+  }
+};
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var dict = I18N[lang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.placeholder = dict[key];
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+function toggleLang() { applyLang(currentLang === 'en' ? 'cn' : 'en'); }
+applyLang(currentLang);
+</script>
+</body>
+</html>

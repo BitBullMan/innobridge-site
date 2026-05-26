@@ -5,111 +5,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innobridge Blacklist - Stablecoin Freeze Intelligence</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
-            --bg: #f5f8fc;
+            --bg: #fafbff;
             --bg-card: #ffffff;
-            --bg-hover: #edf2f9;
-            --bg-input: #eef1f7;
-            --border: #d4dde8;
-            --text: #1e3a5f;
-            --text-2: #5a7a9b;
-            --text-3: #94adc4;
-            --accent: #2563eb;
-            --accent-light: #dbeafe;
-            --blue: #2563eb;
-            --green: #16a34a;
-            --red: #dc2626;
-            --orange: #ea580c;
+            --bg-hover: #f0f4ff;
+            --bg-input: #f0f4ff;
+            --border: rgba(0,0,0,0.06);
+            --border2: rgba(79,110,247,0.18);
+            --text: #1a1a2e;
+            --text-2: #555770;
+            --text-3: #8b8da3;
+            --accent: #4f6ef7;
+            --accent-light: rgba(79,110,247,0.08);
+            --blue: #4f6ef7;
+            --green: #22c997;
+            --red: #ef4444;
+            --orange: #f59e0b;
             --teal: #0891b2;
-            --purple: #7c3aed;
-            --r: 14px;
+            --purple: #a855f7;
+            --r: 20px;
+            --r-sm: 12px;
+            --font: 'Nunito', sans-serif;
+            --mono: 'JetBrains Mono', monospace;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:#1a1a1a; line-height:1.5; }
+        body { font-family:var(--font); background:var(--bg); color:#1a1a1a; line-height:1.5; }
 
         /* Nav */
-        nav { background:#fff; border-bottom:1px solid var(--border); padding:0 24px; position:sticky; top:0; z-index:50; }
-        .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; height:56px; }
-        .logo { font-size:18px; font-weight:800; color:#1a1a1a; text-decoration:none; display:flex; align-items:center; gap:6px; }
-        .logo-i { display:inline-flex; align-items:center; vertical-align:baseline; }
-        .logo-i svg { margin-right:-4px; vertical-align:middle; position:relative; top:-1px; }
-        .logo-tag { font-size:10px; font-weight:700; color:#2563eb; background:#dbeafe; padding:2px 7px; border-radius:6px; }
-        .nav-links { display:flex; gap:24px; list-style:none; }
-        .nav-links a { color:var(--text-2); text-decoration:none; font-size:13px; font-weight:500; }
-        .nav-links a:hover, .nav-links a.active { color:var(--text); }
-        .nav-right { display:flex; gap:8px; align-items:center; }
-        .btn { padding:7px 14px; border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; }
-        .btn-outline { background:#fff; color:var(--text-2); border:1px solid var(--border); }
-        .btn-outline:hover { border-color:#ccc; }
-        .btn-fill { background:#2563eb; color:#fff; }
-        .btn-fill:hover { background:#1d4ed8; }
-        .avatar { width:30px; height:30px; border-radius:50%; background:#2563eb; color:#fff; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; cursor:pointer; }
-        .user-dropdown { position:relative; }
-        .user-menu { display:none; position:absolute; top:40px; right:0; background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:6px; min-width:180px; box-shadow:0 8px 30px rgba(0,0,0,.08); z-index:99; }
-        .user-menu.show { display:block; }
-        .user-menu-email { padding:8px 10px; font-size:11px; color:var(--text-3); border-bottom:1px solid var(--border); margin-bottom:4px; }
-        .user-menu-item { padding:7px 10px; border-radius:8px; font-size:13px; color:var(--text-2); cursor:pointer; }
-        .user-menu-item:hover { background:var(--bg); }
-        .plan-badge { font-size:11px; color:#2563eb; background:#dbeafe; padding:3px 10px; border-radius:20px; font-weight:600; }
+        nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+        .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+        .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+        .logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
+        .nav-links{display:flex;gap:24px;list-style:none}
+        .nav-links a{font-size:14px;font-weight:600;color:var(--text-2);transition:color .2s;text-decoration:none}
+        .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+        .mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
+        .lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:rgba(79,110,247,0.08);border:1.5px solid rgba(79,110,247,0.18);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .lang-toggle:hover{background:var(--accent);color:#fff}
 
         /* Hero */
-        .hero { text-align:center; padding:48px 24px 36px; }
+        .hero { text-align:center; padding:120px 24px 36px; }
         .hero h1 { font-size:28px; font-weight:800; letter-spacing:-.5px; margin-bottom:6px; }
-        .hero h1 span { color:#2563eb; }
+        .hero h1 span { background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .hero h1 span.hero-plain { background:none;-webkit-background-clip:initial;-webkit-text-fill-color:var(--text);background-clip:initial; }
         .hero p { color:var(--text-2); font-size:14px; margin-bottom:24px; }
-        .search-wrap { max-width:520px; margin:0 auto; display:flex; background:#fff; border:1.5px solid var(--border); border-radius:12px; overflow:hidden; transition:border-color .2s; }
-        .search-wrap:focus-within { border-color:#2563eb; }
-        .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:monospace; background:transparent; }
+        .search-wrap { max-width:520px; margin:0 auto; display:flex; background:#fff; border:1.5px solid var(--border); border-radius:var(--r-sm); overflow:hidden; transition:border-color .2s; }
+        .search-wrap:focus-within { border-color:var(--accent); }
+        .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:var(--mono); background:transparent; }
         .search-wrap input::placeholder { color:#bbb; }
-        .search-wrap button { background:#2563eb; color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; }
-        .search-wrap button:hover { background:#1d4ed8; }
+        .search-wrap button { background:linear-gradient(135deg,var(--accent),var(--purple)); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; border-radius:0 var(--r-sm) var(--r-sm) 0; }
+        .search-wrap button:hover { opacity:.9; }
         .search-hint { font-size:11px; color:var(--text-3); margin-top:8px; }
-        .query-badge { display:inline-flex; align-items:center; gap:4px; margin-top:10px; padding:3px 10px; background:#dbeafe; border-radius:20px; font-size:11px; color:#2563eb; font-weight:600; }
+        .query-badge { display:inline-flex; align-items:center; gap:4px; margin-top:10px; padding:3px 10px; background:var(--accent-light); border-radius:20px; font-size:11px; color:var(--accent); font-weight:600; }
 
         /* Stats */
         .stats-section { max-width:1100px; margin:0 auto; padding:0 24px 32px; }
         .stats-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
-        .stats-title { font-size:14px; font-weight:700; color:#1e3a5f; }
+        .stats-title { font-size:14px; font-weight:700; color:var(--text); }
         .stats-update { font-size:11px; color:var(--text-3); }
         .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-        .stat-card { background:#fff; border:1px solid #d4dde8; border-radius:var(--r); padding:18px; transition:box-shadow .2s; }
-        .stat-card:hover { box-shadow:0 4px 20px rgba(37,99,235,.08); }
+        .stat-card { background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:18px; transition:box-shadow .2s; }
+        .stat-card:hover { box-shadow:0 8px 28px rgba(79,110,247,0.12); }
         .stat-emoji { font-size:24px; margin-bottom:8px; }
         .stat-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; font-weight:600; margin-bottom:2px; }
-        .stat-value { font-size:26px; font-weight:800; letter-spacing:-.5px; color:#1a1a1a; }
-        .stat-change { font-size:11px; font-weight:600; color:#16a34a; margin-top:2px; }
+        .stat-value { font-size:26px; font-weight:800; letter-spacing:-.5px; color:var(--text); }
+        .stat-change { font-size:11px; font-weight:600; color:var(--green); margin-top:2px; }
 
         /* Tags */
         .tags-section { max-width:1100px; margin:0 auto; padding:0 24px 20px; }
         .tags-row { display:flex; gap:8px; flex-wrap:wrap; }
         .tag-chip { padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; cursor:pointer; transition:all .15s; background:#fff; border:1px solid var(--border); color:var(--text-2); }
         .tag-chip:hover { background:var(--bg-hover); }
-        .tag-chip.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .tag-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
 
         /* Table */
         .table-section { max-width:1100px; margin:0 auto; padding:0 24px 48px; }
         .table-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-        .table-title { font-size:14px; font-weight:700; color:#1e3a5f; }
+        .table-title { font-size:14px; font-weight:700; color:var(--text); }
         .table-count { font-size:12px; color:var(--text-3); }
         .table-wrapper { background:#fff; border:1px solid var(--border); border-radius:var(--r); overflow:hidden; }
         table { width:100%; border-collapse:collapse; }
-        thead th { padding:10px 14px; text-align:left; font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; background:var(--bg); border-bottom:1px solid var(--border); }
+        thead th { padding:10px 14px; text-align:left; font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; background:var(--bg-hover); border-bottom:1px solid var(--border); }
         tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
         tbody tr:last-child { border-bottom:none; }
         tbody tr:hover { background:var(--bg-hover); }
         tbody td { padding:11px 14px; font-size:13px; }
-        .addr-cell { font-family:monospace; font-size:12px; color:#2563eb; cursor:pointer; text-decoration:none; }
+        .addr-cell { font-family:var(--mono); font-size:12px; color:var(--accent); cursor:pointer; text-decoration:none; }
         .addr-cell:hover { text-decoration:underline; }
         .chain-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700; }
-        .chain-badge.eth { background:#ede9fe; color:#7c3aed; }
+        .chain-badge.eth { background:rgba(168,85,247,0.08); color:var(--purple); }
         .chain-badge.tron { background:#fef2f2; color:#dc2626; }
         .risk-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; }
         .risk-badge.high { background:#fff0f0; color:var(--red); }
         .risk-badge.medium { background:#fff8e6; color:var(--orange); }
-        .risk-badge.low { background:#dcfce7; color:#16a34a; }
+        .risk-badge.low { background:#dcfce7; color:var(--green); }
         .risk-dot { width:6px; height:6px; border-radius:50%; }
         .risk-dot.high { background:var(--red); }
         .risk-dot.medium { background:var(--orange); }
@@ -122,29 +114,14 @@
         .pagination { display:flex; align-items:center; justify-content:center; gap:4px; padding:12px; border-top:1px solid var(--border); }
         .page-btn { width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:8px; border:1px solid var(--border); background:#fff; color:var(--text-2); font-size:12px; cursor:pointer; font-family:inherit; transition:all .1s; }
         .page-btn:hover { background:var(--bg-hover); }
-        .page-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+        .page-btn.active { background:var(--accent); color:#fff; border-color:var(--accent); }
         .page-btn:disabled { opacity:.3; cursor:not-allowed; }
 
         /* Footer */
-        .footer { text-align:center; padding:24px; border-top:1px solid var(--border); color:var(--text-3); font-size:11px; }
         .footer-note { font-size:11px; color:var(--text-3); }
 
-        /* Modal */
-        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.3); z-index:500; align-items:center; justify-content:center; }
-        .modal-overlay.show { display:flex; }
-        .modal-box { background:#fff; border-radius:16px; padding:32px; max-width:380px; width:90%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.12); position:relative; }
-        .modal-title { font-size:20px; font-weight:700; margin-bottom:4px; }
-        .modal-desc { color:var(--text-2); font-size:13px; margin-bottom:20px; }
-        .modal-input { width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border); border-radius:10px; font-size:13px; font-family:inherit; outline:none; margin-bottom:10px; }
-        .modal-input:focus { border-color:#2563eb; }
-        .modal-divider { display:flex; align-items:center; gap:10px; margin:14px 0; color:var(--text-3); font-size:11px; }
-        .modal-divider::before, .modal-divider::after { content:''; flex:1; height:1px; background:var(--border); }
-        .btn-google { width:100%; padding:10px; background:#fff; color:#333; border:1px solid var(--border); border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; }
-        .btn-google:hover { background:var(--bg); }
-        .modal-close { position:absolute; top:12px; right:14px; background:none; border:none; color:var(--text-3); font-size:20px; cursor:pointer; }
-
         /* Skeleton */
-        .skeleton { background:linear-gradient(90deg, #d4dde8 25%, #edf2f9 50%, #d4dde8 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
+        .skeleton { background:linear-gradient(90deg, rgba(79,110,247,0.08) 25%, rgba(79,110,247,0.15) 50%, rgba(79,110,247,0.08) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         @keyframes spin { to{transform:rotate(360deg)} }
         .skel-addr { height:14px; width:120px; }
@@ -152,8 +129,11 @@
         .skel-amount { height:14px; width:80px; }
         .skel-time { height:14px; width:100px; }
 
-        @media (max-width:768px) {
+        @media (max-width:960px) {
             .nav-links { display:none; }
+            .mobile-toggle { display:block; }
+        }
+        @media (max-width:768px) {
             .stats-grid { grid-template-columns:repeat(2,1fr); }
             .table-wrapper { overflow-x:auto; }
             table { min-width:600px; }
@@ -165,47 +145,55 @@
 <body>
 
 <nav>
-    <div class="nav-inner">
-        <a href="/" class="logo"><span class="logo-i"><svg width="22" height="22" viewBox="0 0 64 64"><rect x="7" y="7" width="50" height="50" rx="10" fill="#1a1a1a"/><circle cx="32" cy="21.5" r="4.8" fill="#fff"/><rect x="27" y="29" width="10" height="22.5" rx="2.5" fill="#fff"/></svg></span>nnobridge <span class="logo-tag">Blacklist</span></a>
-        <ul class="nav-links">
-            <li><a href="/" class="active">Dashboard</a></li>
-        </ul>
-        <div class="nav-right" id="navRight"></div>
-    </div>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px">
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+      <li><a href="#" class="active" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
 </nav>
 
 <section class="hero">
-    <h1>Stablecoin <span>Freeze & Blacklist Monitor</span></h1>
-    <p>Real-time USDT / USDC blacklist monitoring across Ethereum & Tron</p>
+    <h1><span data-i18n="hero.title1" class="hero-plain">Stablecoin </span><span data-i18n="hero.title2">Freeze &amp; Blacklist Monitor</span></h1>
+    <p data-i18n="hero.sub">Real-time USDT / USDC blacklist monitoring across Ethereum &amp; Tron</p>
     <div class="search-wrap">
-        <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" autocomplete="off" spellcheck="false">
-        <button onclick="doSearch()">Search</button>
+        <input type="text" id="searchInput" placeholder="Search by address (0x... or T...)" data-i18n-ph="search.ph" autocomplete="off" spellcheck="false">
+        <button onclick="doSearch()" data-i18n="search.btn">Search</button>
     </div>
-    <div class="search-hint">Supports Ethereum (0x) and Tron (T) addresses</div>
+    <div class="search-hint" data-i18n="search.hint">Supports Ethereum (0x) and Tron (T) addresses</div>
 </section>
 
 <section class="stats-section">
     <div class="stats-header">
-        <div class="stats-title">Frozen Address Statistics</div>
+        <div class="stats-title" data-i18n="stats.title">Frozen Address Statistics</div>
         <div class="stats-update" id="statsUpdate">Updated: loading...</div>
     </div>
     <div class="stats-grid">
         <div class="stat-card">
             <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#fff"/></svg></div>
-            <div class="stat-label">USDT (Tether) Addresses</div>
+            <div class="stat-label" data-i18n="stats.usdt">USDT (Tether) Addresses</div>
             <div class="stat-value" id="statUsdt">--</div>
             <div class="stat-sub" id="statUsdtSub" style="font-size:11px;color:var(--text-3);margin-top:2px;"></div>
             <div class="stat-change" id="statUsdtDaily" style="font-size:11px;"></div>
         </div>
         <div class="stat-card">
             <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#2775CA"/><path d="M20.398 17.189c0-2.047-1.263-2.75-3.789-3.045-.529-.074-1.812-.295-1.812-1.181 0-.738.558-1.108 1.562-1.108.887 0 1.445.295 1.709.96a.435.435 0 00.41.296h.94a.395.395 0 00.41-.37v-.073a2.94 2.94 0 00-2.576-2.306v-1.33a.434.434 0 00-.41-.443h-.862a.434.434 0 00-.41.444v1.256c-1.855.222-3.05 1.33-3.05 2.712 0 1.922 1.263 2.625 3.789 2.92.603.074 1.812.37 1.812 1.306 0 .738-.676 1.256-1.636 1.256-1.263 0-1.709-.517-1.855-1.182a.45.45 0 00-.41-.295h-1.014a.395.395 0 00-.41.369v.074c.265 1.404 1.116 2.306 3.197 2.58v1.33a.434.434 0 00.41.444h.862a.434.434 0 00.41-.444v-1.33c1.855-.296 3.123-1.404 3.123-2.86z" fill="#fff"/><path d="M12.724 24.843a9.385 9.385 0 01-5.546-5.546.381.381 0 00-.486-.222l-.96.37a.39.39 0 00-.222.517 11.18 11.18 0 006.696 6.696.381.381 0 00.518-.222l.37-.96a.41.41 0 00-.222-.518l-.148-.115zm6.552-17.686a9.385 9.385 0 015.546 5.546.381.381 0 00.486.222l.96-.37a.39.39 0 00.222-.517 11.18 11.18 0 00-6.696-6.696.381.381 0 00-.518.222l-.37.96a.41.41 0 00.222.518l.148.115z" fill="#fff"/></svg></div>
-            <div class="stat-label">USDC (Circle) Addresses</div>
+            <div class="stat-label" data-i18n="stats.usdc">USDC (Circle) Addresses</div>
             <div class="stat-value" id="statUsdc">--</div>
             <div class="stat-change" id="statUsdcDaily" style="font-size:11px;"></div>
         </div>
         <div class="stat-card">
             <div class="stat-emoji"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#1e3a5f"/><text x="16" y="21" text-anchor="middle" fill="#fff" font-size="16" font-weight="bold" font-family="Inter,sans-serif">$</text></svg></div>
-            <div class="stat-label">Total Frozen Funds</div>
+            <div class="stat-label" data-i18n="stats.frozen">Total Frozen Funds</div>
             <div class="stat-value" id="statTotalFrozen">--</div>
             <div class="stat-change" id="statTotalChange"></div>
         </div>
@@ -214,20 +202,20 @@
 
 <section class="tags-section">
     <div class="tags-row">
-        <span class="tag-chip active" onclick="filterChain('all', this)">All Chains</span>
-        <span class="tag-chip" onclick="filterChain('usdt', this)">#USDT</span>
-        <span class="tag-chip" onclick="filterChain('usdc', this)">#USDC</span>
+        <span class="tag-chip active" onclick="filterChain('all', this)" data-i18n="tag.all">All Chains</span>
+        <span class="tag-chip" onclick="filterChain('usdt', this)" data-i18n="tag.usdt">#USDT</span>
+        <span class="tag-chip" onclick="filterChain('usdc', this)" data-i18n="tag.usdc">#USDC</span>
     </div>
 </section>
 
 <section class="table-section">
     <div class="table-header">
-        <div class="table-title">Recent Frozen Addresses</div>
+        <div class="table-title" data-i18n="table.title">Recent Frozen Addresses</div>
         <div class="table-count" id="tableCount">Showing 0 of 0</div>
     </div>
     <div class="table-wrapper">
         <table>
-            <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Freeze Balance</th><th>Freeze Time</th></tr></thead>
+            <thead><tr><th data-i18n="th.address">Address</th><th data-i18n="th.chain">Chain</th><th data-i18n="th.asset">Asset</th><th data-i18n="th.risk">Risk Level</th><th data-i18n="th.balance">Freeze Balance</th><th data-i18n="th.time">Freeze Time</th></tr></thead>
             <tbody id="recentTableBody">
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
@@ -241,13 +229,18 @@
     </div>
 </section>
 
-<footer class="footer">
-    Innobridge Blacklist &copy; 2026 &middot; Data from on-chain issuer blacklist events &middot; Updates every 12h
+<footer style="padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg-card)">
+  <span style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+  <ul style="display:flex;gap:20px;list-style:none">
+    <li><a href="privacy.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="terms.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="disclaimer.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.disclaimer">Disclaimer</a></li>
+  </ul>
 </footer>
 
 
 <script>
-const GAS_BASE = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-proxy';
+const GAS_BASE = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
 
 let allRecent = [], filteredRecent = [], currentPage = 1;
 const PAGE_SIZE = 10;
@@ -267,7 +260,7 @@ let jsonpCounter=0;
 function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
 
 function showTableLoading(){
-    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid #d4dde8;border-top-color:#2563eb;border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
+    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(79,110,247,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
 }
 
 async function loadDashboardData(){
@@ -384,6 +377,48 @@ document.addEventListener('DOMContentLoaded',function(){
     jsonpFetch(GAS_BASE+'?action=stats').then(function(sd){if(sd&&sd.success)renderStats(sd);}).catch(function(e){console.warn('stats fail',e);});
     loadDashboardData();
 });
+
+// ===== i18n =====
+var I18N = {
+  en: {
+    'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+    'hero.title1':'Stablecoin ','hero.title2':'Freeze & Blacklist Monitor','hero.sub':'Real-time USDT / USDC blacklist monitoring across Ethereum & Tron',
+    'search.btn':'Search','search.hint':'Supports Ethereum (0x) and Tron (T) addresses','search.ph':'Search by address (0x... or T...)',
+    'stats.title':'Frozen Address Statistics','stats.usdt':'USDT (Tether) Addresses','stats.usdc':'USDC (Circle) Addresses','stats.frozen':'Total Frozen Funds',
+    'tag.all':'All Chains','tag.usdt':'#USDT','tag.usdc':'#USDC',
+    'table.title':'Recent Frozen Addresses',
+    'th.address':'Address','th.chain':'Chain','th.asset':'Asset','th.risk':'Risk Level','th.balance':'Freeze Balance','th.time':'Freeze Time',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
+  },
+  cn: {
+    'nav.home':'首页','nav.news':'新闻','nav.dashboard':'数据面板','nav.evidence':'取证中心','nav.contact':'联系我们',
+    'hero.title1':'稳定币','hero.title2':'冻结与黑名单监控','hero.sub':'以太坊和波场上 USDT / USDC 黑名单实时监控',
+    'search.btn':'搜索','search.hint':'支持以太坊 (0x) 和波场 (T) 地址','search.ph':'输入地址搜索 (0x... 或 T...)',
+    'stats.title':'冻结地址统计','stats.usdt':'USDT (Tether) 地址','stats.usdc':'USDC (Circle) 地址','stats.frozen':'冻结资金总额',
+    'tag.all':'全部链','tag.usdt':'#USDT','tag.usdc':'#USDC',
+    'table.title':'最近冻结地址',
+    'th.address':'地址','th.chain':'链','th.asset':'资产','th.risk':'风险等级','th.balance':'冻结余额','th.time':'冻结时间',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
+  }
+};
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var dict = I18N[lang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) el.innerHTML = dict[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.placeholder = dict[key];
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+function toggleLang() { applyLang(currentLang === 'en' ? 'cn' : 'en'); }
+applyLang(currentLang);
 </script>
 </body>
 </html>

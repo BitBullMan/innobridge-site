@@ -1,14 +1,949 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0;url=dashboard.html">
-    <title>Innobridge - Redirecting</title>
-  </head>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innobridge — Blockchain AML Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;--surface:#ffffff;
+  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
+  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
+  --accent-soft:rgba(79,110,247,0.08);--accent2-soft:rgba(168,85,247,0.08);--accent3-soft:rgba(34,201,151,0.08);
+  --danger:#ef4444;--warning:#f59e0b;--success:#22c997;
+  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
+  --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:20px;--radius-sm:12px;--radius-xs:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;line-height:1.7}
+a{text-decoration:none;color:inherit}
+
+/* ===== NAV ===== */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:10px 24px;border-radius:var(--radius-xs);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,110,247,0.3)}
+.lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{background:var(--accent);color:#fff}
+.mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
+
+/* ===== HERO ===== */
+#hero{padding:140px 40px 80px;text-align:center;position:relative;overflow:hidden}
+#hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(79,110,247,0.08) 0%,rgba(168,85,247,0.04) 40%,transparent 70%);pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-soft);border:1px solid var(--border2);border-radius:24px;padding:8px 18px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:28px}
+.hero-badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+h1{font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px;color:var(--text)}
+h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:17px;color:var(--text2);max-width:560px;margin:0 auto 36px;line-height:1.8;font-weight:500}
+.hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:14px 32px;border-radius:var(--radius-sm);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(79,110,247,0.28)}
+.btn-ghost{font-size:15px;font-weight:600;color:var(--text);background:var(--bg2);padding:14px 32px;border-radius:var(--radius-sm);border:1.5px solid var(--border);transition:border-color .2s,box-shadow .2s}
+.btn-ghost:hover{border-color:var(--accent);box-shadow:var(--shadow)}
+
+.stats-bar{display:grid;grid-template-columns:repeat(4,1fr);max-width:800px;margin:56px auto 0;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+.stat-item{padding:24px 16px;text-align:center}
+.stat-item+.stat-item{border-left:1.5px solid var(--border)}
+.stat-num{font-size:26px;font-weight:900;color:var(--accent);font-family:var(--mono)}
+.stat-label{font-size:11px;color:var(--text3);margin-top:4px;text-transform:uppercase;letter-spacing:0.05em;font-weight:700}
+
+/* ===== SECTIONS ===== */
+section{position:relative;z-index:1;padding:80px 40px}
+.sec-label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--accent);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em}
+h2{font-size:clamp(26px,3.2vw,40px);font-weight:900;line-height:1.15;letter-spacing:-0.02em;margin-bottom:12px}
+.sec-intro{font-size:16px;color:var(--text2);max-width:520px;line-height:1.8;font-weight:500}
+.sec-center{text-align:center}.sec-center .sec-intro{margin:0 auto}
+
+/* ===== NEWS TICKER ===== */
+#news{background:var(--bg3);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border)}
+.news-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.news-header-left{display:flex;align-items:center;gap:12px}
+.news-live-dot{width:10px;height:10px;border-radius:50%;background:#ef4444;animation:pulse 1.5s infinite;flex-shrink:0}
+.news-tabs{display:flex;gap:8px}
+.news-tab{padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;border:1.5px solid var(--border);background:var(--bg2);color:var(--text2);cursor:pointer;transition:all .2s}
+.news-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.news-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:20px 22px;transition:border-color .2s,box-shadow .2s,transform .2s;cursor:default}
+.news-card:hover{border-color:var(--border2);box-shadow:var(--shadow);transform:translateY(-2px)}
+.news-source{font-size:11px;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.news-source .src-icon{width:16px;height:16px;border-radius:4px;background:var(--accent-soft);display:inline-flex;align-items:center;justify-content:center;font-size:9px}
+.news-title{font-size:15px;font-weight:700;line-height:1.45;margin-bottom:8px;color:var(--text)}
+.news-snippet{font-size:13px;color:var(--text2);line-height:1.65;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.news-meta{display:flex;align-items:center;gap:10px;margin-top:12px;font-size:11px;color:var(--text3);font-weight:600}
+.news-tag{padding:3px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
+.news-tag.defi{background:rgba(168,85,247,0.1);color:#a855f7}
+.news-tag.market{background:rgba(79,110,247,0.1);color:#4f6ef7}
+.news-tag.regulation{background:rgba(34,201,151,0.1);color:#22c997}
+.news-tag.security{background:rgba(239,68,68,0.1);color:#ef4444}
+.news-tag.general{background:rgba(139,141,163,0.1);color:#8b8da3}
+.news-empty{text-align:center;padding:48px 20px;color:var(--text3);font-weight:600;grid-column:1/-1}
+.news-more{text-align:center;margin-top:20px}
+.news-more-btn{font-size:13px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:10px 28px;border-radius:24px;cursor:pointer;transition:all .2s}
+.news-more-btn:hover{background:var(--accent);color:#fff}
+
+/* ===== AML CHECK ===== */
+#aml-check{background:var(--bg2);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border)}
+.aml-container{max-width:720px;margin:0 auto;text-align:center}
+.aml-box{background:var(--bg);border:1.5px solid var(--border2);border-radius:var(--radius);padding:36px;margin-top:32px;position:relative;overflow:hidden}
+.aml-box::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent3));border-radius:3px 3px 0 0}
+.aml-input-row{display:flex;gap:10px;margin-bottom:14px}
+.aml-input{flex:1;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;transition:border-color .2s}
+.aml-input:focus{border-color:var(--accent)}
+.aml-input::placeholder{color:var(--text3)}
+.chain-select{width:150px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 14px;font-family:var(--mono);font-size:13px;color:var(--text);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b8da3'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.chain-select:focus{border-color:var(--accent)}
+.aml-btn{width:100%;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:15px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:var(--font);transition:transform .2s,box-shadow .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.aml-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,110,247,0.25)}
+.aml-result{margin-top:20px;display:none;text-align:left}
+.aml-result.show{display:block}
+.result-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:18px;font-family:var(--mono);font-size:13px;line-height:2}
+.result-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--border)}
+.result-row:last-child{border-bottom:none}
+.result-key{color:var(--text3);font-weight:600}
+.result-val{color:var(--text);font-weight:600}
+.result-val.danger{color:var(--danger)}
+.result-val.warning{color:var(--warning)}
+.result-val.safe{color:var(--success)}
+.aml-note{font-size:12px;color:var(--text3);margin-top:14px;text-align:center;font-weight:500}
+.aml-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent);margin-top:16px;transition:gap .2s}
+.aml-link:hover{gap:12px}
+
+/* ===== CARD GRIDS ===== */
+.card-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+.card-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:40px}
+.card-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px}
+
+.card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:32px;transition:border-color .3s,transform .3s,box-shadow .3s}
+.card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.card-emoji{font-size:48px;margin-bottom:20px;display:block}
+.card-num{font-family:var(--mono);font-size:11px;color:var(--accent);margin-bottom:14px;letter-spacing:0.04em;font-weight:700}
+.card-title{font-size:19px;font-weight:800;margin-bottom:10px;line-height:1.3}
+.card-desc{font-size:14px;color:var(--text2);line-height:1.75;font-weight:500}
+.card-features{margin-top:18px;display:flex;flex-direction:column;gap:8px}
+.card-feat{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);line-height:1.6;font-weight:500}
+.card-feat .check{width:20px;height:20px;flex-shrink:0;background:var(--accent-soft);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-top:2px}
+.card-feat .check svg{width:12px;height:12px}
+
+.scard{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:26px;transition:border-color .3s,transform .3s,box-shadow .3s}
+.scard:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--shadow)}
+.scard-emoji{font-size:36px;margin-bottom:14px;display:block}
+.scard-title{font-size:16px;font-weight:800;margin-bottom:8px}
+.scard-desc{font-size:13px;color:var(--text2);line-height:1.7;font-weight:500}
+.scard-badge{display:inline-block;margin-top:12px;font-size:11px;font-weight:700;padding:4px 12px;border-radius:8px;background:var(--accent-soft);color:var(--accent);border:1px solid var(--border2)}
+
+/* ===== BLOG ===== */
+#insights{background:var(--bg)}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px}
+.blog-card{background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s}
+.blog-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:var(--shadow)}
+.blog-thumb{height:140px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.blog-thumb.t1{background:linear-gradient(135deg,#e8ecff,#f0e6ff)}
+.blog-thumb.t2{background:linear-gradient(135deg,#f0e6ff,#ffe6f0)}
+.blog-thumb.t3{background:linear-gradient(135deg,#e6fff4,#e8ecff)}
+.blog-thumb svg{width:40%;height:40%;opacity:0.3}
+.blog-body{padding:20px}
+.post-meta{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text3);margin-bottom:10px;font-weight:600}
+.post-tag{color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:6px;font-size:11px;font-weight:700}
+.featured-post{display:grid;grid-template-columns:1fr 1fr;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-top:40px;transition:border-color .3s,box-shadow .3s}
+.featured-post:hover{border-color:var(--border2);box-shadow:var(--shadow)}
+.featured-img{background:linear-gradient(135deg,#e8ecff,#f0e6ff);position:relative;min-height:280px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.featured-img svg{width:50%;height:50%;opacity:0.2}
+.featured-img-label{position:absolute;bottom:14px;left:14px;font-size:11px;font-weight:700;color:var(--accent);background:rgba(255,255,255,0.9);padding:5px 12px;border-radius:8px;border:1px solid var(--border2)}
+.featured-body{padding:40px;display:flex;flex-direction:column;justify-content:center}
+.post-title{font-size:22px;font-weight:800;line-height:1.3;margin-bottom:12px}
+.post-excerpt{font-size:14px;color:var(--text2);line-height:1.75;margin-bottom:20px;font-weight:500}
+.post-link{font-size:13px;font-weight:700;color:var(--accent);display:inline-flex;align-items:center;gap:6px;transition:gap .2s}
+.post-link:hover{gap:12px}
+
+/* ===== CONTACT ===== */
+#contact{background:var(--bg3);border-top:1.5px solid var(--border)}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:40px}
+.contact-info{display:flex;flex-direction:column;justify-content:space-between}
+.contact-items{display:flex;flex-direction:column;gap:14px;margin-top:28px}
+.c-item{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--text2);font-weight:600}
+.c-item-icon{width:36px;height:36px;border-radius:10px;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.form-group{display:flex;flex-direction:column;gap:12px;background:var(--bg2);border:1.5px solid var(--border);border-radius:var(--radius);padding:28px}
+.fl{display:flex;flex-direction:column;gap:5px}
+.fl label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.04em}
+.fl input,.fl textarea,.fl select{background:var(--bg);border:1.5px solid var(--border);border-radius:var(--radius-xs);padding:12px 14px;font-family:var(--font);font-size:14px;color:var(--text);outline:none;transition:border-color .2s;-webkit-appearance:none;font-weight:500}
+.fl input:focus,.fl textarea:focus,.fl select:focus{border-color:var(--accent)}
+.fl textarea{min-height:70px;resize:vertical}
+.fl select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238b8da3'%3E%3Cpath d='M2 4l4 4 4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+.fl-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* ===== FOOTER ===== */
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
+.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+.f-links{display:flex;gap:20px;list-style:none}
+.f-links a{font-size:12px;color:var(--text3);font-weight:600;transition:color .2s}
+.f-links a:hover{color:var(--accent)}
+
+/* ===== ANIMATION ===== */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:960px){
+  nav{padding:12px 20px}
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  section{padding:56px 20px}
+  #hero{padding:110px 20px 50px}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .stat-item+.stat-item{border-left:none}
+  .stat-item:nth-child(odd)+.stat-item{border-left:1.5px solid var(--border)}
+  .stat-item:nth-child(n+3){border-top:1.5px solid var(--border)}
+  .card-grid-2,.featured-post{grid-template-columns:1fr}
+  .card-grid-3{grid-template-columns:1fr}
+  .card-grid-4{grid-template-columns:1fr 1fr}
+  .featured-img{min-height:180px}
+  .contact-grid{grid-template-columns:1fr}
+  .aml-input-row{flex-direction:column}
+  .chain-select{width:100%}
+  .fl-row{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:20px}
+  .news-grid{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .card-grid-4{grid-template-columns:1fr}
+  h1{font-size:32px}
+}
+</style>
+</head>
 <body>
-  <p>Redirecting to <a href="dashboard.html">Dashboard</a>a>...</p>
+
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px">
+    <ul class="nav-links">
+      <li><a href="#news" data-i18n="nav.news">News</a></li>
+      <li><a href="#aml-check" data-i18n="nav.blacklist">Blacklist Check</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="#core" data-i18n="nav.services">Services</a></li>
+      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-btn" data-i18n="nav.cta">Get Started</a>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="reveal" style="position:relative;z-index:1">
+    <div class="hero-badge"><span class="dot"></span> <span data-i18n="hero.badge">Stablecoin Blacklist Intelligence</span></div>
+    <h1><span data-i18n="hero.title1">Freeze it. Flag it.</span><br><span class="gradient" data-i18n="hero.title2">Trace it back.</span></h1>
+    <p class="hero-sub" data-i18n="hero.sub">Real-time USDT & USDC blacklist monitoring, frozen address database, and on-chain forensic tracing for law enforcement, compliance teams, and legal professionals.</p>
+    <div class="hero-ctas">
+      <a href="#aml-check" class="btn-primary">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="hero.cta1">Check Blacklist</span>
+      </a>
+      <a href="#news" class="btn-ghost" data-i18n="hero.cta2">Latest News</a>
+    </div>
+    <div class="stats-bar">
+      <div class="stat-item"><div class="stat-num" id="hero-total">10,500+</div><div class="stat-label" data-i18n="hero.stat1">Blacklisted Addresses</div></div>
+      <div class="stat-item"><div class="stat-num">2</div><div class="stat-label" data-i18n="hero.stat2">Chains (ETH + TRON)</div></div>
+      <div class="stat-item"><div class="stat-num" id="hero-frozen">$3.6B+</div><div class="stat-label" data-i18n="hero.stat3">Frozen Funds</div></div>
+      <div class="stat-item"><div class="stat-num">48h</div><div class="stat-label" data-i18n="hero.stat4">Report Turnaround</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LIVE NEWS FEED ===== -->
+<section id="news">
+  <div class="reveal">
+    <div class="news-header">
+      <div class="news-header-left">
+        <div class="news-live-dot"></div>
+        <div>
+          <div class="sec-label" style="margin-bottom:0" data-i18n="news.label">Live News Feed</div>
+          <div style="font-size:13px;color:var(--text3);font-weight:600;margin-top:2px" data-i18n="news.sub">Real-time crypto & blockchain intelligence</div>
+        </div>
+      </div>
+      <div class="news-tabs">
+        <button class="news-tab active" data-filter="all" onclick="filterNews('all',this)" data-i18n="news.all">All</button>
+        <button class="news-tab" data-filter="market" onclick="filterNews('market',this)" data-i18n="news.market">Market</button>
+        <button class="news-tab" data-filter="defi" onclick="filterNews('defi',this)" data-i18n="news.defi">DeFi</button>
+        <button class="news-tab" data-filter="regulation" onclick="filterNews('regulation',this)" data-i18n="news.regulation">Regulation</button>
+        <button class="news-tab" data-filter="security" onclick="filterNews('security',this)" data-i18n="news.security">Security</button>
+      </div>
+    </div>
+  </div>
+  <div class="news-grid" id="news-grid">
+    <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
+  </div>
+  <div class="news-more" id="news-more" style="display:none">
+    <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
+  </div>
+</section>
+
+<!-- ===== AML CHECK ===== -->
+<section id="aml-check">
+  <div class="aml-container reveal">
+    <div class="sec-label" data-i18n="aml.label">Blacklist Check</div>
+    <h2 data-i18n="aml.title">Is this address frozen?</h2>
+    <p class="sec-intro" style="margin:8px auto 0;text-align:center" data-i18n="aml.desc">Paste a USDT/USDC address to check if it's been blacklisted by Tether or Circle. Cross-referenced with our frozen address database and OFAC SDN list.</p>
+    <div class="aml-box">
+      <div class="aml-input-row">
+        <input class="aml-input" id="aml-address" type="text" placeholder="Enter wallet address (0x... or T...)" data-i18n-ph="aml.placeholder">
+        <select class="chain-select" id="aml-chain">
+          <option value="eth">Ethereum</option>
+          <option value="btc">Bitcoin</option>
+          <option value="bsc">BNB Chain</option>
+          <option value="trx">TRON</option>
+          <option value="sol">Solana</option>
+          <option value="polygon">Polygon</option>
+          <option value="arb">Arbitrum</option>
+          <option value="avax">Avalanche</option>
+          <option value="op">Optimism</option>
+          <option value="base">Base</option>
+        </select>
+      </div>
+      <button class="aml-btn" onclick="runAMLCheck()">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="aml.btn">Run AML Risk Check</span>
+      </button>
+      <div class="aml-result" id="aml-result">
+        <div class="result-card">
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.address">Address</span><span class="result-val" id="r-addr">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.chain">Chain</span><span class="result-val" id="r-chain">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.asset">Asset</span><span class="result-val" id="r-asset">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.label">Label</span><span class="result-val" id="r-label">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.risk">Risk Level</span><span class="result-val" id="r-risk">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.frozen">Frozen Amount</span><span class="result-val" id="r-frozen">-</span></div>
+          <div class="result-row"><span class="result-key" data-i18n="aml.r.source">Source</span><span class="result-val" id="r-source">-</span></div>
+        </div>
+      </div>
+      <p class="aml-note" data-i18n="aml.note">* Live data from OFAC SDN, Tether & Circle on-chain blacklists, and our proprietary label database.</p>
+      <a href="dashboard.html" class="aml-link" data-i18n="aml.link">View full database dashboard &#8594;</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CORE SERVICES ===== -->
+<section id="core" style="background:var(--bg)">
+  <div class="reveal">
+    <div class="sec-label" data-i18n="core.label">Core Intelligence</div>
+    <h2 data-i18n="core.title">Two pillars. One platform.</h2>
+    <p class="sec-intro" data-i18n="core.intro">AML labels and on-chain tracing — everything else we do builds on these two capabilities.</p>
+  </div>
+  <div class="card-grid-2">
+    <div class="card reveal">
+      <span class="card-emoji">&#x1F50D;</span>
+      <div class="card-num" data-i18n="core.c1.num">01 — BLACKLIST DATABASE</div>
+      <div class="card-title" data-i18n="core.c1.title">Stablecoin Freeze & Blacklist Monitor</div>
+      <p class="card-desc" data-i18n="core.c1.desc">Real-time monitoring of USDT (Tether) and USDC (Circle) blacklisted addresses on Ethereum and TRON. 10,500+ flagged addresses with $3.6B+ in frozen funds tracked.</p>
+      <div class="card-features">
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c1.f1"><strong>Exchange Attribution</strong> — 300+ CEX cluster tags</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c1.f2"><strong>Sanctions Screening</strong> — OFAC, EU, UN, HMT</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c1.f3"><strong>Mixer Detection</strong> — Tornado, CoinJoin, bridges</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c1.f4"><strong>Risk Score API</strong> — Structured risk + entity type</span></div>
+      </div>
+    </div>
+    <div class="card reveal">
+      <span class="card-emoji">&#x1F517;</span>
+      <div class="card-num" data-i18n="core.c2.num">02 — ON-CHAIN TRACING</div>
+      <div class="card-title" data-i18n="core.c2.title">Forensic Fund Flow Analysis</div>
+      <p class="card-desc" data-i18n="core.c2.desc">Reconstruct transaction flows through wallets, bridges, DEXs, and mixers. End-to-end, cross-chain.</p>
+      <div class="card-features">
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c2.f1"><strong>Multi-Hop Mapping</strong> — Unlimited hops & chains</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c2.f2"><strong>Wallet Clustering</strong> — Co-ownership detection</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c2.f3"><strong>Bridge Tracing</strong> — 20+ bridge protocols</span></div>
+        <div class="card-feat"><span class="check"><svg viewBox="0 0 12 12" fill="none" stroke="var(--accent)" stroke-width="2.5"><polyline points="2,6 5,9 10,3"/></svg></span><span data-i18n="core.c2.f4"><strong>Court-Ready Reports</strong> — Visual diagrams & narratives</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SUPPORTING SERVICES ===== -->
+<section id="support" style="background:var(--bg3);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border)">
+  <div class="reveal">
+    <div class="sec-label" data-i18n="sup.label">Supporting Services</div>
+    <h2 data-i18n="sup.title">From analysis to action.</h2>
+    <p class="sec-intro" data-i18n="sup.intro">Our tracing findings become legal instruments, compliance programs, and regulatory submissions.</p>
+  </div>
+  <div class="card-grid-3">
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F4C4;</span>
+      <div class="scard-title" data-i18n="sup.s1.title">Legal Forensic Reports</div>
+      <p class="scard-desc" data-i18n="sup.s1.desc">Expert-witness-grade packages for civil litigation and criminal investigations. Chain-of-custody docs, technical affidavits, court submission bundles.</p>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F6E1;&#xFE0F;</span>
+      <div class="scard-title" data-i18n="sup.s2.title">Legal Paper Prep</div>
+      <p class="scard-desc" data-i18n="sup.s2.desc">Freeze orders, court injunctions, exchange cooperation letters. Co-drafted for Singapore, UK, EU, and US jurisdictions.</p>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x2705;</span>
+      <div class="scard-title" data-i18n="sup.s3.title">Compliance Structuring</div>
+      <p class="scard-desc" data-i18n="sup.s3.desc">AML/KYC program design for VASPs and exchanges. Transaction monitoring, risk frameworks, FATF Travel Rule compliance.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SOLUTIONS ===== -->
+<section id="commercial" style="background:var(--bg)">
+  <div class="reveal">
+    <div class="sec-label" data-i18n="sol.label">Solutions</div>
+    <h2 data-i18n="sol.title">Built for your use case.</h2>
+    <p class="sec-intro" data-i18n="sol.intro">API access, one-time investigations, or full compliance programs.</p>
+  </div>
+  <div class="card-grid-4">
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F4E1;</span>
+      <div class="scard-title" data-i18n="sol.s1.title">Label Data API</div>
+      <p class="scard-desc" data-i18n="sol.s1.desc">Full AML label database access via API. Real-time risk screening for your product.</p>
+      <span class="scard-badge" data-i18n="sol.s1.badge">Subscription</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F575;&#xFE0F;</span>
+      <div class="scard-title" data-i18n="sol.s2.title">Per-Case Tracing</div>
+      <p class="scard-desc" data-i18n="sol.s2.desc">Submit a case, get a forensic report in 48h. Fixed or milestone pricing.</p>
+      <span class="scard-badge" data-i18n="sol.s2.badge">Per Project</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F3E6;</span>
+      <div class="scard-title" data-i18n="sol.s3.title">VASP Compliance</div>
+      <p class="scard-desc" data-i18n="sol.s3.desc">All-in-one: API + monitoring + risk framework + analyst support.</p>
+      <span class="scard-badge" data-i18n="sol.s3.badge">Retainer</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x2696;&#xFE0F;</span>
+      <div class="scard-title" data-i18n="sol.s4.title">Litigation Support</div>
+      <p class="scard-desc" data-i18n="sol.s4.desc">Tracing + expert witness docs + freeze order drafting. Single engagement.</p>
+      <span class="scard-badge" data-i18n="sol.s4.badge">Premium</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== EVIDENCE COLLECTION HUB ===== -->
+<section id="evidence" style="background:var(--bg3);border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border)">
+  <div class="reveal sec-center">
+    <div class="sec-label" data-i18n="ev.label">Evidence Collection Hub</div>
+    <h2 data-i18n="ev.title">Exchange Forensic Procedures</h2>
+    <p class="sec-intro" data-i18n="ev.intro">Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.</p>
+  </div>
+  <div class="card-grid-4" style="margin-top:32px">
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F3E6;</span>
+      <div class="scard-title" data-i18n="ev.c1.title">Exchanges</div>
+      <p class="scard-desc" data-i18n="ev.c1.desc">Binance, OKX, Huobi, Coinbase, Kraken, Bybit, Bitget, Gate.io and 60+ more.</p>
+      <span class="scard-badge" data-i18n="ev.c1.badge">68 Platforms</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F4B3;</span>
+      <div class="scard-title" data-i18n="ev.c2.title">Wallets</div>
+      <p class="scard-desc" data-i18n="ev.c2.desc">imToken, BitPie, TokenPocket, SafePal, Cobo, BitKeep and more.</p>
+      <span class="scard-badge" data-i18n="ev.c2.badge">10 Wallets</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x1F504;</span>
+      <div class="scard-title" data-i18n="ev.c3.title">Swap Platforms</div>
+      <p class="scard-desc" data-i18n="ev.c3.desc">ChangeNow, SimpleSwap, FixedFloat, SWFT and cross-chain bridges.</p>
+      <span class="scard-badge" data-i18n="ev.c3.badge">4 Platforms</span>
+    </div>
+    <div class="scard reveal">
+      <span class="scard-emoji">&#x26CF;&#xFE0F;</span>
+      <div class="scard-title" data-i18n="ev.c4.title">Mining Pools</div>
+      <p class="scard-desc" data-i18n="ev.c4.desc">Ethermine, Poolin, BTC.com — evidence procedures for mining pool operators.</p>
+      <span class="scard-badge" data-i18n="ev.c4.badge">3 Pools</span>
+    </div>
+  </div>
+  <div style="text-align:center;margin-top:28px" class="reveal">
+    <a href="evidence-collection.html" class="btn-primary">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+      <span data-i18n="ev.cta">View Full Evidence Directory</span>
+    </a>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <div>
+        <div class="sec-label" data-i18n="ct.label">Contact</div>
+        <h2 data-i18n="ct.title">Start an investigation.</h2>
+        <p style="font-size:15px;color:var(--text2);margin-top:14px;max-width:380px;line-height:1.8;font-weight:500" data-i18n="ct.desc">Tell us what you're working on. Confidential assessment within 24 hours.</p>
+      </div>
+      <div class="contact-items">
+        <div class="c-item">
+          <div class="c-item-icon">&#x2709;&#xFE0F;</div>
+          <span data-i18n="ct.email">info@innobridge.io</span>
+        </div>
+        <div class="c-item">
+          <div class="c-item-icon">&#x23F0;</div>
+          <span data-i18n="ct.response">Response within 24 hours</span>
+        </div>
+        <div class="c-item">
+          <div class="c-item-icon">&#x1F310;</div>
+          <span data-i18n="ct.web">innobridge.io</span>
+        </div>
+      </div>
+    </div>
+    <form class="form-group reveal" id="contact-form">
+      <div class="fl-row">
+        <div class="fl"><label data-i18n="ct.f.fname">First Name</label><input type="text" name="first_name" placeholder="Jane" data-i18n-ph="ct.f.ph.fname" required></div>
+        <div class="fl"><label data-i18n="ct.f.lname">Last Name</label><input type="text" name="last_name" placeholder="Smith" data-i18n-ph="ct.f.ph.lname" required></div>
+      </div>
+      <div class="fl"><label data-i18n="ct.f.org">Organisation</label><input type="text" name="organization" placeholder="Law firm, exchange, institution..." data-i18n-ph="ct.f.ph.org"></div>
+      <div class="fl"><label data-i18n="ct.f.email">Email</label><input type="email" name="email" placeholder="jane@example.com" data-i18n-ph="ct.f.ph.email" required></div>
+      <div class="fl">
+        <label data-i18n="ct.f.service">What do you need?</label>
+        <select name="service">
+          <option value="" data-i18n="ct.f.opt0">Select...</option>
+          <option data-i18n="ct.f.opt1">AML Label API Access</option>
+          <option data-i18n="ct.f.opt2">On-chain Tracing (specific case)</option>
+          <option data-i18n="ct.f.opt3">Legal Forensic Report</option>
+          <option data-i18n="ct.f.opt4">VASP Compliance Package</option>
+          <option data-i18n="ct.f.opt5">Litigation Support</option>
+          <option data-i18n="ct.f.opt6">Consultation</option>
+        </select>
+      </div>
+      <div class="fl"><label data-i18n="ct.f.msg">Brief Description</label><textarea name="message" placeholder="Describe your situation. All information is strictly confidential." data-i18n-ph="ct.f.ph.msg"></textarea></div>
+      <button class="btn-primary" type="submit" id="submit-btn" style="width:100%;justify-content:center;padding:15px;border-radius:var(--radius-sm)" data-i18n="ct.f.submit">Submit Enquiry</button>
+      <p style="font-size:11px;color:var(--text3);text-align:center;font-weight:500" data-i18n="ct.f.note">All enquiries are strictly confidential. NDA available on request.</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+  <ul class="f-links">
+    <li><a href="privacy.html" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a></li>
+  </ul>
+</footer>
+
+<script>
+// ===== CONFIG =====
+var SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
+var API_BASE = SUPABASE_URL + '/functions/v1/aml-api';
+
+// ===== SCROLL REVEAL =====
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}
+  });
+},{threshold:0.06,rootMargin:'0px 0px -20px 0px'});
+document.querySelectorAll('.reveal').forEach(function(el){
+  var siblings = Array.from(el.parentElement.children).filter(function(c){return c.classList.contains('reveal')});
+  var idx = siblings.indexOf(el);
+  el.style.transitionDelay = (idx*80)+'ms';
+  io.observe(el);
+});
+
+// ===== HERO STATS (from Supabase) =====
+(function loadHeroStats(){
+  var url = API_BASE + '?action=stats&callback=__heroStats';
+  var s = document.createElement('script');
+  window.__heroStats = function(data){
+    if(data && data.success && data.stats){
+      var st = data.stats;
+      var totalEl = document.getElementById('hero-total');
+      var frozenEl = document.getElementById('hero-frozen');
+      if(totalEl && st.total) totalEl.textContent = Number(st.total).toLocaleString() + '+';
+      if(frozenEl && st.total_frozen){
+        var b = Number(st.total_frozen);
+        frozenEl.textContent = b >= 1e9 ? '$'+(b/1e9).toFixed(1)+'B+' : b >= 1e6 ? '$'+(b/1e6).toFixed(0)+'M+' : '$'+b.toLocaleString();
+      }
+    }
+    delete window.__heroStats;
+  };
+  s.src = url;
+  s.onerror = function(){ delete window.__heroStats; };
+  document.body.appendChild(s);
+})();
+
+// ===== NEWS FEED =====
+var allNews = [];
+var newsOffset = 0;
+var NEWS_PAGE = 9;
+var currentFilter = 'all';
+
+function classifyNews(text){
+  text = (text||'').toLowerCase();
+  if(/defi|dex|swap|aave|uniswap|compound|lend|yield|staking|tvl|liquidity/.test(text)) return 'defi';
+  if(/sec|regulation|regul|policy|law|legal|compliance|ban|sanction|license|approve/.test(text)) return 'regulation';
+  if(/hack|exploit|vulnerability|breach|attack|phish|scam|rug|drain|security/.test(text)) return 'security';
+  if(/price|market|btc|eth|bitcoin|ethereum|bull|bear|rally|dump|surge|drop|trading|volume|mcap|capitalization/.test(text)) return 'market';
+  return 'general';
+}
+
+function timeAgo(dateStr){
+  var d = new Date(dateStr);
+  var now = new Date();
+  var diff = Math.floor((now - d)/1000);
+  if(diff < 60) return 'just now';
+  if(diff < 3600) return Math.floor(diff/60) + 'm ago';
+  if(diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  if(diff < 604800) return Math.floor(diff/86400) + 'd ago';
+  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+}
+
+function renderNewsCards(items){
+  var grid = document.getElementById('news-grid');
+  if(items.length === 0){
+    grid.innerHTML = '<div class="news-empty">No news yet. Check back soon!</div>';
+    document.getElementById('news-more').style.display = 'none';
+    return;
+  }
+  var html = '';
+  items.forEach(function(item){
+    var cat = item.category || classifyNews(item.title + ' ' + (item.content||''));
+    html += '<div class="news-card reveal" data-cat="'+cat+'">'
+      +'<div class="news-source"><span class="src-icon">&#x26A1;</span>'+(item.source||'Innobridge')+'</div>'
+      +'<div class="news-title">'+escHtml(item.title||'')+'</div>'
+      +'<div class="news-snippet">'+escHtml(item.content||item.summary||'')+'</div>'
+      +'<div class="news-meta"><span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(item.published_at||item.created_at||new Date().toISOString())+'</span></div>'
+      +'</div>';
+  });
+  grid.innerHTML = html;
+  // Re-observe reveals
+  grid.querySelectorAll('.reveal').forEach(function(el,i){
+    el.style.transitionDelay=(i*50)+'ms';
+    io.observe(el);
+  });
+}
+
+function filterNews(cat, btn){
+  currentFilter = cat;
+  document.querySelectorAll('.news-tab').forEach(function(t){t.classList.remove('active')});
+  if(btn) btn.classList.add('active');
+  var cards = document.querySelectorAll('.news-card');
+  cards.forEach(function(c){
+    if(cat === 'all' || c.dataset.cat === cat){
+      c.style.display = '';
+    } else {
+      c.style.display = 'none';
+    }
+  });
+}
+
+function loadNews(){
+  // Fetch from aml-api Edge Function news endpoint
+  fetch(API_BASE + '?action=news&limit='+NEWS_PAGE+'&offset='+newsOffset)
+  .then(function(r){ return r.json(); })
+  .then(function(resp){
+    var data = (resp && resp.success && resp.items) ? resp.items : [];
+    if(data.length > 0){
+      allNews = allNews.concat(data);
+      renderNewsCards(allNews);
+      newsOffset += data.length;
+      document.getElementById('news-more').style.display = data.length >= NEWS_PAGE ? '' : 'none';
+    } else {
+      // If news table doesn't exist yet, show placeholder
+      if(allNews.length === 0) renderPlaceholderNews();
+    }
+  })
+  .catch(function(){
+    if(allNews.length === 0) renderPlaceholderNews();
+  });
+}
+
+function loadMoreNews(){
+  loadNews();
+}
+
+function renderPlaceholderNews(){
+  var placeholders = [
+    {title:'News feed coming soon',content:'Real-time crypto and blockchain news from our Telegram channel will appear here. Stay tuned!',source:'Innobridge',category:'general',published_at:new Date().toISOString()},
+    {title:'Follow us on Telegram',content:'Join @michaelview_news for the latest blockchain AML intelligence, market analysis, and breaking news.',source:'Innobridge',category:'market',published_at:new Date().toISOString()},
+    {title:'AML Database Live',content:'Our Supabase-powered AML database is now live with 10,500+ flagged addresses and $3.6B+ in traced funds.',source:'Innobridge',category:'security',published_at:new Date().toISOString()}
+  ];
+  renderNewsCards(placeholders);
+}
+
+function escHtml(s){
+  var d=document.createElement('div');d.textContent=s;return d.innerHTML;
+}
+
+// Init news
+loadNews();
+
+// ===== AML CHECK (using Supabase API) =====
+async function runAMLCheck(){
+  var addr = document.getElementById('aml-address').value.trim();
+  var chainSel = document.getElementById('aml-chain');
+  var chainName = chainSel.options[chainSel.selectedIndex].text;
+  if(!addr){
+    document.getElementById('aml-address').style.borderColor = '#ef4444';
+    setTimeout(function(){ document.getElementById('aml-address').style.borderColor = ''; },2000);
+    return;
+  }
+
+  var btn = document.querySelector('.aml-btn');
+  btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="animation:spin 1s linear infinite"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4" stroke-dashoffset="10"/></svg> Checking…';
+  btn.disabled = true;
+
+  try {
+    // 1) Check Supabase AML database via JSONP
+    var dbResult = await new Promise(function(resolve){
+      var cbName = '__amlCb' + Date.now();
+      window[cbName] = function(data){ resolve(data); delete window[cbName]; };
+      var s = document.createElement('script');
+      s.src = API_BASE + '?address=' + encodeURIComponent(addr) + '&callback=' + cbName;
+      s.onerror = function(){ resolve(null); delete window[cbName]; };
+      document.body.appendChild(s);
+      setTimeout(function(){ if(window[cbName]){ resolve(null); delete window[cbName]; }}, 8000);
+    });
+
+    // 2) On-chain blacklist check (ETH only)
+    var onChainHits = await checkOnChain(addr.toLowerCase());
+
+    var found = dbResult && dbResult.success && dbResult.data;
+    var entity, label, risk, frozen, source, asset, cls;
+
+    if(found){
+      var d = Array.isArray(dbResult.data) ? dbResult.data[0] : dbResult.data;
+      label = d.label || d.category || 'Flagged';
+      risk = d.risk_level || (d.risk_score >= 80 ? 'HIGH' : d.risk_score >= 50 ? 'MEDIUM' : 'LOW');
+      frozen = d.frozen_amount ? '$' + Number(d.frozen_amount).toLocaleString() : 'N/A';
+      source = d.source || 'Innobridge DB';
+      asset = d.asset || 'USDT';
+      cls = risk === 'HIGH' ? 'danger' : risk === 'MEDIUM' ? 'warning' : 'safe';
+    } else if(onChainHits.length > 0){
+      label = onChainHits[0].label;
+      risk = 'HIGH';
+      frozen = 'On-chain frozen';
+      source = onChainHits.map(function(h){return h.name}).join(', ');
+      asset = onChainHits.map(function(h){return h.label.replace('_FREEZE','')}).join(', ');
+      cls = 'danger';
+    } else {
+      label = 'CLEAN';
+      risk = 'LOW';
+      frozen = 'N/A';
+      source = 'OFAC-SDN + On-chain';
+      asset = '-';
+      cls = 'safe';
+    }
+
+    document.getElementById('r-addr').textContent = addr.length > 22 ? addr.substring(0,10)+'…'+addr.slice(-6) : addr;
+    document.getElementById('r-chain').textContent = chainName;
+    document.getElementById('r-asset').textContent = asset;
+    document.getElementById('r-label').textContent = label;
+    document.getElementById('r-label').className = 'result-val '+cls;
+    document.getElementById('r-risk').textContent = risk;
+    document.getElementById('r-risk').className = 'result-val '+cls;
+    document.getElementById('r-frozen').textContent = frozen;
+    document.getElementById('r-source').textContent = source;
+    document.getElementById('aml-result').classList.add('show');
+  } finally {
+    btn.innerHTML = '<svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> <span data-i18n="aml.btn">'+(I18N[currentLang]||I18N.en)['aml.btn']+'</span>';
+    btn.disabled = false;
+  }
+}
+
+// On-chain blacklist check
+async function checkOnChain(addrLower){
+  if(!/^0x[0-9a-f]{40}$/.test(addrLower)) return [];
+  var rpc = 'https://eth.llamarpc.com';
+  var selector = '0xfe575a87';
+  var padded = addrLower.replace(/^0x/,'').padStart(64,'0');
+  var callData = selector + padded;
+  var contracts = [
+    {contract:'0xdAC17F958D2ee523a2206206994597C13D831ec7',label:'USDT_FREEZE',name:'Tether USDT',score:92},
+    {contract:'0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',label:'USDC_FREEZE',name:'Circle USDC',score:90}
+  ];
+  var hits = [];
+  for(var i=0;i<contracts.length;i++){
+    var c = contracts[i];
+    try{
+      var resp = await fetch(rpc,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({jsonrpc:'2.0',id:1,method:'eth_call',params:[{to:c.contract,data:callData},'latest']})});
+      var json = await resp.json();
+      if(json.result && json.result!=='0x' && parseInt(json.result,16)===1) hits.push(c);
+    } catch(e){}
+  }
+  return hits;
+}
+
+// Spin animation for loading
+var styleEl = document.createElement('style');
+styleEl.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+document.head.appendChild(styleEl);
+
+// ===== CONTACT FORM =====
+document.getElementById('contact-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  var b = document.getElementById('submit-btn');
+  b.textContent='Sending...';
+  b.disabled=true;
+  var fd = new FormData(this);
+  var payload = {
+    first_name: fd.get('first_name')||'',
+    last_name: fd.get('last_name')||'',
+    organization: fd.get('organization')||'',
+    email: fd.get('email')||'',
+    service: fd.get('service')||'',
+    message: fd.get('message')||''
+  };
+  fetch(API_BASE+'?action=contact',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(payload)
+  }).then(function(r){return r.json();}).then(function(d){
+    if(d.success){
+      b.textContent='Sent! We\'ll be in touch.';
+      b.style.background='var(--accent3)';
+      document.getElementById('contact-form').reset();
+    } else {
+      b.textContent='Error: '+(d.error||'Please try again');
+      b.style.background='var(--danger)';
+      b.disabled=false;
+      setTimeout(function(){b.textContent=(I18N[currentLang]||I18N.en)['ct.f.submit'];b.style.background='';},4000);
+    }
+  }).catch(function(){
+    b.textContent='Network error. Try again.';
+    b.style.background='var(--danger)';
+    b.disabled=false;
+    setTimeout(function(){b.textContent=(I18N[currentLang]||I18N.en)['ct.f.submit'];b.style.background='';},4000);
+  });
+});
+
+// Blog section disabled
+
+// ===== SMOOTH SCROLL =====
+document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
+  a.addEventListener('click',function(e){
+    var t=document.querySelector(this.getAttribute('href'));
+    if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth'})}
+  });
+});
+
+// ===== i18n =====
+var I18N = {
+  en: {
+    'nav.news':'News','nav.blacklist':'Blacklist Check','nav.dashboard':'Dashboard','nav.services':'Services','nav.evidence':'Evidence Hub','nav.contact':'Contact','nav.cta':'Get Started',
+    'hero.badge':'Stablecoin Blacklist Intelligence','hero.title1':'Freeze it. Flag it.','hero.title2':'Trace it back.','hero.sub':'Real-time USDT & USDC blacklist monitoring, frozen address database, and on-chain forensic tracing for law enforcement, compliance teams, and legal professionals.',
+    'hero.cta1':'Check Blacklist','hero.cta2':'Latest News',
+    'hero.stat1':'Blacklisted Addresses','hero.stat2':'Chains (ETH + TRON)','hero.stat3':'Frozen Funds','hero.stat4':'Report Turnaround',
+    'news.label':'Live News Feed','news.sub':'Real-time crypto & blockchain intelligence','news.all':'All','news.market':'Market','news.defi':'DeFi','news.regulation':'Regulation','news.security':'Security','news.loading':'Loading latest news...','news.loadmore':'Load more news',
+    'aml.label':'Blacklist Check','aml.title':'Is this address frozen?','aml.desc':'Paste a USDT/USDC address to check if it\'s been blacklisted by Tether or Circle. Cross-referenced with our frozen address database and OFAC SDN list.',
+    'aml.btn':'Run AML Risk Check','aml.placeholder':'Enter wallet address (0x... or T...)',
+    'aml.r.address':'Address','aml.r.chain':'Chain','aml.r.asset':'Asset','aml.r.label':'Label','aml.r.risk':'Risk Level','aml.r.frozen':'Frozen Amount','aml.r.source':'Source',
+    'aml.note':'* Live data from OFAC SDN, Tether & Circle on-chain blacklists, and our proprietary label database.','aml.link':'View full database dashboard →',
+    'core.label':'Core Intelligence','core.title':'Two pillars. One platform.','core.intro':'AML labels and on-chain tracing — everything else we do builds on these two capabilities.',
+    'core.c1.num':'01 — BLACKLIST DATABASE','core.c1.title':'Stablecoin Freeze & Blacklist Monitor','core.c1.desc':'Real-time monitoring of USDT (Tether) and USDC (Circle) blacklisted addresses on Ethereum and TRON. 10,500+ flagged addresses with $3.6B+ in frozen funds tracked.',
+    'core.c1.f1':'<strong>Exchange Attribution</strong> — 300+ CEX cluster tags','core.c1.f2':'<strong>Sanctions Screening</strong> — OFAC, EU, UN, HMT','core.c1.f3':'<strong>Mixer Detection</strong> — Tornado, CoinJoin, bridges','core.c1.f4':'<strong>Risk Score API</strong> — Structured risk + entity type',
+    'core.c2.num':'02 — ON-CHAIN TRACING','core.c2.title':'Forensic Fund Flow Analysis','core.c2.desc':'Reconstruct transaction flows through wallets, bridges, DEXs, and mixers. End-to-end, cross-chain.',
+    'core.c2.f1':'<strong>Multi-Hop Mapping</strong> — Unlimited hops & chains','core.c2.f2':'<strong>Wallet Clustering</strong> — Co-ownership detection','core.c2.f3':'<strong>Bridge Tracing</strong> — 20+ bridge protocols','core.c2.f4':'<strong>Court-Ready Reports</strong> — Visual diagrams & narratives',
+    'sup.label':'Supporting Services','sup.title':'From analysis to action.','sup.intro':'Our tracing findings become legal instruments, compliance programs, and regulatory submissions.',
+    'sup.s1.title':'Legal Forensic Reports','sup.s1.desc':'Expert-witness-grade packages for civil litigation and criminal investigations. Chain-of-custody docs, technical affidavits, court submission bundles.',
+    'sup.s2.title':'Legal Paper Prep','sup.s2.desc':'Freeze orders, court injunctions, exchange cooperation letters. Co-drafted for Singapore, UK, EU, and US jurisdictions.',
+    'sup.s3.title':'Compliance Structuring','sup.s3.desc':'AML/KYC program design for VASPs and exchanges. Transaction monitoring, risk frameworks, FATF Travel Rule compliance.',
+    'sol.label':'Solutions','sol.title':'Built for your use case.','sol.intro':'API access, one-time investigations, or full compliance programs.',
+    'sol.s1.title':'Label Data API','sol.s1.desc':'Full AML label database access via API. Real-time risk screening for your product.','sol.s1.badge':'Subscription',
+    'sol.s2.title':'Per-Case Tracing','sol.s2.desc':'Submit a case, get a forensic report in 48h. Fixed or milestone pricing.','sol.s2.badge':'Per Project',
+    'sol.s3.title':'VASP Compliance','sol.s3.desc':'All-in-one: API + monitoring + risk framework + analyst support.','sol.s3.badge':'Retainer',
+    'sol.s4.title':'Litigation Support','sol.s4.desc':'Tracing + expert witness docs + freeze order drafting. Single engagement.','sol.s4.badge':'Premium',
+    'ev.label':'Evidence Collection Hub','ev.title':'Exchange Forensic Procedures','ev.intro':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
+    'ev.c1.title':'Exchanges','ev.c1.desc':'Binance, OKX, Huobi, Coinbase, Kraken, Bybit, Bitget, Gate.io and 60+ more.','ev.c1.badge':'68 Platforms',
+    'ev.c2.title':'Wallets','ev.c2.desc':'imToken, BitPie, TokenPocket, SafePal, Cobo, BitKeep and more.','ev.c2.badge':'10 Wallets',
+    'ev.c3.title':'Swap Platforms','ev.c3.desc':'ChangeNow, SimpleSwap, FixedFloat, SWFT and cross-chain bridges.','ev.c3.badge':'4 Platforms',
+    'ev.c4.title':'Mining Pools','ev.c4.desc':'Ethermine, Poolin, BTC.com — evidence procedures for mining pool operators.','ev.c4.badge':'3 Pools',
+    'ev.cta':'View Full Evidence Directory',
+    'ct.label':'Contact','ct.title':'Start an investigation.','ct.desc':'Tell us what you\'re working on. Confidential assessment within 24 hours.',
+    'ct.email':'info@innobridge.io','ct.response':'Response within 24 hours','ct.web':'innobridge.io',
+    'ct.f.fname':'First Name','ct.f.lname':'Last Name','ct.f.org':'Organisation','ct.f.email':'Email','ct.f.service':'What do you need?','ct.f.msg':'Brief Description',
+    'ct.f.opt0':'Select...','ct.f.opt1':'AML Label API Access','ct.f.opt2':'On-chain Tracing (specific case)','ct.f.opt3':'Legal Forensic Report','ct.f.opt4':'VASP Compliance Package','ct.f.opt5':'Litigation Support','ct.f.opt6':'Consultation',
+    'ct.f.submit':'Submit Enquiry','ct.f.note':'All enquiries are strictly confidential. NDA available on request.',
+    'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
+  },
+  cn: {
+    'nav.news':'新闻','nav.blacklist':'黑名单查询','nav.dashboard':'数据面板','nav.services':'服务','nav.evidence':'取证中心','nav.contact':'联系我们','nav.cta':'立即咨询',
+    'hero.badge':'稳定币黑名单情报平台','hero.title1':'冻结 · 标记 ·','hero.title2':'溯源追踪','hero.sub':'USDT 与 USDC 黑名单实时监控，冻结地址数据库，链上取证追踪 —— 服务于执法机构、合规团队和法律专业人士。',
+    'hero.cta1':'查询黑名单','hero.cta2':'最新新闻',
+    'hero.stat1':'黑名单地址','hero.stat2':'支持链 (ETH + TRON)','hero.stat3':'冻结资金','hero.stat4':'报告交付周期',
+    'news.label':'实时新闻','news.sub':'加密货币与区块链实时情报','news.all':'全部','news.market':'市场','news.defi':'DeFi','news.regulation':'监管','news.security':'安全','news.loading':'正在加载最新新闻...','news.loadmore':'加载更多',
+    'aml.label':'黑名单查询','aml.title':'该地址是否被冻结？','aml.desc':'输入 USDT/USDC 地址，查询是否已被 Tether 或 Circle 列入黑名单。交叉比对冻结地址数据库与 OFAC SDN 制裁名单。',
+    'aml.btn':'运行 AML 风险检查','aml.placeholder':'输入钱包地址 (0x... 或 T...)',
+    'aml.r.address':'地址','aml.r.chain':'链','aml.r.asset':'资产','aml.r.label':'标签','aml.r.risk':'风险等级','aml.r.frozen':'冻结金额','aml.r.source':'来源',
+    'aml.note':'* 数据来自 OFAC SDN、Tether 和 Circle 链上黑名单，以及我们的专属标签数据库。','aml.link':'查看完整数据面板 →',
+    'core.label':'核心情报','core.title':'两大支柱，一个平台。','core.intro':'AML 标签与链上追踪 —— 我们所有能力都建立在这两项核心服务之上。',
+    'core.c1.num':'01 — 黑名单数据库','core.c1.title':'稳定币冻结与黑名单监控','core.c1.desc':'实时监控以太坊和波场上 USDT (Tether) 与 USDC (Circle) 黑名单地址。已追踪 10,500+ 标记地址，冻结资金超 36 亿美元。',
+    'core.c1.f1':'<strong>交易所归因</strong> — 300+ CEX 聚类标签','core.c1.f2':'<strong>制裁筛查</strong> — OFAC、EU、UN、HMT','core.c1.f3':'<strong>混币器检测</strong> — Tornado、CoinJoin、跨链桥','core.c1.f4':'<strong>风险评分 API</strong> — 结构化风险 + 实体类型',
+    'core.c2.num':'02 — 链上追踪','core.c2.title':'链上资金流向取证分析','core.c2.desc':'还原资金在钱包、跨链桥、DEX 和混币器之间的交易路径。端到端、跨链追踪。',
+    'core.c2.f1':'<strong>多跳映射</strong> — 无限跳数 & 多链','core.c2.f2':'<strong>钱包聚类</strong> — 共同所有权检测','core.c2.f3':'<strong>跨链追踪</strong> — 20+ 跨链桥协议','core.c2.f4':'<strong>法庭级报告</strong> — 可视化图表 & 叙述',
+    'sup.label':'配套服务','sup.title':'从分析到行动。','sup.intro':'我们的追踪结论可转化为法律文书、合规方案和监管报告。',
+    'sup.s1.title':'法律取证报告','sup.s1.desc':'专家证人级文件包，适用于民事诉讼和刑事调查。包含证据链文件、技术宣誓书、法庭提交材料。',
+    'sup.s2.title':'法律文书准备','sup.s2.desc':'冻结令、法院禁令、交易所协助函。适用于新加坡、英国、欧盟和美国司法管辖区。',
+    'sup.s3.title':'合规架构设计','sup.s3.desc':'为 VASP 和交易所设计 AML/KYC 合规方案。交易监控、风险框架、FATF 旅行规则合规。',
+    'sol.label':'解决方案','sol.title':'为您的场景定制。','sol.intro':'API 接入、单次调查或全套合规方案。',
+    'sol.s1.title':'标签数据 API','sol.s1.desc':'通过 API 获取完整 AML 标签数据库。为您的产品提供实时风险筛查。','sol.s1.badge':'订阅制',
+    'sol.s2.title':'按案追踪','sol.s2.desc':'提交案件，48 小时内获取取证报告。固定或里程碑定价。','sol.s2.badge':'按项目',
+    'sol.s3.title':'VASP 合规','sol.s3.desc':'一站式服务：API + 监控 + 风险框架 + 分析师支持。','sol.s3.badge':'长期合约',
+    'sol.s4.title':'诉讼支持','sol.s4.desc':'追踪 + 专家证人文件 + 冻结令起草。单次委托。','sol.s4.badge':'高级定制',
+    'ev.label':'取证中心','ev.title':'交易所取证流程','ev.intro':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
+    'ev.c1.title':'交易所','ev.c1.desc':'Binance、OKX、火币、Coinbase、Kraken、Bybit、Bitget、Gate.io 等 60+ 家。','ev.c1.badge':'68 个平台',
+    'ev.c2.title':'钱包','ev.c2.desc':'imToken、BitPie、TokenPocket、SafePal、Cobo、BitKeep 等。','ev.c2.badge':'10 个钱包',
+    'ev.c3.title':'闪兑平台','ev.c3.desc':'ChangeNow、SimpleSwap、FixedFloat、SWFT 及跨链桥。','ev.c3.badge':'4 个平台',
+    'ev.c4.title':'矿池','ev.c4.desc':'Ethermine、Poolin、BTC.com — 矿池运营商取证流程。','ev.c4.badge':'3 个矿池',
+    'ev.cta':'查看完整取证目录',
+    'ct.label':'联系我们','ct.title':'开始调查。','ct.desc':'告诉我们您的需求，24 小时内提供保密评估。',
+    'ct.email':'info@innobridge.io','ct.response':'24 小时内回复','ct.web':'innobridge.io',
+    'ct.f.fname':'名','ct.f.lname':'姓','ct.f.org':'所属机构','ct.f.email':'邮箱','ct.f.service':'您需要什么服务？','ct.f.msg':'简要描述',
+    'ct.f.opt0':'请选择...','ct.f.opt1':'AML 标签 API 接入','ct.f.opt2':'链上追踪（具体案件）','ct.f.opt3':'法律取证报告','ct.f.opt4':'VASP 合规方案','ct.f.opt5':'诉讼支持','ct.f.opt6':'咨询服务',
+    'ct.f.submit':'提交咨询','ct.f.note':'所有咨询严格保密，可按需签署保密协议。',
+    'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
+  }
+};
+
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var dict = I18N[lang] || I18N.en;
+  // Text content
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        // skip - handled by placeholder
+      } else if (el.children.length === 0 || el.querySelector('strong')) {
+        el.innerHTML = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+  // Placeholders
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.placeholder = dict[key];
+  });
+  // Update toggle button
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+
+function toggleLang() {
+  applyLang(currentLang === 'en' ? 'cn' : 'en');
+}
+
+// Apply on load
+applyLang(currentLang);
+</script>
 </body>
-</html></p>
-</body></title>
-  </head>
 </html>

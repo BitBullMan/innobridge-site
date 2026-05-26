@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disclaimer — Innobridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;--surface:#ffffff;
+  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
+  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
+  --accent-soft:rgba(79,110,247,0.08);--accent2-soft:rgba(168,85,247,0.08);--accent3-soft:rgba(34,201,151,0.08);
+  --danger:#ef4444;--warning:#f59e0b;--success:#22c997;
+  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
+  --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:20px;--radius-sm:12px;--radius-xs:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;line-height:1.7}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:10px 24px;border-radius:var(--radius-xs);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,110,247,0.3)}
+.mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
+.lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{background:var(--accent);color:#fff}
+
+/* HERO HEADER */
+.page-hero{padding:140px 40px 60px;text-align:center;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(79,110,247,0.08) 0%,rgba(168,85,247,0.04) 40%,transparent 70%);pointer-events:none}
+.page-hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:16px}
+.page-hero h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-hero .subtitle{font-size:16px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.8;font-weight:500}
+.updated{font-size:13px;color:var(--text3);margin-top:14px;font-weight:600}
+
+/* CONTENT */
+.content{max-width:800px;margin:0 auto;padding:0 40px 80px}
+.content section{padding:0;margin-bottom:48px}
+.content h2{font-size:22px;font-weight:800;margin-bottom:16px;color:var(--text);letter-spacing:-0.01em}
+.content h3{font-size:17px;font-weight:700;margin-bottom:10px;color:var(--text);margin-top:24px}
+.content p{font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:14px;font-weight:500}
+.content ul{margin:10px 0 14px 24px;display:flex;flex-direction:column;gap:8px}
+.content li{font-size:15px;color:var(--text2);line-height:1.8;font-weight:500}
+.content a{color:var(--accent);font-weight:600;transition:color .2s}
+.content a:hover{color:var(--accent2)}
+.content .highlight-box{background:var(--accent-soft);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0;font-size:14px;color:var(--text2);line-height:1.8}
+.content .warning-box{background:rgba(245,158,11,0.06);border:1.5px solid rgba(245,158,11,0.25);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0;font-size:14px;color:var(--text2);line-height:1.8}
+
+/* FOOTER */
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
+.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+.f-links{display:flex;gap:20px;list-style:none}
+.f-links a{font-size:12px;color:var(--text3);font-weight:600;transition:color .2s}
+.f-links a:hover{color:var(--accent)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:12px 20px}
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .page-hero{padding:110px 20px 40px}
+  .content{padding:0 20px 56px}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px">
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1><span class="gradient" data-i18n="page.title">Disclaimer</span></h1>
+  <p class="subtitle">Important information about the nature, limitations, and intended use of Innobridge's blockchain AML intelligence services.</p>
+  <p class="updated" data-i18n="page.updated">Last updated: May 26, 2026</p>
+</div>
+
+<div class="content">
+
+<div id="content-en">
+  <section>
+    <h2>1. Informational Purposes Only</h2>
+    <div class="warning-box">
+      <strong>Notice:</strong> The information provided by Innobridge is for informational and analytical purposes only. It does NOT constitute legal advice, financial advice, investment advice, or any other form of professional counsel.
+    </div>
+    <p>All data, reports, screening results, and content available through the Innobridge platform are intended to support professional AML and compliance workflows. Users should not rely solely on our platform's output as the basis for legal, financial, or regulatory decisions.</p>
+  </section>
+
+  <section>
+    <h2>2. Accuracy of Data</h2>
+    <p>Innobridge provides blockchain intelligence on a best-effort basis, derived from publicly available blockchain data including USDT and USDC on-chain blacklist and freeze events. While we strive for accuracy and timeliness, please be aware of the following:</p>
+    <ul>
+      <li>There may be delays between on-chain events (such as address blacklisting or freezing) and their reflection in our database.</li>
+      <li>Blockchain data is sourced from public networks and third-party providers; we cannot guarantee its absolute accuracy at all times.</li>
+      <li>Historical data may be subject to corrections or reclassifications as new information becomes available.</li>
+    </ul>
+    <p>Users should independently verify information obtained from our platform, particularly when it forms the basis of enforcement actions, compliance decisions, or legal proceedings.</p>
+  </section>
+
+  <section>
+    <h2>3. No Guarantee of Completeness</h2>
+    <p>Our blacklist and address screening databases, while comprehensive, may not capture every blacklisted, frozen, or flagged address across all blockchain networks and stablecoin issuers at any given moment. The absence of an address from our database does not guarantee that the address is safe, compliant, or free from association with illicit activity.</p>
+    <p>Users should employ our Services as one component of a broader due diligence and compliance framework, not as the sole determination of an address's status.</p>
+  </section>
+
+  <section>
+    <h2>4. Third-Party Links</h2>
+    <p>The Innobridge platform, including the Evidence Collection Hub, contains links to third-party websites and services, such as cryptocurrency exchange law enforcement portals and compliance reporting tools. Regarding these links:</p>
+    <ul>
+      <li>We do not control, endorse, or assume responsibility for the content, policies, or practices of any third-party websites.</li>
+      <li>Third-party portal URLs, procedures, and requirements may change without notice.</li>
+      <li>Your use of third-party services is governed by their respective terms and privacy policies.</li>
+      <li>We provide these links as a convenience for professional users and do not guarantee their availability or accuracy.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Professional Advice Recommendation</h2>
+    <p>We strongly recommend that users of our platform:</p>
+    <ul>
+      <li>Consult with qualified legal counsel before taking enforcement or legal action based on blockchain intelligence data.</li>
+      <li>Engage licensed compliance professionals for regulatory decision-making.</li>
+      <li>Seek appropriate financial advisors for matters involving asset recovery or financial transactions.</li>
+      <li>Follow your organization's established compliance procedures and escalation protocols.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>6. Limitation of Liability</h2>
+    <p>To the maximum extent permitted by applicable law, Innobridge, its founders, employees, agents, and affiliates shall not be held liable for:</p>
+    <ul>
+      <li>Any errors, omissions, or inaccuracies in the data or information provided.</li>
+      <li>Any actions taken or not taken based on information obtained through our platform.</li>
+      <li>Any direct, indirect, incidental, consequential, or punitive damages arising from the use of our Services.</li>
+      <li>Any loss of data, revenue, or business opportunities resulting from reliance on our platform.</li>
+      <li>Service interruptions, downtime, or technical issues affecting data availability.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Regulatory Note</h2>
+    <div class="highlight-box">
+      <strong>Jurisdictional Awareness:</strong> Blockchain regulations, anti-money laundering requirements, and cryptocurrency compliance standards vary significantly across jurisdictions. Users are responsible for understanding and complying with the laws and regulations applicable in their own jurisdiction.
+    </div>
+    <p>Innobridge does not provide jurisdiction-specific regulatory guidance. The applicability of our intelligence data may differ based on local laws, regulatory frameworks, and enforcement priorities. Users operating across multiple jurisdictions should consult local legal experts to ensure compliance.</p>
+  </section>
+
+  <section>
+    <h2>8. Changes to This Disclaimer</h2>
+    <p>We may update this Disclaimer from time to time. Changes will be posted on this page with a revised "Last updated" date. Continued use of our platform following any changes constitutes acceptance of the updated Disclaimer.</p>
+  </section>
+
+  <section>
+    <h2>9. Contact</h2>
+    <p>If you have questions about this Disclaimer, please contact us:</p>
+    <p><strong>Email:</strong> <a href="mailto:info@innobridge.io">info@innobridge.io</a></p>
+  </section>
+</div>
+
+<div id="content-cn" style="display:none">
+  <section>
+    <h2>1. 仅供参考</h2>
+    <div class="warning-box">
+      <strong>声明：</strong>Innobridge 提供的信息仅用于参考和分析目的，不构成法律建议、财务建议、投资建议或任何其他形式的专业意见。
+    </div>
+    <p>通过 Innobridge 平台提供的所有数据、报告、筛查结果和内容，旨在支持专业的反洗钱和合规工作流程。用户不应将我们平台的输出结果作为法律、财务或监管决策的唯一依据。</p>
+  </section>
+
+  <section>
+    <h2>2. 数据准确性</h2>
+    <p>Innobridge 基于尽力而为的原则提供区块链情报，数据来源于公开可用的区块链数据，包括 USDT 和 USDC 的链上黑名单及冻结事件。尽管我们力求准确和及时，但请注意以下事项：</p>
+    <ul>
+      <li>链上事件（如地址被列入黑名单或冻结）与其在我们数据库中的反映之间可能存在时间延迟。</li>
+      <li>区块链数据来源于公共网络和第三方提供商，我们无法保证其在任何时候都绝对准确。</li>
+      <li>随着新信息的出现，历史数据可能需要进行更正或重新分类。</li>
+    </ul>
+    <p>用户应独立核实从我们平台获取的信息，特别是当该信息构成执法行动、合规决策或法律诉讼基础时。</p>
+  </section>
+
+  <section>
+    <h2>3. 不保证完整性</h2>
+    <p>我们的黑名单和地址筛查数据库虽然力求全面，但在任何给定时刻可能无法捕获所有区块链网络和稳定币发行方的每一个被列入黑名单、冻结或标记的地址。某一地址未出现在我们的数据库中，并不能保证该地址是安全的、合规的，或与非法活动无关。</p>
+    <p>用户应将我们的服务作为更广泛的尽职调查和合规框架的组成部分之一，而非作为确定地址状态的唯一依据。</p>
+  </section>
+
+  <section>
+    <h2>4. 第三方链接</h2>
+    <p>Innobridge 平台（包括取证中心）包含指向第三方网站和服务的链接，例如加密货币交易所的执法协助门户和合规报告工具。关于这些链接：</p>
+    <ul>
+      <li>我们不控制、不背书，也不对任何第三方网站的内容、政策或做法承担责任。</li>
+      <li>第三方门户的网址、流程和要求可能在未经通知的情况下发生变更。</li>
+      <li>您对第三方服务的使用受其各自的条款和隐私政策约束。</li>
+      <li>我们提供这些链接是为了方便专业用户，不保证其可用性或准确性。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. 专业意见建议</h2>
+    <p>我们强烈建议我们平台的用户：</p>
+    <ul>
+      <li>在基于区块链情报数据采取执法或法律行动之前，咨询合格的法律顾问。</li>
+      <li>在进行监管决策时，聘请持证合规专业人士。</li>
+      <li>在涉及资产追回或金融交易的事务中，寻求适当的财务顾问。</li>
+      <li>遵循您所在组织已建立的合规程序和升级协议。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>6. 责任限制</h2>
+    <p>在适用法律允许的最大范围内，Innobridge 及其创始人、员工、代理人和关联方不对以下事项承担责任：</p>
+    <ul>
+      <li>所提供的数据或信息中的任何错误、遗漏或不准确之处。</li>
+      <li>基于通过我们平台获取的信息而采取或未采取的任何行动。</li>
+      <li>因使用我们的服务而产生的任何直接、间接、附带、后果性或惩罚性损害。</li>
+      <li>因依赖我们的平台而导致的任何数据损失、收入损失或商业机会损失。</li>
+      <li>影响数据可用性的服务中断、停机或技术问题。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. 监管说明</h2>
+    <div class="highlight-box">
+      <strong>司法管辖区提示：</strong>区块链法规、反洗钱要求和加密货币合规标准在不同司法管辖区之间存在显著差异。用户有责任了解并遵守其所在司法管辖区适用的法律法规。
+    </div>
+    <p>Innobridge 不提供特定司法管辖区的监管指导。我们的情报数据的适用性可能因当地法律、监管框架和执法重点的不同而有所差异。在多个司法管辖区运营的用户应咨询当地法律专家以确保合规。</p>
+  </section>
+
+  <section>
+    <h2>8. 免责声明变更</h2>
+    <p>我们可能会不时更新本免责声明。变更将在本页面发布，并附上修订后的"最后更新"日期。在任何变更后继续使用我们的平台，即构成对更新后免责声明的接受。</p>
+  </section>
+
+  <section>
+    <h2>9. 联系方式</h2>
+    <p>如对本免责声明有任何疑问，请与我们联系：</p>
+    <p><strong>电子邮箱：</strong><a href="mailto:info@innobridge.io">info@innobridge.io</a></p>
+  </section>
+</div>
+
+</div>
+
+<script>
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var en = document.getElementById('content-en');
+  var cn = document.getElementById('content-cn');
+  if (en) en.style.display = lang === 'en' ? 'block' : 'none';
+  if (cn) cn.style.display = lang === 'cn' ? 'block' : 'none';
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var dict = {
+      en: {'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+           'page.title':'Disclaimer','page.updated':'Last updated: May 26, 2026',
+           'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'},
+      cn: {'nav.home':'首页','nav.news':'新闻','nav.dashboard':'数据面板','nav.evidence':'取证中心','nav.contact':'联系我们',
+           'page.title':'免责声明','page.updated':'最后更新：2026年5月26日',
+           'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'}
+    };
+    var key = el.getAttribute('data-i18n');
+    if (dict[lang][key] !== undefined) el.innerHTML = dict[lang][key];
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+function toggleLang() { applyLang(currentLang === 'en' ? 'cn' : 'en'); }
+applyLang(currentLang);
+</script>
+
+<footer>
+  <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+  <ul class="f-links">
+    <li><a href="privacy.html" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>

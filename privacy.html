@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Innobridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;--surface:#ffffff;
+  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
+  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
+  --accent-soft:rgba(79,110,247,0.08);--accent2-soft:rgba(168,85,247,0.08);--accent3-soft:rgba(34,201,151,0.08);
+  --danger:#ef4444;--warning:#f59e0b;--success:#22c997;
+  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
+  --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
+  --radius:20px;--radius-sm:12px;--radius-xs:8px;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:hidden;line-height:1.7}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:10px 24px;border-radius:var(--radius-xs);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,110,247,0.3)}
+.mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
+.lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{background:var(--accent);color:#fff}
+
+/* HERO HEADER */
+.page-hero{padding:140px 40px 60px;text-align:center;position:relative;overflow:hidden}
+.page-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(79,110,247,0.08) 0%,rgba(168,85,247,0.04) 40%,transparent 70%);pointer-events:none}
+.page-hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:16px}
+.page-hero h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-hero .subtitle{font-size:16px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.8;font-weight:500}
+.updated{font-size:13px;color:var(--text3);margin-top:14px;font-weight:600}
+
+/* CONTENT */
+.content{max-width:800px;margin:0 auto;padding:0 40px 80px}
+.content section{padding:0;margin-bottom:48px}
+.content h2{font-size:22px;font-weight:800;margin-bottom:16px;color:var(--text);letter-spacing:-0.01em}
+.content h3{font-size:17px;font-weight:700;margin-bottom:10px;color:var(--text);margin-top:24px}
+.content p{font-size:15px;color:var(--text2);line-height:1.8;margin-bottom:14px;font-weight:500}
+.content ul{margin:10px 0 14px 24px;display:flex;flex-direction:column;gap:8px}
+.content li{font-size:15px;color:var(--text2);line-height:1.8;font-weight:500}
+.content a{color:var(--accent);font-weight:600;transition:color .2s}
+.content a:hover{color:var(--accent2)}
+.content .highlight-box{background:var(--accent-soft);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0;font-size:14px;color:var(--text2);line-height:1.8}
+
+/* FOOTER */
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
+.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+.f-links{display:flex;gap:20px;list-style:none}
+.f-links a{font-size:12px;color:var(--text3);font-weight:600;transition:color .2s}
+.f-links a:hover{color:var(--accent)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  nav{padding:12px 20px}
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .page-hero{padding:110px 20px 40px}
+  .content{padding:0 20px 56px}
+  footer{flex-direction:column;gap:12px;text-align:center;padding:20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div style="display:flex;align-items:center;gap:28px">
+    <ul class="nav-links">
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <h1><span class="gradient" data-i18n="page.title">Privacy Policy</span></h1>
+  <p class="subtitle">How Innobridge collects, uses, and protects your information when you use our blockchain AML intelligence platform.</p>
+  <p class="updated" data-i18n="page.updated">Last updated: May 26, 2026</p>
+</div>
+
+<div class="content">
+
+<div id="content-en">
+  <section>
+    <h2>1. Introduction</h2>
+    <p>Innobridge ("we," "us," or "our") operates a blockchain AML intelligence platform focused on USDT/USDC blacklisted and frozen address monitoring. This Privacy Policy explains how we handle information when you use our services, including the Blacklist Check tool, Evidence Collection Hub, and news aggregation features.</p>
+    <div class="highlight-box">
+      <strong>Important:</strong> Innobridge only monitors publicly available blockchain data. We do not collect personal financial data beyond what users voluntarily submit through our platform.
+    </div>
+  </section>
+
+  <section>
+    <h2>2. Information We Collect</h2>
+
+    <h3>2.1 Blockchain Addresses</h3>
+    <p>When you use our Blacklist Check or address screening services, you may submit blockchain addresses (e.g., USDT or USDC wallet addresses) for analysis. These addresses are processed against public blockchain data and known blacklist/freeze lists.</p>
+
+    <h3>2.2 Contact Form Information</h3>
+    <p>If you contact us through our website or request a consultation, we may collect:</p>
+    <ul>
+      <li>Name and organization</li>
+      <li>Email address</li>
+      <li>Phone number (if provided)</li>
+      <li>Details about your inquiry or service needs</li>
+    </ul>
+
+    <h3>2.3 Analytics Data</h3>
+    <p>We collect standard analytics data to improve our services, including:</p>
+    <ul>
+      <li>Browser type and version</li>
+      <li>Pages visited and time spent</li>
+      <li>Referring website</li>
+      <li>General geographic location (country/region level)</li>
+      <li>Device type</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. How We Use Your Data</h2>
+    <p>We use collected information for the following purposes:</p>
+    <ul>
+      <li><strong>AML Analysis:</strong> Processing blockchain addresses against blacklist and freeze databases to provide screening results.</li>
+      <li><strong>Service Improvement:</strong> Analyzing usage patterns to enhance platform functionality, accuracy, and user experience.</li>
+      <li><strong>Communication:</strong> Responding to inquiries, providing support, and sending service-related updates.</li>
+      <li><strong>Security:</strong> Detecting and preventing misuse of our platform.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Data Sharing</h2>
+    <p>We do not sell your personal information. We may share data in the following limited circumstances:</p>
+    <ul>
+      <li><strong>Law Enforcement:</strong> We may disclose information in response to valid legal requests, subpoenas, court orders, or when required by applicable law.</li>
+      <li><strong>Service Providers:</strong> We work with trusted third-party providers for hosting, analytics, and infrastructure who are contractually bound to protect your data.</li>
+      <li><strong>Legal Compliance:</strong> When necessary to comply with anti-money laundering regulations or other legal obligations.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Cookies</h2>
+    <p>Our website uses cookies and similar technologies to:</p>
+    <ul>
+      <li>Maintain session state and preferences</li>
+      <li>Collect anonymized analytics data</li>
+      <li>Ensure platform security</li>
+    </ul>
+    <p>You can control cookie settings through your browser preferences. Disabling cookies may limit certain functionality of our platform.</p>
+  </section>
+
+  <section>
+    <h2>6. Data Retention</h2>
+    <p>We retain data for as long as necessary to provide our services and fulfill the purposes described in this policy:</p>
+    <ul>
+      <li><strong>Submitted addresses:</strong> Query logs are retained for up to 12 months for service improvement and audit purposes, then anonymized or deleted.</li>
+      <li><strong>Contact information:</strong> Retained for as long as we maintain an active business relationship, plus any period required by law.</li>
+      <li><strong>Analytics data:</strong> Retained in aggregated, anonymized form.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. Your Rights</h2>
+    <p>Depending on your jurisdiction, you may have the following rights regarding your personal data:</p>
+    <ul>
+      <li><strong>Access:</strong> Request a copy of the personal data we hold about you.</li>
+      <li><strong>Correction:</strong> Request correction of inaccurate or incomplete data.</li>
+      <li><strong>Deletion:</strong> Request deletion of your personal data, subject to legal retention requirements.</li>
+      <li><strong>Objection:</strong> Object to certain processing of your data.</li>
+      <li><strong>Portability:</strong> Request transfer of your data in a structured, machine-readable format.</li>
+    </ul>
+    <p>To exercise any of these rights, please contact us at the address below.</p>
+  </section>
+
+  <section>
+    <h2>8. Security</h2>
+    <p>We implement appropriate technical and organizational measures to protect your data against unauthorized access, alteration, disclosure, or destruction. These measures include encryption in transit, access controls, and regular security assessments.</p>
+  </section>
+
+  <section>
+    <h2>9. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. We will notify users of material changes by posting the updated policy on our website with a revised "Last updated" date.</p>
+  </section>
+
+  <section>
+    <h2>10. Contact Us</h2>
+    <p>If you have questions about this Privacy Policy or wish to exercise your data rights, please contact us:</p>
+    <p><strong>Email:</strong> <a href="mailto:info@innobridge.io">info@innobridge.io</a></p>
+  </section>
+</div>
+
+<div id="content-cn" style="display:none">
+  <section>
+    <h2>1. 引言</h2>
+    <p>Innobridge（以下简称"我们"）运营一个专注于 USDT/USDC 黑名单及冻结地址监控的区块链反洗钱（AML）情报平台。本隐私政策旨在说明当您使用我们的服务（包括黑名单查询工具、取证中心及新闻聚合功能）时，我们如何收集、使用和保护您的信息。</p>
+    <div class="highlight-box">
+      <strong>重要声明：</strong>Innobridge 仅监控公开可用的区块链数据。除用户通过我们平台自愿提交的信息外，我们不收集任何个人财务数据。
+    </div>
+  </section>
+
+  <section>
+    <h2>2. 我们收集的信息</h2>
+
+    <h3>2.1 区块链地址</h3>
+    <p>当您使用我们的黑名单查询或地址筛查服务时，您可能会提交区块链地址（例如 USDT 或 USDC 钱包地址）用于分析。这些地址将与公开区块链数据以及已知的黑名单/冻结名单进行比对处理。</p>
+
+    <h3>2.2 联系表单信息</h3>
+    <p>如果您通过我们的网站与我们联系或请求咨询服务，我们可能会收集以下信息：</p>
+    <ul>
+      <li>姓名和所属机构</li>
+      <li>电子邮箱地址</li>
+      <li>电话号码（如提供）</li>
+      <li>您的咨询详情或服务需求</li>
+    </ul>
+
+    <h3>2.3 使用分析数据</h3>
+    <p>为改善我们的服务，我们会收集标准分析数据，包括：</p>
+    <ul>
+      <li>浏览器类型和版本</li>
+      <li>访问页面及停留时间</li>
+      <li>来源网站</li>
+      <li>大致地理位置（国家/地区级别）</li>
+      <li>设备类型</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>3. 数据使用方式</h2>
+    <p>我们将收集的信息用于以下目的：</p>
+    <ul>
+      <li><strong>AML 分析：</strong>将区块链地址与黑名单和冻结数据库进行比对，提供筛查结果。</li>
+      <li><strong>服务改进：</strong>分析使用模式，以提升平台功能、数据准确性和用户体验。</li>
+      <li><strong>沟通联络：</strong>回复咨询、提供技术支持以及发送与服务相关的更新通知。</li>
+      <li><strong>安全保障：</strong>检测和防止平台被滥用的行为。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. 数据共享</h2>
+    <p>我们不会出售您的个人信息。我们仅在以下有限情况下共享数据：</p>
+    <ul>
+      <li><strong>执法机构：</strong>在收到合法的法律请求、传票、法院命令或适用法律要求时，我们可能会披露相关信息。</li>
+      <li><strong>服务提供商：</strong>我们与受信任的第三方托管、分析和基础设施提供商合作，这些提供商均受合同约束以保护您的数据。</li>
+      <li><strong>法律合规：</strong>在需要遵守反洗钱法规或其他法律义务时共享数据。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>5. Cookies</h2>
+    <p>我们的网站使用 Cookies 及类似技术以实现以下功能：</p>
+    <ul>
+      <li>维护会话状态和用户偏好设置</li>
+      <li>收集匿名化的分析数据</li>
+      <li>保障平台安全</li>
+    </ul>
+    <p>您可以通过浏览器偏好设置管理 Cookies。禁用 Cookies 可能会限制我们平台的部分功能。</p>
+  </section>
+
+  <section>
+    <h2>6. 数据保留</h2>
+    <p>我们会在提供服务和实现本政策所述目的所需的期间内保留数据：</p>
+    <ul>
+      <li><strong>提交的地址：</strong>查询日志保留最长 12 个月，用于服务改进和审计目的，之后将进行匿名化处理或删除。</li>
+      <li><strong>联系信息：</strong>在我们维持活跃业务关系期间保留，加上法律要求的任何额外期限。</li>
+      <li><strong>分析数据：</strong>以汇总、匿名化的形式保留。</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>7. 您的权利</h2>
+    <p>根据您所在司法管辖区的规定，您可能享有以下与个人数据相关的权利：</p>
+    <ul>
+      <li><strong>访问权：</strong>请求获取我们持有的关于您的个人数据副本。</li>
+      <li><strong>更正权：</strong>请求更正不准确或不完整的数据。</li>
+      <li><strong>删除权：</strong>请求删除您的个人数据（受法律保留要求约束）。</li>
+      <li><strong>异议权：</strong>对某些数据处理活动提出异议。</li>
+      <li><strong>可携带权：</strong>请求以结构化、机器可读的格式转移您的数据。</li>
+    </ul>
+    <p>如需行使上述任何权利，请通过以下方式联系我们。</p>
+  </section>
+
+  <section>
+    <h2>8. 安全措施</h2>
+    <p>我们采取适当的技术和组织措施来保护您的数据免受未经授权的访问、篡改、披露或销毁。这些措施包括传输加密、访问控制和定期安全评估。</p>
+  </section>
+
+  <section>
+    <h2>9. 政策变更</h2>
+    <p>我们可能会不时更新本隐私政策。如有重大变更，我们将在网站上发布更新后的政策，并修改"最后更新"日期以通知用户。</p>
+  </section>
+
+  <section>
+    <h2>10. 联系我们</h2>
+    <p>如果您对本隐私政策有任何疑问或希望行使您的数据权利，请与我们联系：</p>
+    <p><strong>电子邮箱：</strong><a href="mailto:info@innobridge.io">info@innobridge.io</a></p>
+  </section>
+</div>
+
+</div>
+
+<script>
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var en = document.getElementById('content-en');
+  var cn = document.getElementById('content-cn');
+  if (en) en.style.display = lang === 'en' ? 'block' : 'none';
+  if (cn) cn.style.display = lang === 'cn' ? 'block' : 'none';
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var dict = {
+      en: {'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+           'page.title':'Privacy Policy','page.updated':'Last updated: May 26, 2026',
+           'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'},
+      cn: {'nav.home':'首页','nav.news':'新闻','nav.dashboard':'数据面板','nav.evidence':'取证中心','nav.contact':'联系我们',
+           'page.title':'隐私政策','page.updated':'最后更新：2026年5月26日',
+           'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'}
+    };
+    var key = el.getAttribute('data-i18n');
+    if (dict[lang][key] !== undefined) el.innerHTML = dict[lang][key];
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+function toggleLang() { applyLang(currentLang === 'en' ? 'cn' : 'en'); }
+applyLang(currentLang);
+</script>
+
+<footer>
+  <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+  <ul class="f-links">
+    <li><a href="privacy.html" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="terms.html" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a></li>
+  </ul>
+</footer>
+
+</body>
+</html>
