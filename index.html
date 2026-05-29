@@ -630,13 +630,11 @@ document.querySelectorAll('.reveal').forEach(function(el){
   var url = API_BASE + '?action=stats&callback=__heroStats';
   var s = document.createElement('script');
   window.__heroStats = function(data){
-    if(data && data.success && data.stats){
-      var st = data.stats;
-      var total = Number(st.total)||0;
-      var eth = Number(st.eth_count)||0;
-      var tron = Number(st.tron_count)||0;
-      var active = Number(st.active)||0;
-      var frozen = Number(st.total_frozen)||0;
+    if(data && data.success){
+      var total = Number(data.total_count)||0;
+      var eth = (Number(data.usdt_eth_count)||0) + (Number(data.usdc_eth_count)||0);
+      var tron = Number(data.usdt_tron_count)||0;
+      var frozen = Number(data.total_frozen_amount)||0;
 
       // Stat card 1: Total frozen addresses
       var scTotal = document.getElementById('sc-total');
@@ -832,11 +830,11 @@ async function runAMLCheck(){
 
     var onChainHits = await checkOnChain(addr.toLowerCase());
 
-    var found = dbResult && dbResult.success && dbResult.data;
+    var found = dbResult && dbResult.success && dbResult.found && dbResult.results && dbResult.results.length > 0;
     var entity, label, risk, frozen, source, asset, cls;
 
     if(found){
-      var d = Array.isArray(dbResult.data) ? dbResult.data[0] : dbResult.data;
+      var d = dbResult.results[0];
       label = d.label || d.category || 'Flagged';
       risk = d.risk_level || (d.risk_score >= 80 ? 'HIGH' : d.risk_score >= 50 ? 'MEDIUM' : 'LOW');
       frozen = d.frozen_amount ? '$' + Number(d.frozen_amount).toLocaleString() : 'N/A';
@@ -1043,12 +1041,12 @@ applyLang(currentLang);
 (function loadBlacklistPreview() {
   var container = document.getElementById('blacklist-preview');
   if (!container) return;
-  fetch(API_BASE + '?action=list&limit=8&offset=0')
+  fetch(API_BASE + '?action=recent&limit=8&offset=0')
     .then(function(r){ return r.json(); })
     .then(function(data) {
-      if (!data.data || !data.data.length) return;
+      if (!data.results || !data.results.length) return;
       var html = '';
-      data.data.forEach(function(item) {
+      data.results.forEach(function(item) {
         var addr = item.address || '';
         var short = addr.length > 16 ? addr.slice(0,8) + '...' + addr.slice(-6) : addr;
         var riskClass = item.risk_level === 'HIGH' ? 'danger' : item.risk_level === 'MEDIUM' ? 'warning' : 'safe';

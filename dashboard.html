@@ -9,54 +9,55 @@
     <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
-            --bg: #fafbff;
+            --bg: #ffffff;
             --bg-card: #ffffff;
-            --bg-hover: #f0f4ff;
-            --bg-input: #f0f4ff;
+            --bg-hover: #f7f8fa;
+            --bg-input: #f7f8fa;
             --border: rgba(0,0,0,0.06);
-            --border2: rgba(79,110,247,0.18);
-            --text: #1a1a2e;
-            --text-2: #555770;
-            --text-3: #8b8da3;
-            --accent: #4f6ef7;
-            --accent-light: rgba(79,110,247,0.08);
-            --blue: #4f6ef7;
+            --border2: rgba(0,200,150,0.18);
+            --text: #1a1d23;
+            --text-2: #5a5f6b;
+            --text-3: #8b909c;
+            --accent: #00c896;
+            --accent-light: rgba(0,200,150,0.08);
+            --blue: #00c896;
             --green: #22c997;
             --red: #ef4444;
             --orange: #f59e0b;
             --teal: #0891b2;
-            --purple: #a855f7;
+            --surface2: #eef0f4;
+            --surface3: #e2e5eb;
             --r: 20px;
             --r-sm: 12px;
             --font: 'Nunito', sans-serif;
             --mono: 'JetBrains Mono', monospace;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font); background:var(--bg); color:#1a1a1a; line-height:1.5; }
+        body { font-family:var(--font); background:var(--bg); color:#1a1d23; line-height:1.5; }
 
         /* Nav */
-        nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+        nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
         .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-        .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+        .logo-icon{width:38px;height:38px;background:#00c896;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
         .logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
         .nav-links{display:flex;gap:24px;list-style:none}
         .nav-links a{font-size:14px;font-weight:600;color:var(--text-2);transition:color .2s;text-decoration:none}
         .nav-links a:hover,.nav-links a.active{color:var(--accent)}
         .mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
-        .lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:rgba(79,110,247,0.08);border:1.5px solid rgba(79,110,247,0.18);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+        .lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:rgba(0,200,150,0.08);border:1.5px solid rgba(0,200,150,0.18);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
         .lang-toggle:hover{background:var(--accent);color:#fff}
 
         /* Hero */
         .hero { text-align:center; padding:120px 24px 36px; }
         .hero h1 { font-size:28px; font-weight:800; letter-spacing:-.5px; margin-bottom:6px; }
-        .hero h1 span { background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+        .hero h1 span { background:var(--accent);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
         .hero h1 span.hero-plain { background:none;-webkit-background-clip:initial;-webkit-text-fill-color:var(--text);background-clip:initial; }
         .hero p { color:var(--text-2); font-size:14px; margin-bottom:24px; }
         .search-wrap { max-width:520px; margin:0 auto; display:flex; background:#fff; border:1.5px solid var(--border); border-radius:var(--r-sm); overflow:hidden; transition:border-color .2s; }
         .search-wrap:focus-within { border-color:var(--accent); }
         .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:var(--mono); background:transparent; }
         .search-wrap input::placeholder { color:#bbb; }
-        .search-wrap button { background:linear-gradient(135deg,var(--accent),var(--purple)); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; border-radius:0 var(--r-sm) var(--r-sm) 0; }
+        .search-wrap button { background:var(--accent); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; border-radius:0 var(--r-sm) var(--r-sm) 0; }
         .search-wrap button:hover { opacity:.9; }
         .search-hint { font-size:11px; color:var(--text-3); margin-top:8px; }
         .query-badge { display:inline-flex; align-items:center; gap:4px; margin-top:10px; padding:3px 10px; background:var(--accent-light); border-radius:20px; font-size:11px; color:var(--accent); font-weight:600; }
@@ -68,7 +69,7 @@
         .stats-update { font-size:11px; color:var(--text-3); }
         .stats-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
         .stat-card { background:#fff; border:1px solid var(--border); border-radius:var(--r); padding:18px; transition:box-shadow .2s; }
-        .stat-card:hover { box-shadow:0 8px 28px rgba(79,110,247,0.12); }
+        .stat-card:hover { box-shadow:0 8px 28px rgba(0,200,150,0.12); }
         .stat-emoji { font-size:24px; margin-bottom:8px; }
         .stat-label { font-size:11px; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; font-weight:600; margin-bottom:2px; }
         .stat-value { font-size:26px; font-weight:800; letter-spacing:-.5px; color:var(--text); }
@@ -96,7 +97,7 @@
         .addr-cell { font-family:var(--mono); font-size:12px; color:var(--accent); cursor:pointer; text-decoration:none; }
         .addr-cell:hover { text-decoration:underline; }
         .chain-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700; }
-        .chain-badge.eth { background:rgba(168,85,247,0.08); color:var(--purple); }
+        .chain-badge.eth { background:rgba(0,200,150,0.08); color:var(--accent); }
         .chain-badge.tron { background:#fef2f2; color:#dc2626; }
         .risk-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; }
         .risk-badge.high { background:#fff0f0; color:var(--red); }
@@ -121,7 +122,7 @@
         .footer-note { font-size:11px; color:var(--text-3); }
 
         /* Skeleton */
-        .skeleton { background:linear-gradient(90deg, rgba(79,110,247,0.08) 25%, rgba(79,110,247,0.15) 50%, rgba(79,110,247,0.08) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
+        .skeleton { background:linear-gradient(90deg, rgba(0,200,150,0.08) 25%, rgba(0,200,150,0.15) 50%, rgba(0,200,150,0.08) 75%); background-size:200% 100%; animation:shimmer 1.5s infinite; border-radius:6px; }
         @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
         @keyframes spin { to{transform:rotate(360deg)} }
         .skel-addr { height:14px; width:120px; }
@@ -151,10 +152,11 @@
   </a>
   <div style="display:flex;align-items:center;gap:28px">
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
       <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
-      <li><a href="#" class="active" data-i18n="nav.dashboard">Dashboard</a></li>
-      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="dashboard.html" class="active" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
+      <li><a href="index.html#law-enforcement" data-i18n="nav.evidence">Law Enforcement</a></li>
       <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
@@ -229,12 +231,12 @@
     </div>
 </section>
 
-<footer style="padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg-card)">
-  <span style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+<footer style="padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.1);background:#1a1d23">
+  <span style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
   <ul style="display:flex;gap:20px;list-style:none">
-    <li><a href="privacy.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.privacy">Privacy</a></li>
-    <li><a href="terms.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.terms">Terms</a></li>
-    <li><a href="disclaimer.html" style="font-size:12px;color:var(--text-3);font-weight:600" data-i18n="ft.disclaimer">Disclaimer</a></li>
+    <li><a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-decoration:none" data-i18n="ft.privacy" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Privacy</a></li>
+    <li><a href="terms.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-decoration:none" data-i18n="ft.terms" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Terms</a></li>
+    <li><a href="disclaimer.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-decoration:none" data-i18n="ft.disclaimer" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,0.5)'">Disclaimer</a></li>
   </ul>
 </footer>
 
@@ -260,7 +262,7 @@ let jsonpCounter=0;
 function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
 
 function showTableLoading(){
-    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(79,110,247,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
+    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(0,200,150,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
 }
 
 async function loadDashboardData(){
@@ -381,7 +383,7 @@ document.addEventListener('DOMContentLoaded',function(){
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+    'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact',
     'hero.title1':'Stablecoin ','hero.title2':'Freeze & Blacklist Monitor','hero.sub':'Real-time USDT / USDC blacklist monitoring across Ethereum & Tron',
     'search.btn':'Search','search.hint':'Supports Ethereum (0x) and Tron (T) addresses','search.ph':'Search by address (0x... or T...)',
     'stats.title':'Frozen Address Statistics','stats.usdt':'USDT (Tether) Addresses','stats.usdc':'USDC (Circle) Addresses','stats.frozen':'Total Frozen Funds',
@@ -391,7 +393,7 @@ var I18N = {
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
   },
   cn: {
-    'nav.home':'首页','nav.news':'新闻','nav.dashboard':'数据面板','nav.evidence':'取证中心','nav.contact':'联系我们',
+    'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.services':'服务','nav.evidence':'执法机构','nav.contact':'联系我们',
     'hero.title1':'稳定币','hero.title2':'冻结与黑名单监控','hero.sub':'以太坊和波场上 USDT / USDC 黑名单实时监控',
     'search.btn':'搜索','search.hint':'支持以太坊 (0x) 和波场 (T) 地址','search.ph':'输入地址搜索 (0x... 或 T...)',
     'stats.title':'冻结地址统计','stats.usdt':'USDT (Tether) 地址','stats.usdc':'USDC (Circle) 地址','stats.frozen':'冻结资金总额',

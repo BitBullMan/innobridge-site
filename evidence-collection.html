@@ -8,11 +8,11 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;
-  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
-  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
-  --accent-soft:rgba(79,110,247,0.08);
-  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --bg:#ffffff;--bg2:#f7f8fa;--bg3:#eef0f4;
+  --text:#1a1d23;--text2:#5a5f6b;--text3:#8b909c;
+  --accent:#00c896;--accent2:#00c896;--accent3:#00c896;
+  --accent-soft:rgba(0,200,150,0.08);
+  --border:rgba(0,0,0,0.06);--border2:rgba(0,200,150,0.18);
   --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
   --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
   --radius:16px;--radius-sm:10px;
@@ -20,21 +20,21 @@
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.7}
 
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
-.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-icon{width:38px;height:38px;background:#00c896;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
 .logo-text{font-size:16px;font-weight:800;color:var(--text)}
 .nav-links{display:flex;gap:24px;list-style:none}
 .nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s;text-decoration:none}
 .nav-links a:hover,.nav-links a.active{color:var(--accent)}
 .mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
-.lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
-.lang-toggle:hover{background:var(--accent);color:#fff}
+.lang-toggle{font-size:12px;font-weight:700;color:#00c896;background:rgba(0,200,150,0.08);border:1.5px solid rgba(0,200,150,0.18);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{background:#00c896;color:#fff}
 
 .hero{padding:110px 40px 48px;text-align:center}
 .hero h1{font-size:clamp(28px,4vw,44px);font-weight:900;margin-bottom:12px}
 .hero p{font-size:16px;color:var(--text2);max-width:600px;margin:0 auto 28px;font-weight:500}
-.hero .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero .gradient{background:linear-gradient(135deg,#00c896,#00b386);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 
 .search-bar{max-width:600px;margin:0 auto 16px;display:flex;gap:10px}
 .search-input{flex:1;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;color:var(--text);outline:none;background:var(--bg2);transition:border-color .2s;font-weight:500}
@@ -66,8 +66,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .ex-entity{font-size:11px;color:var(--text3);font-weight:600;font-family:var(--mono)}
 .ex-method{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px}
 .ex-method .tag{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
-.ex-method .tag.email{background:rgba(79,110,247,0.1);color:#4f6ef7}
-.ex-method .tag.ticket{background:rgba(168,85,247,0.1);color:#a855f7}
+.ex-method .tag.email{background:rgba(0,200,150,0.1);color:#00c896}
+.ex-method .tag.ticket{background:rgba(0,200,150,0.1);color:#00b386}
 .ex-method .tag.portal{background:rgba(34,201,151,0.1);color:#22c997}
 .ex-method .tag.defunct{background:rgba(239,68,68,0.1);color:#ef4444}
 .ex-contact{font-family:var(--mono);font-size:12px;color:var(--text2);word-break:break-all;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:6px}
@@ -77,11 +77,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .ex-docs strong{color:var(--text2)}
 .ex-notes{margin-top:8px;font-size:11px;color:var(--text3);padding:8px 10px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.12);border-radius:6px;line-height:1.5;font-weight:500}
 
-footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
-.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(255,255,255,0.1);background:#1a1d23}
+.f-copy{font-size:12px;color:rgba(255,255,255,0.5);font-weight:600}
 .f-links{display:flex;gap:20px;list-style:none}
-.f-links a{font-size:12px;color:var(--text3);font-weight:600;text-decoration:none;transition:color .2s}
-.f-links a:hover{color:var(--accent)}
+.f-links a{font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;text-decoration:none;transition:color .2s}
+.f-links a:hover{color:#fff}
 
 @media(max-width:768px){
   nav{padding:12px 20px}
@@ -104,10 +104,11 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
   </a>
   <div style="display:flex;align-items:center;gap:28px">
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
       <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
       <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
-      <li><a href="#" class="active" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
+      <li><a href="index.html#law-enforcement" class="active" data-i18n="nav.evidence">Law Enforcement</a></li>
       <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
@@ -346,7 +347,7 @@ renderCards(exchanges);
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+    'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact',
     'hero.title1':'Exchange ','hero.title2':'Evidence Collection','hero.title3':' Hub',
     'hero.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto platforms. Contact methods, required documents, and important notes.',
     'search.ph':'Search exchanges, wallets, emails...',
@@ -354,7 +355,7 @@ var I18N = {
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
   },
   cn: {
-    'nav.home':'首页','nav.news':'新闻','nav.dashboard':'仪表盘','nav.evidence':'取证中心','nav.contact':'联系我们',
+    'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'仪表盘','nav.services':'服务','nav.evidence':'执法协助','nav.contact':'联系我们',
     'hero.title1':'交易所','hero.title2':'取证流程','hero.title3':'大全',
     'hero.desc':'80+ 加密平台执法取证请求流程大全。联系方式、所需文件和重要提示。',
     'search.ph':'搜索交易所、钱包、邮箱...',

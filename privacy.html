@@ -9,12 +9,12 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#fafbff;--bg2:#ffffff;--bg3:#f0f4ff;--surface:#ffffff;
-  --text:#1a1a2e;--text2:#555770;--text3:#8b8da3;
-  --accent:#4f6ef7;--accent2:#a855f7;--accent3:#22c997;
-  --accent-soft:rgba(79,110,247,0.08);--accent2-soft:rgba(168,85,247,0.08);--accent3-soft:rgba(34,201,151,0.08);
-  --danger:#ef4444;--warning:#f59e0b;--success:#22c997;
-  --border:rgba(0,0,0,0.06);--border2:rgba(79,110,247,0.18);
+  --bg:#ffffff;--bg2:#f7f8fa;--bg3:#eef0f4;--surface:#f7f8fa;
+  --text:#1a1d23;--text2:#5a5f6b;--text3:#8b909c;
+  --accent:#00c896;--accent2:#00b386;--accent3:#00c896;
+  --accent-soft:rgba(0,200,150,0.08);--accent2-soft:rgba(0,200,150,0.06);--accent3-soft:rgba(0,200,150,0.08);
+  --danger:#ef4444;--warning:#f59e0b;--success:#00c896;
+  --border:rgba(0,0,0,0.06);--border2:rgba(0,200,150,0.18);
   --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
   --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
   --radius:20px;--radius-sm:12px;--radius-xs:8px;
@@ -24,24 +24,24 @@ body{background:var(--bg);color:var(--text);font-family:var(--font);overflow-x:h
 a{text-decoration:none;color:inherit}
 
 /* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(250,251,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
+.logo-icon{width:38px;height:38px;background:#00c896;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;font-weight:800}
 .logo-text{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-0.01em}
 .nav-links{display:flex;gap:24px;list-style:none}
 .nav-links a{font-size:14px;font-weight:600;color:var(--text2);transition:color .2s}
 .nav-links a:hover{color:var(--accent)}
-.nav-btn{font-size:13px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));padding:10px 24px;border-radius:var(--radius-xs);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
-.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(79,110,247,0.3)}
+.nav-btn{font-size:13px;font-weight:700;color:#fff;background:#00c896;padding:10px 24px;border-radius:var(--radius-xs);transition:transform .2s,box-shadow .2s;border:none;cursor:pointer}
+.nav-btn:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,200,150,0.3)}
 .mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
 .lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:var(--accent-soft);border:1.5px solid var(--border2);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
 .lang-toggle:hover{background:var(--accent);color:#fff}
 
 /* HERO HEADER */
 .page-hero{padding:140px 40px 60px;text-align:center;position:relative;overflow:hidden}
-.page-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(79,110,247,0.08) 0%,rgba(168,85,247,0.04) 40%,transparent 70%);pointer-events:none}
+.page-hero::before{content:'';position:absolute;top:-100px;left:50%;transform:translateX(-50%);width:900px;height:600px;background:radial-gradient(ellipse,rgba(0,200,150,0.06) 0%,rgba(0,200,150,0.02) 40%,transparent 70%);pointer-events:none}
 .page-hero h1{font-size:clamp(32px,4.5vw,52px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;margin-bottom:16px}
-.page-hero h1 .gradient{background:linear-gradient(135deg,var(--accent),var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.page-hero h1 .gradient{background:linear-gradient(135deg,#00c896,#00b386);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .page-hero .subtitle{font-size:16px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.8;font-weight:500}
 .updated{font-size:13px;color:var(--text3);margin-top:14px;font-weight:600}
 
@@ -58,11 +58,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .content .highlight-box{background:var(--accent-soft);border:1.5px solid var(--border2);border-radius:var(--radius-sm);padding:20px 24px;margin:20px 0;font-size:14px;color:var(--text2);line-height:1.8}
 
 /* FOOTER */
-footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:1.5px solid var(--border);background:var(--bg2)}
-.f-copy{font-size:12px;color:var(--text3);font-weight:600}
+footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-between;border-top:none;background:#1a1d23}
+.f-copy{font-size:12px;color:rgba(255,255,255,0.5);font-weight:600}
 .f-links{display:flex;gap:20px;list-style:none}
-.f-links a{font-size:12px;color:var(--text3);font-weight:600;transition:color .2s}
-.f-links a:hover{color:var(--accent)}
+.f-links a{font-size:12px;color:rgba(255,255,255,0.5);font-weight:600;transition:color .2s}
+.f-links a:hover{color:#fff}
 
 /* RESPONSIVE */
 @media(max-width:960px){
@@ -84,10 +84,11 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
   </a>
   <div style="display:flex;align-items:center;gap:28px">
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
       <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
       <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
-      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Evidence Hub</a></li>
+      <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
+      <li><a href="index.html#law-enforcement" data-i18n="nav.law">Law Enforcement</a></li>
       <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
@@ -330,10 +331,10 @@ function applyLang(lang) {
   if (cn) cn.style.display = lang === 'cn' ? 'block' : 'none';
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var dict = {
-      en: {'nav.home':'Home','nav.news':'News','nav.dashboard':'Dashboard','nav.evidence':'Evidence Hub','nav.contact':'Contact',
+      en: {'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.services':'Services','nav.law':'Law Enforcement','nav.contact':'Contact',
            'page.title':'Privacy Policy','page.updated':'Last updated: May 26, 2026',
            'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'},
-      cn: {'nav.home':'首页','nav.news':'新闻','nav.dashboard':'数据面板','nav.evidence':'取证中心','nav.contact':'联系我们',
+      cn: {'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.services':'服务','nav.law':'执法协助','nav.contact':'联系我们',
            'page.title':'隐私政策','page.updated':'最后更新：2026年5月26日',
            'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'}
     };
