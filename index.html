@@ -762,8 +762,13 @@ function filterNews(cat, btn){
   });
 }
 
+function getNewsLang(){
+  return currentLang === 'cn' ? 'zh' : 'en';
+}
+
 function loadNews(){
-  fetch(API_BASE + '?action=news&limit='+NEWS_PAGE+'&offset='+newsOffset)
+  var lang = getNewsLang();
+  fetch(API_BASE + '?action=news&limit='+NEWS_PAGE+'&offset='+newsOffset+'&lang='+lang)
   .then(function(r){ return r.json(); })
   .then(function(resp){
     var data = (resp && resp.success && resp.items) ? resp.items : [];
@@ -779,6 +784,14 @@ function loadNews(){
   .catch(function(){
     if(allNews.length === 0) renderPlaceholderNews();
   });
+}
+
+function reloadNewsForLang(){
+  allNews = [];
+  newsOffset = 0;
+  var grid = document.getElementById('news-grid');
+  if(grid) grid.innerHTML = '';
+  loadNews();
 }
 
 function loadMoreNews(){
@@ -1033,6 +1046,7 @@ function applyLang(lang) {
 
 function toggleLang() {
   applyLang(currentLang === 'en' ? 'cn' : 'en');
+  if(typeof reloadNewsForLang === 'function') reloadNewsForLang();
 }
 
 applyLang(currentLang);
