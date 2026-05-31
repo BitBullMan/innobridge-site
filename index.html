@@ -154,10 +154,10 @@ h2{font:600 clamp(24px,3vw,36px)/1.15 var(--f);letter-spacing:-.8px;color:var(--
 .news-more-btn:hover{border-color:var(--accent);color:var(--accent)}
 
 /* NEWS + WHALE ALERTS LAYOUT */
-.news-layout{display:flex;gap:20px;align-items:stretch}
-.news-main{flex:1;min-width:0;display:flex;flex-direction:column}
-.whale-sidebar{width:300px;flex-shrink:0;display:flex}
-.whale-sidebar-inner{border:1px solid var(--hl);border-radius:10px;background:var(--canvas);overflow:hidden;flex:1;display:flex;flex-direction:column}
+.news-layout{display:flex;gap:20px;align-items:flex-start}
+.news-main{flex:1;min-width:0}
+.whale-sidebar{width:300px;flex-shrink:0}
+.whale-sidebar-inner{border:1px solid var(--hl);border-radius:10px;background:var(--canvas);overflow:hidden;display:flex;flex-direction:column;max-height:560px}
 .whale-header{padding:12px 16px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
 .whale-header-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite}
 .whale-header-title{font:500 13px var(--f);color:var(--ink)}
