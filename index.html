@@ -157,6 +157,29 @@ h2{font:600 clamp(24px,3vw,36px)/1.15 var(--f);letter-spacing:-.8px;color:var(--
 .news-more-btn{font:500 13px var(--f);color:var(--accent-h);background:transparent;border:1px solid var(--hl);padding:8px 24px;border-radius:7px;cursor:pointer;transition:all .2s}
 .news-more-btn:hover{border-color:var(--accent);color:var(--accent)}
 
+/* NEWS + WHALE ALERTS LAYOUT */
+.news-layout{display:flex;gap:20px}
+.news-main{flex:1;min-width:0}
+.whale-sidebar{width:300px;flex-shrink:0}
+.whale-sidebar-inner{border:1px solid var(--hl);border-radius:10px;background:var(--canvas);overflow:hidden}
+.whale-header{padding:12px 16px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
+.whale-header-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite}
+.whale-header-title{font:500 13px var(--f);color:var(--ink)}
+.whale-list{max-height:520px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--s3) transparent}
+.whale-list::-webkit-scrollbar{width:4px}
+.whale-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+.whale-item{padding:12px 16px;border-bottom:1px solid var(--hl);transition:background .15s;cursor:pointer}
+.whale-item:last-child{border-bottom:none}
+.whale-item:hover{background:var(--s1)}
+.whale-type{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:3px}
+.whale-type.hl{background:rgba(139,92,246,0.08);color:var(--purple)}
+.whale-type.tx{background:var(--blue-bg);color:var(--blue)}
+.whale-desc{font:400 12px/1.5 var(--f);color:var(--ink2);margin-bottom:4px}
+.whale-desc strong{font-weight:500;color:var(--ink)}
+.whale-time{font:400 11px var(--f);color:var(--ink3)}
+.whale-empty{padding:40px 16px;text-align:center;color:var(--ink3);font:400 12px var(--f)}
+@media(max-width:900px){.news-layout{flex-direction:column}.whale-sidebar{width:100%}.whale-list{max-height:300px}}
+
 /* NEWS MODAL */
 .news-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
 .news-modal-overlay.show{display:flex}
@@ -411,11 +434,26 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <button class="news-tab" data-filter="security" onclick="filterNews('security',this)" data-i18n="news.security">Security</button>
       </div>
     </div>
-    <div class="news-scroll" id="news-grid">
-      <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
-    </div>
-    <div id="news-more" style="display:none">
-      <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
+    <div class="news-layout">
+      <div class="news-main">
+        <div class="news-scroll" id="news-grid">
+          <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
+        </div>
+        <div id="news-more" style="display:none">
+          <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
+        </div>
+      </div>
+      <div class="whale-sidebar">
+        <div class="whale-sidebar-inner">
+          <div class="whale-header">
+            <div class="whale-header-dot"></div>
+            <div class="whale-header-title" data-i18n="whale.title">Whale Alerts</div>
+          </div>
+          <div class="whale-list" id="whale-list">
+            <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -814,6 +852,58 @@ function escHtml(s){
 
 loadNews();
 
+// ===== WHALE ALERTS SIDEBAR =====
+function loadWhaleAlerts(){
+  fetch(API_BASE + '?action=whale_alerts&limit=30')
+  .then(function(r){ return r.json(); })
+  .then(function(resp){
+    var items = (resp && resp.success && resp.items) ? resp.items : [];
+    var container = document.getElementById('whale-list');
+    if(!container) return;
+    if(items.length === 0){
+      var dict = I18N[currentLang] || I18N.en;
+      container.innerHTML = '<div class="whale-empty">'+(dict['whale.empty']||'No alerts yet')+'</div>';
+      return;
+    }
+    var html = '';
+    for(var i = 0; i < items.length; i++){
+      var w = items[i];
+      var link = w.source_link ? ' onclick="window.open(\''+escHtml(w.source_link)+'\',\'_blank\')"' : '';
+      var ta = timeAgo(w.published_at);
+      if(w.type === 'hyperliquid'){
+        var dir = w.direction === 'long' ? (currentLang==='cn'?'做多':'Long') : (currentLang==='cn'?'做空':'Short');
+        var dirColor = w.direction === 'long' ? 'color:#10b981' : 'color:#ef4444';
+        var val = w.position_value_usd ? formatUsd(w.position_value_usd) : '';
+        html += '<div class="whale-item"'+link+'>'
+          + '<div class="whale-type hl">Hyperliquid</div>'
+          + '<div class="whale-desc"><strong>'+escHtml(w.symbol)+'</strong> <span style="'+dirColor+';font-weight:500">'+dir+'</span> '+(w.leverage||'')+' &middot; '+val+'</div>'
+          + '<div class="whale-time">'+ta+'</div>'
+          + '</div>';
+      } else {
+        var amt = w.amount ? Number(w.amount).toLocaleString() : '';
+        var usd = w.amount_usd ? '$'+formatUsd(w.amount_usd) : '';
+        html += '<div class="whale-item"'+link+'>'
+          + '<div class="whale-type tx">'+(currentLang==='cn'?'大额转账':'Transfer')+'</div>'
+          + '<div class="whale-desc"><strong>'+amt+' '+escHtml(w.symbol||'')+'</strong> ('+usd+')</div>'
+          + '<div class="whale-time">'+(w.from_label||'?')+' → '+(w.to_label||'?')+' &middot; '+ta+'</div>'
+          + '</div>';
+      }
+    }
+    container.innerHTML = html;
+  })
+  .catch(function(){});
+}
+
+function formatUsd(n){
+  if(n >= 1e8) return '$'+Math.round(n/1e6).toLocaleString()+'M';
+  if(n >= 1e6) return '$'+(n/1e6).toFixed(1)+'M';
+  if(n >= 1e4) return '$'+Math.round(n/1e3).toLocaleString()+'K';
+  return '$'+Math.round(n).toLocaleString();
+}
+
+loadWhaleAlerts();
+setInterval(loadWhaleAlerts, 120000);
+
 // ===== AML CHECK (inline in blacklist section) =====
 async function runAMLCheck(){
   var addr = document.getElementById('aml-address').value.trim();
@@ -987,7 +1077,8 @@ var I18N = {
     'ct.f.opt0':'Select...','ct.f.opt1':'AML Label API Access','ct.f.opt2':'On-chain Tracing (specific case)','ct.f.opt3':'Legal Forensic Report','ct.f.opt4':'VASP Compliance Package','ct.f.opt5':'Litigation Support','ct.f.opt6':'Consultation',
     'ct.f.submit':'Submit Enquiry','ct.f.note':'All enquiries are strictly confidential. NDA available on request.',
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
-    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
+    'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1015,7 +1106,8 @@ var I18N = {
     'ct.f.opt0':'请选择...','ct.f.opt1':'AML 标签 API 接入','ct.f.opt2':'链上追踪（具体案件）','ct.f.opt3':'法律取证报告','ct.f.opt4':'VASP 合规方案','ct.f.opt5':'诉讼支持','ct.f.opt6':'咨询服务',
     'ct.f.submit':'提交咨询','ct.f.note':'所有咨询严格保密，可按需签署保密协议。',
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
-    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
+    'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报'
   }
 };
 
@@ -1047,6 +1139,7 @@ function applyLang(lang) {
 function toggleLang() {
   applyLang(currentLang === 'en' ? 'cn' : 'en');
   if(typeof reloadNewsForLang === 'function') reloadNewsForLang();
+  if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
 }
 
 applyLang(currentLang);
