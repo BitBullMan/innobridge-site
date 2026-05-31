@@ -321,7 +321,8 @@ function renderStats(data){
     var usdtTotal = (Number(s.usdt_eth_count)||0) + (Number(s.usdt_tron_count)||0);
     document.getElementById('statUsdt').textContent=fmt(usdtTotal);
     document.getElementById('statUsdtSub').textContent='ETH: '+fmt(s.usdt_eth_count)+' / TRON: '+fmt(s.usdt_tron_count);
-    document.getElementById('statUsdc').textContent=fmt(s.usdc_eth_count);
+    var usdcTotal = Number(s.usdc_total_count)||(Number(s.usdc_eth_count)||0)+(Number(s.usdc_tron_count)||0);
+    document.getElementById('statUsdc').textContent=fmt(usdcTotal);
     document.getElementById('statTotalFrozen').textContent=s.total_frozen_amount?'$'+Number(s.total_frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):'--';
     if(s.today_new_frozen_amount&&Number(s.today_new_frozen_amount)>0){document.getElementById('statTotalChange').textContent='+$'+Number(s.today_new_frozen_amount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' today';}else{document.getElementById('statTotalChange').textContent='';}
     if(s.last_updated)document.getElementById('statsUpdate').textContent='Updated: '+s.last_updated;

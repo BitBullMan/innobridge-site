@@ -344,14 +344,14 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <div class="stat-card reveal">
       <div class="stat-card-top">
         <div class="stat-card-icon alert">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         </div>
         <div class="stat-change alert-up" id="sc-risk-change">&#8593; --</div>
       </div>
       <div class="stat-val" id="sc-risk">--</div>
-      <div class="stat-label" data-i18n="stat.risk">High-Risk Addresses</div>
-      <div class="stat-breakdown" id="sc-risk-pct">--% of all frozen</div>
-      <div class="stat-delta" id="sc-risk-delta">-- today</div>
+      <div class="stat-label" data-i18n="stat.risk">USDT Addresses</div>
+      <div class="stat-breakdown" id="sc-risk-pct">USDC: --</div>
+      <div class="stat-delta" id="sc-risk-delta">--</div>
     </div>
   </div>
 </section>
@@ -659,9 +659,13 @@ document.querySelectorAll('.reveal').forEach(function(el){
   window.__heroStats = function(data){
     if(data && data.success){
       var total = Number(data.total_count)||0;
-      var eth = (Number(data.usdt_eth_count)||0) + (Number(data.usdc_eth_count)||0);
-      var tron = Number(data.usdt_tron_count)||0;
+      var eth = Number(data.eth_total_count)||(Number(data.usdt_eth_count)||0)+(Number(data.usdc_eth_count)||0);
+      var tron = Number(data.tron_total_count)||(Number(data.usdt_tron_count)||0)+(Number(data.usdc_tron_count)||0);
       var frozen = Number(data.total_frozen_amount)||0;
+      var todayNew = Number(data.today_new_count)||(Number(data.today_new_usdt)||0)+(Number(data.today_new_usdc)||0);
+      var todayFrozen = Number(data.today_new_frozen_amount)||0;
+      var usdtTotal = Number(data.usdt_total_count)||(Number(data.usdt_eth_count)||0)+(Number(data.usdt_tron_count)||0);
+      var usdcTotal = Number(data.usdc_total_count)||(Number(data.usdc_eth_count)||0);
 
       // Stat card 1: Total frozen addresses
       var scTotal = document.getElementById('sc-total');
@@ -669,9 +673,15 @@ document.querySelectorAll('.reveal').forEach(function(el){
       var scBreak = document.getElementById('sc-breakdown');
       if(scBreak) scBreak.textContent = 'ETH: ' + eth.toLocaleString() + ' · TRON: ' + tron.toLocaleString();
       var scTotalChange = document.getElementById('sc-total-change');
-      if(scTotalChange) scTotalChange.innerHTML = '&#8593; +1.3%';
+      if(scTotalChange){
+        if(todayNew > 0){ scTotalChange.innerHTML = '&#8593; +' + todayNew; scTotalChange.className = 'stat-change up'; }
+        else { scTotalChange.style.display = 'none'; }
+      }
       var scTotalDelta = document.getElementById('sc-total-delta');
-      if(scTotalDelta) scTotalDelta.textContent = '+18 today';
+      if(scTotalDelta){
+        if(todayNew > 0) scTotalDelta.textContent = '+' + todayNew + ' today';
+        else scTotalDelta.textContent = 'No new today';
+      }
 
       // Stat card 2: Total frozen funds
       var scFunds = document.getElementById('sc-funds');
@@ -681,20 +691,34 @@ document.querySelectorAll('.reveal').forEach(function(el){
         else scFunds.textContent = '$'+frozen.toLocaleString();
       }
       var scFundsChange = document.getElementById('sc-funds-change');
-      if(scFundsChange) scFundsChange.innerHTML = '&#8593; +0.33%';
+      if(scFundsChange){
+        if(todayFrozen > 0){
+          var fmtFrozen = todayFrozen >= 1e6 ? '+$'+(todayFrozen/1e6).toFixed(1)+'M' : '+$'+Math.round(todayFrozen).toLocaleString();
+          scFundsChange.innerHTML = '&#8593; ' + fmtFrozen;
+          scFundsChange.className = 'stat-change up';
+        } else { scFundsChange.style.display = 'none'; }
+      }
       var scFundsDelta = document.getElementById('sc-funds-delta');
-      if(scFundsDelta) scFundsDelta.textContent = '+$1.8M today';
+      if(scFundsDelta){
+        if(todayFrozen > 0){
+          var fmtD = todayFrozen >= 1e6 ? '+$'+(todayFrozen/1e6).toFixed(1)+'M' : '+$'+Math.round(todayFrozen).toLocaleString();
+          scFundsDelta.textContent = fmtD + ' today';
+        } else { scFundsDelta.textContent = 'No change today'; }
+      }
 
-      // Stat card 3: High-risk
-      var highRisk = Math.round(total * 0.773);
+      // Stat card 3: USDT / USDC split
       var scRisk = document.getElementById('sc-risk');
-      if(scRisk) scRisk.textContent = highRisk.toLocaleString();
+      if(scRisk) scRisk.textContent = usdtTotal.toLocaleString();
       var scRiskPct = document.getElementById('sc-risk-pct');
-      if(scRiskPct) scRiskPct.textContent = '77.3% of all frozen';
+      if(scRiskPct) scRiskPct.textContent = 'USDC: ' + usdcTotal.toLocaleString();
       var scRiskChange = document.getElementById('sc-risk-change');
-      if(scRiskChange) scRiskChange.innerHTML = '&#8593; +1.04%';
+      if(scRiskChange) scRiskChange.style.display = 'none';
       var scRiskDelta = document.getElementById('sc-risk-delta');
-      if(scRiskDelta) scRiskDelta.textContent = '+12 today';
+      if(scRiskDelta){
+        var updatedAt = data.last_updated || '';
+        if(updatedAt) scRiskDelta.textContent = 'Updated: ' + updatedAt.replace(' UTC','');
+        else scRiskDelta.textContent = '';
+      }
     }
     delete window.__heroStats;
   };
@@ -1029,7 +1053,7 @@ var I18N = {
     'nav.news':'News','nav.blacklist':'Blacklist Data','nav.dashboard':'Dashboard','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Get Started',
     'hero.badge':'Blockchain Compliance & Security','hero.title1':'Compliance Intelligence','hero.title2':'for the On-chain World.','hero.sub':'Real-time stablecoin blacklist monitoring, AML risk scoring, on-chain forensic tracing, and regulatory compliance solutions — built for law enforcement, compliance teams, and legal professionals.',
     'hero.cta1':'Explore Data','hero.cta2':'Our Services',
-    'stat.total':'Total Frozen Addresses','stat.funds':'Total Frozen Funds','stat.funds.sub':'Across USDT & USDC','stat.risk':'High-Risk Addresses',
+    'stat.total':'Total Frozen Addresses','stat.funds':'Total Frozen Funds','stat.funds.sub':'Across USDT & USDC','stat.risk':'USDT Addresses',
     'bl.label':'Blacklist Database','bl.title':'Latest Flagged Addresses','bl.desc':'Live data from our frozen address database. Addresses flagged by Tether, Circle, and OFAC sanctions.',
     'news.label':'Live News Feed','news.sub':'Real-time crypto & blockchain intelligence','news.loading':'Loading latest news...','news.loadmore':'Load more news',
     'aml.btn':'Check','aml.placeholder':'Check address (0x... or T...)',
@@ -1058,7 +1082,7 @@ var I18N = {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
     'hero.badge':'区块链合规与安全','hero.title1':'链上合规情报','hero.title2':'服务全球专业团队。','hero.sub':'稳定币黑名单实时监控、AML 风险评分、链上取证追踪与监管合规解决方案 —— 服务于执法机构、合规团队和法律专业人士。',
     'hero.cta1':'探索数据','hero.cta2':'我们的服务',
-    'stat.total':'冻结地址总数','stat.funds':'冻结资金总额','stat.funds.sub':'USDT 与 USDC','stat.risk':'高风险地址',
+    'stat.total':'冻结地址总数','stat.funds':'冻结资金总额','stat.funds.sub':'USDT 与 USDC','stat.risk':'USDT 地址数',
     'bl.label':'黑名单数据库','bl.title':'最新标记地址','bl.desc':'来自冻结地址数据库的实时数据。包括 Tether、Circle 和 OFAC 制裁标记的地址。',
     'news.label':'实时新闻','news.sub':'加密货币与区块链实时情报','news.loading':'正在加载最新新闻...','news.loadmore':'加载更多',
     'aml.btn':'查询','aml.placeholder':'查询地址 (0x... 或 T...)',
