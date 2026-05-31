@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innobridge — Contract Forensic Decoder</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --canvas:#ffffff;--s1:#f7f8fa;--s2:#eef0f4;--s3:#e2e5eb;
+  --accent:#00c896;--accent-h:#00b386;--accent-bg:rgba(0,200,150,0.08);
+  --ink:#1a1d23;--ink2:#5a5f6b;--ink3:#8b909c;
+  --hl:rgba(0,0,0,0.06);--hl2:rgba(0,0,0,0.12);
+  --danger:#ef4444;--danger-bg:rgba(239,68,68,0.06);
+  --warn:#f59e0b;
+  --blue:#4f6ef7;--blue-bg:rgba(79,110,247,0.06);
+  --purple:#8b5cf6;
+  --f:'Inter',system-ui,sans-serif;--m:'JetBrains Mono',monospace;
+  --max:1200px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+}
+html{scroll-behavior:smooth}
+body{background:var(--canvas);color:var(--ink);font:400 15px/1.6 var(--f);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--hl)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font:600 12px var(--f);color:#fff}
+.logo-text{font:600 15px var(--f);color:var(--ink);letter-spacing:-.3px}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font:500 13px var(--f);color:var(--ink3);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-btn{font:500 13px var(--f);color:#fff;background:var(--accent);padding:7px 18px;border-radius:7px;border:none;cursor:pointer;transition:background .2s}
+.nav-btn:hover{background:var(--accent-h)}
+.lang-toggle{font:500 11px var(--f);color:var(--ink3);background:var(--s1);border:1px solid var(--hl);padding:5px 12px;border-radius:99px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{color:var(--ink);border-color:var(--hl2)}
+.mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
+
+/* HERO / SEARCH */
+.hero{padding:120px 40px 56px;text-align:center;background:var(--canvas)}
+.hero-inner{max-width:var(--max);margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);border-radius:99px;padding:5px 14px;font:500 11px var(--f);color:var(--accent-h);letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero h1{font:600 clamp(28px,4vw,44px)/1.12 var(--f);letter-spacing:-1.5px;color:var(--ink);margin-bottom:12px}
+.hero-sub{font:400 15px/1.7 var(--f);color:var(--ink2);max-width:580px;margin:0 auto 32px}
+
+/* SEARCH BOX */
+.search-box{max-width:680px;margin:0 auto}
+.search-row{display:flex;gap:8px;align-items:center}
+.search-input{flex:1;background:var(--s1);border:1.5px solid var(--hl);border-radius:10px;padding:14px 18px;font:400 14px var(--m);color:var(--ink);outline:none;transition:border-color .2s}
+.search-input:focus{border-color:var(--accent)}
+.search-input::placeholder{color:var(--ink3)}
+.search-btn{font:500 14px var(--f);color:#fff;background:var(--accent);padding:14px 28px;border-radius:10px;border:none;cursor:pointer;transition:background .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.search-btn:hover{background:var(--accent-h)}
+.search-btn:disabled{opacity:.6;cursor:not-allowed}
+
+/* CHAIN PILLS */
+.chain-pills{display:flex;gap:6px;justify-content:center;margin-top:14px}
+.chain-pill{font:500 12px var(--f);padding:5px 14px;border-radius:99px;border:1px solid var(--hl);background:var(--canvas);color:var(--ink3);cursor:pointer;transition:all .2s}
+.chain-pill:hover{border-color:var(--hl2);color:var(--ink2)}
+.chain-pill.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* SAMPLE CHIPS */
+.sample-chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
+.sample-chip{font:400 11px var(--m);color:var(--blue);background:var(--blue-bg);padding:4px 10px;border-radius:6px;cursor:pointer;transition:all .2s;border:1px solid transparent}
+.sample-chip:hover{border-color:var(--blue);background:rgba(79,110,247,0.12)}
+.sample-chip.tron{color:#dc2626;background:var(--danger-bg)}
+.sample-chip.tron:hover{border-color:#dc2626;background:rgba(239,68,68,0.12)}
+
+/* RESULTS */
+.results-section{display:none;padding:0 40px 48px}
+.results-inner{max-width:var(--max);margin:0 auto}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--hl);margin-bottom:24px}
+.tab-btn{font:500 13px var(--f);color:var(--ink3);padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--accent-h);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* OVERVIEW CARDS */
+.overview-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.overview-card{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:24px;position:relative}
+.overview-card h3{font:600 14px var(--f);color:var(--ink);margin-bottom:16px}
+.overview-card.full{grid-column:1/-1}
+
+/* RISK GAUGE */
+.gauge-wrap{display:flex;align-items:center;justify-content:center;padding:16px 0}
+.gauge-label{font:600 32px var(--f);fill:var(--ink)}
+.gauge-sublabel{font:500 11px var(--f);fill:var(--ink3);text-transform:uppercase;letter-spacing:.5px}
+
+/* BADGES */
+.status-badge{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--f);padding:6px 14px;border-radius:8px}
+.status-badge.blacklisted{background:var(--danger-bg);color:var(--danger)}
+.status-badge.clean{background:var(--accent-bg);color:var(--accent-h)}
+.chain-badge{font:500 10px var(--f);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px}
+.chain-badge.eth,.chain-badge.ethereum{background:var(--blue-bg);color:var(--blue)}
+.chain-badge.tron,.chain-badge.trx{background:var(--danger-bg);color:#dc2626}
+
+/* DETAIL ROWS */
+.detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--hl)}
+.detail-row:last-child{border-bottom:none}
+.detail-key{font:500 13px var(--f);color:var(--ink3)}
+.detail-val{font:500 13px var(--m);color:var(--ink);text-align:right;word-break:break-all}
+.detail-val a{color:var(--blue);transition:opacity .2s}
+.detail-val a:hover{opacity:.7}
+
+/* TX TABLE */
+.tx-table-wrap{border:1px solid var(--hl);border-radius:12px;overflow:hidden;background:var(--canvas)}
+.tx-table{width:100%;border-collapse:collapse;font-size:13px}
+.tx-table thead{background:var(--s1)}
+.tx-table th{padding:10px 16px;text-align:left;font:500 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--hl)}
+.tx-table td{padding:10px 16px;border-bottom:1px solid var(--hl);color:var(--ink2);font:400 12px var(--m)}
+.tx-table tr:last-child td{border-bottom:none}
+.tx-table tr:hover td{background:var(--s1)}
+.tx-addr{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:inline-block;vertical-align:middle}
+.tx-addr.flagged{color:var(--danger);font-weight:500}
+.copy-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--ink3);padding:2px 4px;transition:color .2s;vertical-align:middle}
+.copy-btn:hover{color:var(--ink)}
+.load-more-btn{display:block;margin:16px auto 0;font:500 13px var(--f);color:var(--accent-h);background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);padding:10px 24px;border-radius:8px;cursor:pointer;transition:all .2s}
+.load-more-btn:hover{background:rgba(0,200,150,0.15)}
+
+/* FUND FLOW */
+.flow-container{border:1px solid var(--hl);border-radius:14px;overflow:hidden;background:var(--s1);position:relative}
+.flow-svg{width:100%;height:500px;display:block}
+.flow-legend{display:flex;gap:16px;padding:12px 16px;border-top:1px solid var(--hl);background:var(--canvas);font:400 12px var(--f);color:var(--ink3)}
+.flow-legend-item{display:flex;align-items:center;gap:6px}
+.flow-legend-dot{width:10px;height:10px;border-radius:50%}
+.flow-msg{text-align:center;padding:60px 24px;color:var(--ink3);font:400 14px var(--f)}
+
+/* RISK ANALYSIS */
+.risk-factors-list{list-style:none;padding:0}
+.risk-factors-list li{padding:10px 0;border-bottom:1px solid var(--hl);font:400 13px var(--f);color:var(--ink2);display:flex;align-items:center;gap:8px}
+.risk-factors-list li:last-child{border-bottom:none}
+.risk-factors-list .rf-icon{width:20px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.rf-icon.high{background:var(--danger-bg);color:var(--danger)}
+.rf-icon.medium{background:rgba(245,158,11,0.08);color:var(--warn)}
+.rf-icon.low{background:var(--accent-bg);color:var(--accent)}
+.records-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px}
+.records-table th{padding:8px 12px;text-align:left;font:500 10px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;background:var(--s1);border-bottom:1px solid var(--hl)}
+.records-table td{padding:8px 12px;border-bottom:1px solid var(--hl);font:400 12px var(--m);color:var(--ink2)}
+.records-table tr:last-child td{border-bottom:none}
+
+/* ABI DECODER */
+.abi-section{padding:0 40px 64px;display:none}
+.abi-inner{max-width:var(--max);margin:0 auto}
+.abi-card{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:28px}
+.abi-card h3{font:600 16px var(--f);color:var(--ink);margin-bottom:6px}
+.abi-card .abi-desc{font:400 13px var(--f);color:var(--ink3);margin-bottom:20px}
+.abi-input{width:100%;background:var(--canvas);border:1.5px solid var(--hl);border-radius:10px;padding:14px 16px;font:400 13px var(--m);color:var(--ink);outline:none;resize:vertical;min-height:80px;transition:border-color .2s}
+.abi-input:focus{border-color:var(--accent)}
+.abi-input::placeholder{color:var(--ink3)}
+.abi-btn-row{display:flex;gap:8px;margin-top:12px;align-items:center}
+.abi-decode-btn{font:500 13px var(--f);color:#fff;background:var(--accent);padding:10px 20px;border-radius:8px;border:none;cursor:pointer;transition:background .2s}
+.abi-decode-btn:hover{background:var(--accent-h)}
+.abi-result{margin-top:16px;padding:16px;background:var(--canvas);border:1px solid var(--hl);border-radius:10px;font:400 13px var(--m);line-height:1.8;display:none;word-break:break-all}
+.abi-result .fn-name{font:600 14px var(--f);color:var(--accent-h);margin-bottom:8px}
+.abi-result .param-row{display:flex;gap:8px;padding:4px 0}
+.abi-result .param-label{color:var(--ink3);flex-shrink:0}
+.abi-result .param-val{color:var(--ink)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
+.footer-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.footer-brand{display:flex;flex-direction:column;gap:12px}
+.footer-brand .logo-icon{background:var(--accent);color:#fff}
+.footer-brand .logo-text{color:#fff}
+.footer-brand p{font:400 13px/1.6 var(--f);color:rgba(255,255,255,0.5);max-width:280px}
+.footer-col h4{font:500 12px var(--f);color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:.4px;margin-bottom:16px}
+.footer-col a{display:block;font:400 13px var(--f);color:rgba(255,255,255,0.5);margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{max-width:var(--max);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center}
+.footer-bottom span{font:400 12px var(--f);color:rgba(255,255,255,0.4)}
+.footer-bottom a{font:400 12px var(--f);color:rgba(255,255,255,0.4);margin-left:20px;transition:color .2s}
+.footer-bottom a:hover{color:#fff}
+
+/* LOADING */
+.spinner{width:32px;height:32px;border:3px solid var(--s2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-block{text-align:center;padding:48px 24px;color:var(--ink3);font:400 13px var(--f)}
+.loading-block .spinner{margin-bottom:12px}
+
+/* ERROR MSG */
+.error-msg{text-align:center;padding:24px;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.15);border-radius:10px;color:var(--danger);font:500 13px var(--f);margin-bottom:16px;display:none}
+.error-msg.show{display:block}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;font:500 13px var(--f);padding:10px 20px;border-radius:8px;z-index:999;opacity:0;transition:all .3s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .overview-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .hero{padding:96px 20px 40px}
+  nav{padding:0 20px}
+  .wrap{padding:0 20px}
+  .results-section{padding:0 20px 40px}
+  .abi-section{padding:0 20px 48px}
+  .search-row{flex-direction:column}
+  .search-input{width:100%}
+  .search-btn{width:100%;justify-content:center}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab-btn{padding:10px 14px;font-size:12px}
+  .tx-table-wrap{overflow-x:auto}
+  .tx-table{min-width:600px}
+  .flow-svg{height:350px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  footer{padding:48px 20px 20px}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:-1px}
+  .sample-chips{flex-direction:column;align-items:center}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .chain-pills{flex-wrap:wrap}
+  .overview-grid{gap:12px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
+    <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+    <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+    <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
+    <li><a href="index.html#law-enforcement" data-i18n="nav.evidence">Law Enforcement</a></li>
+    <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="index.html#contact" class="nav-btn" data-i18n="nav.cta">Get Started</a>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<!-- HERO / SEARCH -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span><span data-i18n="cd.badge">Blockchain Forensics</span></div>
+    <h1 data-i18n="cd.title">Contract Forensic Decoder</h1>
+    <p class="hero-sub" data-i18n="cd.sub">Decode on-chain activity for any Ethereum or TRON address. View transaction history, fund flow graphs, risk assessment, and ABI-decoded contract calls.</p>
+    <div class="search-box">
+      <div class="search-row">
+        <input class="search-input" id="addrInput" type="text" placeholder="Enter ETH (0x...) or TRON (T...) address" data-i18n-ph="cd.placeholder" spellcheck="false" autocomplete="off">
+        <button class="search-btn" id="decodeBtn" onclick="startDecode()" data-i18n="cd.decode">Decode</button>
+      </div>
+      <div class="chain-pills">
+        <span class="chain-pill active" data-chain="auto" onclick="setChain('auto',this)" data-i18n="cd.auto">Auto-detect</span>
+        <span class="chain-pill" data-chain="eth" onclick="setChain('eth',this)">ETH</span>
+        <span class="chain-pill" data-chain="tron" onclick="setChain('tron',this)">TRON</span>
+      </div>
+      <div class="sample-chips">
+        <span class="sample-chip" onclick="useSample('0x27f5863a7873cd86c3ffa92121324ec4ec33e962')" title="USDT blacklisted, $1.17M frozen">0x27f5...e962</span>
+        <span class="sample-chip" onclick="useSample('0x4d195277855c60e09ac8c25dfc95d4768e1f1332')" title="USDT blacklisted, $500K frozen">0x4d19...1332</span>
+        <span class="sample-chip tron" onclick="useSample('TKFWwDkr1pAcuKPEfTNbDqR43VkAhVMpML')" title="TRON blacklist address">TKFWw...pML</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERROR MSG -->
+<div class="wrap"><div class="error-msg" id="errorMsg"></div></div>
+
+<!-- RESULTS -->
+<section class="results-section" id="resultsSection">
+  <div class="results-inner">
+    <!-- TABS -->
+    <div class="tabs" id="tabBar">
+      <button class="tab-btn active" data-tab="overview" onclick="switchTab('overview',this)" data-i18n="cd.tab.overview">Overview</button>
+      <button class="tab-btn" data-tab="transactions" onclick="switchTab('transactions',this)" data-i18n="cd.tab.tx">Transactions</button>
+      <button class="tab-btn" data-tab="fundflow" onclick="switchTab('fundflow',this)" data-i18n="cd.tab.flow">Fund Flow</button>
+      <button class="tab-btn" data-tab="risk" onclick="switchTab('risk',this)" data-i18n="cd.tab.risk">Risk Analysis</button>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div class="tab-panel active" id="panel-overview">
+      <div class="overview-grid">
+        <div class="overview-card">
+          <h3 data-i18n="cd.risk.score">Risk Score</h3>
+          <div class="gauge-wrap" id="gaugeWrap">
+            <svg viewBox="0 0 200 130" width="200" height="130" id="riskGauge">
+              <path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="var(--s2)" stroke-width="14" stroke-linecap="round"/>
+              <path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round" id="gaugeArc" stroke-dasharray="0 251.3"/>
+              <text x="100" y="90" text-anchor="middle" class="gauge-label" id="gaugeText">--</text>
+              <text x="100" y="108" text-anchor="middle" class="gauge-sublabel" id="gaugeSublabel">RISK SCORE</text>
+            </svg>
+          </div>
+        </div>
+        <div class="overview-card">
+          <h3 data-i18n="cd.status">Status</h3>
+          <div style="padding:16px 0">
+            <div id="statusBadge" class="status-badge clean">CLEAN</div>
+            <div style="margin-top:16px" id="overviewDetails">
+              <!-- Filled dynamically -->
+            </div>
+          </div>
+        </div>
+        <div class="overview-card full">
+          <h3 data-i18n="cd.address.detail">Address Details</h3>
+          <div id="addressDetails">
+            <!-- Filled dynamically -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: TRANSACTIONS -->
+    <div class="tab-panel" id="panel-transactions">
+      <div id="txLoading" class="loading-block"><div class="spinner"></div><span data-i18n="cd.tx.loading">Loading transactions...</span></div>
+      <div id="txContent" style="display:none">
+        <div class="tx-table-wrap">
+          <table class="tx-table">
+            <thead><tr>
+              <th data-i18n="cd.tx.hash">Tx Hash</th>
+              <th data-i18n="cd.tx.from">From</th>
+              <th data-i18n="cd.tx.to">To</th>
+              <th data-i18n="cd.tx.value">Value</th>
+              <th data-i18n="cd.tx.time">Time</th>
+            </tr></thead>
+            <tbody id="txBody"></tbody>
+          </table>
+        </div>
+        <button class="load-more-btn" id="txLoadMore" onclick="loadMoreTx()" style="display:none" data-i18n="cd.tx.more">Load More</button>
+      </div>
+      <div id="txEmpty" class="flow-msg" style="display:none" data-i18n="cd.tx.empty">No transactions found for this address.</div>
+    </div>
+
+    <!-- TAB: FUND FLOW -->
+    <div class="tab-panel" id="panel-fundflow">
+      <div id="flowLoading" class="loading-block"><div class="spinner"></div><span data-i18n="cd.flow.loading">Building fund flow graph...</span></div>
+      <div class="flow-container" id="flowContainer" style="display:none">
+        <svg class="flow-svg" id="flowSvg"></svg>
+        <div class="flow-legend">
+          <div class="flow-legend-item"><div class="flow-legend-dot" style="background:var(--accent)"></div><span data-i18n="cd.flow.searched">Searched Address</span></div>
+          <div class="flow-legend-item"><div class="flow-legend-dot" style="background:var(--danger)"></div><span data-i18n="cd.flow.flagged">Blacklisted</span></div>
+          <div class="flow-legend-item"><div class="flow-legend-dot" style="background:var(--ink3)"></div><span data-i18n="cd.flow.clean">Clean</span></div>
+        </div>
+      </div>
+      <div id="flowEmpty" class="flow-msg" style="display:none" data-i18n="cd.flow.empty">No transaction data available to build a fund flow graph.</div>
+    </div>
+
+    <!-- TAB: RISK ANALYSIS -->
+    <div class="tab-panel" id="panel-risk">
+      <div class="overview-grid">
+        <div class="overview-card">
+          <h3 data-i18n="cd.risk.overall">Overall Risk</h3>
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 200 130" width="200" height="130" id="riskGauge2">
+              <path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="var(--s2)" stroke-width="14" stroke-linecap="round"/>
+              <path d="M20 110 A80 80 0 0 1 180 110" fill="none" stroke="var(--accent)" stroke-width="14" stroke-linecap="round" id="gaugeArc2" stroke-dasharray="0 251.3"/>
+              <text x="100" y="90" text-anchor="middle" class="gauge-label" id="gaugeText2">--</text>
+              <text x="100" y="108" text-anchor="middle" class="gauge-sublabel" id="gaugeSublabel2">RISK SCORE</text>
+            </svg>
+          </div>
+        </div>
+        <div class="overview-card">
+          <h3 data-i18n="cd.risk.factors">Risk Factors</h3>
+          <ul class="risk-factors-list" id="riskFactors">
+            <li style="color:var(--ink3);font-style:italic" data-i18n="cd.risk.none">No risk factors identified.</li>
+          </ul>
+        </div>
+        <div class="overview-card full">
+          <h3 data-i18n="cd.risk.records">Blacklist Records</h3>
+          <div id="riskRecords">
+            <p style="color:var(--ink3);font:400 13px var(--f);padding:12px 0" data-i18n="cd.risk.norecords">No blacklist records found for this address.</p>
+          </div>
+        </div>
+        <div class="overview-card full">
+          <h3 data-i18n="cd.risk.related">Related Addresses</h3>
+          <div id="riskRelated">
+            <p style="color:var(--ink3);font:400 13px var(--f);padding:12px 0" data-i18n="cd.risk.norelated">No related addresses identified.</p>
+          </div>
+        </div>
+        <div class="overview-card full">
+          <h3 data-i18n="cd.risk.assessment">Assessment</h3>
+          <p id="riskAssessmentText" style="font:400 14px/1.7 var(--f);color:var(--ink2);padding:8px 0" data-i18n="cd.risk.assessdefault">Submit an address to view the risk assessment.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABI DECODER -->
+<section class="abi-section" id="abiSection">
+  <div class="abi-inner">
+    <div class="abi-card">
+      <h3 data-i18n="cd.abi.title">ABI / Transaction Data Decoder</h3>
+      <p class="abi-desc" data-i18n="cd.abi.desc">Paste raw transaction input data (hex) to decode the function call and parameters.</p>
+      <textarea class="abi-input" id="abiInput" placeholder="0xa9059cbb000000000000000000000000..." rows="3"></textarea>
+      <div class="abi-btn-row">
+        <button class="abi-decode-btn" onclick="decodeABI()" data-i18n="cd.abi.decode">Decode</button>
+        <span style="font:400 12px var(--f);color:var(--ink3)" data-i18n="cd.abi.hint">Supports transfer, approve, transferFrom, mint, burn, and more</span>
+      </div>
+      <div class="abi-result" id="abiResult"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="margin-bottom:4px">
+        <div class="logo-icon">IB</div>
+        <span class="logo-text">Innobridge</span>
+      </div>
+      <p>Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="index.html#blacklist-section">Blacklist Data</a>
+      <a href="evidence-collection.html">Evidence Directory</a>
+      <a href="index.html#platform">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="index.html#news">News</a>
+      <a href="dashboard.html">Data Explorer</a>
+      <a href="index.html#contact">Contact Sales</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="privacy.html" data-i18n="ft.privacy">Privacy</a>
+      <a href="terms.html" data-i18n="ft.terms">Terms</a>
+      <a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+    <div>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- D3.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+
+<script>
+// ===== CONFIG =====
+var API_BASE = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
+var ETHERSCAN_API = 'https://api.etherscan.io/api';
+var TRONGRID_API = 'https://api.trongrid.io/v1';
+
+// ===== STATE =====
+var currentAddr = '';
+var currentChain = 'auto'; // auto | eth | tron
+var decodeData = null;     // API response
+var txData = [];           // transactions
+var txPage = 1;
+var txLoading = false;
+var blacklistedAddrs = new Set();
+
+// ===== I18N =====
+var I18N = {
+  en: {
+    'nav.news':'News','nav.blacklist':'Blacklist Data','nav.dashboard':'Dashboard','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Get Started',
+    'ft.copy':'&copy; 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
+    'cd.badge':'Blockchain Forensics',
+    'cd.title':'Contract Forensic Decoder',
+    'cd.sub':'Decode on-chain activity for any Ethereum or TRON address. View transaction history, fund flow graphs, risk assessment, and ABI-decoded contract calls.',
+    'cd.placeholder':'Enter ETH (0x...) or TRON (T...) address',
+    'cd.decode':'Decode',
+    'cd.auto':'Auto-detect',
+    'cd.tab.overview':'Overview',
+    'cd.tab.tx':'Transactions',
+    'cd.tab.flow':'Fund Flow',
+    'cd.tab.risk':'Risk Analysis',
+    'cd.risk.score':'Risk Score',
+    'cd.status':'Status',
+    'cd.address.detail':'Address Details',
+    'cd.tx.loading':'Loading transactions...',
+    'cd.tx.hash':'Tx Hash',
+    'cd.tx.from':'From',
+    'cd.tx.to':'To',
+    'cd.tx.value':'Value',
+    'cd.tx.time':'Time',
+    'cd.tx.more':'Load More',
+    'cd.tx.empty':'No transactions found for this address.',
+    'cd.flow.loading':'Building fund flow graph...',
+    'cd.flow.searched':'Searched Address',
+    'cd.flow.flagged':'Blacklisted',
+    'cd.flow.clean':'Clean',
+    'cd.flow.empty':'No transaction data available to build a fund flow graph.',
+    'cd.risk.overall':'Overall Risk',
+    'cd.risk.factors':'Risk Factors',
+    'cd.risk.none':'No risk factors identified.',
+    'cd.risk.records':'Blacklist Records',
+    'cd.risk.norecords':'No blacklist records found for this address.',
+    'cd.risk.related':'Related Addresses',
+    'cd.risk.norelated':'No related addresses identified.',
+    'cd.risk.assessment':'Assessment',
+    'cd.risk.assessdefault':'Submit an address to view the risk assessment.',
+    'cd.abi.title':'ABI / Transaction Data Decoder',
+    'cd.abi.desc':'Paste raw transaction input data (hex) to decode the function call and parameters.',
+    'cd.abi.decode':'Decode',
+    'cd.abi.hint':'Supports transfer, approve, transferFrom, mint, burn, and more',
+    'cd.error.invalid':'Please enter a valid Ethereum (0x...) or TRON (T...) address.',
+    'cd.error.api':'API request failed. Please try again later.',
+    'cd.error.ratelimit':'API rate limited. Please wait a moment and try again.',
+    'cd.copied':'Copied!',
+    'cd.detail.chain':'Chain',
+    'cd.detail.blacklist':'Blacklist Status',
+    'cd.detail.records':'Records Found',
+    'cd.detail.explorer':'View on Explorer'
+  },
+  cn: {
+    'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
+    'ft.copy':'&copy; 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
+    'cd.badge':'区块链取证',
+    'cd.title':'合约取证解码器',
+    'cd.sub':'解码任意以太坊或波场地址的链上活动。查看交易历史、资金流向图、风险评估和 ABI 解码的合约调用。',
+    'cd.placeholder':'输入 ETH (0x...) 或 TRON (T...) 地址',
+    'cd.decode':'解码',
+    'cd.auto':'自动识别',
+    'cd.tab.overview':'概览',
+    'cd.tab.tx':'交易历史',
+    'cd.tab.flow':'资金流向',
+    'cd.tab.risk':'风险评估',
+    'cd.risk.score':'风险评分',
+    'cd.status':'状态',
+    'cd.address.detail':'地址详情',
+    'cd.tx.loading':'正在加载交易记录...',
+    'cd.tx.hash':'交易哈希',
+    'cd.tx.from':'发送方',
+    'cd.tx.to':'接收方',
+    'cd.tx.value':'金额',
+    'cd.tx.time':'时间',
+    'cd.tx.more':'加载更多',
+    'cd.tx.empty':'未找到该地址的交易记录。',
+    'cd.flow.loading':'正在构建资金流向图...',
+    'cd.flow.searched':'查询地址',
+    'cd.flow.flagged':'黑名单',
+    'cd.flow.clean':'正常',
+    'cd.flow.empty':'无交易数据，无法构建资金流向图。',
+    'cd.risk.overall':'综合风险',
+    'cd.risk.factors':'风险因素',
+    'cd.risk.none':'未发现风险因素。',
+    'cd.risk.records':'黑名单记录',
+    'cd.risk.norecords':'未发现该地址的黑名单记录。',
+    'cd.risk.related':'关联地址',
+    'cd.risk.norelated':'未发现关联地址。',
+    'cd.risk.assessment':'评估报告',
+    'cd.risk.assessdefault':'输入地址以查看风险评估。',
+    'cd.abi.title':'ABI / 交易数据解码器',
+    'cd.abi.desc':'粘贴原始交易输入数据（十六进制）以解码函数调用和参数。',
+    'cd.abi.decode':'解码',
+    'cd.abi.hint':'支持 transfer、approve、transferFrom、mint、burn 等函数',
+    'cd.error.invalid':'请输入有效的以太坊 (0x...) 或波场 (T...) 地址。',
+    'cd.error.api':'API 请求失败，请稍后重试。',
+    'cd.error.ratelimit':'API 请求频率限制，请稍候再试。',
+    'cd.copied':'已复制！',
+    'cd.detail.chain':'链',
+    'cd.detail.blacklist':'黑名单状态',
+    'cd.detail.records':'记录数量',
+    'cd.detail.explorer':'在浏览器中查看'
+  }
+};
+
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+
+function t(key) {
+  var dict = I18N[currentLang] || I18N.en;
+  return dict[key] || (I18N.en[key] || key);
+}
+
+function applyLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('ib_lang', lang);
+  var dict = I18N[lang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) {
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        // skip
+      } else if (el.children.length === 0) {
+        el.innerHTML = dict[key];
+      } else {
+        el.textContent = dict[key];
+      }
+    }
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.placeholder = dict[key];
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+}
+
+function toggleLang() {
+  applyLang(currentLang === 'en' ? 'cn' : 'en');
+}
+
+applyLang(currentLang);
+
+// ===== HELPERS =====
+function shortAddr(addr) {
+  if (!addr) return '';
+  if (addr.length > 16) return addr.slice(0, 6) + '...' + addr.slice(-4);
+  return addr;
+}
+
+function formatNum(n) {
+  if (n === undefined || n === null || isNaN(n)) return '0';
+  return Number(n).toLocaleString('en-US', { maximumFractionDigits: 4 });
+}
+
+function formatUsd(n) {
+  if (!n || isNaN(n)) return '$0';
+  var num = Number(n);
+  if (num >= 1e9) return '$' + (num / 1e9).toFixed(2) + 'B';
+  if (num >= 1e6) return '$' + (num / 1e6).toFixed(2) + 'M';
+  if (num >= 1e3) return '$' + (num / 1e3).toFixed(1) + 'K';
+  return '$' + num.toFixed(2);
+}
+
+function escHtml(s) {
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+
+function copyToClip(text) {
+  navigator.clipboard.writeText(text).then(function() {
+    showToast(t('cd.copied'));
+  }).catch(function() {});
+}
+
+function showError(msg) {
+  var el = document.getElementById('errorMsg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+function hideError() {
+  document.getElementById('errorMsg').classList.remove('show');
+}
+
+function detectChain(addr) {
+  if (currentChain !== 'auto') return currentChain;
+  if (/^0x[a-fA-F0-9]{40}$/.test(addr)) return 'eth';
+  if (/^T[a-zA-Z0-9]{33}$/.test(addr)) return 'tron';
+  return null;
+}
+
+function explorerLink(chain, addr) {
+  if (chain === 'eth') return 'https://etherscan.io/address/' + addr;
+  if (chain === 'tron') return 'https://tronscan.org/#/address/' + addr;
+  return '#';
+}
+
+function txExplorerLink(chain, hash) {
+  if (chain === 'eth') return 'https://etherscan.io/tx/' + hash;
+  if (chain === 'tron') return 'https://tronscan.org/#/transaction/' + hash;
+  return '#';
+}
+
+// ===== CHAIN SELECTOR =====
+function setChain(chain, el) {
+  currentChain = chain;
+  document.querySelectorAll('.chain-pill').forEach(function(p) { p.classList.remove('active'); });
+  el.classList.add('active');
+}
+
+// ===== SAMPLE CHIPS =====
+function useSample(addr) {
+  document.getElementById('addrInput').value = addr;
+  startDecode();
+}
+
+// ===== TABS =====
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  document.querySelectorAll('.tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ===== RISK GAUGE =====
+function setGauge(score, gaugeId, arcId, textId, sublabelId) {
+  var arc = document.getElementById(arcId);
+  var txt = document.getElementById(textId);
+  var sub = document.getElementById(sublabelId);
+  var maxLen = 251.3; // approx arc length for 180deg, r=80
+  var pct = Math.max(0, Math.min(100, score)) / 100;
+  var dashLen = pct * maxLen;
+  arc.setAttribute('stroke-dasharray', dashLen + ' ' + maxLen);
+
+  var color;
+  if (score <= 20) color = 'var(--accent)';
+  else if (score <= 50) color = 'var(--warn)';
+  else if (score <= 70) color = '#f97316';
+  else color = 'var(--danger)';
+  arc.setAttribute('stroke', color);
+
+  txt.textContent = score;
+  txt.setAttribute('fill', color);
+
+  var levelText = score <= 20 ? 'LOW' : score <= 50 ? 'MEDIUM' : score <= 70 ? 'HIGH' : 'CRITICAL';
+  if (currentLang === 'cn') {
+    levelText = score <= 20 ? '低风险' : score <= 50 ? '中风险' : score <= 70 ? '高风险' : '极高风险';
+  }
+  sub.textContent = levelText;
+}
+
+// ===== MAIN DECODE =====
+function startDecode() {
+  var addr = document.getElementById('addrInput').value.trim();
+  hideError();
+
+  if (!addr) return;
+
+  var chain = detectChain(addr);
+  if (!chain) {
+    showError(t('cd.error.invalid'));
+    return;
+  }
+
+  currentAddr = addr;
+  txData = [];
+  txPage = 1;
+  blacklistedAddrs = new Set();
+  decodeData = null;
+
+  // Show results
+  document.getElementById('resultsSection').style.display = 'block';
+  document.getElementById('abiSection').style.display = 'block';
+
+  // Reset to overview tab
+  switchTab('overview', document.querySelector('[data-tab="overview"]'));
+
+  // Show loading states
+  document.getElementById('txLoading').style.display = 'block';
+  document.getElementById('txContent').style.display = 'none';
+  document.getElementById('txEmpty').style.display = 'none';
+  document.getElementById('flowLoading').style.display = 'block';
+  document.getElementById('flowContainer').style.display = 'none';
+  document.getElementById('flowEmpty').style.display = 'none';
+
+  // Disable button
+  var btn = document.getElementById('decodeBtn');
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  // Fetch from Innobridge API
+  fetch(API_BASE + '?action=decode&address=' + encodeURIComponent(addr))
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      decodeData = data;
+      renderOverview(data, chain);
+      renderRiskAnalysis(data);
+
+      // Collect blacklisted addresses
+      if (data.blacklisted) blacklistedAddrs.add(addr.toLowerCase());
+      if (data.related && data.related.length) {
+        data.related.forEach(function(r) {
+          if (r.blacklisted || (r.risk_level && r.risk_level !== 'LOW')) {
+            blacklistedAddrs.add((r.address || '').toLowerCase());
+          }
+        });
+      }
+      if (data.records && data.records.length) {
+        data.records.forEach(function(rec) {
+          blacklistedAddrs.add((rec.address || addr).toLowerCase());
+        });
+      }
+
+      // Fetch transactions
+      fetchTransactions(chain, addr);
+    })
+    .catch(function(err) {
+      console.error('Decode API error:', err);
+      // Still try to load transactions even if AML API fails
+      renderOverviewFallback(chain, addr);
+      fetchTransactions(chain, addr);
+    })
+    .finally(function() {
+      btn.disabled = false;
+      btn.textContent = t('cd.decode');
+    });
+
+  // Scroll to results
+  setTimeout(function() {
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 200);
+}
+
+// ===== RENDER OVERVIEW =====
+function renderOverview(data, chain) {
+  // Risk gauge
+  var score = (data.risk_assessment && data.risk_assessment.score) ? data.risk_assessment.score : 0;
+  setGauge(score, 'riskGauge', 'gaugeArc', 'gaugeText', 'gaugeSublabel');
+
+  // Status badge
+  var badge = document.getElementById('statusBadge');
+  if (data.blacklisted) {
+    badge.className = 'status-badge blacklisted';
+    badge.innerHTML = '&#9888; BLACKLISTED';
+  } else {
+    badge.className = 'status-badge clean';
+    badge.innerHTML = '&#10003; CLEAN';
+  }
+
+  // Overview details
+  var detailsHtml = '';
+  detailsHtml += '<div class="detail-row"><span class="detail-key">' + t('cd.detail.chain') + '</span><span class="detail-val"><span class="chain-badge ' + chain + '">' + chain.toUpperCase() + '</span></span></div>';
+  detailsHtml += '<div class="detail-row"><span class="detail-key">' + t('cd.detail.records') + '</span><span class="detail-val">' + ((data.records && data.records.length) || 0) + '</span></div>';
+  document.getElementById('overviewDetails').innerHTML = detailsHtml;
+
+  // Address details card
+  var addrHtml = '';
+  addrHtml += '<div class="detail-row"><span class="detail-key">Address</span><span class="detail-val" style="font-size:12px">' + escHtml(currentAddr) + ' <button class="copy-btn" onclick="copyToClip(\'' + escHtml(currentAddr) + '\')">&#x2398;</button></span></div>';
+  addrHtml += '<div class="detail-row"><span class="detail-key">' + t('cd.detail.chain') + '</span><span class="detail-val"><span class="chain-badge ' + chain + '">' + chain.toUpperCase() + '</span></span></div>';
+
+  if (data.records && data.records.length > 0) {
+    var rec = data.records[0];
+    if (rec.asset) addrHtml += '<div class="detail-row"><span class="detail-key">Asset</span><span class="detail-val">' + escHtml(rec.asset) + '</span></div>';
+    if (rec.frozen_amount) addrHtml += '<div class="detail-row"><span class="detail-key">Frozen Amount</span><span class="detail-val" style="color:var(--danger);font-weight:600">$' + formatNum(rec.frozen_amount) + '</span></div>';
+    if (rec.label) addrHtml += '<div class="detail-row"><span class="detail-key">Label</span><span class="detail-val">' + escHtml(rec.label) + '</span></div>';
+    if (rec.frozen_date) addrHtml += '<div class="detail-row"><span class="detail-key">Frozen Date</span><span class="detail-val">' + escHtml(rec.frozen_date) + '</span></div>';
+  }
+
+  addrHtml += '<div class="detail-row"><span class="detail-key">' + t('cd.detail.explorer') + '</span><span class="detail-val"><a href="' + explorerLink(chain, currentAddr) + '" target="_blank" rel="noopener">' + (chain === 'eth' ? 'Etherscan' : 'Tronscan') + ' &#x2197;</a></span></div>';
+  document.getElementById('addressDetails').innerHTML = addrHtml;
+}
+
+function renderOverviewFallback(chain, addr) {
+  setGauge(0, 'riskGauge', 'gaugeArc', 'gaugeText', 'gaugeSublabel');
+  var badge = document.getElementById('statusBadge');
+  badge.className = 'status-badge clean';
+  badge.innerHTML = '&#10003; CLEAN';
+
+  document.getElementById('overviewDetails').innerHTML =
+    '<div class="detail-row"><span class="detail-key">' + t('cd.detail.chain') + '</span><span class="detail-val"><span class="chain-badge ' + chain + '">' + chain.toUpperCase() + '</span></span></div>';
+
+  document.getElementById('addressDetails').innerHTML =
+    '<div class="detail-row"><span class="detail-key">Address</span><span class="detail-val" style="font-size:12px">' + escHtml(addr) + ' <button class="copy-btn" onclick="copyToClip(\'' + escHtml(addr) + '\')">&#x2398;</button></span></div>' +
+    '<div class="detail-row"><span class="detail-key">' + t('cd.detail.explorer') + '</span><span class="detail-val"><a href="' + explorerLink(chain, addr) + '" target="_blank" rel="noopener">' + (chain === 'eth' ? 'Etherscan' : 'Tronscan') + ' &#x2197;</a></span></div>';
+}
+
+// ===== RENDER RISK ANALYSIS =====
+function renderRiskAnalysis(data) {
+  var score = (data.risk_assessment && data.risk_assessment.score) ? data.risk_assessment.score : 0;
+  setGauge(score, 'riskGauge2', 'gaugeArc2', 'gaugeText2', 'gaugeSublabel2');
+
+  // Risk factors
+  var factorsEl = document.getElementById('riskFactors');
+  if (data.risk_assessment && data.risk_assessment.factors && data.risk_assessment.factors.length) {
+    var fhtml = '';
+    data.risk_assessment.factors.forEach(function(f) {
+      var severity = score > 70 ? 'high' : score > 50 ? 'medium' : 'low';
+      fhtml += '<li><span class="rf-icon ' + severity + '">!</span>' + escHtml(f) + '</li>';
+    });
+    factorsEl.innerHTML = fhtml;
+  } else {
+    factorsEl.innerHTML = '<li style="color:var(--ink3);font-style:italic">' + t('cd.risk.none') + '</li>';
+  }
+
+  // Blacklist records
+  var recEl = document.getElementById('riskRecords');
+  if (data.records && data.records.length > 0) {
+    var rhtml = '<table class="records-table"><thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Frozen Amount</th><th>Label</th><th>Date</th></tr></thead><tbody>';
+    data.records.forEach(function(rec) {
+      rhtml += '<tr>';
+      rhtml += '<td style="color:var(--danger)">' + shortAddr(rec.address || currentAddr) + '</td>';
+      rhtml += '<td><span class="chain-badge ' + (rec.chain || '').toLowerCase() + '">' + escHtml(rec.chain || '') + '</span></td>';
+      rhtml += '<td>' + escHtml(rec.asset || '') + '</td>';
+      rhtml += '<td style="font-weight:500">$' + formatNum(rec.frozen_amount || 0) + '</td>';
+      rhtml += '<td>' + escHtml(rec.label || '-') + '</td>';
+      rhtml += '<td>' + escHtml(rec.frozen_date || '-') + '</td>';
+      rhtml += '</tr>';
+    });
+    rhtml += '</tbody></table>';
+    recEl.innerHTML = rhtml;
+  } else {
+    recEl.innerHTML = '<p style="color:var(--ink3);font:400 13px var(--f);padding:12px 0">' + t('cd.risk.norecords') + '</p>';
+  }
+
+  // Related addresses
+  var relEl = document.getElementById('riskRelated');
+  if (data.related && data.related.length > 0) {
+    var relhtml = '<table class="records-table"><thead><tr><th>Address</th><th>Chain</th><th>Risk Level</th><th>Label</th></tr></thead><tbody>';
+    data.related.forEach(function(rel) {
+      var riskColor = rel.risk_level === 'HIGH' ? 'var(--danger)' : rel.risk_level === 'MEDIUM' ? 'var(--warn)' : 'var(--accent)';
+      relhtml += '<tr>';
+      relhtml += '<td>' + shortAddr(rel.address || '') + '</td>';
+      relhtml += '<td><span class="chain-badge ' + (rel.chain || '').toLowerCase() + '">' + escHtml(rel.chain || '') + '</span></td>';
+      relhtml += '<td style="color:' + riskColor + ';font-weight:500">' + escHtml(rel.risk_level || '-') + '</td>';
+      relhtml += '<td>' + escHtml(rel.label || '-') + '</td>';
+      relhtml += '</tr>';
+    });
+    relhtml += '</tbody></table>';
+    relEl.innerHTML = relhtml;
+  } else {
+    relEl.innerHTML = '<p style="color:var(--ink3);font:400 13px var(--f);padding:12px 0">' + t('cd.risk.norelated') + '</p>';
+  }
+
+  // Assessment text
+  var assessEl = document.getElementById('riskAssessmentText');
+  if (data.risk_assessment && data.risk_assessment.level) {
+    var levelMap = { LOW: 'Low Risk', MEDIUM: 'Medium Risk', HIGH: 'High Risk', CRITICAL: 'Critical Risk' };
+    var levelMapCn = { LOW: '低风险', MEDIUM: '中等风险', HIGH: '高风险', CRITICAL: '极高风险' };
+    var lvl = currentLang === 'cn' ? (levelMapCn[data.risk_assessment.level] || data.risk_assessment.level) : (levelMap[data.risk_assessment.level] || data.risk_assessment.level);
+
+    var txt = currentLang === 'cn'
+      ? '该地址风险等级为 ' + lvl + '（评分：' + score + '/100）。'
+      : 'This address has been assessed as ' + lvl + ' with a risk score of ' + score + '/100.';
+
+    if (data.blacklisted) {
+      txt += currentLang === 'cn'
+        ? ' 该地址已在我们的黑名单数据库中标记。'
+        : ' This address is flagged in our blacklist database.';
+    }
+    if (data.risk_assessment.factors && data.risk_assessment.factors.length) {
+      txt += currentLang === 'cn'
+        ? ' 主要风险因素：' + data.risk_assessment.factors.join('、') + '。'
+        : ' Key factors: ' + data.risk_assessment.factors.join(', ') + '.';
+    }
+    assessEl.textContent = txt;
+  } else {
+    assessEl.textContent = data.blacklisted
+      ? (currentLang === 'cn' ? '该地址已被列入黑名单。' : 'This address is blacklisted.')
+      : (currentLang === 'cn' ? '该地址未在黑名单中发现。' : 'No blacklist records found for this address.');
+  }
+}
+
+// ===== TRANSACTIONS =====
+function fetchTransactions(chain, addr) {
+  txLoading = true;
+  if (chain === 'eth') {
+    fetchEthTx(addr);
+  } else {
+    fetchTronTx(addr);
+  }
+}
+
+function fetchEthTx(addr) {
+  var url = ETHERSCAN_API + '?module=account&action=txlist&address=' + addr + '&startblock=0&endblock=99999999&sort=desc&page=' + txPage + '&offset=25';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.status === '1' && data.result && data.result.length > 0) {
+        var newTx = data.result.map(function(tx) {
+          return {
+            hash: tx.hash,
+            from: tx.from,
+            to: tx.to,
+            value: (parseFloat(tx.value) / 1e18).toFixed(4) + ' ETH',
+            time: new Date(parseInt(tx.timeStamp) * 1000).toLocaleString(),
+            rawValue: parseFloat(tx.value) / 1e18,
+            timestamp: parseInt(tx.timeStamp) * 1000
+          };
+        });
+        txData = txData.concat(newTx);
+        renderTxTable('eth');
+        document.getElementById('txLoadMore').style.display = data.result.length >= 25 ? '' : 'none';
+      } else if (data.status === '0' && data.message && data.message.indexOf('rate') !== -1) {
+        showTxError(t('cd.error.ratelimit'));
+      } else {
+        if (txData.length === 0) {
+          document.getElementById('txLoading').style.display = 'none';
+          document.getElementById('txEmpty').style.display = 'block';
+        }
+      }
+      txLoading = false;
+      buildFlowGraph('eth');
+    })
+    .catch(function(err) {
+      console.error('Etherscan error:', err);
+      showTxError(t('cd.error.api'));
+      txLoading = false;
+      buildFlowGraph('eth');
+    });
+}
+
+function fetchTronTx(addr) {
+  var url = TRONGRID_API + '/accounts/' + addr + '/transactions?limit=25&order_by=block_timestamp,desc';
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (data.data && data.data.length > 0) {
+        var newTx = data.data.map(function(tx) {
+          var from = '';
+          var to = '';
+          var value = '0 TRX';
+          var rawVal = 0;
+
+          if (tx.raw_data && tx.raw_data.contract && tx.raw_data.contract[0]) {
+            var c = tx.raw_data.contract[0];
+            if (c.parameter && c.parameter.value) {
+              from = c.parameter.value.owner_address || '';
+              to = c.parameter.value.to_address || '';
+              var amt = c.parameter.value.amount || 0;
+              rawVal = amt / 1e6;
+              value = rawVal.toFixed(2) + ' TRX';
+
+              // Convert hex addresses to base58 if needed
+              if (from && from.length === 42 && from.startsWith('41')) {
+                from = hexToTronAddr(from);
+              }
+              if (to && to.length === 42 && to.startsWith('41')) {
+                to = hexToTronAddr(to);
+              }
+            }
+          }
+
+          return {
+            hash: tx.txID || '',
+            from: from,
+            to: to,
+            value: value,
+            time: tx.block_timestamp ? new Date(tx.block_timestamp).toLocaleString() : '-',
+            rawValue: rawVal,
+            timestamp: tx.block_timestamp || 0
+          };
+        });
+        txData = txData.concat(newTx);
+        renderTxTable('tron');
+        document.getElementById('txLoadMore').style.display = data.data.length >= 25 ? '' : 'none';
+      } else {
+        if (txData.length === 0) {
+          document.getElementById('txLoading').style.display = 'none';
+          document.getElementById('txEmpty').style.display = 'block';
+        }
+      }
+      txLoading = false;
+      buildFlowGraph('tron');
+    })
+    .catch(function(err) {
+      console.error('TronGrid error:', err);
+      showTxError(t('cd.error.api'));
+      txLoading = false;
+      buildFlowGraph('tron');
+    });
+}
+
+// Simple hex to Tron base58 (best-effort, may not work for all addresses)
+function hexToTronAddr(hex) {
+  // For display purposes, return as-is if we can't convert
+  // TronGrid often returns base58 addresses in newer API versions
+  return hex;
+}
+
+function showTxError(msg) {
+  document.getElementById('txLoading').style.display = 'none';
+  if (txData.length === 0) {
+    document.getElementById('txEmpty').style.display = 'block';
+    document.getElementById('txEmpty').textContent = msg;
+  }
+}
+
+function renderTxTable(chain) {
+  document.getElementById('txLoading').style.display = 'none';
+  document.getElementById('txContent').style.display = 'block';
+
+  var tbody = document.getElementById('txBody');
+  var html = '';
+  txData.forEach(function(tx) {
+    var fromFlagged = blacklistedAddrs.has((tx.from || '').toLowerCase());
+    var toFlagged = blacklistedAddrs.has((tx.to || '').toLowerCase());
+
+    html += '<tr>';
+    html += '<td><a href="' + txExplorerLink(chain, tx.hash) + '" target="_blank" rel="noopener" style="color:var(--blue)">' + shortAddr(tx.hash) + '</a></td>';
+    html += '<td><span class="tx-addr' + (fromFlagged ? ' flagged' : '') + '">' + shortAddr(tx.from) + '</span><button class="copy-btn" onclick="copyToClip(\'' + escHtml(tx.from) + '\')">&#x2398;</button></td>';
+    html += '<td><span class="tx-addr' + (toFlagged ? ' flagged' : '') + '">' + shortAddr(tx.to) + '</span><button class="copy-btn" onclick="copyToClip(\'' + escHtml(tx.to) + '\')">&#x2398;</button></td>';
+    html += '<td>' + escHtml(tx.value) + '</td>';
+    html += '<td style="white-space:nowrap;font:400 12px var(--f);color:var(--ink3)">' + escHtml(tx.time) + '</td>';
+    html += '</tr>';
+  });
+  tbody.innerHTML = html;
+}
+
+function loadMoreTx() {
+  if (txLoading) return;
+  txPage++;
+  var chain = detectChain(currentAddr);
+  fetchTransactions(chain, currentAddr);
+}
+
+// ===== FUND FLOW GRAPH (D3) =====
+function buildFlowGraph(chain) {
+  document.getElementById('flowLoading').style.display = 'none';
+
+  if (txData.length === 0) {
+    document.getElementById('flowEmpty').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('flowContainer').style.display = 'block';
+
+  var svg = d3.select('#flowSvg');
+  svg.selectAll('*').remove();
+
+  var width = document.getElementById('flowSvg').clientWidth || 800;
+  var height = document.getElementById('flowSvg').clientHeight || 500;
+
+  // Build nodes and links from tx data
+  var nodeMap = {};
+  var links = [];
+  var searchedLower = currentAddr.toLowerCase();
+
+  nodeMap[searchedLower] = { id: searchedLower, label: shortAddr(currentAddr), type: 'searched' };
+
+  txData.forEach(function(tx) {
+    var fromL = (tx.from || '').toLowerCase();
+    var toL = (tx.to || '').toLowerCase();
+    if (!fromL || !toL) return;
+
+    if (!nodeMap[fromL]) {
+      nodeMap[fromL] = {
+        id: fromL,
+        label: shortAddr(tx.from),
+        type: blacklistedAddrs.has(fromL) ? 'flagged' : 'clean'
+      };
+    }
+    if (!nodeMap[toL]) {
+      nodeMap[toL] = {
+        id: toL,
+        label: shortAddr(tx.to),
+        type: blacklistedAddrs.has(toL) ? 'flagged' : 'clean'
+      };
+    }
+
+    links.push({
+      source: fromL,
+      target: toL,
+      value: tx.rawValue || 0,
+      label: tx.value || ''
+    });
+  });
+
+  // Mark searched node
+  if (nodeMap[searchedLower]) nodeMap[searchedLower].type = 'searched';
+
+  var nodes = Object.values(nodeMap);
+
+  // Limit nodes for performance
+  if (nodes.length > 60) {
+    // Keep searched, flagged, and top connected
+    var keep = new Set();
+    keep.add(searchedLower);
+    nodes.forEach(function(n) { if (n.type === 'flagged') keep.add(n.id); });
+    // Add nodes with most connections
+    var connCount = {};
+    links.forEach(function(l) {
+      var s = typeof l.source === 'string' ? l.source : l.source.id;
+      var t = typeof l.target === 'string' ? l.target : l.target.id;
+      connCount[s] = (connCount[s] || 0) + 1;
+      connCount[t] = (connCount[t] || 0) + 1;
+    });
+    var sorted = Object.entries(connCount).sort(function(a, b) { return b[1] - a[1]; });
+    sorted.forEach(function(e) { if (keep.size < 50) keep.add(e[0]); });
+    nodes = nodes.filter(function(n) { return keep.has(n.id); });
+    links = links.filter(function(l) {
+      var s = typeof l.source === 'string' ? l.source : l.source.id;
+      var t = typeof l.target === 'string' ? l.target : l.target.id;
+      return keep.has(s) && keep.has(t);
+    });
+  }
+
+  // D3 force simulation
+  var simulation = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(function(d) { return d.id; }).distance(100))
+    .force('charge', d3.forceManyBody().strength(-300))
+    .force('center', d3.forceCenter(width / 2, height / 2))
+    .force('collision', d3.forceCollide().radius(30));
+
+  // Arrow marker
+  svg.append('defs').append('marker')
+    .attr('id', 'arrowhead')
+    .attr('viewBox', '0 -5 10 10')
+    .attr('refX', 20)
+    .attr('refY', 0)
+    .attr('markerWidth', 6)
+    .attr('markerHeight', 6)
+    .attr('orient', 'auto')
+    .append('path')
+    .attr('d', 'M0,-5L10,0L0,5')
+    .attr('fill', '#ccc');
+
+  var g = svg.append('g');
+
+  // Zoom
+  var zoom = d3.zoom()
+    .scaleExtent([0.2, 4])
+    .on('zoom', function(event) {
+      g.attr('transform', event.transform);
+    });
+  svg.call(zoom);
+
+  // Links
+  var link = g.append('g')
+    .selectAll('line')
+    .data(links)
+    .join('line')
+    .attr('stroke', '#ddd')
+    .attr('stroke-width', 1.5)
+    .attr('marker-end', 'url(#arrowhead)');
+
+  // Nodes
+  var node = g.append('g')
+    .selectAll('g')
+    .data(nodes)
+    .join('g')
+    .call(d3.drag()
+      .on('start', function(event, d) {
+        if (!event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x; d.fy = d.y;
+      })
+      .on('drag', function(event, d) {
+        d.fx = event.x; d.fy = event.y;
+      })
+      .on('end', function(event, d) {
+        if (!event.active) simulation.alphaTarget(0);
+        d.fx = null; d.fy = null;
+      })
+    );
+
+  node.append('circle')
+    .attr('r', function(d) { return d.type === 'searched' ? 14 : 9; })
+    .attr('fill', function(d) {
+      if (d.type === 'searched') return 'var(--accent)';
+      if (d.type === 'flagged') return 'var(--danger)';
+      return 'var(--ink3)';
+    })
+    .attr('stroke', '#fff')
+    .attr('stroke-width', 2)
+    .style('cursor', 'pointer');
+
+  node.append('text')
+    .text(function(d) { return d.label; })
+    .attr('x', 0)
+    .attr('y', function(d) { return d.type === 'searched' ? -20 : -14; })
+    .attr('text-anchor', 'middle')
+    .attr('font-size', '10px')
+    .attr('font-family', 'var(--m)')
+    .attr('fill', 'var(--ink2)');
+
+  simulation.on('tick', function() {
+    link
+      .attr('x1', function(d) { return d.source.x; })
+      .attr('y1', function(d) { return d.source.y; })
+      .attr('x2', function(d) { return d.target.x; })
+      .attr('y2', function(d) { return d.target.y; });
+
+    node.attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; });
+  });
+}
+
+// ===== ABI DECODER =====
+var ABI_SIGS = {
+  'a9059cbb': { name: 'transfer', params: [{ name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }] },
+  '095ea7b3': { name: 'approve', params: [{ name: 'spender', type: 'address' }, { name: 'amount', type: 'uint256' }] },
+  '23b872dd': { name: 'transferFrom', params: [{ name: 'from', type: 'address' }, { name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }] },
+  '40c10f19': { name: 'mint', params: [{ name: 'to', type: 'address' }, { name: 'amount', type: 'uint256' }] },
+  '42966c68': { name: 'burn', params: [{ name: 'amount', type: 'uint256' }] },
+  '79cc6790': { name: 'burnFrom', params: [{ name: 'account', type: 'address' }, { name: 'amount', type: 'uint256' }] },
+  '8456cb59': { name: 'pause', params: [] },
+  '3f4ba83a': { name: 'unpause', params: [] },
+  'f2fde38b': { name: 'transferOwnership', params: [{ name: 'newOwner', type: 'address' }] },
+  '715018a6': { name: 'renounceOwnership', params: [] },
+  'd0e30db0': { name: 'deposit', params: [] },
+  '2e1a7d4d': { name: 'withdraw', params: [{ name: 'amount', type: 'uint256' }] },
+  'e8e33700': { name: 'addLiquidity', params: [{ name: 'tokenA', type: 'address' }, { name: 'tokenB', type: 'address' }, { name: 'amountADesired', type: 'uint256' }, { name: 'amountBDesired', type: 'uint256' }] },
+  '38ed1739': { name: 'swapExactTokensForTokens', params: [{ name: 'amountIn', type: 'uint256' }, { name: 'amountOutMin', type: 'uint256' }, { name: 'path', type: 'address[]' }] },
+  '0e316ab7': { name: 'addBlackList', params: [{ name: 'address', type: 'address' }] },
+  'e4997dc5': { name: 'removeBlackList', params: [{ name: 'address', type: 'address' }] },
+  'f3bdc228': { name: 'destroyBlackFunds', params: [{ name: 'address', type: 'address' }] }
+};
+
+function decodeABI() {
+  var input = document.getElementById('abiInput').value.trim();
+  var resultEl = document.getElementById('abiResult');
+
+  if (!input || input.length < 10) {
+    resultEl.style.display = 'block';
+    resultEl.innerHTML = '<div style="color:var(--danger)">Invalid input. Please provide at least a 4-byte function selector (8 hex chars + 0x prefix).</div>';
+    return;
+  }
+
+  // Remove 0x prefix
+  var hex = input.startsWith('0x') ? input.slice(2) : input;
+  var selector = hex.slice(0, 8).toLowerCase();
+  var sig = ABI_SIGS[selector];
+
+  resultEl.style.display = 'block';
+
+  if (!sig) {
+    resultEl.innerHTML =
+      '<div class="fn-name">Unknown Function</div>' +
+      '<div class="param-row"><span class="param-label">Selector:</span><span class="param-val">0x' + escHtml(selector) + '</span></div>' +
+      '<div class="param-row"><span class="param-label">Raw Data:</span><span class="param-val" style="word-break:break-all">' + escHtml(input) + '</span></div>' +
+      '<div style="margin-top:8px;font:400 12px var(--f);color:var(--ink3)">Function selector not recognized. It may be a custom or less common function.</div>';
+    return;
+  }
+
+  var html = '<div class="fn-name">' + escHtml(sig.name) + '()</div>';
+  html += '<div class="param-row"><span class="param-label">Selector:</span><span class="param-val">0x' + escHtml(selector) + '</span></div>';
+
+  var dataHex = hex.slice(8);
+  sig.params.forEach(function(param, i) {
+    var chunk = dataHex.slice(i * 64, (i + 1) * 64);
+    var val = chunk;
+
+    if (param.type === 'address' && chunk.length >= 40) {
+      val = '0x' + chunk.slice(24);
+    } else if (param.type === 'uint256' && chunk) {
+      try {
+        val = BigInt('0x' + chunk).toString(10);
+        // Try to show human readable for common token amounts
+        var bn = BigInt('0x' + chunk);
+        var dec6 = Number(bn) / 1e6;
+        var dec18 = Number(bn) / 1e18;
+        if (dec18 > 0.0001 && dec18 < 1e15) {
+          val += ' (' + dec18.toLocaleString('en-US', { maximumFractionDigits: 6 }) + ' if 18 decimals, ' + dec6.toLocaleString('en-US', { maximumFractionDigits: 2 }) + ' if 6 decimals)';
+        }
+      } catch (e) {
+        val = chunk;
+      }
+    }
+
+    html += '<div class="param-row"><span class="param-label">' + escHtml(param.name) + ' (' + escHtml(param.type) + '):</span><span class="param-val">' + escHtml(val) + '</span></div>';
+  });
+
+  resultEl.innerHTML = html;
+}
+
+// Enter key on input
+document.getElementById('addrInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') startDecode();
+});
+</script>
+</body>
+</html>
