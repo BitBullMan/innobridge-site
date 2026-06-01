@@ -112,10 +112,29 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
       <li><a href="index.html#law-enforcement" class="active" data-i18n="nav.evidence">Law Enforcement</a></li>
       <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
+    <a href="login.html" class="lang-toggle" id="auth-btn" style="margin-right:4px">Sign In</a>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
   </div>
 </nav>
+
+<!-- Auth Gate Overlay -->
+<div id="auth-gate" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="text-align:center;max-width:480px;padding:40px">
+    <div style="width:64px;height:64px;border-radius:16px;background:rgba(79,110,247,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px">&#x1F512;</div>
+    <h2 id="gate-title" style="font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#1a1d23;margin-bottom:8px">Restricted Access</h2>
+    <p id="gate-desc" style="font-family:'Nunito',sans-serif;font-size:14px;color:#5a5f6b;line-height:1.7;margin-bottom:24px">
+      The Evidence Collection Hub is available to verified law enforcement officers, prosecutors, and compliance professionals. Please sign in and complete verification to access this resource.
+    </p>
+    <div id="gate-actions">
+      <a href="login.html?redirect=evidence-collection.html&msg=le-required" id="gate-login-btn" style="display:inline-block;padding:12px 32px;background:#00c896;color:#fff;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;transition:background .2s;margin-right:8px">Sign In / Register</a>
+      <a href="index.html" id="gate-home-btn" style="display:inline-block;padding:12px 24px;background:rgba(0,0,0,0.04);color:#5a5f6b;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600">Back to Home</a>
+    </div>
+    <div id="gate-pending" style="display:none;margin-top:16px;padding:14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:10px">
+      <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#d97706;font-weight:600" id="gate-pending-text">Your application is under review. Please check back later.</p>
+    </div>
+  </div>
+</div>
 
 <div class="hero">
   <h1><span data-i18n="hero.title1">Exchange </span><span class="gradient" data-i18n="hero.title2">Evidence Collection</span><span data-i18n="hero.title3"> Hub</span></h1>
@@ -151,6 +170,94 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
     <li><a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a></li>
   </ul>
 </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ===== AUTH GATE =====
+(async function checkAccess() {
+  const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
+  const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+  const gate = document.getElementById('auth-gate');
+  const authBtn = document.getElementById('auth-btn');
+  const lang = localStorage.getItem('ib_lang') || 'en';
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+
+    if (!session) {
+      // Not logged in — show gate
+      gate.style.display = 'flex';
+      if (lang === 'cn' || lang === 'zh') {
+        document.getElementById('gate-title').textContent = '受限访问';
+        document.getElementById('gate-desc').textContent = 'Evidence Collection Hub 仅对经认证的执法人员、检察官和合规专业人士开放。请登录并完成认证后访问。';
+        document.getElementById('gate-login-btn').textContent = '登录 / 注册';
+        document.getElementById('gate-home-btn').textContent = '返回首页';
+      }
+      return;
+    }
+
+    // Update nav auth button
+    const name = session.user.user_metadata?.full_name || session.user.email.split('@')[0];
+    authBtn.textContent = name.length > 10 ? name.slice(0, 10) + '...' : name;
+    authBtn.href = 'login.html';
+
+    // Check profile role
+    const { data: profile } = await sb.from('aml_user_profiles').select('role, le_status').eq('id', session.user.id).single();
+
+    if (profile && (profile.role === 'law_enforcement' || profile.role === 'admin')) {
+      // Authorized — hide gate, show content
+      gate.style.display = 'none';
+      return;
+    }
+
+    // Not authorized — show gate with appropriate message
+    gate.style.display = 'flex';
+
+    if (profile && profile.le_status === 'pending') {
+      // Application pending
+      document.getElementById('gate-actions').style.display = 'none';
+      document.getElementById('gate-pending').style.display = 'block';
+      if (lang === 'cn' || lang === 'zh') {
+        document.getElementById('gate-title').textContent = '审核中';
+        document.getElementById('gate-desc').textContent = '您的执法认证申请正在审核中。';
+        document.getElementById('gate-pending-text').textContent = '审核通常在24小时内完成，请稍后再试。';
+      } else {
+        document.getElementById('gate-title').textContent = 'Under Review';
+        document.getElementById('gate-desc').textContent = 'Your law enforcement verification application is being reviewed.';
+      }
+    } else if (profile && profile.le_status === 'rejected') {
+      if (lang === 'cn' || lang === 'zh') {
+        document.getElementById('gate-title').textContent = '认证未通过';
+        document.getElementById('gate-desc').textContent = '您的执法认证申请未通过审核。如有疑问请联系我们。';
+        document.getElementById('gate-login-btn').textContent = '重新申请';
+      } else {
+        document.getElementById('gate-title').textContent = 'Verification Not Approved';
+        document.getElementById('gate-desc').textContent = 'Your law enforcement verification was not approved. Please contact us if you believe this is an error.';
+        document.getElementById('gate-login-btn').textContent = 'Re-apply';
+      }
+      document.getElementById('gate-login-btn').href = 'login.html';
+    } else {
+      // Not applied yet
+      if (lang === 'cn' || lang === 'zh') {
+        document.getElementById('gate-title').textContent = '需要执法认证';
+        document.getElementById('gate-desc').textContent = '您已登录，但尚未完成执法人员认证。请前往账户页面提交认证申请。';
+        document.getElementById('gate-login-btn').textContent = '申请认证';
+        document.getElementById('gate-home-btn').textContent = '返回首页';
+      } else {
+        document.getElementById('gate-title').textContent = 'Verification Required';
+        document.getElementById('gate-desc').textContent = 'You are signed in but haven\'t completed law enforcement verification. Please apply from your account page.';
+        document.getElementById('gate-login-btn').textContent = 'Apply Now';
+      }
+      document.getElementById('gate-login-btn').href = 'login.html';
+    }
+  } catch (err) {
+    console.error('Auth check failed:', err);
+    gate.style.display = 'flex';
+  }
+})();
+</script>
 
 <script>
 // ===== EXCHANGE DATA =====

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign In — Innobridge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --canvas:#ffffff;--s1:#f7f8fa;--s2:#eef0f4;--s3:#e2e5eb;
+  --accent:#00c896;--accent-h:#00b386;--accent-bg:rgba(0,200,150,0.08);
+  --ink:#1a1d23;--ink2:#5a5f6b;--ink3:#8b909c;
+  --hl:rgba(0,0,0,0.06);--hl2:rgba(0,0,0,0.12);
+  --danger:#ef4444;--danger-bg:rgba(239,68,68,0.06);
+  --f:'Inter',system-ui,sans-serif;--m:'JetBrains Mono',monospace;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);
+}
+html{scroll-behavior:smooth}
+body{background:var(--s1);color:var(--ink);font:400 15px/1.6 var(--f);min-height:100vh;display:flex;flex-direction:column}
+a{text-decoration:none;color:inherit}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--hl)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font:600 12px var(--f);color:#fff}
+.logo-text{font:600 15px var(--f);color:var(--ink);letter-spacing:-.3px}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font:500 13px var(--f);color:var(--ink3);transition:color .2s}
+.nav-links a:hover{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.lang-toggle{font:500 11px var(--f);color:var(--ink3);background:var(--s1);border:1px solid var(--hl);padding:5px 12px;border-radius:99px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{color:var(--ink);border-color:var(--hl2)}
+.mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
+
+/* MAIN */
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 20px 40px}
+.auth-container{width:100%;max-width:440px}
+.auth-card{background:var(--canvas);border-radius:16px;border:1px solid var(--hl);box-shadow:var(--shadow-md);overflow:hidden}
+
+/* Tabs */
+.tab-bar{display:flex;border-bottom:1px solid var(--hl)}
+.tab-btn{flex:1;padding:14px;font:600 13px var(--f);color:var(--ink3);background:none;border:none;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent}
+.tab-btn:hover{color:var(--ink);background:var(--s1)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.tab-content{display:none;padding:28px 32px 32px}
+.tab-content.active{display:block}
+
+/* Form */
+.form-title{font:700 22px var(--f);margin-bottom:4px;color:var(--ink)}
+.form-desc{font:400 13px var(--f);color:var(--ink3);margin-bottom:24px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font:500 12px var(--f);color:var(--ink2);margin-bottom:6px;letter-spacing:.3px;text-transform:uppercase}
+.form-input{width:100%;padding:10px 14px;border:1.5px solid var(--s3);border-radius:8px;font:400 14px var(--f);color:var(--ink);background:var(--canvas);outline:none;transition:border-color .2s}
+.form-input:focus{border-color:var(--accent)}
+.form-input::placeholder{color:var(--ink3)}
+select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%238b909c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-note{font:400 12px var(--f);color:var(--ink3);margin-top:4px}
+
+.btn{width:100%;padding:12px;font:600 14px var(--f);color:#fff;background:var(--accent);border:none;border-radius:8px;cursor:pointer;transition:all .2s;margin-top:8px}
+.btn:hover{background:var(--accent-h)}
+.btn:disabled{opacity:0.5;cursor:not-allowed}
+.btn-outline{background:none;color:var(--accent);border:1.5px solid var(--accent)}
+.btn-outline:hover{background:var(--accent-bg)}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--ink3);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--s3)}
+
+.switch-link{text-align:center;margin-top:16px;font:400 13px var(--f);color:var(--ink3)}
+.switch-link a{color:var(--accent);font-weight:600;cursor:pointer}
+.switch-link a:hover{text-decoration:underline}
+
+/* Messages */
+.msg{padding:10px 14px;border-radius:8px;font:500 13px var(--f);margin-bottom:16px;display:none}
+.msg.error{display:block;background:var(--danger-bg);color:var(--danger);border:1px solid rgba(239,68,68,0.15)}
+.msg.success{display:block;background:rgba(0,200,150,0.06);color:var(--accent-h);border:1px solid rgba(0,200,150,0.15)}
+.msg.info{display:block;background:rgba(79,110,247,0.06);color:#4f6ef7;border:1px solid rgba(79,110,247,0.15)}
+
+/* LE Badge */
+.le-banner{padding:16px;background:rgba(79,110,247,0.04);border:1px solid rgba(79,110,247,0.12);border-radius:10px;margin-bottom:20px}
+.le-banner h4{font:600 13px var(--f);color:#4f6ef7;margin-bottom:4px}
+.le-banner p{font:400 12px var(--f);color:var(--ink3);line-height:1.5}
+
+/* Status badges */
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:6px;font:600 11px var(--f);text-transform:uppercase;letter-spacing:.3px}
+.status-badge.pending{background:rgba(245,158,11,0.08);color:#d97706}
+.status-badge.approved{background:rgba(0,200,150,0.08);color:#00b386}
+.status-badge.rejected{background:rgba(239,68,68,0.08);color:#ef4444}
+
+/* Logged-in view */
+.profile-card{padding:28px 32px 32px}
+.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.profile-avatar{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font:700 18px var(--f);color:#fff}
+.profile-name{font:600 16px var(--f);color:var(--ink)}
+.profile-email{font:400 12px var(--f);color:var(--ink3)}
+.profile-role{margin-top:2px}
+.profile-section{margin-bottom:20px}
+.profile-section h3{font:600 13px var(--f);color:var(--ink2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px}
+
+footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);background:var(--canvas)}
+.f-copy{font:500 12px var(--f);color:var(--ink3)}
+
+@media(max-width:768px){
+  nav{padding:0 16px}
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .main{padding:70px 16px 30px}
+  .tab-content{padding:24px 20px 28px}
+  .form-row{grid-template-columns:1fr}
+  footer{padding:16px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
+      <li><a href="index.html#news" data-i18n="nav.news">News</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="contract-decoder.html" data-i18n="nav.decoder">Forensic Decoder</a></li>
+      <li><a href="evidence-collection.html" data-i18n="nav.evidence">Law Enforcement</a></li>
+      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+    </ul>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="auth-container">
+    <!-- Not logged in: show login/register -->
+    <div id="auth-forms" class="auth-card">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="showTab('login')" id="tab-login" data-i18n="tab.login">Sign In</button>
+        <button class="tab-btn" onclick="showTab('register')" id="tab-register" data-i18n="tab.register">Create Account</button>
+        <button class="tab-btn" onclick="showTab('le-apply')" id="tab-le" data-i18n="tab.le" style="display:none">LE Verification</button>
+      </div>
+
+      <!-- LOGIN TAB -->
+      <div class="tab-content active" id="panel-login">
+        <h2 class="form-title" data-i18n="login.title">Welcome Back</h2>
+        <p class="form-desc" data-i18n="login.desc">Sign in to access restricted resources</p>
+        <div id="login-msg" class="msg"></div>
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.email">Email</label>
+            <input class="form-input" type="email" id="login-email" required placeholder="you@agency.gov">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.password">Password</label>
+            <input class="form-input" type="password" id="login-password" required placeholder="••••••••" minlength="6">
+          </div>
+          <button class="btn" type="submit" id="login-btn" data-i18n="login.btn">Sign In</button>
+        </form>
+        <p class="switch-link"><span data-i18n="login.switch">No account yet?</span> <a onclick="showTab('register')" data-i18n="login.switchLink">Create one</a></p>
+      </div>
+
+      <!-- REGISTER TAB -->
+      <div class="tab-content" id="panel-register">
+        <h2 class="form-title" data-i18n="reg.title">Create Account</h2>
+        <p class="form-desc" data-i18n="reg.desc">Register to apply for law enforcement access</p>
+        <div id="register-msg" class="msg"></div>
+        <form onsubmit="handleRegister(event)">
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.fullName">Full Name</label>
+            <input class="form-input" type="text" id="reg-name" required placeholder="John Smith">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.email">Email</label>
+            <input class="form-input" type="email" id="reg-email" required placeholder="you@agency.gov">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.password">Password</label>
+            <input class="form-input" type="password" id="reg-password" required placeholder="Minimum 6 characters" minlength="6">
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="form.confirmPw">Confirm Password</label>
+            <input class="form-input" type="password" id="reg-password2" required placeholder="••••••••" minlength="6">
+          </div>
+          <button class="btn" type="submit" id="reg-btn" data-i18n="reg.btn">Create Account</button>
+        </form>
+        <p class="switch-link"><span data-i18n="reg.switch">Already have an account?</span> <a onclick="showTab('login')" data-i18n="reg.switchLink">Sign in</a></p>
+      </div>
+
+      <!-- LE APPLICATION TAB (only visible when logged in) -->
+      <div class="tab-content" id="panel-le-apply">
+        <h2 class="form-title" data-i18n="le.title">Law Enforcement Verification</h2>
+        <p class="form-desc" data-i18n="le.desc">Verify your identity to access the Evidence Collection Hub</p>
+        <div class="le-banner">
+          <h4 data-i18n="le.bannerTitle">Why verification?</h4>
+          <p data-i18n="le.bannerDesc">The Evidence Collection Hub contains sensitive exchange contact procedures for law enforcement. Access is restricted to verified law enforcement officers, prosecutors, and compliance professionals.</p>
+        </div>
+        <div id="le-msg" class="msg"></div>
+
+        <!-- Show status if already applied -->
+        <div id="le-status-view" style="display:none"></div>
+
+        <!-- Application form -->
+        <form onsubmit="handleLEApply(event)" id="le-form">
+          <div class="form-group">
+            <label class="form-label" data-i18n="le.org">Organization / Agency</label>
+            <input class="form-input" type="text" id="le-org" required placeholder="e.g. FBI, Interpol, HKPF...">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-i18n="le.title2">Title / Position</label>
+              <input class="form-input" type="text" id="le-title" required placeholder="Detective, Analyst...">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="le.badge">Badge / ID Number</label>
+              <input class="form-input" type="text" id="le-badge" placeholder="Optional">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" data-i18n="le.country">Country / Region</label>
+              <input class="form-input" type="text" id="le-country" required placeholder="e.g. United States">
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="le.phone">Work Phone</label>
+              <input class="form-input" type="tel" id="le-phone" placeholder="Optional">
+            </div>
+          </div>
+          <button class="btn" type="submit" id="le-btn" data-i18n="le.btn">Submit for Review</button>
+          <p class="form-note" style="margin-top:12px;text-align:center" data-i18n="le.note">Applications are typically reviewed within 24 hours.</p>
+        </form>
+      </div>
+    </div>
+
+    <!-- Logged-in view -->
+    <div id="profile-view" class="auth-card" style="display:none">
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="profile-avatar" id="profile-initials">?</div>
+          <div>
+            <div class="profile-name" id="profile-name">—</div>
+            <div class="profile-email" id="profile-email">—</div>
+            <div class="profile-role" id="profile-role-badge"></div>
+          </div>
+        </div>
+
+        <div class="profile-section" id="le-section">
+          <h3 data-i18n="profile.leAccess">Law Enforcement Access</h3>
+          <div id="le-access-status"></div>
+        </div>
+
+        <div class="profile-section">
+          <h3 data-i18n="profile.prefs">Preferences</h3>
+          <label style="display:flex;align-items:center;gap:8px;font:400 13px var(--f);color:var(--ink2);cursor:pointer;margin-bottom:8px">
+            <input type="checkbox" id="pref-briefing" onchange="updatePref('subscribe_daily_briefing', this.checked)">
+            <span data-i18n="profile.briefing">Subscribe to Daily Intelligence Briefing</span>
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font:400 13px var(--f);color:var(--ink2);cursor:pointer">
+            <input type="checkbox" id="pref-alerts" onchange="updatePref('subscribe_alerts', this.checked)">
+            <span data-i18n="profile.alerts">Subscribe to Whale Alert Notifications</span>
+          </label>
+        </div>
+
+        <button class="btn btn-outline" onclick="handleLogout()" data-i18n="profile.logout">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+// ── Supabase client ──
+const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON);
+
+let currentUser = null;
+let currentProfile = null;
+
+// ── Tab switching ──
+function showTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + (name === 'le-apply' ? 'le' : name)).classList.add('active');
+  document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── Login ──
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('login-btn');
+  const msgEl = document.getElementById('login-msg');
+  btn.disabled = true;
+  btn.textContent = lang === 'zh' ? '登录中...' : 'Signing in...';
+  msgEl.className = 'msg';
+
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+
+  const { data, error } = await sb.auth.signInWithPassword({ email, password });
+
+  if (error) {
+    msgEl.className = 'msg error';
+    msgEl.textContent = error.message;
+    btn.disabled = false;
+    btn.textContent = lang === 'zh' ? '登录' : 'Sign In';
+    return;
+  }
+
+  // Update login count
+  await sb.from('aml_user_profiles').update({
+    last_login_at: new Date().toISOString(),
+    login_count: (currentProfile?.login_count || 0) + 1
+  }).eq('id', data.user.id);
+
+  // Check redirect
+  const params = new URLSearchParams(window.location.search);
+  const redirect = params.get('redirect');
+  if (redirect) {
+    window.location.href = redirect;
+  } else {
+    window.location.reload();
+  }
+}
+
+// ── Register ──
+async function handleRegister(e) {
+  e.preventDefault();
+  const btn = document.getElementById('reg-btn');
+  const msgEl = document.getElementById('register-msg');
+  btn.disabled = true;
+  btn.textContent = lang === 'zh' ? '注册中...' : 'Creating account...';
+  msgEl.className = 'msg';
+
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const pw = document.getElementById('reg-password').value;
+  const pw2 = document.getElementById('reg-password2').value;
+
+  if (pw !== pw2) {
+    msgEl.className = 'msg error';
+    msgEl.textContent = lang === 'zh' ? '两次密码不一致' : 'Passwords do not match';
+    btn.disabled = false;
+    btn.textContent = lang === 'zh' ? '创建账户' : 'Create Account';
+    return;
+  }
+
+  const { data, error } = await sb.auth.signUp({
+    email,
+    password: pw,
+    options: { data: { full_name: name } }
+  });
+
+  if (error) {
+    msgEl.className = 'msg error';
+    msgEl.textContent = error.message;
+    btn.disabled = false;
+    btn.textContent = lang === 'zh' ? '创建账户' : 'Create Account';
+    return;
+  }
+
+  // Check if email confirmation is required
+  if (data.user && !data.session) {
+    msgEl.className = 'msg success';
+    msgEl.textContent = lang === 'zh'
+      ? '注册成功！请查收邮件确认链接。'
+      : 'Account created! Please check your email to confirm.';
+    btn.disabled = false;
+    btn.textContent = lang === 'zh' ? '创建账户' : 'Create Account';
+  } else {
+    // Auto-confirmed, reload
+    window.location.reload();
+  }
+}
+
+// ── LE Application ──
+async function handleLEApply(e) {
+  e.preventDefault();
+  const btn = document.getElementById('le-btn');
+  const msgEl = document.getElementById('le-msg');
+  btn.disabled = true;
+  btn.textContent = lang === 'zh' ? '提交中...' : 'Submitting...';
+  msgEl.className = 'msg';
+
+  const org = document.getElementById('le-org').value.trim();
+  const title = document.getElementById('le-title').value.trim();
+  const badge = document.getElementById('le-badge').value.trim();
+  const country = document.getElementById('le-country').value.trim();
+  const phone = document.getElementById('le-phone').value.trim();
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    organization: org,
+    title: title,
+    badge_number: badge || null,
+    country: country,
+    phone: phone || null,
+    le_status: 'pending',
+    le_applied_at: new Date().toISOString()
+  }).eq('id', currentUser.id);
+
+  if (error) {
+    msgEl.className = 'msg error';
+    msgEl.textContent = error.message;
+    btn.disabled = false;
+    btn.textContent = lang === 'zh' ? '提交审核' : 'Submit for Review';
+    return;
+  }
+
+  msgEl.className = 'msg success';
+  msgEl.textContent = lang === 'zh'
+    ? '申请已提交，我们将在24小时内审核。'
+    : 'Application submitted. We will review within 24 hours.';
+  document.getElementById('le-form').style.display = 'none';
+
+  // Refresh profile
+  await loadProfile();
+  renderProfileView();
+}
+
+// ── Preferences ──
+async function updatePref(field, value) {
+  await sb.from('aml_user_profiles').update({ [field]: value }).eq('id', currentUser.id);
+}
+
+// ── Logout ──
+async function handleLogout() {
+  await sb.auth.signOut();
+  window.location.reload();
+}
+
+// ── Load profile ──
+async function loadProfile() {
+  if (!currentUser) return null;
+  const { data } = await sb.from('aml_user_profiles').select('*').eq('id', currentUser.id).single();
+  currentProfile = data;
+  return data;
+}
+
+// ── Render logged-in view ──
+function renderProfileView() {
+  if (!currentProfile) return;
+
+  document.getElementById('auth-forms').style.display = 'none';
+  document.getElementById('profile-view').style.display = 'block';
+
+  // Avatar initials
+  const name = currentProfile.full_name || currentProfile.email;
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  document.getElementById('profile-initials').textContent = initials || '?';
+  document.getElementById('profile-name').textContent = currentProfile.full_name || '—';
+  document.getElementById('profile-email').textContent = currentProfile.email;
+
+  // Role badge
+  const roleMap = {
+    'public': { label: 'Public', labelZh: '普通用户', cls: '' },
+    'law_enforcement': { label: 'Law Enforcement', labelZh: '执法人员', cls: 'approved' },
+    'subscriber': { label: 'Subscriber', labelZh: '订阅用户', cls: 'approved' },
+    'admin': { label: 'Admin', labelZh: '管理员', cls: 'approved' }
+  };
+  const r = roleMap[currentProfile.role] || roleMap['public'];
+  document.getElementById('profile-role-badge').innerHTML = `<span class="status-badge ${r.cls}">${lang === 'zh' ? r.labelZh : r.label}</span>`;
+
+  // LE status
+  const leSection = document.getElementById('le-section');
+  const leStatus = document.getElementById('le-access-status');
+
+  if (currentProfile.role === 'law_enforcement' || currentProfile.role === 'admin') {
+    leStatus.innerHTML = `
+      <div style="padding:14px;background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.12);border-radius:8px">
+        <span class="status-badge approved">${lang === 'zh' ? '✓ 已认证' : '✓ Verified'}</span>
+        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${lang === 'zh' ? '您可以访问 Evidence Collection Hub。' : 'You have full access to the Evidence Collection Hub.'}</p>
+        <a href="evidence-collection.html" style="display:inline-block;margin-top:10px;font:600 13px var(--f);color:var(--accent)">${lang === 'zh' ? '前往 Evidence Hub →' : 'Go to Evidence Hub →'}</a>
+      </div>`;
+  } else if (currentProfile.le_status === 'pending') {
+    leStatus.innerHTML = `
+      <div style="padding:14px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.12);border-radius:8px">
+        <span class="status-badge pending">${lang === 'zh' ? '审核中' : 'Under Review'}</span>
+        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${lang === 'zh' ? '您的申请正在审核中，请耐心等待。' : 'Your application is being reviewed. Please allow up to 24 hours.'}</p>
+        <p style="font:400 12px var(--f);color:var(--ink3);margin-top:4px">${lang === 'zh' ? '机构：' : 'Organization: '}${currentProfile.organization || '—'}</p>
+      </div>`;
+  } else if (currentProfile.le_status === 'rejected') {
+    leStatus.innerHTML = `
+      <div style="padding:14px;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.12);border-radius:8px">
+        <span class="status-badge rejected">${lang === 'zh' ? '未通过' : 'Rejected'}</span>
+        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${currentProfile.le_reject_reason || (lang === 'zh' ? '您的申请未通过审核。' : 'Your application was not approved.')}</p>
+        <button class="btn btn-outline" style="margin-top:10px;width:auto;padding:8px 16px" onclick="showLEReapply()">${lang === 'zh' ? '重新申请' : 'Re-apply'}</button>
+      </div>`;
+  } else {
+    // Not applied yet
+    leStatus.innerHTML = `
+      <div style="padding:14px;background:rgba(79,110,247,0.04);border:1px solid rgba(79,110,247,0.12);border-radius:8px">
+        <p style="font:400 13px var(--f);color:var(--ink2)">${lang === 'zh' ? '您尚未申请执法人员认证。认证后可访问 Evidence Collection Hub。' : 'You haven\'t applied for LE verification yet. Once verified, you\'ll have access to the Evidence Collection Hub.'}</p>
+        <button class="btn" style="margin-top:10px;width:auto;padding:8px 16px" onclick="showLEApplyFromProfile()">${lang === 'zh' ? '申请认证' : 'Apply Now'}</button>
+      </div>`;
+  }
+
+  // Preferences
+  document.getElementById('pref-briefing').checked = currentProfile.subscribe_daily_briefing || false;
+  document.getElementById('pref-alerts').checked = currentProfile.subscribe_alerts || false;
+}
+
+function showLEApplyFromProfile() {
+  document.getElementById('profile-view').style.display = 'none';
+  document.getElementById('auth-forms').style.display = 'block';
+  document.getElementById('tab-le').style.display = 'block';
+  showTab('le-apply');
+}
+
+function showLEReapply() {
+  showLEApplyFromProfile();
+}
+
+// ── i18n ──
+let lang = localStorage.getItem('ib_lang') || 'en';
+
+const i18n = {
+  zh: {
+    'tab.login': '登录', 'tab.register': '注册', 'tab.le': '执法认证',
+    'login.title': '欢迎回来', 'login.desc': '登录以访问受限资源',
+    'form.email': '邮箱', 'form.password': '密码', 'form.fullName': '姓名', 'form.confirmPw': '确认密码',
+    'login.btn': '登录', 'login.switch': '还没有账户？', 'login.switchLink': '去注册',
+    'reg.title': '创建账户', 'reg.desc': '注册后可申请执法人员访问权限',
+    'reg.btn': '创建账户', 'reg.switch': '已有账户？', 'reg.switchLink': '去登录',
+    'le.title': '执法人员认证', 'le.desc': '完成认证以访问 Evidence Collection Hub',
+    'le.bannerTitle': '为什么需要认证？',
+    'le.bannerDesc': 'Evidence Collection Hub 包含各交易所的执法取证联系方式和流程。仅对经过认证的执法人员、检察官和合规专业人士开放。',
+    'le.org': '所属机构', 'le.title2': '职位', 'le.badge': '警员编号',
+    'le.country': '国家/地区', 'le.phone': '工作电话',
+    'le.btn': '提交审核', 'le.note': '审核通常在24小时内完成。',
+    'profile.leAccess': '执法访问权限', 'profile.prefs': '偏好设置',
+    'profile.briefing': '订阅每日情报简报', 'profile.alerts': '订阅鲸鱼警报通知',
+    'profile.logout': '退出登录',
+    'nav.blacklist': '黑名单数据', 'nav.news': '新闻', 'nav.dashboard': '数据仪表盘',
+    'nav.decoder': '合约解析', 'nav.evidence': '执法取证', 'nav.contact': '联系我们',
+    'ft.copy': '© 2026 Innobridge. 保留所有权利。'
+  }
+};
+
+function applyLang() {
+  const t = i18n[lang] || {};
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (t[key]) el.textContent = t[key];
+  });
+  document.getElementById('lang-btn').textContent = lang === 'zh' ? '中 | EN' : 'EN | 中';
+}
+
+function toggleLang() {
+  lang = lang === 'en' ? 'zh' : 'en';
+  localStorage.setItem('ib_lang', lang);
+  applyLang();
+  if (currentProfile) renderProfileView();
+}
+
+// ── Init ──
+async function init() {
+  applyLang();
+
+  // Check session
+  const { data: { session } } = await sb.auth.getSession();
+
+  if (session) {
+    currentUser = session.user;
+    await loadProfile();
+
+    if (currentProfile) {
+      // Show LE tab if logged in
+      document.getElementById('tab-le').style.display = 'block';
+      renderProfileView();
+    }
+  }
+
+  // Check if redirected with a message
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('msg') === 'le-required') {
+    const msgEl = document.getElementById('login-msg');
+    msgEl.className = 'msg info';
+    msgEl.textContent = lang === 'zh'
+      ? '请登录并完成执法认证后访问该页面。'
+      : 'Please sign in and verify your law enforcement status to access this page.';
+  }
+}
+
+init();
+</script>
+</body>
+</html>

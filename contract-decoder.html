@@ -249,6 +249,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </ul>
   <div class="nav-right">
     <a href="index.html#contact" class="nav-btn" data-i18n="nav.cta">Get Started</a>
+    <a href="login.html" class="lang-toggle" id="auth-btn" style="margin-right:2px">Sign In</a>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
   </div>
@@ -1364,6 +1365,10 @@ function decodeABI() {
 document.getElementById('addrInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') startDecode();
 });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}}}catch(e){}})();
 </script>
 </body>
 </html>

@@ -1,0 +1,2287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innobridge AML Admin</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --bg: #f5f8fc;
+  --bg-card: #ffffff;
+  --bg-hover: #edf2f9;
+  --bg-input: #eef1f7;
+  --border: #d4dde8;
+  --text: #1e3a5f;
+  --text-2: #5a7a9b;
+  --text-3: #94adc4;
+  --accent: #2563eb;
+  --accent-light: #dbeafe;
+  --blue: #2563eb;
+  --green: #16a34a;
+  --red: #dc2626;
+  --orange: #ea580c;
+  --teal: #0891b2;
+  --purple: #7c3aed;
+  --r: 14px;
+  --sidebar-w: 220px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--text); line-height:1.5; min-height:100vh; }
+
+/* ── Login Screen ── */
+#loginScreen {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:var(--bg);
+}
+.login-card {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:40px 36px;
+  width:100%;
+  max-width:400px;
+  box-shadow:0 8px 40px rgba(37,99,235,.07);
+}
+.login-logo {
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-bottom:28px;
+}
+.login-logo-text { font-size:20px; font-weight:800; color:#1a1a1a; }
+.login-logo-tag { font-size:10px; font-weight:700; color:#2563eb; background:#dbeafe; padding:2px 8px; border-radius:6px; }
+.login-title { font-size:22px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.login-sub { font-size:13px; color:var(--text-2); margin-bottom:28px; }
+.form-group { margin-bottom:14px; }
+.form-label { font-size:12px; font-weight:600; color:var(--text-2); margin-bottom:6px; display:block; }
+.form-input {
+  width:100%;
+  padding:11px 14px;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  font-size:14px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s;
+}
+.form-input:focus { border-color:var(--accent); }
+.form-input::placeholder { color:var(--text-3); }
+.btn { padding:11px 18px; border-radius:10px; font-size:13px; font-weight:600; cursor:pointer; border:none; font-family:inherit; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
+.btn-primary { background:#2563eb; color:#fff; width:100%; justify-content:center; }
+.btn-primary:hover { background:#1d4ed8; }
+.btn-primary:disabled { opacity:.6; cursor:not-allowed; }
+.btn-danger { background:#dc2626; color:#fff; }
+.btn-danger:hover { background:#b91c1c; }
+.btn-outline { background:#fff; color:var(--text-2); border:1.5px solid var(--border); }
+.btn-outline:hover { background:var(--bg); border-color:#bbb; }
+.btn-ghost { background:transparent; color:var(--text-2); border:1.5px solid var(--border); }
+.btn-ghost:hover { background:var(--bg-hover); }
+.btn-sm { padding:6px 12px; font-size:12px; border-radius:8px; }
+.btn-xs { padding:4px 10px; font-size:11px; border-radius:6px; }
+.error-box {
+  background:#fff0f0;
+  border:1px solid #fca5a5;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:13px;
+  color:var(--red);
+  margin-bottom:14px;
+  display:none;
+}
+.error-box.show { display:block; }
+.success-box {
+  background:#f0fdf4;
+  border:1px solid #86efac;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:13px;
+  color:var(--green);
+  margin-bottom:14px;
+  display:none;
+}
+.success-box.show { display:block; }
+
+/* ── App Shell ── */
+#appShell { display:none; min-height:100vh; }
+#appShell.show { display:flex; flex-direction:column; }
+
+/* ── Top Header ── */
+.app-header {
+  background:#fff;
+  border-bottom:1px solid var(--border);
+  height:56px;
+  display:flex;
+  align-items:center;
+  padding:0 20px;
+  gap:16px;
+  position:sticky;
+  top:0;
+  z-index:100;
+}
+.app-logo {
+  display:flex;
+  align-items:center;
+  gap:6px;
+  text-decoration:none;
+  font-size:17px;
+  font-weight:800;
+  color:#1a1a1a;
+  flex-shrink:0;
+}
+.app-logo-tag { font-size:10px; font-weight:700; color:#2563eb; background:#dbeafe; padding:2px 8px; border-radius:6px; }
+.header-sep { flex:1; }
+.header-user-info { display:flex; flex-direction:column; align-items:flex-end; gap:1px; }
+.header-email { font-size:12px; font-weight:600; color:var(--text); }
+.header-role { font-size:10px; color:var(--text-3); }
+.role-badge {
+  display:inline-block;
+  padding:2px 8px;
+  border-radius:6px;
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.3px;
+}
+.role-badge.super_admin { background:#ede9fe; color:#7c3aed; }
+.role-badge.admin { background:#dbeafe; color:#1d4ed8; }
+.role-badge.editor { background:#dcfce7; color:#15803d; }
+.role-badge.viewer { background:#f1f5f9; color:#64748b; }
+.avatar-btn {
+  width:32px; height:32px;
+  border-radius:50%;
+  background:#2563eb;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+  border:none;
+  font-family:inherit;
+  flex-shrink:0;
+}
+.logout-btn {
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  background:transparent;
+  border:1.5px solid var(--border);
+  color:var(--text-2);
+  font-family:inherit;
+  transition:all .15s;
+}
+.logout-btn:hover { background:#fff0f0; border-color:#fca5a5; color:var(--red); }
+
+/* ── Main Layout ── */
+.app-body { display:flex; flex:1; min-height:0; }
+
+/* ── Sidebar ── */
+.sidebar {
+  width:var(--sidebar-w);
+  background:#fff;
+  border-right:1px solid var(--border);
+  padding:16px 10px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  flex-shrink:0;
+  position:sticky;
+  top:56px;
+  height:calc(100vh - 56px);
+  overflow-y:auto;
+}
+.sidebar-section-label {
+  font-size:10px;
+  font-weight:700;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  padding:8px 10px 4px;
+}
+.nav-item {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:9px 12px;
+  border-radius:10px;
+  font-size:13px;
+  font-weight:500;
+  color:var(--text-2);
+  cursor:pointer;
+  transition:all .15s;
+  border:none;
+  background:transparent;
+  font-family:inherit;
+  width:100%;
+  text-align:left;
+}
+.nav-item:hover { background:var(--bg-hover); color:var(--text); }
+.nav-item.active { background:var(--accent-light); color:var(--accent); font-weight:600; }
+.nav-item svg { flex-shrink:0; opacity:.7; }
+.nav-item.active svg { opacity:1; }
+
+/* ── Content Area ── */
+.content { flex:1; padding:28px 32px; overflow-y:auto; min-width:0; }
+.page-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+.page-title { font-size:20px; font-weight:700; color:var(--text); }
+.page-sub { font-size:13px; color:var(--text-2); margin-top:2px; }
+
+/* ── Tabs (hidden) ── */
+.tab-panel { display:none; }
+.tab-panel.active { display:block; }
+
+/* ── Stats Cards ── */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:14px; margin-bottom:24px; }
+.stat-card {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:18px 20px;
+}
+.stat-icon { font-size:22px; margin-bottom:10px; }
+.stat-label { font-size:11px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; margin-bottom:4px; }
+.stat-val { font-size:28px; font-weight:800; letter-spacing:-.5px; color:#1a1a1a; }
+.stat-sub { font-size:11px; color:var(--text-3); margin-top:3px; }
+.stat-badge-green { color:var(--green); font-weight:700; }
+.stat-badge-blue { color:var(--blue); font-weight:700; }
+
+/* ── Toolbar ── */
+.toolbar {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:16px;
+  flex-wrap:wrap;
+}
+.search-input {
+  flex:1;
+  min-width:200px;
+  padding:9px 12px 9px 36px;
+  background:#fff;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  font-size:13px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s;
+  position:relative;
+}
+.search-input:focus { border-color:var(--accent); }
+.search-wrap { position:relative; flex:1; min-width:200px; }
+.search-icon { position:absolute; left:11px; top:50%; transform:translateY(-50%); pointer-events:none; color:var(--text-3); }
+.filter-select {
+  padding:9px 12px;
+  background:#fff;
+  border:1.5px solid var(--border);
+  border-radius:10px;
+  font-size:12px;
+  font-family:inherit;
+  color:var(--text-2);
+  outline:none;
+  cursor:pointer;
+  transition:border-color .2s;
+}
+.filter-select:focus { border-color:var(--accent); }
+
+/* ── Table ── */
+.table-card {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  overflow:hidden;
+}
+.table-wrapper { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead th {
+  padding:10px 14px;
+  text-align:left;
+  font-size:11px;
+  font-weight:600;
+  color:var(--text-3);
+  text-transform:uppercase;
+  letter-spacing:.3px;
+  background:var(--bg);
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+tbody tr { border-bottom:1px solid var(--border); transition:background .1s; }
+tbody tr:last-child { border-bottom:none; }
+tbody tr:hover { background:var(--bg-hover); }
+tbody td { padding:11px 14px; font-size:13px; }
+.mono { font-family:monospace; font-size:12px; }
+.addr-link { color:var(--accent); text-decoration:none; font-family:monospace; font-size:12px; }
+.addr-link:hover { text-decoration:underline; }
+
+/* Badges */
+.badge { display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:6px; font-size:11px; font-weight:600; }
+.badge-eth { background:#ede9fe; color:#7c3aed; }
+.badge-tron { background:#fff0f0; color:#dc2626; }
+.badge-high { background:#fff0f0; color:#dc2626; }
+.badge-medium { background:#fff8e6; color:#ea580c; }
+.badge-low { background:#dcfce7; color:#16a34a; }
+.badge-active { background:#dcfce7; color:#16a34a; }
+.badge-inactive { background:#f1f5f9; color:#64748b; }
+.badge-removed { background:#fee2e2; color:#dc2626; }
+.badge-usdt { background:#e0fdf4; color:#0d9488; }
+.badge-usdc { background:#eff6ff; color:#2563eb; }
+.risk-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+.risk-dot.HIGH { background:#dc2626; }
+.risk-dot.MEDIUM { background:#ea580c; }
+.risk-dot.LOW { background:#16a34a; }
+
+/* Pagination */
+.pagination {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:12px 16px;
+  border-top:1px solid var(--border);
+  background:#fafbfc;
+}
+.pagination-info { font-size:12px; color:var(--text-3); }
+.pagination-btns { display:flex; gap:4px; }
+.page-btn {
+  width:30px; height:30px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:7px;
+  border:1px solid var(--border);
+  background:#fff;
+  color:var(--text-2);
+  font-size:12px;
+  cursor:pointer;
+  font-family:inherit;
+  transition:all .1s;
+}
+.page-btn:hover { background:var(--bg-hover); }
+.page-btn.active { background:#2563eb; color:#fff; border-color:#2563eb; }
+.page-btn:disabled { opacity:.3; cursor:not-allowed; }
+
+/* ── Modal Overlay ── */
+.modal-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.modal-overlay.show { display:flex; }
+.modal {
+  background:#fff;
+  border-radius:18px;
+  padding:28px 30px;
+  width:100%;
+  max-width:560px;
+  max-height:90vh;
+  overflow-y:auto;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+  position:relative;
+}
+.modal-lg { max-width:720px; }
+.modal-header { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; }
+.modal-title { font-size:18px; font-weight:700; color:var(--text); }
+.modal-sub { font-size:12px; color:var(--text-2); margin-top:2px; }
+.modal-close {
+  background:none; border:none; cursor:pointer; color:var(--text-3);
+  font-size:22px; line-height:1; padding:2px; flex-shrink:0;
+}
+.modal-close:hover { color:var(--text); }
+.modal-footer { display:flex; gap:10px; justify-content:flex-end; margin-top:24px; padding-top:16px; border-top:1px solid var(--border); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-group { margin-bottom:14px; }
+.form-group:last-child { margin-bottom:0; }
+.form-label { font-size:12px; font-weight:600; color:var(--text-2); margin-bottom:6px; display:block; }
+.form-input, .form-select, .form-textarea {
+  width:100%;
+  padding:9px 12px;
+  background:var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:8px;
+  font-size:13px;
+  font-family:inherit;
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--accent); }
+.form-textarea { resize:vertical; min-height:80px; }
+.form-hint { font-size:11px; color:var(--text-3); margin-top:4px; }
+
+/* ── Toast ── */
+#toast {
+  position:fixed;
+  bottom:24px;
+  right:24px;
+  padding:12px 18px;
+  border-radius:12px;
+  font-size:13px;
+  font-weight:600;
+  color:#fff;
+  z-index:2000;
+  display:none;
+  align-items:center;
+  gap:8px;
+  box-shadow:0 8px 30px rgba(0,0,0,.15);
+  max-width:360px;
+  animation:toastIn .2s ease;
+}
+@keyframes toastIn { from{transform:translateY(10px);opacity:0} to{transform:translateY(0);opacity:1} }
+#toast.show { display:flex; }
+#toast.toast-success { background:#16a34a; }
+#toast.toast-error { background:#dc2626; }
+#toast.toast-info { background:#2563eb; }
+
+/* ── Loading States ── */
+.loading-spinner {
+  width:20px; height:20px;
+  border:2px solid var(--border);
+  border-top-color:var(--accent);
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  flex-shrink:0;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+.skeleton {
+  background:linear-gradient(90deg, #d4dde8 25%, #edf2f9 50%, #d4dde8 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.5s infinite;
+  border-radius:6px;
+}
+@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+.empty-state {
+  text-align:center;
+  padding:60px 20px;
+  color:var(--text-3);
+}
+.empty-state-icon { font-size:36px; margin-bottom:12px; }
+.empty-state-text { font-size:14px; font-weight:500; color:var(--text-2); margin-bottom:6px; }
+.empty-state-sub { font-size:12px; }
+
+/* ── Import Tab ── */
+.drop-zone {
+  border:2px dashed var(--border);
+  border-radius:14px;
+  padding:48px 24px;
+  text-align:center;
+  cursor:pointer;
+  transition:all .2s;
+  background:#fff;
+  margin-bottom:20px;
+}
+.drop-zone:hover, .drop-zone.drag-over { border-color:var(--accent); background:var(--accent-light); }
+.drop-zone-icon { font-size:36px; margin-bottom:12px; color:var(--text-3); }
+.drop-zone-label { font-size:14px; font-weight:600; color:var(--text); margin-bottom:4px; }
+.drop-zone-sub { font-size:12px; color:var(--text-3); }
+.progress-bar-wrap { height:8px; background:var(--border); border-radius:10px; overflow:hidden; margin:10px 0; }
+.progress-bar { height:100%; background:var(--accent); border-radius:10px; transition:width .3s ease; }
+
+/* ── Audit Log ── */
+.audit-row td { vertical-align:top; }
+.audit-action-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:11px; font-weight:600; }
+.audit-INSERT { background:#dcfce7; color:#15803d; }
+.audit-UPDATE { background:#dbeafe; color:#1d4ed8; }
+.audit-DELETE { background:#fee2e2; color:#dc2626; }
+.audit-LOGIN { background:#f3e8ff; color:#7c3aed; }
+.json-toggle { cursor:pointer; color:var(--accent); font-size:11px; font-weight:600; text-decoration:underline; }
+.json-pre {
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:8px;
+  padding:10px;
+  font-size:11px;
+  font-family:monospace;
+  white-space:pre-wrap;
+  word-break:break-all;
+  max-height:200px;
+  overflow-y:auto;
+  margin-top:6px;
+  display:none;
+}
+.json-pre.show { display:block; }
+
+/* ── Users Tab ── */
+.user-card {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:16px 20px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:10px;
+}
+.user-avatar {
+  width:40px; height:40px;
+  border-radius:50%;
+  background:#2563eb;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:14px;
+  font-weight:700;
+  flex-shrink:0;
+}
+.user-info { flex:1; min-width:0; }
+.user-name { font-size:14px; font-weight:600; color:var(--text); }
+.user-email { font-size:12px; color:var(--text-2); }
+.user-actions { display:flex; gap:8px; align-items:center; }
+
+/* ── Confirm Dialog ── */
+.confirm-overlay {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.4);
+  z-index:2000;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.confirm-overlay.show { display:flex; }
+.confirm-box {
+  background:#fff;
+  border-radius:16px;
+  padding:28px;
+  max-width:360px;
+  width:100%;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.15);
+}
+.confirm-icon { font-size:36px; margin-bottom:12px; }
+.confirm-title { font-size:17px; font-weight:700; color:var(--text); margin-bottom:6px; }
+.confirm-msg { font-size:13px; color:var(--text-2); margin-bottom:20px; }
+.confirm-actions { display:flex; gap:10px; justify-content:center; }
+
+/* ── Responsive ── */
+@media (max-width:900px) {
+  .sidebar { width:56px; overflow:hidden; }
+  .nav-item span { display:none; }
+  .sidebar-section-label { display:none; }
+  .content { padding:20px 16px; }
+}
+@media (max-width:640px) {
+  .form-row { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .page-title { font-size:16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════ LOGIN SCREEN ════ -->
+<div id="loginScreen">
+  <div class="login-card">
+    <div class="login-logo">
+      <span style="display:inline-flex;align-items:center;gap:0;">
+        <svg width="26" height="26" viewBox="0 0 64 64"><rect x="7" y="7" width="50" height="50" rx="10" fill="#1a1a1a"/><circle cx="32" cy="21.5" r="4.8" fill="#fff"/><rect x="27" y="29" width="10" height="22.5" rx="2.5" fill="#fff"/></svg>
+      </span>
+      <span class="login-logo-text" style="margin-left:4px;">nnobridge</span>
+      <span class="login-logo-tag">Admin</span>
+    </div>
+    <div class="login-title">Admin Sign In</div>
+    <div class="login-sub">Access the AML Blacklist management platform</div>
+    <div id="loginError" class="error-box"></div>
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" id="loginEmail" class="form-input" placeholder="admin@example.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Password</label>
+      <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn btn-primary" id="loginBtn" onclick="doLogin()" style="margin-top:4px;">
+      <span id="loginBtnText">Sign In</span>
+    </button>
+    <div style="margin-top:16px; font-size:11px; color:var(--text-3); text-align:center;">
+      Admin access only — contact your system administrator for access
+    </div>
+  </div>
+</div>
+
+<!-- ════ APP SHELL ════ -->
+<div id="appShell">
+  <!-- Header -->
+  <header class="app-header">
+    <a href="/" class="app-logo" style="text-decoration:none;">
+      <svg width="22" height="22" viewBox="0 0 64 64"><rect x="7" y="7" width="50" height="50" rx="10" fill="#1a1a1a"/><circle cx="32" cy="21.5" r="4.8" fill="#fff"/><rect x="27" y="29" width="10" height="22.5" rx="2.5" fill="#fff"/></svg>
+      <span>nnobridge</span>
+      <span class="app-logo-tag">Admin</span>
+    </a>
+    <div class="header-sep"></div>
+    <div class="header-user-info">
+      <span class="header-email" id="headerEmail">—</span>
+      <span class="header-role"><span id="headerRoleBadge" class="role-badge">—</span></span>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+  </header>
+
+  <div class="app-body">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="sidebar-section-label">Navigation</div>
+      <button class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </button>
+      <button class="nav-item" onclick="showTab('addresses')" id="nav-addresses">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        <span>Addresses</span>
+      </button>
+      <button class="nav-item" onclick="showTab('import')" id="nav-import">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>Import</span>
+      </button>
+      <button class="nav-item" onclick="showTab('auditlog')" id="nav-auditlog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
+        <span>Audit Log</span>
+      </button>
+      <button class="nav-item" onclick="showTab('users')" id="nav-users" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        <span>Admin Users</span>
+      </button>
+      <div class="sidebar-section-label" id="le-section-label" style="display:none;">User Management</div>
+      <button class="nav-item" onclick="showTab('le-requests')" id="nav-le-requests" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>LE Requests</span>
+        <span class="le-badge-count" id="le-pending-count" style="display:none;background:#ea580c;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:auto;"></span>
+      </button>
+      <button class="nav-item" onclick="showTab('platform-users')" id="nav-platform-users" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Platform Users</span>
+      </button>
+    </nav>
+
+    <!-- Content -->
+    <main class="content">
+
+      <!-- ── Dashboard Tab ── -->
+      <div class="tab-panel active" id="tab-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Dashboard</div>
+            <div class="page-sub">AML Blacklist statistics overview</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div class="stats-grid" id="dashStatsGrid">
+          <!-- populated dynamically -->
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+          <div class="stat-card"><div class="skeleton" style="height:14px;width:80px;margin-bottom:12px;"></div><div class="skeleton" style="height:32px;width:100px;"></div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;">Recent Additions</div>
+            <div id="recentAdditions"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+          </div>
+          <div style="background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:20px;">
+            <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;">Risk Distribution</div>
+            <div id="riskDistribution"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Addresses Tab ── -->
+      <div class="tab-panel" id="tab-addresses">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Addresses</div>
+            <div class="page-sub">Manage AML blacklist entries</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openAddModal()" id="addAddrBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add Address
+          </button>
+        </div>
+
+        <div class="toolbar">
+          <div class="search-wrap">
+            <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" class="search-input" id="addrSearch" placeholder="Search by address or label..." oninput="debounceSearch()">
+          </div>
+          <select class="filter-select" id="filterChain" onchange="loadAddresses(1)">
+            <option value="">All Chains</option>
+            <option value="ETH">ETH</option>
+            <option value="TRON">TRON</option>
+          </select>
+          <select class="filter-select" id="filterAsset" onchange="loadAddresses(1)">
+            <option value="">All Assets</option>
+            <option value="USDT">USDT</option>
+            <option value="USDC">USDC</option>
+          </select>
+          <select class="filter-select" id="filterRisk" onchange="loadAddresses(1)">
+            <option value="">All Risk Levels</option>
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+          </select>
+          <select class="filter-select" id="filterStatus" onchange="loadAddresses(1)">
+            <option value="">All Status</option>
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="removed">Removed</option>
+          </select>
+        </div>
+
+        <div class="table-card">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Address</th>
+                  <th>Chain</th>
+                  <th>Asset</th>
+                  <th>Risk</th>
+                  <th>Category</th>
+                  <th>Label</th>
+                  <th>Frozen Amount</th>
+                  <th>Status</th>
+                  <th>Added</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="addressTableBody">
+                <tr><td colspan="10" style="text-align:center;padding:40px;"><div class="loading-spinner" style="margin:0 auto;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="addrPagination">
+            <span class="pagination-info" id="addrPagInfo">Loading...</span>
+            <div class="pagination-btns" id="addrPagBtns"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Import Tab ── -->
+      <div class="tab-panel" id="tab-import">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Batch Import</div>
+            <div class="page-sub">Import addresses from CSV file</div>
+          </div>
+        </div>
+        <div style="max-width:800px;">
+          <div class="drop-zone" id="dropZone" onclick="document.getElementById('csvFileInput').click()">
+            <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleFileSelect(event)">
+            <div class="drop-zone-icon">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+            </div>
+            <div class="drop-zone-label">Drop CSV file here or click to browse</div>
+            <div class="drop-zone-sub">Supports: address, chain, asset, label, category, risk_score, risk_level, source, description, frozen_amount</div>
+          </div>
+
+          <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;">Required CSV format</div>
+            <code style="font-size:11px;color:var(--text-2);display:block;background:var(--bg);padding:10px;border-radius:8px;font-family:monospace;">address,chain,asset,label,category,risk_score,risk_level,source,description,frozen_amount</code>
+          </div>
+
+          <div id="importPreviewArea" style="display:none;">
+            <div id="importError" class="error-box" style="margin-bottom:14px;"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
+              <div style="font-size:14px;font-weight:700;color:var(--text);">Preview</div>
+              <div id="importStats" style="font-size:12px;color:var(--text-2);"></div>
+            </div>
+            <div class="table-card" style="margin-bottom:16px;">
+              <div class="table-wrapper">
+                <table id="previewTable">
+                  <thead><tr id="previewHeaderRow"></tr></thead>
+                  <tbody id="previewBody"></tbody>
+                </table>
+              </div>
+            </div>
+            <div id="importProgressWrap" style="display:none;margin-bottom:16px;">
+              <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:4px;">
+                <span>Importing...</span>
+                <span id="importProgressText">0 / 0</span>
+              </div>
+              <div class="progress-bar-wrap">
+                <div class="progress-bar" id="importProgressBar" style="width:0%;"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-primary" id="importBtn" onclick="doImport()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                Start Import
+              </button>
+              <button class="btn btn-outline" onclick="clearImport()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Audit Log Tab ── -->
+      <div class="tab-panel" id="tab-auditlog">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Audit Log</div>
+            <div class="page-sub">System activity and change history</div>
+          </div>
+        </div>
+        <div class="toolbar">
+          <select class="filter-select" id="auditFilterAction" onchange="loadAuditLog(1)">
+            <option value="">All Actions</option>
+            <option value="INSERT">INSERT</option>
+            <option value="UPDATE">UPDATE</option>
+            <option value="DELETE">DELETE</option>
+            <option value="LOGIN">LOGIN</option>
+          </select>
+          <input type="date" class="filter-select" id="auditFilterDate" onchange="loadAuditLog(1)" style="width:160px;">
+          <button class="btn btn-outline btn-sm" onclick="loadAuditLog(1)">Apply Filters</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearAuditFilters()">Clear</button>
+        </div>
+        <div class="table-card">
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>User</th>
+                  <th>Action</th>
+                  <th>Table</th>
+                  <th>Record ID</th>
+                  <th>Changes</th>
+                </tr>
+              </thead>
+              <tbody id="auditTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:40px;"><div class="loading-spinner" style="margin:0 auto;"></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="auditPagination">
+            <span class="pagination-info" id="auditPagInfo">Loading...</span>
+            <div class="pagination-btns" id="auditPagBtns"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Users Tab ── -->
+      <div class="tab-panel" id="tab-users">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Admin Users</div>
+            <div class="page-sub">Manage admin access and roles</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="openInviteModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Invite User
+          </button>
+        </div>
+        <div id="usersListArea">
+          <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
+        </div>
+      </div>
+
+      <!-- ── LE Requests Tab ── -->
+      <div class="tab-panel" id="tab-le-requests">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Law Enforcement Verification Requests</div>
+            <div class="page-sub">Review and approve LE access applications</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <select class="filter-select" id="leFilterStatus" onchange="loadLERequests()" style="min-width:140px;">
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="">All</option>
+            </select>
+            <button class="btn btn-outline btn-sm" onclick="loadLERequests()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
+              Refresh
+            </button>
+          </div>
+        </div>
+        <div id="leRequestsArea">
+          <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Platform Users Tab ── -->
+      <div class="tab-panel" id="tab-platform-users">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Platform Users</div>
+            <div class="page-sub">All registered users on the platform</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="loadPlatformUsers()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
+              Refresh
+          </button>
+        </div>
+        <div id="platformUsersArea">
+          <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ════ ADD/EDIT ADDRESS MODAL ════ -->
+<div class="modal-overlay" id="addrModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="addrModalTitle">Add Address</div>
+        <div class="modal-sub" id="addrModalSub">Add a new address to the AML blacklist</div>
+      </div>
+      <button class="modal-close" onclick="closeAddrModal()">&#215;</button>
+    </div>
+    <form id="addrForm" onsubmit="submitAddrForm(event)">
+      <div id="addrFormError" class="error-box"></div>
+      <div class="form-row">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label class="form-label">Address <span style="color:var(--red);">*</span></label>
+          <input type="text" class="form-input" id="fieldAddress" placeholder="0x... or T..." required>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Chain <span style="color:var(--red);">*</span></label>
+          <select class="form-select" id="fieldChain" required>
+            <option value="">Select chain</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="TRON">TRON</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Asset <span style="color:var(--red);">*</span></label>
+          <select class="form-select" id="fieldAsset" required>
+            <option value="">Select asset</option>
+            <option value="USDT">USDT</option>
+            <option value="USDC">USDC</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Risk Level</label>
+          <select class="form-select" id="fieldRiskLevel">
+            <option value="HIGH">HIGH</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="LOW">LOW</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Risk Score (0–100)</label>
+          <input type="number" class="form-input" id="fieldRiskScore" min="0" max="100" placeholder="e.g. 85">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <input type="text" class="form-input" id="fieldCategory" placeholder="e.g. Sanctions, Exchange, Mixer">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Label</label>
+          <input type="text" class="form-input" id="fieldLabel" placeholder="Short label">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input type="text" class="form-input" id="fieldSource" placeholder="e.g. OFAC, Internal, Chainalysis">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Frozen Amount (USD)</label>
+          <input type="number" class="form-input" id="fieldFrozenAmount" min="0" step="0.01" placeholder="0.00">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">TX Hash</label>
+          <input type="text" class="form-input" id="fieldTxHash" placeholder="0x...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-select" id="fieldStatus">
+            <option value="active">Active</option>
+            <option value="inactive">Inactive</option>
+            <option value="removed">Removed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Description</label>
+        <textarea class="form-textarea" id="fieldDescription" placeholder="Additional notes or context..."></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeAddrModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="addrSubmitBtn">
+          <span id="addrSubmitText">Add Address</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ════ INVITE USER MODAL ════ -->
+<div class="modal-overlay" id="inviteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Invite Admin User</div>
+        <div class="modal-sub">Add a new user to the admin panel</div>
+      </div>
+      <button class="modal-close" onclick="closeInviteModal()">&#215;</button>
+    </div>
+    <div id="inviteError" class="error-box"></div>
+    <div class="form-group">
+      <label class="form-label">Email address</label>
+      <input type="email" class="form-input" id="inviteEmail" placeholder="user@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Display Name</label>
+      <input type="text" class="form-input" id="inviteDisplayName" placeholder="Full name">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Role</label>
+      <select class="form-select" id="inviteRole">
+        <option value="viewer">Viewer (read-only)</option>
+        <option value="editor">Editor (read + write)</option>
+        <option value="admin">Admin (full access)</option>
+        <option value="super_admin">Super Admin</option>
+      </select>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeInviteModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="doInviteUser()">Add User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CONFIRM DIALOG ════ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <div class="confirm-icon" id="confirmIcon">&#9888;</div>
+    <div class="confirm-title" id="confirmTitle">Are you sure?</div>
+    <div class="confirm-msg" id="confirmMsg">This action cannot be undone.</div>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ TOAST ════ -->
+<div id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════
+// CONFIGURATION
+// ════════════════════════════════════════════════
+const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
+const API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
+const PAGE_SIZE = 25;
+
+// ════════════════════════════════════════════════
+// SUPABASE INIT
+// ════════════════════════════════════════════════
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ════════════════════════════════════════════════
+// STATE
+// ════════════════════════════════════════════════
+let currentUser = null;
+let currentAdminUser = null;
+let editingAddressId = null;
+let addrCurrentPage = 1;
+let addrTotalCount = 0;
+let auditCurrentPage = 1;
+let auditTotalCount = 0;
+let searchDebounceTimer = null;
+let csvParsedData = [];
+let confirmCallback = null;
+
+// ════════════════════════════════════════════════
+// AUTH
+// ════════════════════════════════════════════════
+async function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const errBox = document.getElementById('loginError');
+  const btn = document.getElementById('loginBtn');
+  const btnText = document.getElementById('loginBtnText');
+
+  errBox.classList.remove('show');
+  if (!email || !password) {
+    errBox.textContent = 'Please enter email and password.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  btn.disabled = true;
+  btnText.innerHTML = '<span style="display:inline-flex;align-items:center;gap:8px;"><span class="loading-spinner" style="width:14px;height:14px;border-width:2px;"></span> Signing in...</span>';
+
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+
+    // Self-register or fetch admin user via secure RPC
+    const { data: regResult, error: regErr } = await sb.rpc('aml_admin_self_register');
+
+    if (regErr) {
+      await sb.auth.signOut();
+      errBox.textContent = 'Access Denied: Could not register admin account. ' + regErr.message;
+      errBox.classList.add('show');
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+      return;
+    }
+
+    if (!regResult || !regResult.success) {
+      await sb.auth.signOut();
+      errBox.textContent = 'Access Denied: ' + (regResult?.error || 'Unknown error');
+      errBox.classList.add('show');
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+      return;
+    }
+
+    const adminData = regResult.user;
+    if (!adminData.is_active) {
+      await sb.auth.signOut();
+      errBox.textContent = 'Access Denied: Your admin account has been deactivated.';
+      errBox.classList.add('show');
+      btn.disabled = false;
+      btnText.textContent = 'Sign In';
+      return;
+    }
+    currentAdminUser = adminData;
+
+    currentUser = data.user;
+    await logAudit('LOGIN', 'aml_admin_users', currentAdminUser.id, null, { email });
+    initApp();
+  } catch (err) {
+    errBox.textContent = err.message || 'Login failed. Please try again.';
+    errBox.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btnText.textContent = 'Sign In';
+  }
+}
+
+async function doLogout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  currentAdminUser = null;
+  document.getElementById('appShell').classList.remove('show');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginEmail').value = '';
+  document.getElementById('loginPassword').value = '';
+}
+
+document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ════════════════════════════════════════════════
+// SESSION RESTORE
+// ════════════════════════════════════════════════
+async function checkSession() {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) return;
+
+  currentUser = session.user;
+  const { data: regResult, error: regErr } = await sb.rpc('aml_admin_self_register');
+
+  if (regResult && regResult.success && regResult.user && regResult.user.is_active) {
+    currentAdminUser = regResult.user;
+    initApp();
+  } else {
+    await sb.auth.signOut();
+    currentUser = null;
+    currentAdminUser = null;
+  }
+}
+
+// ════════════════════════════════════════════════
+// APP INIT
+// ════════════════════════════════════════════════
+function initApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').classList.add('show');
+
+  // Set header info
+  document.getElementById('headerEmail').textContent = currentAdminUser.email;
+  const badge = document.getElementById('headerRoleBadge');
+  badge.textContent = currentAdminUser.role.replace('_', ' ');
+  badge.className = 'role-badge ' + currentAdminUser.role;
+
+  // Show/hide Users tab for super_admin
+  if (currentAdminUser.role === 'super_admin') {
+    document.getElementById('nav-users').style.display = 'flex';
+  }
+
+  // Show LE management for admin and super_admin
+  if (currentAdminUser.role === 'super_admin' || currentAdminUser.role === 'admin') {
+    document.getElementById('le-section-label').style.display = 'block';
+    document.getElementById('nav-le-requests').style.display = 'flex';
+    document.getElementById('nav-platform-users').style.display = 'flex';
+    loadLEPendingCount();
+  }
+
+  // Restrict Add Address for viewers
+  if (currentAdminUser.role === 'viewer') {
+    const addBtn = document.getElementById('addAddrBtn');
+    if (addBtn) addBtn.style.display = 'none';
+  }
+
+  loadDashboard();
+}
+
+// ════════════════════════════════════════════════
+// NAVIGATION
+// ════════════════════════════════════════════════
+function showTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  document.getElementById('nav-' + name).classList.add('active');
+
+  if (name === 'addresses') loadAddresses(1);
+  if (name === 'auditlog') loadAuditLog(1);
+  if (name === 'users') loadUsers();
+  if (name === 'dashboard') loadDashboard();
+  if (name === 'le-requests') loadLERequests();
+  if (name === 'platform-users') loadPlatformUsers();
+}
+
+// ════════════════════════════════════════════════
+// DASHBOARD
+// ════════════════════════════════════════════════
+async function loadDashboard() {
+  const grid = document.getElementById('dashStatsGrid');
+  const recentDiv = document.getElementById('recentAdditions');
+  const riskDiv = document.getElementById('riskDistribution');
+
+  try {
+    // Fetch from Edge Function
+    let stats = null;
+    try {
+      const resp = await fetch(API_ENDPOINT + '?action=stats', {
+        headers: { 'apikey': SUPABASE_ANON_KEY }
+      });
+      if (resp.ok) {
+        const json = await resp.json();
+        stats = json.data || json;
+      }
+    } catch(e) {
+      console.warn('Edge function stats failed, falling back to direct query:', e);
+    }
+
+    // Fallback: direct Supabase queries
+    if (!stats) {
+      const [total, ethUsdt, tronUsdt, usdc, frozenRes, todayRes] = await Promise.all([
+        sb.from('aml_addresses').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+        sb.from('aml_addresses').select('*', { count: 'exact', head: true }).eq('chain', 'ETH').eq('asset', 'USDT').eq('status', 'active'),
+        sb.from('aml_addresses').select('*', { count: 'exact', head: true }).eq('chain', 'TRON').eq('asset', 'USDT').eq('status', 'active'),
+        sb.from('aml_addresses').select('*', { count: 'exact', head: true }).eq('asset', 'USDC').eq('status', 'active'),
+        sb.from('aml_addresses').select('frozen_amount').eq('status', 'active'),
+        sb.from('aml_addresses').select('*', { count: 'exact', head: true }).gte('added_date', new Date().toISOString().split('T')[0]).eq('status', 'active')
+      ]);
+
+      const totalFrozen = (frozenRes.data || []).reduce((sum, r) => sum + (parseFloat(r.frozen_amount) || 0), 0);
+      stats = {
+        total_addresses: total.count || 0,
+        eth_usdt_count: ethUsdt.count || 0,
+        tron_usdt_count: tronUsdt.count || 0,
+        usdc_count: usdc.count || 0,
+        total_frozen: totalFrozen,
+        today_new: todayRes.count || 0
+      };
+    }
+
+    grid.innerHTML = `
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <div class="stat-label">Total Active Addresses</div>
+        <div class="stat-val">${(stats.total_addresses || 0).toLocaleString()}</div>
+        <div class="stat-sub">Across all chains &amp; assets</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+        <div class="stat-label">USDT — ETH</div>
+        <div class="stat-val">${(stats.eth_usdt_count || 0).toLocaleString()}</div>
+        <div class="stat-sub">Ethereum USDT addresses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
+        <div class="stat-label">USDT — TRON</div>
+        <div class="stat-val">${(stats.tron_usdt_count || 0).toLocaleString()}</div>
+        <div class="stat-sub">TRON USDT addresses</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div>
+        <div class="stat-label">USDC Addresses</div>
+        <div class="stat-val">${(stats.usdc_count || 0).toLocaleString()}</div>
+        <div class="stat-sub">USD Coin blacklist</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+        <div class="stat-label">Total Frozen (USD)</div>
+        <div class="stat-val">$${formatLargeNumber(stats.total_frozen || 0)}</div>
+        <div class="stat-sub">Cumulative frozen value</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
+        <div class="stat-label">Today's New Additions</div>
+        <div class="stat-val">${(stats.today_new || 0).toLocaleString()}</div>
+        <div class="stat-sub">${new Date().toLocaleDateString()}</div>
+      </div>
+    `;
+  } catch (err) {
+    grid.innerHTML = `<div class="error-box show" style="grid-column:1/-1;">Failed to load statistics: ${err.message}</div>`;
+  }
+
+  // Recent additions
+  try {
+    const { data, error } = await sb
+      .from('aml_addresses')
+      .select('address, chain, asset, risk_level, added_date, label')
+      .order('created_at', { ascending: false })
+      .limit(5);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      recentDiv.innerHTML = '<div class="empty-state"><div class="empty-state-text">No recent data</div></div>';
+    } else {
+      recentDiv.innerHTML = data.map(r => `
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span class="badge badge-${(r.chain||'').toLowerCase()}">${r.chain || '?'}</span>
+          <span style="font-family:monospace;font-size:11px;color:var(--text);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r.address}</span>
+          <span class="badge badge-${(r.risk_level||'').toLowerCase()}">${r.risk_level || '?'}</span>
+          <span style="font-size:11px;color:var(--text-3);white-space:nowrap;">${r.added_date ? r.added_date.substring(0,10) : '—'}</span>
+        </div>
+      `).join('');
+      recentDiv.lastElementChild.style.borderBottom = 'none';
+    }
+  } catch(e) {
+    recentDiv.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Could not load recent data</div></div>';
+  }
+
+  // Risk distribution
+  try {
+    const { data, error } = await sb
+      .from('aml_addresses')
+      .select('risk_level')
+      .eq('status', 'active');
+
+    if (error) throw error;
+
+    const counts = { HIGH: 0, MEDIUM: 0, LOW: 0 };
+    (data || []).forEach(r => { if (r.risk_level && counts[r.risk_level] !== undefined) counts[r.risk_level]++; });
+    const total = Object.values(counts).reduce((a, b) => a + b, 0) || 1;
+
+    riskDiv.innerHTML = ['HIGH', 'MEDIUM', 'LOW'].map(level => {
+      const pct = Math.round((counts[level] / total) * 100);
+      const colors = { HIGH: '#dc2626', MEDIUM: '#ea580c', LOW: '#16a34a' };
+      return `
+        <div style="margin-bottom:12px;">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-2);margin-bottom:4px;">
+            <span style="font-weight:600;color:${colors[level]};">${level}</span>
+            <span>${counts[level].toLocaleString()} (${pct}%)</span>
+          </div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" style="width:${pct}%;background:${colors[level]};"></div>
+          </div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    riskDiv.innerHTML = '<div class="empty-state"><div class="empty-state-sub">Could not load risk data</div></div>';
+  }
+}
+
+// ════════════════════════════════════════════════
+// ADDRESSES
+// ════════════════════════════════════════════════
+async function loadAddresses(page) {
+  addrCurrentPage = page || 1;
+  const tbody = document.getElementById('addressTableBody');
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;"><div class="loading-spinner" style="margin:0 auto;"></div></td></tr>';
+
+  const search = document.getElementById('addrSearch').value.trim();
+  const chain = document.getElementById('filterChain').value;
+  const asset = document.getElementById('filterAsset').value;
+  const risk = document.getElementById('filterRisk').value;
+  const status = document.getElementById('filterStatus').value;
+
+  const offset = (addrCurrentPage - 1) * PAGE_SIZE;
+
+  try {
+    let query = sb.from('aml_addresses').select('*', { count: 'exact' });
+
+    if (search) {
+      query = query.or(`address.ilike.%${search}%,label.ilike.%${search}%,category.ilike.%${search}%`);
+    }
+    if (chain) query = query.eq('chain', chain);
+    if (asset) query = query.eq('asset', asset);
+    if (risk) query = query.eq('risk_level', risk);
+    if (status) query = query.eq('status', status);
+
+    query = query.order('created_at', { ascending: false }).range(offset, offset + PAGE_SIZE - 1);
+
+    const { data, error, count } = await query;
+    if (error) throw error;
+
+    addrTotalCount = count || 0;
+    renderAddressTable(data || []);
+    renderPagination('addr', addrCurrentPage, addrTotalCount, loadAddresses);
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="10"><div class="error-box show" style="margin:16px;">Error loading addresses: ${err.message}</div></td></tr>`;
+  }
+}
+
+function renderAddressTable(rows) {
+  const tbody = document.getElementById('addressTableBody');
+  const isEditor = ['editor', 'admin', 'super_admin'].includes(currentAdminUser?.role);
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><div class="empty-state-icon">&#128269;</div><div class="empty-state-text">No addresses found</div><div class="empty-state-sub">Try adjusting your search or filters</div></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(r => {
+    const shortAddr = r.address ? (r.address.length > 20 ? r.address.substring(0, 10) + '...' + r.address.slice(-6) : r.address) : '—';
+    const frozen = r.frozen_amount ? '$' + parseFloat(r.frozen_amount).toLocaleString(undefined, { maximumFractionDigits: 0 }) : '—';
+    const addedDate = r.added_date ? r.added_date.substring(0, 10) : (r.created_at ? r.created_at.substring(0, 10) : '—');
+
+    const actions = isEditor ? `
+      <div style="display:flex;gap:6px;">
+        <button class="btn btn-outline btn-xs" onclick="openEditModal('${r.id}')">Edit</button>
+        <button class="btn btn-xs" style="background:#fff0f0;color:#dc2626;border:1.5px solid #fca5a5;" onclick="confirmDelete('${r.id}', '${shortAddr}')">Delete</button>
+      </div>
+    ` : '<span style="font-size:11px;color:var(--text-3);">View only</span>';
+
+    return `
+      <tr>
+        <td><a class="addr-link" title="${r.address}">${shortAddr}</a></td>
+        <td><span class="badge badge-${(r.chain||'').toLowerCase()}">${r.chain || '—'}</span></td>
+        <td><span class="badge badge-${(r.asset||'').toLowerCase()}">${r.asset || '—'}</span></td>
+        <td><span class="badge badge-${(r.risk_level||'').toLowerCase()}"><span class="risk-dot ${r.risk_level}"></span>${r.risk_level || '—'}</span></td>
+        <td style="color:var(--text-2);font-size:12px;">${r.category || '—'}</td>
+        <td style="font-size:12px;">${r.label || '—'}</td>
+        <td style="font-weight:600;font-size:12px;">${frozen}</td>
+        <td><span class="badge badge-${r.status || 'active'}">${r.status || 'active'}</span></td>
+        <td style="color:var(--text-3);font-size:11px;">${addedDate}</td>
+        <td>${actions}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderPagination(prefix, currentPage, totalCount, loadFn) {
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
+  const infoEl = document.getElementById(prefix + 'PagInfo');
+  const btnsEl = document.getElementById(prefix + 'PagBtns');
+
+  const start = Math.min((currentPage - 1) * PAGE_SIZE + 1, totalCount);
+  const end = Math.min(currentPage * PAGE_SIZE, totalCount);
+  infoEl.textContent = totalCount > 0 ? `${start}–${end} of ${totalCount.toLocaleString()}` : '0 results';
+
+  if (totalPages <= 1) { btnsEl.innerHTML = ''; return; }
+
+  let html = '';
+  html += `<button class="page-btn" ${currentPage <= 1 ? 'disabled' : ''} onclick="${prefix}GoPage(${currentPage - 1})">&#8592;</button>`;
+
+  const pages = getPageRange(currentPage, totalPages);
+  pages.forEach(p => {
+    if (p === '...') {
+      html += `<span style="padding:0 4px;color:var(--text-3);">...</span>`;
+    } else {
+      html += `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="${prefix}GoPage(${p})">${p}</button>`;
+    }
+  });
+
+  html += `<button class="page-btn" ${currentPage >= totalPages ? 'disabled' : ''} onclick="${prefix}GoPage(${currentPage + 1})">&#8594;</button>`;
+  btnsEl.innerHTML = html;
+}
+
+function getPageRange(current, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  if (current <= 4) return [1, 2, 3, 4, 5, '...', total];
+  if (current >= total - 3) return [1, '...', total - 4, total - 3, total - 2, total - 1, total];
+  return [1, '...', current - 1, current, current + 1, '...', total];
+}
+
+function addrGoPage(p) { loadAddresses(p); }
+
+function debounceSearch() {
+  clearTimeout(searchDebounceTimer);
+  searchDebounceTimer = setTimeout(() => loadAddresses(1), 400);
+}
+
+// ── Add Address Modal ──
+function openAddModal() {
+  if (!['editor', 'admin', 'super_admin'].includes(currentAdminUser?.role)) {
+    showToast('You do not have permission to add addresses.', 'error');
+    return;
+  }
+  editingAddressId = null;
+  document.getElementById('addrModalTitle').textContent = 'Add Address';
+  document.getElementById('addrModalSub').textContent = 'Add a new address to the AML blacklist';
+  document.getElementById('addrSubmitText').textContent = 'Add Address';
+  document.getElementById('addrForm').reset();
+  document.getElementById('addrFormError').classList.remove('show');
+  document.getElementById('addrModal').classList.add('show');
+  document.getElementById('fieldAddress').focus();
+}
+
+async function openEditModal(id) {
+  editingAddressId = id;
+  document.getElementById('addrModalTitle').textContent = 'Edit Address';
+  document.getElementById('addrModalSub').textContent = 'Update address information';
+  document.getElementById('addrSubmitText').textContent = 'Save Changes';
+  document.getElementById('addrFormError').classList.remove('show');
+  document.getElementById('addrModal').classList.add('show');
+
+  try {
+    const { data, error } = await sb.from('aml_addresses').select('*').eq('id', id).single();
+    if (error) throw error;
+
+    document.getElementById('fieldAddress').value = data.address || '';
+    document.getElementById('fieldChain').value = data.chain || '';
+    document.getElementById('fieldAsset').value = data.asset || '';
+    document.getElementById('fieldRiskLevel').value = data.risk_level || 'HIGH';
+    document.getElementById('fieldRiskScore').value = data.risk_score || '';
+    document.getElementById('fieldCategory').value = data.category || '';
+    document.getElementById('fieldLabel').value = data.label || '';
+    document.getElementById('fieldSource').value = data.source || '';
+    document.getElementById('fieldFrozenAmount').value = data.frozen_amount || '';
+    document.getElementById('fieldTxHash').value = data.tx_hash || '';
+    document.getElementById('fieldStatus').value = data.status || 'active';
+    document.getElementById('fieldDescription').value = data.description || '';
+  } catch (err) {
+    document.getElementById('addrFormError').textContent = 'Failed to load record: ' + err.message;
+    document.getElementById('addrFormError').classList.add('show');
+  }
+}
+
+function closeAddrModal() {
+  document.getElementById('addrModal').classList.remove('show');
+  editingAddressId = null;
+}
+
+async function submitAddrForm(e) {
+  e.preventDefault();
+  const errBox = document.getElementById('addrFormError');
+  const submitBtn = document.getElementById('addrSubmitBtn');
+  const submitText = document.getElementById('addrSubmitText');
+  errBox.classList.remove('show');
+
+  const payload = {
+    address: document.getElementById('fieldAddress').value.trim(),
+    chain: document.getElementById('fieldChain').value,
+    asset: document.getElementById('fieldAsset').value,
+    risk_level: document.getElementById('fieldRiskLevel').value,
+    risk_score: document.getElementById('fieldRiskScore').value ? parseInt(document.getElementById('fieldRiskScore').value) : null,
+    category: document.getElementById('fieldCategory').value.trim() || null,
+    label: document.getElementById('fieldLabel').value.trim() || null,
+    source: document.getElementById('fieldSource').value.trim() || null,
+    frozen_amount: document.getElementById('fieldFrozenAmount').value ? parseFloat(document.getElementById('fieldFrozenAmount').value) : null,
+    tx_hash: document.getElementById('fieldTxHash').value.trim() || null,
+    status: document.getElementById('fieldStatus').value,
+    description: document.getElementById('fieldDescription').value.trim() || null,
+    updated_at: new Date().toISOString()
+  };
+
+  if (!payload.address) { errBox.textContent = 'Address is required.'; errBox.classList.add('show'); return; }
+  if (!payload.chain) { errBox.textContent = 'Chain is required.'; errBox.classList.add('show'); return; }
+  if (!payload.asset) { errBox.textContent = 'Asset is required.'; errBox.classList.add('show'); return; }
+
+  submitBtn.disabled = true;
+  submitText.textContent = editingAddressId ? 'Saving...' : 'Adding...';
+
+  try {
+    if (editingAddressId) {
+      const { data: oldData } = await sb.from('aml_addresses').select('*').eq('id', editingAddressId).single();
+      const { error } = await sb.from('aml_addresses').update(payload).eq('id', editingAddressId);
+      if (error) throw error;
+      await logAudit('UPDATE', 'aml_addresses', editingAddressId, oldData, payload);
+      showToast('Address updated successfully.', 'success');
+    } else {
+      payload.added_date = new Date().toISOString().split('T')[0];
+      payload.created_at = new Date().toISOString();
+      const { data, error } = await sb.from('aml_addresses').insert(payload).select().single();
+      if (error) throw error;
+      await logAudit('INSERT', 'aml_addresses', data.id, null, payload);
+      showToast('Address added successfully.', 'success');
+    }
+    closeAddrModal();
+    loadAddresses(addrCurrentPage);
+  } catch (err) {
+    errBox.textContent = err.message || 'Operation failed.';
+    errBox.classList.add('show');
+  } finally {
+    submitBtn.disabled = false;
+    submitText.textContent = editingAddressId ? 'Save Changes' : 'Add Address';
+  }
+}
+
+function confirmDelete(id, label) {
+  showConfirm(
+    '&#128465;',
+    'Delete Address',
+    `Delete address "${label}"? This action cannot be undone.`,
+    async () => {
+      try {
+        const { data: oldData } = await sb.from('aml_addresses').select('*').eq('id', id).single();
+        const { error } = await sb.from('aml_addresses').delete().eq('id', id);
+        if (error) throw error;
+        await logAudit('DELETE', 'aml_addresses', id, oldData, null);
+        showToast('Address deleted.', 'success');
+        loadAddresses(addrCurrentPage);
+      } catch (err) {
+        showToast('Delete failed: ' + err.message, 'error');
+      }
+    }
+  );
+}
+
+// ════════════════════════════════════════════════
+// IMPORT
+// ════════════════════════════════════════════════
+const dropZone = document.getElementById('dropZone');
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.name.endsWith('.csv')) processCSV(file);
+  else showToast('Please drop a .csv file.', 'error');
+});
+
+function handleFileSelect(e) {
+  const file = e.target.files[0];
+  if (file) processCSV(file);
+}
+
+function processCSV(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    if (lines.length < 2) {
+      showToast('CSV file must have a header row and at least one data row.', 'error');
+      return;
+    }
+
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g, ''));
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const vals = parseCSVLine(lines[i]);
+      if (vals.length < 1) continue;
+      const row = {};
+      headers.forEach((h, idx) => { row[h] = (vals[idx] || '').trim().replace(/"/g, ''); });
+      if (row.address) rows.push(row);
+    }
+
+    csvParsedData = rows;
+    showImportPreview(headers, rows);
+  };
+  reader.readAsText(file);
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let current = '';
+  let inQuotes = false;
+  for (let c of line) {
+    if (c === '"') { inQuotes = !inQuotes; }
+    else if (c === ',' && !inQuotes) { result.push(current); current = ''; }
+    else { current += c; }
+  }
+  result.push(current);
+  return result;
+}
+
+async function showImportPreview(headers, rows) {
+  const previewArea = document.getElementById('importPreviewArea');
+  const headerRow = document.getElementById('previewHeaderRow');
+  const tbody = document.getElementById('previewBody');
+  const statsDiv = document.getElementById('importStats');
+  const errBox = document.getElementById('importError');
+
+  errBox.classList.remove('show');
+  previewArea.style.display = 'block';
+
+  // Check duplicates
+  const addresses = rows.map(r => r.address).filter(Boolean);
+  const { data: existing } = await sb
+    .from('aml_addresses')
+    .select('address')
+    .in('address', addresses.slice(0, 1000));
+
+  const existingSet = new Set((existing || []).map(r => r.address));
+  const duplicates = rows.filter(r => existingSet.has(r.address)).length;
+  const newRows = rows.length - duplicates;
+
+  statsDiv.innerHTML = `
+    <span style="color:var(--green);font-weight:600;">${newRows} new</span> &nbsp;|&nbsp;
+    <span style="color:var(--orange);font-weight:600;">${duplicates} duplicates (will skip)</span> &nbsp;|&nbsp;
+    <span style="color:var(--text-2);">${rows.length} total rows</span>
+  `;
+
+  const previewHeaders = ['address', 'chain', 'asset', 'risk_level', 'category', 'label', 'frozen_amount'].filter(h => headers.includes(h));
+  headerRow.innerHTML = previewHeaders.map(h => `<th>${h}</th>`).join('') + '<th>Status</th>';
+
+  const previewRows = rows.slice(0, 10);
+  tbody.innerHTML = previewRows.map(r => {
+    const isDup = existingSet.has(r.address);
+    return `<tr style="${isDup ? 'opacity:.5;' : ''}">
+      ${previewHeaders.map(h => `<td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${r[h] || '—'}</td>`).join('')}
+      <td>${isDup ? '<span class="badge badge-inactive">Duplicate</span>' : '<span class="badge badge-active">New</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  if (rows.length > 10) {
+    tbody.innerHTML += `<tr><td colspan="${previewHeaders.length + 1}" style="text-align:center;padding:10px;font-size:12px;color:var(--text-3);">... and ${rows.length - 10} more rows</td></tr>`;
+  }
+}
+
+async function doImport() {
+  if (!csvParsedData.length) return;
+  if (!['editor', 'admin', 'super_admin'].includes(currentAdminUser?.role)) {
+    showToast('You do not have permission to import.', 'error');
+    return;
+  }
+
+  const importBtn = document.getElementById('importBtn');
+  const progressWrap = document.getElementById('importProgressWrap');
+  const progressBar = document.getElementById('importProgressBar');
+  const progressText = document.getElementById('importProgressText');
+
+  // Get existing addresses to skip duplicates
+  const addresses = csvParsedData.map(r => r.address).filter(Boolean);
+  const { data: existing } = await sb.from('aml_addresses').select('address').in('address', addresses.slice(0, 1000));
+  const existingSet = new Set((existing || []).map(r => r.address));
+  const toImport = csvParsedData.filter(r => r.address && !existingSet.has(r.address));
+
+  if (!toImport.length) {
+    showToast('All rows are duplicates — nothing to import.', 'error');
+    return;
+  }
+
+  importBtn.disabled = true;
+  progressWrap.style.display = 'block';
+
+  let imported = 0;
+  let failed = 0;
+  const batchSize = 50;
+
+  for (let i = 0; i < toImport.length; i += batchSize) {
+    const batch = toImport.slice(i, i + batchSize).map(r => ({
+      address: r.address,
+      chain: (r.chain || '').toUpperCase() || null,
+      asset: (r.asset || '').toUpperCase() || null,
+      label: r.label || null,
+      category: r.category || null,
+      risk_score: r.risk_score ? parseInt(r.risk_score) : null,
+      risk_level: (r.risk_level || '').toUpperCase() || 'HIGH',
+      source: r.source || null,
+      description: r.description || null,
+      frozen_amount: r.frozen_amount ? parseFloat(r.frozen_amount) : null,
+      status: 'active',
+      added_date: new Date().toISOString().split('T')[0],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }));
+
+    const { error } = await sb.from('aml_addresses').insert(batch);
+    if (error) { failed += batch.length; }
+    else { imported += batch.length; }
+
+    const progress = Math.round(((i + batchSize) / toImport.length) * 100);
+    progressBar.style.width = Math.min(progress, 100) + '%';
+    progressText.textContent = `${Math.min(i + batchSize, toImport.length)} / ${toImport.length}`;
+    await new Promise(r => setTimeout(r, 50));
+  }
+
+  progressBar.style.width = '100%';
+  await logAudit('INSERT', 'aml_addresses', 'batch', null, { imported, failed, total: toImport.length });
+
+  if (failed > 0) {
+    showToast(`Imported ${imported} rows. ${failed} rows failed.`, 'error');
+  } else {
+    showToast(`Successfully imported ${imported} addresses.`, 'success');
+  }
+
+  importBtn.disabled = false;
+  setTimeout(() => { clearImport(); showTab('addresses'); }, 1500);
+}
+
+function clearImport() {
+  csvParsedData = [];
+  document.getElementById('csvFileInput').value = '';
+  document.getElementById('importPreviewArea').style.display = 'none';
+  document.getElementById('importProgressWrap').style.display = 'none';
+  document.getElementById('importProgressBar').style.width = '0%';
+}
+
+// ════════════════════════════════════════════════
+// AUDIT LOG
+// ════════════════════════════════════════════════
+async function loadAuditLog(page) {
+  auditCurrentPage = page || 1;
+  const tbody = document.getElementById('auditTableBody');
+  tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;"><div class="loading-spinner" style="margin:0 auto;"></div></td></tr>';
+
+  const action = document.getElementById('auditFilterAction').value;
+  const dateVal = document.getElementById('auditFilterDate').value;
+  const offset = (auditCurrentPage - 1) * PAGE_SIZE;
+
+  try {
+    let query = sb.from('aml_audit_logs').select('*', { count: 'exact' });
+    if (action) query = query.eq('action', action);
+    if (dateVal) {
+      query = query.gte('created_at', dateVal + 'T00:00:00').lte('created_at', dateVal + 'T23:59:59');
+    }
+    query = query.order('created_at', { ascending: false }).range(offset, offset + PAGE_SIZE - 1);
+
+    const { data, error, count } = await query;
+    if (error) throw error;
+
+    auditTotalCount = count || 0;
+    renderAuditTable(data || []);
+    renderPagination('audit', auditCurrentPage, auditTotalCount, loadAuditLog);
+  } catch (err) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="error-box show" style="margin:16px;">Error: ${err.message}</div></td></tr>`;
+  }
+}
+
+function renderAuditTable(rows) {
+  const tbody = document.getElementById('auditTableBody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-state-icon">&#128196;</div><div class="empty-state-text">No audit logs found</div></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r, i) => {
+    const timeStr = r.created_at ? new Date(r.created_at).toLocaleString() : '—';
+    const actionBadge = `<span class="audit-action-badge audit-${r.action || ''}">${r.action || '—'}</span>`;
+    const hasOld = r.old_data && Object.keys(r.old_data).length > 0;
+    const hasNew = r.new_data && Object.keys(r.new_data).length > 0;
+
+    const changes = `
+      ${hasOld ? `<span class="json-toggle" onclick="toggleJson('old_${i}')">Old data</span>
+        <div class="json-pre" id="old_${i}">${JSON.stringify(r.old_data, null, 2)}</div>` : ''}
+      ${hasNew ? `<span class="json-toggle" onclick="toggleJson('new_${i}')">${hasOld ? ' / ' : ''}New data</span>
+        <div class="json-pre" id="new_${i}">${JSON.stringify(r.new_data, null, 2)}</div>` : ''}
+      ${!hasOld && !hasNew ? '<span style="color:var(--text-3);font-size:11px;">—</span>' : ''}
+    `;
+
+    return `
+      <tr class="audit-row">
+        <td style="font-size:11px;color:var(--text-2);white-space:nowrap;">${timeStr}</td>
+        <td style="font-size:11px;color:var(--text-2);">${r.user_id ? r.user_id.substring(0, 8) + '...' : '—'}</td>
+        <td>${actionBadge}</td>
+        <td style="font-size:12px;font-family:monospace;">${r.table_name || '—'}</td>
+        <td style="font-size:11px;font-family:monospace;color:var(--text-2);">${r.record_id ? String(r.record_id).substring(0, 12) + '...' : '—'}</td>
+        <td style="min-width:180px;">${changes}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function toggleJson(id) {
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('show');
+}
+
+function clearAuditFilters() {
+  document.getElementById('auditFilterAction').value = '';
+  document.getElementById('auditFilterDate').value = '';
+  loadAuditLog(1);
+}
+
+function auditGoPage(p) { loadAuditLog(p); }
+
+// ════════════════════════════════════════════════
+// USERS (super_admin only)
+// ════════════════════════════════════════════════
+async function loadUsers() {
+  const area = document.getElementById('usersListArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+
+  try {
+    const { data, error } = await sb.from('aml_admin_users').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+
+    if (!data || !data.length) {
+      area.innerHTML = '<div class="empty-state"><div class="empty-state-text">No users found</div></div>';
+      return;
+    }
+
+    area.innerHTML = data.map(u => {
+      const initials = (u.display_name || u.email || '?').substring(0, 2).toUpperCase();
+      const lastLogin = u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never';
+      const isSelf = u.id === currentAdminUser?.id;
+
+      return `
+        <div class="user-card">
+          <div class="user-avatar">${initials}</div>
+          <div class="user-info">
+            <div class="user-name">${u.display_name || '—'} ${isSelf ? '<span style="font-size:11px;color:var(--text-3);">(you)</span>' : ''}</div>
+            <div class="user-email">${u.email} &middot; Last login: ${lastLogin}</div>
+          </div>
+          <div class="user-actions">
+            <select class="filter-select" onchange="changeUserRole('${u.id}', this.value)" ${isSelf ? 'disabled' : ''}>
+              <option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>Viewer</option>
+              <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Editor</option>
+              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
+              <option value="super_admin" ${u.role === 'super_admin' ? 'selected' : ''}>Super Admin</option>
+            </select>
+            <span class="role-badge ${u.role}">${u.role.replace('_', ' ')}</span>
+            ${!isSelf ? `<button class="btn btn-xs ${u.is_active ? 'btn-outline' : 'btn-primary'}" onclick="toggleUserActive('${u.id}', ${u.is_active})">
+              ${u.is_active ? 'Deactivate' : 'Activate'}
+            </button>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (err) {
+    area.innerHTML = `<div class="error-box show">Error loading users: ${err.message}</div>`;
+  }
+}
+
+async function changeUserRole(userId, newRole) {
+  try {
+    const { data: old } = await sb.from('aml_admin_users').select('*').eq('id', userId).single();
+    const { error } = await sb.from('aml_admin_users').update({ role: newRole, updated_at: new Date().toISOString() }).eq('id', userId);
+    if (error) throw error;
+    await logAudit('UPDATE', 'aml_admin_users', userId, { role: old?.role }, { role: newRole });
+    showToast('Role updated.', 'success');
+    loadUsers();
+  } catch (err) {
+    showToast('Failed to update role: ' + err.message, 'error');
+  }
+}
+
+async function toggleUserActive(userId, currentState) {
+  try {
+    const { error } = await sb.from('aml_admin_users').update({ is_active: !currentState, updated_at: new Date().toISOString() }).eq('id', userId);
+    if (error) throw error;
+    await logAudit('UPDATE', 'aml_admin_users', userId, { is_active: currentState }, { is_active: !currentState });
+    showToast(`User ${!currentState ? 'activated' : 'deactivated'}.`, 'success');
+    loadUsers();
+  } catch (err) {
+    showToast('Failed: ' + err.message, 'error');
+  }
+}
+
+function openInviteModal() {
+  document.getElementById('inviteEmail').value = '';
+  document.getElementById('inviteDisplayName').value = '';
+  document.getElementById('inviteRole').value = 'viewer';
+  document.getElementById('inviteError').classList.remove('show');
+  document.getElementById('inviteModal').classList.add('show');
+}
+
+function closeInviteModal() {
+  document.getElementById('inviteModal').classList.remove('show');
+}
+
+async function doInviteUser() {
+  const email = document.getElementById('inviteEmail').value.trim();
+  const displayName = document.getElementById('inviteDisplayName').value.trim();
+  const role = document.getElementById('inviteRole').value;
+  const errBox = document.getElementById('inviteError');
+  errBox.classList.remove('show');
+
+  if (!email) { errBox.textContent = 'Email is required.'; errBox.classList.add('show'); return; }
+
+  try {
+    // Check if already exists
+    const { data: existing } = await sb.from('aml_admin_users').select('id').eq('email', email).single();
+    if (existing) { errBox.textContent = 'A user with this email already exists.'; errBox.classList.add('show'); return; }
+
+    const { error } = await sb.from('aml_admin_users').insert({
+      email,
+      display_name: displayName || email.split('@')[0],
+      role,
+      is_active: true,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    });
+    if (error) throw error;
+
+    await logAudit('INSERT', 'aml_admin_users', email, null, { email, role });
+    showToast('User added successfully.', 'success');
+    closeInviteModal();
+    loadUsers();
+  } catch (err) {
+    errBox.textContent = 'Failed to add user: ' + err.message;
+    errBox.classList.add('show');
+  }
+}
+
+// ════════════════════════════════════════════════
+// AUDIT LOGGER
+// ════════════════════════════════════════════════
+async function logAudit(action, tableName, recordId, oldData, newData) {
+  try {
+    await sb.from('aml_audit_logs').insert({
+      user_id: currentUser?.id || null,
+      action,
+      table_name: tableName,
+      record_id: String(recordId),
+      old_data: oldData || null,
+      new_data: newData || null,
+      created_at: new Date().toISOString()
+    });
+  } catch (e) {
+    console.warn('Audit log failed:', e);
+  }
+}
+
+// ════════════════════════════════════════════════
+// UI HELPERS
+// ════════════════════════════════════════════════
+function showToast(msg, type = 'info') {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'show toast-' + type;
+  clearTimeout(el._timer);
+  el._timer = setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function showConfirm(icon, title, msg, onConfirm) {
+  document.getElementById('confirmIcon').innerHTML = icon;
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent = msg;
+  confirmCallback = onConfirm;
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function closeConfirm() {
+  document.getElementById('confirmOverlay').classList.remove('show');
+  confirmCallback = null;
+}
+
+document.getElementById('confirmOkBtn').addEventListener('click', () => {
+  if (confirmCallback) confirmCallback();
+  closeConfirm();
+});
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('show');
+  });
+});
+
+function formatLargeNumber(n) {
+  n = parseFloat(n) || 0;
+  if (n >= 1e9) return (n / 1e9).toFixed(1) + 'B';
+  if (n >= 1e6) return (n / 1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return (n / 1e3).toFixed(1) + 'K';
+  return n.toFixed(0);
+}
+
+// ════════════════════════════════════════════════
+// LE REQUESTS MANAGEMENT
+// ════════════════════════════════════════════════
+
+async function loadLEPendingCount() {
+  try {
+    const { count } = await sb.from('aml_user_profiles').select('*', { count: 'exact', head: true }).eq('le_status', 'pending');
+    const badge = document.getElementById('le-pending-count');
+    if (count > 0) {
+      badge.textContent = count;
+      badge.style.display = 'inline';
+    } else {
+      badge.style.display = 'none';
+    }
+  } catch(e) {}
+}
+
+async function loadLERequests() {
+  const area = document.getElementById('leRequestsArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+
+  const statusFilter = document.getElementById('leFilterStatus').value;
+  let query = sb.from('aml_user_profiles').select('*').order('le_applied_at', { ascending: false });
+
+  if (statusFilter) {
+    query = query.eq('le_status', statusFilter);
+  } else {
+    query = query.neq('le_status', 'none');
+  }
+
+  const { data, error } = await query;
+
+  if (error) {
+    area.innerHTML = `<div class="empty-state" style="color:var(--red);">Error: ${error.message}</div>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    area.innerHTML = '<div class="empty-state">No requests found</div>';
+    return;
+  }
+
+  let html = '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
+  html += '<th>Email</th><th>Name</th><th>Organization</th><th>Title</th><th>Badge #</th><th>Country</th><th>Status</th><th>Applied</th><th>Actions</th>';
+  html += '</tr></thead><tbody>';
+
+  data.forEach(u => {
+    const statusCls = u.le_status === 'approved' ? 'green' : u.le_status === 'rejected' ? 'red' : 'orange';
+    const statusLabel = u.le_status.charAt(0).toUpperCase() + u.le_status.slice(1);
+    const appliedAt = u.le_applied_at ? new Date(u.le_applied_at).toLocaleDateString() : '—';
+
+    html += '<tr>';
+    html += `<td style="font-family:var(--m,monospace);font-size:12px;">${esc(u.email)}</td>`;
+    html += `<td>${esc(u.full_name || '—')}</td>`;
+    html += `<td><strong>${esc(u.organization || '—')}</strong></td>`;
+    html += `<td>${esc(u.title || '—')}</td>`;
+    html += `<td>${esc(u.badge_number || '—')}</td>`;
+    html += `<td>${esc(u.country || '—')}</td>`;
+    html += `<td><span class="role-badge" style="background:var(--${statusCls === 'green' ? 'green' : statusCls === 'red' ? 'red' : 'orange'});color:#fff;opacity:0.85;">${statusLabel}</span></td>`;
+    html += `<td style="font-size:12px;color:var(--text-3);">${appliedAt}</td>`;
+    html += '<td style="white-space:nowrap;">';
+
+    if (u.le_status === 'pending') {
+      html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;margin-right:4px;" onclick="approveLERequest('${u.id}')">Approve</button>`;
+      html += `<button class="btn btn-sm btn-danger" onclick="rejectLERequest('${u.id}')">Reject</button>`;
+    } else if (u.le_status === 'approved') {
+      html += `<button class="btn btn-sm btn-ghost" onclick="revokeLEAccess('${u.id}')">Revoke</button>`;
+    } else {
+      html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;" onclick="approveLERequest('${u.id}')">Approve</button>`;
+    }
+
+    html += '</td></tr>';
+  });
+
+  html += '</tbody></table></div></div>';
+  area.innerHTML = html;
+}
+
+async function approveLERequest(userId) {
+  if (!confirm('Approve this law enforcement verification request?')) return;
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    le_status: 'approved',
+    le_reviewed_at: new Date().toISOString(),
+    le_reviewed_by: currentUser.id,
+    role: 'law_enforcement'
+  }).eq('id', userId);
+
+  if (error) { alert('Error: ' + error.message); return; }
+  await logAudit('UPDATE', 'aml_user_profiles', userId, { le_status: 'pending' }, { le_status: 'approved', role: 'law_enforcement' });
+  loadLERequests();
+  loadLEPendingCount();
+}
+
+async function rejectLERequest(userId) {
+  const reason = prompt('Rejection reason (optional):');
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    le_status: 'rejected',
+    le_reviewed_at: new Date().toISOString(),
+    le_reviewed_by: currentUser.id,
+    le_reject_reason: reason || null
+  }).eq('id', userId);
+
+  if (error) { alert('Error: ' + error.message); return; }
+  await logAudit('UPDATE', 'aml_user_profiles', userId, { le_status: 'pending' }, { le_status: 'rejected' });
+  loadLERequests();
+  loadLEPendingCount();
+}
+
+async function revokeLEAccess(userId) {
+  if (!confirm('Revoke law enforcement access for this user?')) return;
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    le_status: 'none',
+    role: 'public',
+    le_reviewed_at: new Date().toISOString(),
+    le_reviewed_by: currentUser.id
+  }).eq('id', userId);
+
+  if (error) { alert('Error: ' + error.message); return; }
+  await logAudit('UPDATE', 'aml_user_profiles', userId, { role: 'law_enforcement' }, { role: 'public', le_status: 'none' });
+  loadLERequests();
+  loadLEPendingCount();
+}
+
+// ════════════════════════════════════════════════
+// PLATFORM USERS
+// ════════════════════════════════════════════════
+
+async function loadPlatformUsers() {
+  const area = document.getElementById('platformUsersArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+
+  const { data, error } = await sb.from('aml_user_profiles').select('*').order('created_at', { ascending: false });
+
+  if (error) {
+    area.innerHTML = `<div class="empty-state" style="color:var(--red);">Error: ${error.message}</div>`;
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    area.innerHTML = '<div class="empty-state">No registered users yet</div>';
+    return;
+  }
+
+  let html = '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
+  html += '<th>Email</th><th>Name</th><th>Role</th><th>LE Status</th><th>Briefing</th><th>Logins</th><th>Last Login</th><th>Registered</th><th>Active</th>';
+  html += '</tr></thead><tbody>';
+
+  data.forEach(u => {
+    const roleCls = u.role === 'admin' ? 'admin' : u.role === 'law_enforcement' ? 'editor' : 'viewer';
+    const lastLogin = u.last_login_at ? new Date(u.last_login_at).toLocaleDateString() : '—';
+    const created = new Date(u.created_at).toLocaleDateString();
+
+    html += '<tr>';
+    html += `<td style="font-family:var(--m,monospace);font-size:12px;">${esc(u.email)}</td>`;
+    html += `<td>${esc(u.full_name || '—')}</td>`;
+    html += `<td><span class="role-badge ${roleCls}">${u.role}</span></td>`;
+    html += `<td>${u.le_status !== 'none' ? u.le_status : '—'}</td>`;
+    html += `<td>${u.subscribe_daily_briefing ? '✓' : '—'}</td>`;
+    html += `<td>${u.login_count || 0}</td>`;
+    html += `<td style="font-size:12px;color:var(--text-3);">${lastLogin}</td>`;
+    html += `<td style="font-size:12px;color:var(--text-3);">${created}</td>`;
+    html += `<td>${u.is_active ? '<span style="color:var(--green);">Active</span>' : '<span style="color:var(--red);">Disabled</span>'}</td>`;
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div></div>';
+  html += `<div style="margin-top:12px;font-size:12px;color:var(--text-3);">Total: ${data.length} users</div>`;
+  area.innerHTML = html;
+}
+
+function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+// ════════════════════════════════════════════════
+// BOOT
+// ════════════════════════════════════════════════
+checkSession();
+</script>
+</body>
+</html>
