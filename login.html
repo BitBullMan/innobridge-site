@@ -37,7 +37,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 
 /* MAIN */
 .main{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 20px 40px}
-.auth-container{width:100%;max-width:440px}
+.auth-container{width:100%;max-width:480px}
 .auth-card{background:var(--canvas);border-radius:16px;border:1px solid var(--hl);box-shadow:var(--shadow-md);overflow:hidden}
 
 /* Tabs */
@@ -92,14 +92,45 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 .status-badge.rejected{background:rgba(239,68,68,0.08);color:#ef4444}
 
 /* Logged-in view */
-.profile-card{padding:28px 32px 32px}
-.profile-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.profile-avatar{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font:700 18px var(--f);color:#fff}
-.profile-name{font:600 16px var(--f);color:var(--ink)}
-.profile-email{font:400 12px var(--f);color:var(--ink3)}
-.profile-role{margin-top:2px}
-.profile-section{margin-bottom:20px}
-.profile-section h3{font:600 13px var(--f);color:var(--ink2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.3px}
+.profile-page{max-width:560px}
+.profile-card{padding:0}
+.profile-banner{background:linear-gradient(135deg,#00c896 0%,#00a87a 100%);padding:32px 32px 48px;position:relative}
+.profile-header{display:flex;align-items:center;gap:16px}
+.profile-avatar{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;font:700 22px var(--f);color:#fff;border:2px solid rgba(255,255,255,0.3);flex-shrink:0}
+.profile-name{font:700 20px var(--f);color:#fff}
+.profile-email{font:400 13px var(--f);color:rgba(255,255,255,0.8);margin-top:2px}
+.profile-role{margin-top:4px}
+.profile-body{padding:28px 32px 32px}
+.profile-section{margin-bottom:24px}
+.profile-section:last-child{margin-bottom:0}
+.profile-section-title{font:600 12px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.profile-section-title svg{width:16px;height:16px;color:var(--ink3)}
+.profile-field{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--s2)}
+.profile-field:last-child{border-bottom:none}
+.profile-field-label{font:500 13px var(--f);color:var(--ink2)}
+.profile-field-value{font:400 13px var(--f);color:var(--ink);text-align:right;max-width:60%}
+.profile-field-value.editable{cursor:pointer;color:var(--accent);display:flex;align-items:center;gap:4px}
+.profile-field-value.editable:hover{text-decoration:underline}
+.profile-edit-input{padding:6px 10px;border:1.5px solid var(--accent);border-radius:6px;font:400 13px var(--f);color:var(--ink);outline:none;width:200px;text-align:right}
+/* Toggle switch */
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;background:var(--s1);border-radius:10px;margin-bottom:8px;transition:background .2s}
+.toggle-row:hover{background:var(--s2)}
+.toggle-label{font:400 13px var(--f);color:var(--ink)}
+.toggle-desc{font:400 11px var(--f);color:var(--ink3);margin-top:2px}
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--s3);border-radius:24px;transition:background .3s}
+.toggle-slider::before{content:'';position:absolute;width:18px;height:18px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:transform .3s;box-shadow:0 1px 3px rgba(0,0,0,0.15)}
+.toggle-switch input:checked+.toggle-slider{background:var(--accent)}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+.toggle-saved{font:600 11px var(--f);color:var(--accent);opacity:0;transition:opacity .3s;margin-left:8px}
+.toggle-saved.show{opacity:1}
+/* Action buttons */
+.profile-actions{display:flex;gap:10px;margin-top:24px}
+.btn-secondary{flex:1;padding:11px;font:500 13px var(--f);color:var(--ink2);background:var(--s1);border:1px solid var(--s3);border-radius:8px;cursor:pointer;transition:all .2s;text-align:center}
+.btn-secondary:hover{background:var(--s2);color:var(--ink)}
+.btn-danger-outline{flex:1;padding:11px;font:500 13px var(--f);color:var(--danger);background:none;border:1px solid rgba(239,68,68,0.2);border-radius:8px;cursor:pointer;transition:all .2s}
+.btn-danger-outline:hover{background:var(--danger-bg)}
 
 footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);background:var(--canvas)}
 .f-copy{font:500 12px var(--f);color:var(--ink3)}
@@ -256,35 +287,88 @@ footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);backgr
     </div>
 
     <!-- Logged-in view -->
-    <div id="profile-view" class="auth-card" style="display:none">
+    <div id="profile-view" class="auth-card profile-page" style="display:none">
       <div class="profile-card">
-        <div class="profile-header">
-          <div class="profile-avatar" id="profile-initials">?</div>
-          <div>
-            <div class="profile-name" id="profile-name">—</div>
-            <div class="profile-email" id="profile-email">—</div>
-            <div class="profile-role" id="profile-role-badge"></div>
+        <!-- Banner -->
+        <div class="profile-banner">
+          <div class="profile-header">
+            <div class="profile-avatar" id="profile-initials">?</div>
+            <div>
+              <div class="profile-name" id="profile-name">—</div>
+              <div class="profile-email" id="profile-email">—</div>
+              <div class="profile-role" id="profile-role-badge"></div>
+            </div>
           </div>
         </div>
 
-        <div class="profile-section" id="le-section">
-          <h3 data-i18n="profile.leAccess">Law Enforcement Access</h3>
-          <div id="le-access-status"></div>
-        </div>
+        <div class="profile-body">
+          <!-- Personal Info -->
+          <div class="profile-section">
+            <div class="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <span data-i18n="profile.info">Personal Information</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.fullName">Full Name</span>
+              <span class="profile-field-value editable" id="field-name" onclick="editField('full_name')">—<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.emailLabel">Email</span>
+              <span class="profile-field-value" id="field-email">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.org">Organization</span>
+              <span class="profile-field-value editable" id="field-org" onclick="editField('organization')">—<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.memberSince">Member Since</span>
+              <span class="profile-field-value" id="field-since">—</span>
+            </div>
+          </div>
 
-        <div class="profile-section">
-          <h3 data-i18n="profile.prefs">Preferences</h3>
-          <label style="display:flex;align-items:center;gap:8px;font:400 13px var(--f);color:var(--ink2);cursor:pointer;margin-bottom:8px">
-            <input type="checkbox" id="pref-briefing" onchange="updatePref('subscribe_daily_briefing', this.checked)">
-            <span data-i18n="profile.briefing">Subscribe to Daily Intelligence Briefing</span>
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;font:400 13px var(--f);color:var(--ink2);cursor:pointer">
-            <input type="checkbox" id="pref-alerts" onchange="updatePref('subscribe_alerts', this.checked)">
-            <span data-i18n="profile.alerts">Subscribe to Whale Alert Notifications</span>
-          </label>
-        </div>
+          <!-- Subscriptions -->
+          <div class="profile-section">
+            <div class="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              <span data-i18n="profile.subscriptions">Subscriptions</span>
+            </div>
+            <div class="toggle-row">
+              <div>
+                <div class="toggle-label" data-i18n="profile.briefing">Daily Intelligence Briefing</div>
+                <div class="toggle-desc" id="briefing-desc">AML/crypto risk analysis delivered daily at 8:00 AM (UTC+8)</div>
+              </div>
+              <div style="display:flex;align-items:center">
+                <span class="toggle-saved" id="save-briefing">Saved</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="pref-briefing" onchange="togglePref('subscribe_daily_briefing', this.checked, 'save-briefing')">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
 
-        <button class="btn btn-outline" onclick="handleLogout()" data-i18n="profile.logout">Sign Out</button>
+          <!-- Account -->
+          <div class="profile-section">
+            <div class="profile-section-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <span data-i18n="profile.account">Account</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.lastLogin">Last Login</span>
+              <span class="profile-field-value" id="field-lastlogin">—</span>
+            </div>
+            <div class="profile-field">
+              <span class="profile-field-label" data-i18n="profile.loginCount">Total Logins</span>
+              <span class="profile-field-value" id="field-logincount">—</span>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="profile-actions">
+            <button class="btn-secondary" onclick="window.location.href='index.html'" data-i18n="profile.home">Back to Home</button>
+            <button class="btn-danger-outline" onclick="handleLogout()" data-i18n="profile.logout">Sign Out</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -464,9 +548,65 @@ async function handleLEApply(e) {
   renderProfileView();
 }
 
-// ── Preferences ──
-async function updatePref(field, value) {
-  await sb.from('aml_user_profiles').update({ [field]: value }).eq('id', currentUser.id);
+// ── Preferences (with save confirmation) ──
+async function togglePref(field, value, saveId) {
+  const saveEl = document.getElementById(saveId);
+  const { error } = await sb.from('aml_user_profiles').update({ [field]: value }).eq('id', currentUser.id);
+  if (!error) {
+    saveEl.textContent = lang === 'zh' ? '已保存' : 'Saved';
+    saveEl.classList.add('show');
+    setTimeout(() => saveEl.classList.remove('show'), 2000);
+  }
+}
+
+// ── Inline field editing ──
+async function editField(field) {
+  const fieldMap = { full_name: 'field-name', organization: 'field-org' };
+  const el = document.getElementById(fieldMap[field]);
+  if (!el || el.querySelector('input')) return;
+
+  const currentVal = currentProfile?.[field] || '';
+  const placeholders = {
+    full_name: lang === 'zh' ? '输入姓名' : 'Enter name',
+    organization: lang === 'zh' ? '输入机构名称' : 'Enter organization'
+  };
+
+  el.innerHTML = `<input class="profile-edit-input" value="${currentVal.replace(/"/g, '&quot;')}" placeholder="${placeholders[field]}" onblur="saveField('${field}', this)" onkeydown="if(event.key==='Enter')this.blur()">`;
+  el.classList.remove('editable');
+  el.querySelector('input').focus();
+}
+
+async function saveField(field, input) {
+  const value = input.value.trim();
+  const fieldMap = { full_name: 'field-name', organization: 'field-org' };
+  const el = document.getElementById(fieldMap[field]);
+
+  if (value && value !== (currentProfile?.[field] || '')) {
+    await sb.from('aml_user_profiles').update({ [field]: value }).eq('id', currentUser.id);
+    currentProfile[field] = value;
+    // Show save toast
+    showSaveToast();
+  }
+
+  const display = value || (lang === 'zh' ? '未设置' : 'Not set');
+  const editIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  el.innerHTML = display + editIcon;
+  el.classList.add('editable');
+  el.onclick = () => editField(field);
+
+  // Update banner name if it was full_name
+  if (field === 'full_name' && value) {
+    document.getElementById('profile-name').textContent = value;
+    const initials = value.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('profile-initials').textContent = initials;
+  }
+}
+
+function showSaveToast() {
+  const toast = document.getElementById('confirm-toast');
+  document.getElementById('toast-text').textContent = lang === 'zh' ? '已保存' : 'Changes saved';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
 // ── Logout ──
@@ -499,51 +639,40 @@ function renderProfileView() {
 
   // Role badge
   const roleMap = {
-    'public': { label: 'Public', labelZh: '普通用户', cls: '' },
+    'public': { label: 'Member', labelZh: '普通用户', cls: '' },
     'law_enforcement': { label: 'Law Enforcement', labelZh: '执法人员', cls: 'approved' },
     'subscriber': { label: 'Subscriber', labelZh: '订阅用户', cls: 'approved' },
     'admin': { label: 'Admin', labelZh: '管理员', cls: 'approved' }
   };
   const r = roleMap[currentProfile.role] || roleMap['public'];
-  document.getElementById('profile-role-badge').innerHTML = `<span class="status-badge ${r.cls}">${lang === 'zh' ? r.labelZh : r.label}</span>`;
+  document.getElementById('profile-role-badge').innerHTML = `<span class="status-badge ${r.cls}" style="font-size:10px;padding:3px 8px;background:rgba(255,255,255,0.15);color:#fff">${lang === 'zh' ? r.labelZh : r.label}</span>`;
 
-  // LE status
-  const leSection = document.getElementById('le-section');
-  const leStatus = document.getElementById('le-access-status');
+  // Personal info fields
+  const editIcon = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>';
+  const notSet = lang === 'zh' ? '未设置' : 'Not set';
 
-  if (currentProfile.role === 'law_enforcement' || currentProfile.role === 'admin') {
-    leStatus.innerHTML = `
-      <div style="padding:14px;background:rgba(0,200,150,0.04);border:1px solid rgba(0,200,150,0.12);border-radius:8px">
-        <span class="status-badge approved">${lang === 'zh' ? '✓ 已认证' : '✓ Verified'}</span>
-        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${lang === 'zh' ? '您可以访问 Evidence Collection Hub。' : 'You have full access to the Evidence Collection Hub.'}</p>
-        <a href="evidence-collection.html" style="display:inline-block;margin-top:10px;font:600 13px var(--f);color:var(--accent)">${lang === 'zh' ? '前往 Evidence Hub →' : 'Go to Evidence Hub →'}</a>
-      </div>`;
-  } else if (currentProfile.le_status === 'pending') {
-    leStatus.innerHTML = `
-      <div style="padding:14px;background:rgba(245,158,11,0.04);border:1px solid rgba(245,158,11,0.12);border-radius:8px">
-        <span class="status-badge pending">${lang === 'zh' ? '审核中' : 'Under Review'}</span>
-        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${lang === 'zh' ? '您的申请正在审核中，请耐心等待。' : 'Your application is being reviewed. Please allow up to 24 hours.'}</p>
-        <p style="font:400 12px var(--f);color:var(--ink3);margin-top:4px">${lang === 'zh' ? '机构：' : 'Organization: '}${currentProfile.organization || '—'}</p>
-      </div>`;
-  } else if (currentProfile.le_status === 'rejected') {
-    leStatus.innerHTML = `
-      <div style="padding:14px;background:var(--danger-bg);border:1px solid rgba(239,68,68,0.12);border-radius:8px">
-        <span class="status-badge rejected">${lang === 'zh' ? '未通过' : 'Rejected'}</span>
-        <p style="font:400 13px var(--f);color:var(--ink2);margin-top:8px">${currentProfile.le_reject_reason || (lang === 'zh' ? '您的申请未通过审核。' : 'Your application was not approved.')}</p>
-        <button class="btn btn-outline" style="margin-top:10px;width:auto;padding:8px 16px" onclick="showLEReapply()">${lang === 'zh' ? '重新申请' : 'Re-apply'}</button>
-      </div>`;
-  } else {
-    // Not applied yet
-    leStatus.innerHTML = `
-      <div style="padding:14px;background:rgba(79,110,247,0.04);border:1px solid rgba(79,110,247,0.12);border-radius:8px">
-        <p style="font:400 13px var(--f);color:var(--ink2)">${lang === 'zh' ? '您尚未申请执法人员认证。认证后可访问 Evidence Collection Hub。' : 'You haven\'t applied for LE verification yet. Once verified, you\'ll have access to the Evidence Collection Hub.'}</p>
-        <button class="btn" style="margin-top:10px;width:auto;padding:8px 16px" onclick="showLEApplyFromProfile()">${lang === 'zh' ? '申请认证' : 'Apply Now'}</button>
-      </div>`;
+  document.getElementById('field-name').innerHTML = (currentProfile.full_name || notSet) + editIcon;
+  document.getElementById('field-email').textContent = currentProfile.email;
+  document.getElementById('field-org').innerHTML = (currentProfile.organization || notSet) + editIcon;
+
+  // Member since
+  const since = new Date(currentProfile.created_at);
+  document.getElementById('field-since').textContent = since.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Account info
+  if (currentProfile.last_login_at) {
+    const ll = new Date(currentProfile.last_login_at);
+    document.getElementById('field-lastlogin').textContent = ll.toLocaleString(lang === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   }
+  document.getElementById('field-logincount').textContent = currentProfile.login_count || 0;
 
-  // Preferences
+  // Briefing description
+  document.getElementById('briefing-desc').textContent = lang === 'zh'
+    ? '每日 AML/加密资产风险分析报告，每天早上 8:00 (UTC+8) 发送到您的邮箱'
+    : 'AML/crypto risk analysis delivered daily at 8:00 AM (UTC+8)';
+
+  // Subscription toggle
   document.getElementById('pref-briefing').checked = currentProfile.subscribe_daily_briefing || false;
-  document.getElementById('pref-alerts').checked = currentProfile.subscribe_alerts || false;
 }
 
 function showLEApplyFromProfile() {
@@ -599,9 +728,12 @@ const i18n = {
     'le.org': '所属机构', 'le.title2': '职位', 'le.badge': '警员编号',
     'le.country': '国家/地区', 'le.phone': '工作电话',
     'le.btn': '提交审核', 'le.note': '审核通常在24小时内完成。',
-    'profile.leAccess': '执法访问权限', 'profile.prefs': '偏好设置',
-    'profile.briefing': '订阅每日情报简报', 'profile.alerts': '订阅鲸鱼警报通知',
-    'profile.logout': '退出登录',
+    'profile.info': '个人信息', 'profile.fullName': '姓名', 'profile.emailLabel': '邮箱',
+    'profile.org': '所属机构', 'profile.memberSince': '注册时间',
+    'profile.subscriptions': '订阅服务',
+    'profile.briefing': '每日情报简报',
+    'profile.account': '账户信息', 'profile.lastLogin': '上次登录', 'profile.loginCount': '登录次数',
+    'profile.home': '返回首页', 'profile.logout': '退出登录',
     'nav.blacklist': '黑名单数据', 'nav.news': '新闻', 'nav.dashboard': '数据仪表盘',
     'nav.decoder': '合约解析', 'nav.evidence': '执法取证', 'nav.contact': '联系我们',
     'ft.copy': '© 2026 Innobridge. 保留所有权利。'
