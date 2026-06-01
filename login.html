@@ -104,6 +104,24 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);background:var(--canvas)}
 .f-copy{font:500 12px var(--f);color:var(--ink3)}
 
+/* Email Confirmation Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-box{background:var(--canvas);border-radius:16px;padding:40px 36px;max-width:420px;width:90%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.15);transform:scale(0.9);transition:transform .3s}
+.modal-overlay.show .modal-box{transform:scale(1)}
+.modal-icon{width:72px;height:72px;margin:0 auto 20px;background:linear-gradient(135deg,rgba(0,200,150,0.1),rgba(0,200,150,0.2));border-radius:50%;display:flex;align-items:center;justify-content:center}
+.modal-icon svg{width:36px;height:36px;color:var(--accent)}
+.modal-title{font:700 20px var(--f);color:var(--ink);margin-bottom:8px}
+.modal-desc{font:400 14px/1.6 var(--f);color:var(--ink2);margin-bottom:16px}
+.modal-email{font:600 14px var(--f);color:var(--accent);background:var(--accent-bg);padding:8px 16px;border-radius:8px;display:inline-block;margin-bottom:16px;word-break:break-all}
+.modal-hint{font:400 13px/1.6 var(--f);color:var(--ink3);margin-bottom:24px}
+.modal-close{background:var(--accent);color:#fff;border:none;padding:10px 32px;border-radius:8px;font:600 14px var(--f);cursor:pointer;transition:background .2s}
+.modal-close:hover{background:var(--accent-h)}
+/* Confirm success toast */
+.confirm-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:var(--canvas);border:1px solid rgba(0,200,150,0.2);border-radius:12px;padding:16px 24px;box-shadow:0 8px 30px rgba(0,0,0,0.12);z-index:1000;display:flex;align-items:center;gap:10px;transition:transform .4s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap}
+.confirm-toast.show{transform:translateX(-50%) translateY(0)}
+.confirm-toast .check{width:24px;height:24px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex-shrink:0}
+
 @media(max-width:768px){
   nav{padding:0 16px}
   .nav-links{display:none}
@@ -272,6 +290,26 @@ footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);backgr
   </div>
 </div>
 
+<!-- Email Confirmation Modal -->
+<div class="modal-overlay" id="email-modal" onclick="if(event.target===this)closeEmailModal()">
+  <div class="modal-box">
+    <div class="modal-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+    </div>
+    <h3 class="modal-title" id="modal-title">Check Your Email</h3>
+    <p class="modal-desc" id="modal-desc">We've sent a confirmation link to:</p>
+    <div class="modal-email" id="modal-email"></div>
+    <p class="modal-hint" id="modal-hint">Click the link in the email to activate your account. If you don't see it, check your spam folder.</p>
+    <button class="modal-close" onclick="closeEmailModal()">OK</button>
+  </div>
+</div>
+
+<!-- Email Confirmed Toast -->
+<div class="confirm-toast" id="confirm-toast">
+  <div class="check">✓</div>
+  <span id="toast-text" style="font:500 14px var(--f);color:var(--ink)">Email confirmed! You're now signed in.</span>
+</div>
+
 <footer>
   <span class="f-copy" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
 </footer>
@@ -357,7 +395,10 @@ async function handleRegister(e) {
   const { data, error } = await sb.auth.signUp({
     email,
     password: pw,
-    options: { data: { full_name: name } }
+    options: {
+      data: { full_name: name },
+      emailRedirectTo: window.location.origin + '/login.html'
+    }
   });
 
   if (error) {
@@ -370,10 +411,7 @@ async function handleRegister(e) {
 
   // Check if email confirmation is required
   if (data.user && !data.session) {
-    msgEl.className = 'msg success';
-    msgEl.textContent = lang === 'zh'
-      ? '注册成功！请查收邮件确认链接。'
-      : 'Account created! Please check your email to confirm.';
+    showEmailModal(email);
     btn.disabled = false;
     btn.textContent = lang === 'zh' ? '创建账户' : 'Create Account';
   } else {
@@ -519,6 +557,31 @@ function showLEReapply() {
   showLEApplyFromProfile();
 }
 
+// ── Email confirmation modal ──
+function showEmailModal(email) {
+  document.getElementById('modal-title').textContent = lang === 'zh' ? '请查收邮件' : 'Check Your Email';
+  document.getElementById('modal-desc').textContent = lang === 'zh' ? '我们已发送确认链接至：' : 'We\'ve sent a confirmation link to:';
+  document.getElementById('modal-email').textContent = email;
+  document.getElementById('modal-hint').textContent = lang === 'zh'
+    ? '请点击邮件中的链接激活您的账户。如果没有收到，请检查垃圾邮件文件夹。'
+    : 'Click the link in the email to activate your account. If you don\'t see it, check your spam folder.';
+  document.querySelector('#email-modal .modal-close').textContent = lang === 'zh' ? '好的' : 'OK';
+  document.getElementById('email-modal').classList.add('show');
+}
+
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('show');
+}
+
+function showConfirmToast() {
+  const toast = document.getElementById('confirm-toast');
+  document.getElementById('toast-text').textContent = lang === 'zh'
+    ? '邮箱已确认！您已成功登录。'
+    : 'Email confirmed! You\'re now signed in.';
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
 // ── i18n ──
 let lang = localStorage.getItem('ib_lang') || 'en';
 
@@ -565,6 +628,10 @@ function toggleLang() {
 async function init() {
   applyLang();
 
+  // Detect email confirmation callback (hash contains access_token & type=signup)
+  const hash = window.location.hash;
+  const isEmailConfirm = hash.includes('type=signup') || hash.includes('type=email');
+
   // Check session
   const { data: { session } } = await sb.auth.getSession();
 
@@ -576,7 +643,25 @@ async function init() {
       // Show LE tab if logged in
       document.getElementById('tab-le').style.display = 'block';
       renderProfileView();
+
+      // Show toast if just confirmed email
+      if (isEmailConfirm) {
+        // Clean up the hash
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+        setTimeout(() => showConfirmToast(), 300);
+      }
     }
+  } else if (hash.includes('error=')) {
+    // Handle confirmation errors (expired link, etc.)
+    const hashParams = new URLSearchParams(hash.substring(1));
+    const errDesc = hashParams.get('error_description');
+    const msgEl = document.getElementById('login-msg');
+    msgEl.className = 'msg error';
+    msgEl.textContent = lang === 'zh'
+      ? '确认链接已过期或无效，请重新注册或联系管理员。'
+      : (errDesc ? errDesc.replace(/\+/g, ' ') : 'Confirmation link is invalid or expired. Please try registering again.');
+    // Clean up the hash
+    history.replaceState(null, '', window.location.pathname + window.location.search);
   }
 
   // Check if redirected with a message
