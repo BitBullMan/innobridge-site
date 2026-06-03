@@ -402,7 +402,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <div class="bl-fade reveal">
       <div class="bl-table-wrap">
         <table class="bl-table">
-          <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Frozen Amount</th></tr></thead>
+          <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Frozen Amount</th><th>Freeze Time (UTC+8)</th></tr></thead>
           <tbody id="blacklist-preview"><tr><td colspan="5" class="bl-loading">Loading blacklist data...</td></tr></tbody>
         </table>
       </div>
@@ -719,7 +719,7 @@ document.querySelectorAll('.reveal').forEach(function(el){
       var scRiskDelta = document.getElementById('sc-risk-delta');
       if(scRiskDelta){
         var updatedAt = data.last_updated || '';
-        if(updatedAt) scRiskDelta.textContent = 'Updated: ' + updatedAt.replace(' UTC','');
+        if(updatedAt) scRiskDelta.textContent = 'Updated: ' + updatedAt + ' (UTC+8)';
         else scRiskDelta.textContent = '';
       }
     }
@@ -1159,12 +1159,19 @@ applyLang(currentLang);
         var short = addr.length > 16 ? addr.slice(0,8) + '...' + addr.slice(-6) : addr;
         var riskClass = item.risk_level === 'HIGH' ? 'danger' : item.risk_level === 'MEDIUM' ? 'warning' : 'safe';
         var frozen = item.frozen_amount ? parseFloat(item.frozen_amount).toLocaleString('en-US', {maximumFractionDigits: 2}) : '0';
+        var freezeTime = '';
+        if (item.added_date) {
+          var d = new Date(item.added_date);
+          var bj = new Date(d.getTime() + 8*60*60*1000);
+          freezeTime = bj.getFullYear()+'-'+String(bj.getMonth()+1).padStart(2,'0')+'-'+String(bj.getDate()).padStart(2,'0')+' '+String(bj.getHours()).padStart(2,'0')+':'+String(bj.getMinutes()).padStart(2,'0');
+        }
         html += '<tr>'
           +'<td class="addr-cell"><span class="mono">'+escHtml(short)+'</span></td>'
           +'<td><span class="chain-badge '+(item.chain||'').toLowerCase()+'">'+escHtml(item.chain||'')+'</span></td>'
           +'<td>'+escHtml(item.asset||'')+'</td>'
           +'<td><span class="risk-badge '+riskClass+'">'+escHtml(item.risk_level||'')+'</span></td>'
           +'<td class="mono frozen-val">$'+frozen+'</td>'
+          +'<td style="font:400 12px var(--m);color:var(--ink3)">'+freezeTime+'</td>'
           +'</tr>';
       });
       container.innerHTML = html;
