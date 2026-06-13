@@ -248,21 +248,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .pulse-badge{font:400 11px var(--f);color:var(--ink3);display:flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
-.pulse-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
-.pulse-card{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.pulse-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--accent)}
-.pulse-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-.pulse-card-cat{display:flex;align-items:center;gap:6px;font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
-.pulse-card-cat-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
-.pulse-card-pct{font:700 22px var(--m);line-height:1}
-.pulse-card-pct.high{color:var(--accent)}
-.pulse-card-pct.mid{color:var(--warn)}
-.pulse-card-pct.low{color:var(--danger)}
-.pulse-card-title{font:500 13px/1.4 var(--f);color:var(--ink);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.8em}
-.pulse-card-analysis{font:400 11px/1.5 var(--f);color:var(--ink3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;margin-bottom:8px}
-.pulse-card-foot{display:flex;align-items:center;justify-content:space-between;font:400 10px var(--m);color:var(--ink3)}
-.pulse-card-vol{display:flex;align-items:center;gap:3px}
-.pulse-card-arrow{font-size:10px;opacity:.5}
+.pulse-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:start}
+.pulse-cat-section{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
+.pulse-cat-header{display:flex;align-items:center;gap:6px;padding:14px 16px 10px;font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--hl)}
+.pulse-cat-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.pulse-event-item{padding:10px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(0,0,0,0.04)}
+.pulse-event-item:last-child{border-bottom:none}
+.pulse-event-item:hover{background:rgba(0,0,0,0.02)}
+.pulse-event-title{font:500 12px/1.35 var(--f);color:var(--ink);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.2em}
+.pulse-event-foot{display:flex;align-items:center;justify-content:space-between}
+.pulse-event-pct{font:700 16px var(--m);line-height:1}
+.pulse-event-pct.high{color:var(--accent)}
+.pulse-event-pct.mid{color:var(--warn)}
+.pulse-event-pct.low{color:var(--danger)}
+.pulse-event-vol{font:400 10px var(--m);color:var(--ink3)}
+.pulse-event-arrow{font-size:10px;opacity:.4;color:var(--ink3)}
 .pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);grid-column:1/-1}
 .pulse-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
 .pulse-modal-overlay.show{display:flex}
@@ -280,7 +280,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
 .pulse-modal-meta a{color:var(--accent);text-decoration:none}
 .pulse-modal-meta a:hover{text-decoration:underline}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-card:last-child{grid-column:1/-1}.pulse-card{padding:14px}.pulse-card-pct{font-size:18px}.pulse-modal{margin:16px;padding:24px}}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-cat-section:last-child{grid-column:1/-1}.pulse-cat-header{padding:10px 12px 8px}.pulse-event-item{padding:8px 12px}.pulse-event-vol{display:none}.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -1267,43 +1267,42 @@ var PULSE_CATS = [
 ];
 var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','elon musk','tweet','temperature','weather','alien','only'];
 
-function _findBestEvent(events, cat) {
-  for (var i = 0; i < events.length; i++) {
+function _findTopEvents(events, cat, limit) {
+  var results = [];
+  for (var i = 0; i < events.length && results.length < limit; i++) {
     var e = events[i];
     var t = (e.title || '').toLowerCase();
     var s = (e.slug || '').toLowerCase();
-    // Skip sports/entertainment/irrelevant
     var skipIt = false;
     for (var sk = 0; sk < PULSE_SKIP.length; sk++) { if (t.indexOf(PULSE_SKIP[sk]) !== -1 || s.indexOf(PULSE_SKIP[sk]) !== -1) { skipIt = true; break; } }
     if (skipIt) continue;
-    // Check match patterns
+    var matched = false;
     for (var j = 0; j < cat.match.length; j++) {
-      if (t.indexOf(cat.match[j]) !== -1 || s.indexOf(cat.match[j]) !== -1) {
-        if (!e.markets || !e.markets.length) continue;
-        // For multi-market events, pick the sub-market closest to 50%
-        var bestM = null, bestDist = 999, bestPct = 0, bestQ = '';
-        for (var mi = 0; mi < e.markets.length; mi++) {
-          var m = e.markets[mi];
-          if (!m.outcomePrices || !m.outcomes) continue;
-          try {
-            var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
-            var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
-            if (!prices || !outcomes || !prices.length) continue;
-            var idx = 0;
-            for (var x = 0; x < outcomes.length; x++) { if (outcomes[x] === 'Yes' || outcomes[x] === 'Up') { idx = x; break; } }
-            var pct = Math.round(parseFloat(prices[idx]) * 100);
-            if (isNaN(pct)) continue;
-            var dist = Math.abs(pct - 50);
-            if (dist < bestDist) { bestDist = dist; bestPct = pct; bestQ = m.question || e.title; bestM = m; }
-          } catch(ex) { continue; }
-        }
-        if (!bestM) continue;
-        var title = e.markets.length > 1 ? bestQ : (e.title || bestQ);
-        return { title: title, pct: bestPct, vol: e.volume24hr || 0, slug: e.slug || '' };
-      }
+      if (t.indexOf(cat.match[j]) !== -1 || s.indexOf(cat.match[j]) !== -1) { matched = true; break; }
     }
+    if (!matched) continue;
+    if (!e.markets || !e.markets.length) continue;
+    var bestM = null, bestDist = 999, bestPct = 0, bestQ = '';
+    for (var mi = 0; mi < e.markets.length; mi++) {
+      var m = e.markets[mi];
+      if (!m.outcomePrices || !m.outcomes) continue;
+      try {
+        var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
+        var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
+        if (!prices || !outcomes || !prices.length) continue;
+        var idx = 0;
+        for (var x = 0; x < outcomes.length; x++) { if (outcomes[x] === 'Yes' || outcomes[x] === 'Up') { idx = x; break; } }
+        var pct = Math.round(parseFloat(prices[idx]) * 100);
+        if (isNaN(pct)) continue;
+        var dist = Math.abs(pct - 50);
+        if (dist < bestDist) { bestDist = dist; bestPct = pct; bestQ = m.question || e.title; bestM = m; }
+      } catch(ex) { continue; }
+    }
+    if (!bestM) continue;
+    var title = e.markets.length > 1 ? bestQ : (e.title || bestQ);
+    results.push({ title: title, pct: bestPct, vol: e.volume24hr || 0, slug: e.slug || '' });
   }
-  return null;
+  return results;
 }
 
 function _renderPulseCards(data) {
@@ -1317,33 +1316,39 @@ function _renderPulseCards(data) {
   }
   var html = '';
   for (var i = 0; i < data.length; i++) {
-    var d = data[i];
-    var cat = PULSE_CATS[i] || {};
+    var sec = data[i];
+    var cat = sec.cat || PULSE_CATS[i] || {};
     var catLabel = currentLang === 'cn' ? cat.labelCn : cat.labelEn;
-    var pctClass = d.pct >= 50 ? 'high' : (d.pct >= 20 ? 'mid' : 'low');
-    var analysis = d.analysis || '';
-    if (currentLang === 'cn' && d.analysis_cn) analysis = d.analysis_cn;
-    if (currentLang === 'en' && d.analysis_en) analysis = d.analysis_en;
-    if (!analysis) analysis = dict('pulse.noanalysis');
-    html += '<div class="pulse-card" onclick="openPulseModal(' + i + ')">'
-      + '<div class="pulse-card-head">'
-      + '<div class="pulse-card-cat"><span class="pulse-card-cat-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>' + escHtml(catLabel) + '</div>'
-      + '<span class="pulse-card-pct ' + pctClass + '">' + d.pct + '%</span>'
-      + '</div>'
-      + '<div class="pulse-card-title">' + escHtml(d.title) + '</div>'
-      + '<div class="pulse-card-analysis">' + escHtml(analysis) + '</div>'
-      + '<div class="pulse-card-foot">'
-      + '<span class="pulse-card-vol">' + dict('pulse.yes') + ' · ' + fmtVol(d.vol) + '</span>'
-      + '<span class="pulse-card-arrow">→</span>'
-      + '</div></div>';
+    html += '<div class="pulse-cat-section">'
+      + '<div class="pulse-cat-header">'
+      + '<span class="pulse-cat-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>'
+      + escHtml(catLabel)
+      + '</div>';
+    if (sec.events && sec.events.length) {
+      for (var j = 0; j < sec.events.length; j++) {
+        var evt = sec.events[j];
+        var pctClass = evt.pct >= 50 ? 'high' : (evt.pct >= 20 ? 'mid' : 'low');
+        html += '<div class="pulse-event-item" onclick="openPulseModal(' + i + ',' + j + ')">'
+          + '<div class="pulse-event-title">' + escHtml(evt.title) + '</div>'
+          + '<div class="pulse-event-foot">'
+          + '<span class="pulse-event-pct ' + pctClass + '">' + evt.pct + '%</span>'
+          + '<span class="pulse-event-vol">' + dict('pulse.yes') + ' · ' + fmtVol(evt.vol) + '</span>'
+          + '<span class="pulse-event-arrow">→</span>'
+          + '</div></div>';
+      }
+    } else {
+      html += '<div class="pulse-event-item" style="cursor:default;text-align:center;color:var(--ink3)">' + dict('pulse.nodata') + '</div>';
+    }
+    html += '</div>';
   }
   if (!html) html = '<div class="pulse-loading">' + dict('pulse.nodata') + '</div>';
   el.innerHTML = html;
 }
 
-function openPulseModal(idx) {
-  var d = _pulseData[idx]; if (!d) return;
-  var cat = PULSE_CATS[idx] || {};
+function openPulseModal(catIdx, evtIdx) {
+  var sec = _pulseData[catIdx]; if (!sec) return;
+  var d = sec.events[evtIdx]; if (!d) return;
+  var cat = sec.cat || PULSE_CATS[catIdx] || {};
   function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
   function fmtVol(v) { if (v >= 1e6) return '$'+(v/1e6).toFixed(1)+'M'; if (v >= 1e3) return '$'+(v/1e3).toFixed(0)+'K'; return '$'+Math.round(v); }
   var catLabel = currentLang === 'cn' ? cat.labelCn : cat.labelEn;
@@ -1357,9 +1362,9 @@ function openPulseModal(idx) {
   document.getElementById('pm-bar').style.width = d.pct + '%';
   document.getElementById('pm-bar').style.background = barColor;
   var analysis = '';
-  if (currentLang === 'cn' && d.analysis_cn) analysis = d.analysis_cn;
-  else if (d.analysis_en) analysis = d.analysis_en;
-  else analysis = d.analysis || dict('pulse.noanalysis');
+  if (currentLang === 'cn' && sec.analysis_cn) analysis = sec.analysis_cn;
+  else if (sec.analysis_en) analysis = sec.analysis_en;
+  else analysis = dict('pulse.noanalysis');
   document.getElementById('pm-analysis').textContent = analysis;
   document.getElementById('pm-meta').innerHTML = '<span>' + dict('pulse.vol') + ': ' + fmtVol(d.vol) + '</span>'
     + '<a href="https://polymarket.com/event/' + encodeURIComponent(d.slug) + '" target="_blank" rel="noopener">Polymarket →</a>';
@@ -1381,31 +1386,23 @@ document.addEventListener('keydown', function(e) {
   fetch(GAMMA + '/events?active=true&closed=false&order=volume24hr&ascending=false&limit=100')
     .then(function(r) { return r.json(); })
     .then(function(events) {
-      var results = [];
+      var sections = [];
       for (var i = 0; i < PULSE_CATS.length; i++) {
-        var found = _findBestEvent(events, PULSE_CATS[i]);
-        results.push(found || { title: 'No data available', pct: 0, vol: 0, slug: '' });
+        sections.push({ cat: PULSE_CATS[i], events: _findTopEvents(events, PULSE_CATS[i], 5), analysis_en: '', analysis_cn: '' });
       }
-      // Fetch AI analysis from Supabase
       fetch('https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api?action=market_pulse')
         .then(function(r){return r.ok?r.json():null;})
         .then(function(data){
           if(data&&data.success&&data.pulse){
-            for(var i=0;i<results.length;i++){
-              var ai=data.pulse[PULSE_CATS[i].key];
-              if(ai){
-                results[i].analysis_en=ai.analysis_en||'';
-                results[i].analysis_cn=ai.analysis_cn||'';
-              }
+            for(var i=0;i<sections.length;i++){
+              var ai=data.pulse[sections[i].cat.key];
+              if(ai){ sections[i].analysis_en=ai.analysis_en||''; sections[i].analysis_cn=ai.analysis_cn||''; }
             }
           }
-          _pulseData = results;
-          _renderPulseCards(results);
+          _pulseData = sections;
+          _renderPulseCards(sections);
         })
-        .catch(function(){
-          _pulseData = results;
-          _renderPulseCards(results);
-        });
+        .catch(function(){ _pulseData = sections; _renderPulseCards(sections); });
     })
     .catch(function() {
       var el = document.getElementById('pulse-grid');
