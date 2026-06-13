@@ -248,19 +248,18 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .pulse-badge{font:400 11px var(--f);color:var(--ink3);display:flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
-.pulse-scroll{display:flex;gap:12px;overflow-x:auto;padding:4px 4px 16px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.pulse-scroll::-webkit-scrollbar{display:none}
-.pulse-item{flex:0 0 auto;width:108px;display:flex;flex-direction:column;align-items:center;scroll-snap-align:start;cursor:default;transition:transform .2s}
+.pulse-scroll{display:flex;gap:32px;justify-content:center;padding:4px 4px 16px;flex-wrap:wrap}
+.pulse-item{flex:0 0 auto;width:140px;display:flex;flex-direction:column;align-items:center;cursor:default;transition:transform .2s}
 .pulse-item:hover{transform:translateY(-4px)}
-.pulse-ring{position:relative;width:78px;height:78px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:5px;transition:box-shadow .2s}
+.pulse-ring{position:relative;width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:6px;transition:box-shadow .2s}
 .pulse-item:hover .pulse-ring{box-shadow:0 4px 16px rgba(0,204,136,.18)}
 .pulse-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--s1);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pulse-ring-pct{font:700 16px var(--m);color:var(--ink);line-height:1}
-.pulse-ring-lbl{font:500 9px var(--f);color:var(--ink3);margin-top:1px;text-transform:uppercase;letter-spacing:.3px}
-.pulse-title{font:500 11px/1.3 var(--f);color:var(--ink2);text-align:center;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:108px;min-height:2.6em}
+.pulse-ring-pct{font:700 20px var(--m);color:var(--ink);line-height:1}
+.pulse-ring-lbl{font:500 10px var(--f);color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+.pulse-title{font:500 12px/1.3 var(--f);color:var(--ink2);text-align:center;margin-top:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:140px;min-height:2.6em}
 .pulse-vol{font:400 10px var(--m);color:var(--ink3);margin-top:2px}
 .pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);width:100%}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-item{width:92px}.pulse-ring{width:66px;height:66px;padding:4px}.pulse-ring-pct{font-size:13px}.pulse-title{font-size:10px;max-width:92px}}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-scroll{gap:16px}.pulse-item{width:100px}.pulse-ring{width:76px;height:76px;padding:5px}.pulse-ring-pct{font-size:16px}.pulse-title{font-size:11px;max-width:100px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -1228,14 +1227,17 @@ function _renderPulse(events) {
     if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
     return '$' + Math.round(v);
   }
-  // Filter out daily repetitive markets, keep interesting events
+  // Filter: only finance/politics, exclude sports/esports/entertainment
   var skip = ['up-or-down-on-', 'price-on-', '-above-'];
+  var skipCat = ['world-cup','lol-','counter-strike','dota','nba','nfl','mlb','nhl','mls','soccer','football-','tennis','f1-','ufc','boxing','cricket','rugby','esports','league-of-legends','valorant','copa-america','champions-league','premier-league','la-liga','serie-a','bundesliga','qatar-vs','brazil-vs','argentina-vs','france-vs','germany-vs','england-vs','spain-vs','portugal-vs','netherlands-vs','italy-vs','team-we','bilibili','gen-g','t1-vs','fnatic','g2-','natus-vincere','oscars','grammy','emmy','golden-globe','super-bowl','march-madness','world-series','stanley-cup'];
   var items = [];
-  for (var i = 0; i < events.length && items.length < 10; i++) {
+  for (var i = 0; i < events.length && items.length < 5; i++) {
     var e = events[i];
-    var slug = e.slug || '';
+    var slug = (e.slug || '').toLowerCase();
+    var title = (e.title || '').toLowerCase();
     var dominated = false;
     for (var d = 0; d < skip.length; d++) { if (slug.indexOf(skip[d]) !== -1) { dominated = true; break; } }
+    if (!dominated) { for (var d = 0; d < skipCat.length; d++) { if (slug.indexOf(skipCat[d]) !== -1 || title.indexOf(skipCat[d]) !== -1) { dominated = true; break; } } }
     if (dominated) continue;
     var m = e.markets && e.markets[0];
     if (!m) continue;
