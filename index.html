@@ -671,24 +671,24 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <div class="logo-icon">IB</div>
         <span class="logo-text">Innobridge</span>
       </div>
-      <p>Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.</p>
+      <p data-i18n="ft.desc">Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.</p>
     </div>
     <div class="footer-col">
-      <h4>Platform</h4>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="#blacklist-section">Blacklist Data</a>
-      <a href="evidence-collection.html">Evidence Directory</a>
-      <a href="contract-decoder.html">Forensic Decoder</a>
-      <a href="#platform">Services</a>
+      <h4 data-i18n="ft.platform">Platform</h4>
+      <a href="dashboard.html" data-i18n="ft.dashboard">Dashboard</a>
+      <a href="#blacklist-section" data-i18n="ft.blacklist">Blacklist Data</a>
+      <a href="evidence-collection.html" data-i18n="ft.evidence">Evidence Directory</a>
+      <a href="contract-decoder.html" data-i18n="ft.decoder">Forensic Decoder</a>
+      <a href="#platform" data-i18n="ft.services">Services</a>
     </div>
     <div class="footer-col">
-      <h4>Resources</h4>
-      <a href="#news">News</a>
-      <a href="dashboard.html">Data Explorer</a>
-      <a href="#contact">Contact Sales</a>
+      <h4 data-i18n="ft.resources">Resources</h4>
+      <a href="#news" data-i18n="ft.news">News</a>
+      <a href="dashboard.html" data-i18n="ft.explorer">Data Explorer</a>
+      <a href="#contact" data-i18n="ft.contact">Contact Sales</a>
     </div>
     <div class="footer-col">
-      <h4>Legal</h4>
+      <h4 data-i18n="ft.legal">Legal</h4>
       <a href="privacy.html" data-i18n="ft.privacy">Privacy</a>
       <a href="terms.html" data-i18n="ft.terms">Terms</a>
       <a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a>
@@ -798,6 +798,7 @@ document.querySelectorAll('.reveal').forEach(function(el){
 })();
 
 // ===== NEWS FEED =====
+var currentLang = localStorage.getItem('ib_lang') || 'en';
 var allNews = [];
 var newsOffset = 0;
 var NEWS_PAGE = 9;
@@ -834,8 +835,8 @@ function renderNewsCards(items){
     var cat = item.category || classifyNews(item.title + ' ' + (item.content||''));
     html += '<div class="news-card reveal" data-cat="'+cat+'" data-idx="'+idx+'" onclick="openNewsModal('+idx+')">'
       +'<div class="news-source"><span class="src-icon">&#x26A1;</span>'+(item.source||'Innobridge')+'</div>'
-      +'<div class="news-title">'+escHtml(item.title||'')+'</div>'
-      +'<div class="news-snippet">'+escHtml(item.content||item.summary||'')+'</div>'
+      +'<div class="news-title">'+escHtml(decodeHtml(item.title||''))+'</div>'
+      +'<div class="news-snippet">'+escHtml(decodeHtml(item.content||item.summary||''))+'</div>'
       +'<div class="news-meta"><span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(item.published_at||item.created_at||new Date().toISOString())+'</span></div>'
       +'</div>';
   });
@@ -851,8 +852,8 @@ function openNewsModal(idx){
   var item = allNews[idx];
   if(!item) return;
   document.getElementById('modal-source').textContent = item.source || 'Innobridge';
-  document.getElementById('modal-title').textContent = item.title || '';
-  document.getElementById('modal-body').textContent = item.content || item.summary || 'No additional details available.';
+  document.getElementById('modal-title').textContent = decodeHtml(item.title || '');
+  document.getElementById('modal-body').textContent = decodeHtml(item.content || item.summary || 'No additional details available.');
   var cat = item.category || classifyNews(item.title + ' ' + (item.content||''));
   document.getElementById('modal-meta').innerHTML = '<span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(item.published_at||item.created_at||new Date().toISOString())+'</span>';
   document.getElementById('news-modal-overlay').classList.add('show');
@@ -916,6 +917,10 @@ function renderPlaceholderNews(){
 
 function escHtml(s){
   var d=document.createElement('div');d.textContent=s;return d.innerHTML;
+}
+function decodeHtml(s){
+  if(!s||s.indexOf('&')===-1) return s;
+  var d=document.createElement('textarea');d.innerHTML=s;return d.value;
 }
 
 loadNews();
@@ -1145,7 +1150,7 @@ var I18N = {
     'ct.f.opt0':'Select...','ct.f.opt1':'AML Label API Access','ct.f.opt2':'On-chain Tracing (specific case)','ct.f.opt3':'Legal Forensic Report','ct.f.opt4':'VASP Compliance Package','ct.f.opt5':'Litigation Support','ct.f.opt6':'Consultation',
     'ct.f.submit':'Submit Enquiry','ct.f.note':'All enquiries are strictly confidential. NDA available on request.',
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
-    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
     'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...'
   },
@@ -1175,7 +1180,7 @@ var I18N = {
     'ct.f.opt0':'请选择...','ct.f.opt1':'AML 标签 API 接入','ct.f.opt2':'链上追踪（具体案件）','ct.f.opt3':'法律取证报告','ct.f.opt4':'VASP 合规方案','ct.f.opt5':'诉讼支持','ct.f.opt6':'咨询服务',
     'ct.f.submit':'提交咨询','ct.f.note':'所有咨询严格保密，可按需签署保密协议。',
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
-    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
     'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...'
   }
@@ -1267,10 +1272,12 @@ var PULSE_CATS = [
 ];
 var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','elon musk','tweet','temperature','weather','alien','only'];
 
-function _findTopEvents(events, cat, limit) {
+function _findTopEvents(events, cat, limit, usedSlugs) {
   var results = [];
+  usedSlugs = usedSlugs || {};
   for (var i = 0; i < events.length && results.length < limit; i++) {
     var e = events[i];
+    if (e.slug && usedSlugs[e.slug]) continue;
     var t = (e.title || '').toLowerCase();
     var s = (e.slug || '').toLowerCase();
     var skipIt = false;
@@ -1387,8 +1394,11 @@ document.addEventListener('keydown', function(e) {
     .then(function(r) { return r.json(); })
     .then(function(events) {
       var sections = [];
+      var usedSlugs = {};
       for (var i = 0; i < PULSE_CATS.length; i++) {
-        sections.push({ cat: PULSE_CATS[i], events: _findTopEvents(events, PULSE_CATS[i], 5), analysis_en: '', analysis_cn: '' });
+        var catEvents = _findTopEvents(events, PULSE_CATS[i], 5, usedSlugs);
+        for (var u = 0; u < catEvents.length; u++) { if (catEvents[u].slug) usedSlugs[catEvents[u].slug] = true; }
+        sections.push({ cat: PULSE_CATS[i], events: catEvents, analysis_en: '', analysis_cn: '' });
       }
       fetch('https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api?action=market_pulse')
         .then(function(r){return r.ok?r.json():null;})
