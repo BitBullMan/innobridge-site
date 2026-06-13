@@ -1387,17 +1387,15 @@ document.addEventListener('keydown', function(e) {
         results.push(found || { title: 'No data available', pct: 0, vol: 0, slug: '' });
       }
       // Fetch AI analysis from Supabase
-      fetch('https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api/market-pulse',{headers:{'x-api-key':'innobridge-2024-secure-key'}})
-        .then(function(r){return r.ok?r.json():[];})
-        .then(function(insights){
-          if(insights&&insights.length){
+      fetch('https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api?action=market_pulse')
+        .then(function(r){return r.ok?r.json():null;})
+        .then(function(data){
+          if(data&&data.success&&data.pulse){
             for(var i=0;i<results.length;i++){
-              for(var j=0;j<insights.length;j++){
-                if(insights[j].category===PULSE_CATS[i].key){
-                  results[i].analysis_en=insights[j].analysis_en||'';
-                  results[i].analysis_cn=insights[j].analysis_cn||'';
-                  break;
-                }
+              var ai=data.pulse[PULSE_CATS[i].key];
+              if(ai){
+                results[i].analysis_en=ai.analysis_en||'';
+                results[i].analysis_cn=ai.analysis_cn||'';
               }
             }
           }
