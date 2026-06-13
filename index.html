@@ -1261,7 +1261,7 @@ function reloadMarketPulse() { if (_pulseData.length) _renderPulseCards(_pulseDa
 
 var PULSE_CATS = [
   { key:'crypto', icon:'₿', color:'#f7931a', labelEn:'Crypto', labelCn:'加密货币',
-    match:['bitcoin','btc','ethereum','eth','crypto','xrp','solana','sol','altcoin','dogecoin','doge','memecoin','token','defi','stablecoin','usdt','usdc','binance','coinbase'] },
+    match:['bitcoin','btc','ethereum','eth ','eth/','crypto','xrp','solana',' sol ','altcoin','dogecoin','doge','memecoin','token','defi','stablecoin','usdt','usdc','binance','coinbase','cardano','polkadot','avalanche','polygon','litecoin'] },
   { key:'economy', icon:'📈', color:'#4f6ef7', labelEn:'Economy & Markets', labelCn:'经济与市场',
     match:['s&p','nasdaq','stock market','dow jones','crude oil','oil price','wti','largest company','market crash','ipo','recession','cpi','gold price','commodity','bond','treasury','housing','unemployment','earnings','revenue'] },
   { key:'policy', icon:'🏛', color:'#8b5cf6', labelEn:'Policy & Regulation', labelCn:'政策与监管',
@@ -1271,7 +1271,7 @@ var PULSE_CATS = [
   { key:'aitech', icon:'🤖', color:'#06b6d4', labelEn:'AI & Tech', labelCn:'人工智能与科技',
     match:['ai ','artificial intelligence','openai','spacex','tesla','apple','google','microsoft','nvidia','anthropic','chatgpt','agi','robot','tech','semiconductor','chip','quantum','starlink','meta ','amazon'] }
 ];
-var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','tweet','temperature','weather','alien','only'];
+var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','tweet','temperature','weather','alien','only','prime minister','minister of','euro 2026','euros 2026','copa america','champions league','premier league','la liga','serie a','bundesliga','ballon d','football','soccer','olympics','paralymp','rugby','hockey','baseball','basketball','match on','win on 2026','elimination','knockout','group stage','fifa'];
 
 function _findTopEvents(events, cat, limit, usedSlugs) {
   var results = [];
