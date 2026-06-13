@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Innobridge — Global Compliance Intelligence</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --canvas:#ffffff;--s1:#f7f8fa;--s2:#eef0f4;--s3:#e2e5eb;
+  --accent:#00c896;--accent-h:#00b386;--accent-bg:rgba(0,200,150,0.08);
+  --ink:#1a1d23;--ink2:#5a5f6b;--ink3:#8b909c;
+  --hl:rgba(0,0,0,0.06);--hl2:rgba(0,0,0,0.12);
+  --danger:#ef4444;--danger-bg:rgba(239,68,68,0.06);
+  --warn:#f59e0b;
+  --blue:#4f6ef7;--blue-bg:rgba(79,110,247,0.06);
+  --purple:#8b5cf6;
+  --f:'Inter',system-ui,sans-serif;--m:'JetBrains Mono',monospace;
+  --max:1200px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.04),0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md:0 4px 12px rgba(0,0,0,0.06),0 1px 3px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 24px rgba(0,0,0,0.08),0 2px 6px rgba(0,0,0,0.04);
+}
+html{scroll-behavior:smooth}
+body{background:var(--canvas);color:var(--ink);font:400 15px/1.6 var(--f);overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--hl)}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;font:600 12px var(--f);color:#fff}
+.logo-text{font:600 15px var(--f);color:var(--ink);letter-spacing:-.3px}
+.nav-links{display:flex;gap:24px;list-style:none}
+.nav-links a{font:500 13px var(--f);color:var(--ink3);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--ink)}
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-btn{font:500 13px var(--f);color:#fff;background:var(--accent);padding:7px 18px;border-radius:7px;border:none;cursor:pointer;transition:background .2s}
+.nav-btn:hover{background:var(--accent-h)}
+.lang-toggle{font:500 11px var(--f);color:var(--ink3);background:var(--s1);border:1px solid var(--hl);padding:5px 12px;border-radius:99px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.lang-toggle:hover{color:var(--ink);border-color:var(--hl2)}
+.mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
+
+/* HERO */
+.hero{padding:120px 40px 56px;text-align:center;background:var(--canvas)}
+.hero-inner{max-width:var(--max);margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);border-radius:99px;padding:5px 14px;font:500 11px var(--f);color:var(--accent-h);letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+.hero h1{font:600 clamp(28px,4vw,44px)/1.12 var(--f);letter-spacing:-1.5px;color:var(--ink);margin-bottom:12px}
+.hero-sub{font:400 15px/1.7 var(--f);color:var(--ink2);max-width:640px;margin:0 auto 32px}
+.hero-stats{display:flex;gap:32px;justify-content:center;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat .num{font:700 28px var(--f);color:var(--ink);letter-spacing:-.5px}
+.hero-stat .label{font:400 12px var(--f);color:var(--ink3);margin-top:2px}
+
+/* SECTION HEADERS */
+.section-header{max-width:var(--max);margin:0 auto;padding:0 40px;margin-bottom:24px}
+.section-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.section-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+
+/* JURISDICTION GRID */
+.juris-section{padding:0 40px 64px}
+.juris-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.juris-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:14px;padding:24px;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden}
+.juris-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.juris-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,0.12)}
+.juris-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.juris-name{display:flex;align-items:center;gap:10px}
+.juris-flag{font-size:28px;line-height:1}
+.juris-title{font:600 16px var(--f);color:var(--ink)}
+.juris-code{font:500 11px var(--m);color:var(--ink3);margin-top:1px}
+.risk-badge{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--f);padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px}
+.risk-badge.low{background:var(--accent-bg);color:var(--accent-h)}
+.risk-badge.medium{background:rgba(245,158,11,0.08);color:#d97706}
+.risk-badge.high{background:var(--danger-bg);color:var(--danger)}
+.juris-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.meta-tag{font:500 11px var(--f);padding:3px 10px;border-radius:6px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl)}
+.meta-tag.fatf{background:var(--blue-bg);color:var(--blue);border-color:transparent}
+.meta-tag.regulated{background:var(--accent-bg);color:var(--accent-h);border-color:transparent}
+.meta-tag.permissive{background:rgba(245,158,11,0.08);color:#d97706;border-color:transparent}
+.meta-tag.restrictive{background:rgba(239,68,68,0.06);color:var(--danger);border-color:transparent}
+.meta-tag.banned{background:var(--danger-bg);color:var(--danger);border-color:transparent}
+.juris-summary{font:400 13px/1.6 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.juris-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--hl)}
+.juris-reg-count{font:500 12px var(--f);color:var(--ink3)}
+.juris-reg-count strong{color:var(--ink);font-weight:600}
+.juris-arrow{font:500 12px var(--f);color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap .2s}
+.juris-card:hover .juris-arrow{gap:8px}
+
+/* DETAIL PANEL */
+.detail-section{padding:0 40px 64px;display:none}
+.detail-inner{max-width:var(--max);margin:0 auto}
+.detail-back{display:inline-flex;align-items:center;gap:6px;font:500 13px var(--f);color:var(--ink3);cursor:pointer;margin-bottom:20px;padding:6px 12px;border-radius:8px;transition:all .2s;border:none;background:none}
+.detail-back:hover{color:var(--ink);background:var(--s1)}
+
+/* DETAIL OVERVIEW */
+.detail-overview{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:28px;margin-bottom:24px}
+.detail-overview-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;margin-bottom:16px}
+.detail-overview-left{display:flex;align-items:center;gap:16px}
+.detail-flag-lg{font-size:48px;line-height:1}
+.detail-title-block h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.3px}
+.detail-title-block .code{font:500 12px var(--m);color:var(--ink3);margin-top:2px}
+.detail-overview-right{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-start}
+.detail-summary{font:400 14px/1.7 var(--f);color:var(--ink2)}
+.detail-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px}
+.detail-stat{background:var(--canvas);border:1px solid var(--hl);border-radius:10px;padding:14px 16px;text-align:center}
+.detail-stat .val{font:700 20px var(--f);color:var(--ink)}
+.detail-stat .lbl{font:400 11px var(--f);color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
+
+/* TABS */
+.tabs{display:flex;gap:0;border-bottom:1px solid var(--hl);margin-bottom:24px}
+.tab-btn{font:500 13px var(--f);color:var(--ink3);padding:12px 20px;background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn:hover{color:var(--ink)}
+.tab-btn.active{color:var(--accent-h);border-bottom-color:var(--accent)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* REGULATION CARDS */
+.reg-list{display:flex;flex-direction:column;gap:12px}
+.reg-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;overflow:hidden;transition:box-shadow .2s}
+.reg-card:hover{box-shadow:var(--shadow-sm)}
+.reg-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;cursor:pointer;gap:12px}
+.reg-header:hover{background:var(--s1)}
+.reg-header-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+.cat-badge{font:600 10px var(--f);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px;flex-shrink:0}
+.cat-badge.aml{background:var(--blue-bg);color:var(--blue)}
+.cat-badge.licensing{background:rgba(139,92,246,0.08);color:var(--purple)}
+.cat-badge.travel_rule{background:rgba(249,115,22,0.08);color:#ea580c}
+.cat-badge.ban{background:var(--danger-bg);color:var(--danger)}
+.cat-badge.consumer_protection{background:var(--accent-bg);color:var(--accent-h)}
+.cat-badge.tax{background:rgba(245,158,11,0.08);color:#d97706}
+.reg-name{font:500 14px var(--f);color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.reg-authority{font:400 12px var(--f);color:var(--ink3);flex-shrink:0}
+.reg-status{font:500 11px var(--f);padding:3px 8px;border-radius:5px;flex-shrink:0}
+.reg-status.active{background:var(--accent-bg);color:var(--accent-h)}
+.reg-status.proposed{background:rgba(245,158,11,0.08);color:#d97706}
+.reg-status.pending{background:var(--blue-bg);color:var(--blue)}
+.reg-toggle{font-size:16px;color:var(--ink3);transition:transform .2s;flex-shrink:0}
+.reg-toggle.open{transform:rotate(180deg)}
+.reg-body{display:none;padding:0 20px 16px;border-top:1px solid var(--hl)}
+.reg-body.open{display:block}
+.reg-desc{font:400 13px/1.7 var(--f);color:var(--ink2);padding:14px 0}
+.reg-meta-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:12px;font:400 12px var(--f);color:var(--ink3)}
+.reg-meta-row span{display:flex;align-items:center;gap:4px}
+.reg-link{display:inline-flex;align-items:center;gap:4px;font:500 12px var(--f);color:var(--blue);transition:opacity .2s}
+.reg-link:hover{opacity:.7}
+
+/* REQUIREMENTS TABLE */
+.req-table-wrap{border:1px solid var(--hl);border-radius:10px;overflow:hidden;margin-top:12px}
+.req-table{width:100%;border-collapse:collapse;font-size:13px}
+.req-table thead{background:var(--s1)}
+.req-table th{padding:10px 14px;text-align:left;font:500 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--hl)}
+.req-table td{padding:10px 14px;border-bottom:1px solid var(--hl);color:var(--ink2);font:400 12px var(--f);vertical-align:top}
+.req-table tr:last-child td{border-bottom:none}
+.req-table tr:hover td{background:var(--s1)}
+.req-type{font:600 10px var(--f);padding:2px 7px;border-radius:4px;background:var(--s2);color:var(--ink2);text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.mandatory-yes{color:var(--danger);font-weight:600}
+.mandatory-no{color:var(--ink3)}
+
+/* RISK RULES */
+.rules-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+.rule-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:18px 20px;transition:box-shadow .2s}
+.rule-card:hover{box-shadow:var(--shadow-sm)}
+.rule-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.rule-name{font:500 14px var(--f);color:var(--ink)}
+.severity-badge{font:600 10px var(--f);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px}
+.severity-badge.critical{background:var(--danger-bg);color:var(--danger)}
+.severity-badge.high{background:rgba(245,158,11,0.08);color:#d97706}
+.severity-badge.medium{background:var(--blue-bg);color:var(--blue)}
+.severity-badge.low{background:var(--accent-bg);color:var(--accent-h)}
+.rule-desc{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:10px}
+.rule-meta{display:flex;gap:12px;font:400 11px var(--f);color:var(--ink3)}
+.rule-meta span{display:flex;align-items:center;gap:4px}
+.rule-score{font:600 12px var(--m)}
+.rule-score.high-impact{color:var(--danger)}
+.rule-score.med-impact{color:var(--warn)}
+.rule-score.low-impact{color:var(--accent)}
+
+/* ENFORCEMENT CASES */
+.cases-timeline{display:flex;flex-direction:column;gap:16px}
+.case-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:20px;position:relative;transition:box-shadow .2s}
+.case-card:hover{box-shadow:var(--shadow-sm)}
+.case-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.case-title{font:600 14px var(--f);color:var(--ink)}
+.case-penalty{font:700 14px var(--f);color:var(--danger);white-space:nowrap}
+.case-entity{font:500 12px var(--f);color:var(--ink3);margin-bottom:8px}
+.case-desc{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:10px}
+.case-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.case-date{font:400 12px var(--f);color:var(--ink3)}
+.case-tags{display:flex;gap:6px;flex-wrap:wrap}
+.case-tag{font:500 10px var(--f);padding:2px 8px;border-radius:5px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl)}
+
+/* UPDATES */
+.updates-list{display:flex;flex-direction:column;gap:12px}
+.update-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:18px 20px;transition:box-shadow .2s}
+.update-card:hover{box-shadow:var(--shadow-sm)}
+.update-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.update-title{font:500 14px var(--f);color:var(--ink)}
+.update-type{font:600 10px var(--f);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px}
+.update-type.new_regulation{background:var(--accent-bg);color:var(--accent-h)}
+.update-type.amendment{background:var(--blue-bg);color:var(--blue)}
+.update-type.enforcement{background:var(--danger-bg);color:var(--danger)}
+.update-type.guidance{background:rgba(139,92,246,0.08);color:var(--purple)}
+.update-summary{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:8px}
+.update-footer{display:flex;align-items:center;gap:16px;font:400 12px var(--f);color:var(--ink3)}
+
+/* RISK MATRIX SECTION */
+.matrix-section{padding:0 40px 64px}
+.matrix-inner{max-width:var(--max);margin:0 auto}
+.matrix-header{margin-bottom:24px}
+.matrix-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.matrix-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.matrix-group{margin-bottom:24px}
+.matrix-group-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hl)}
+.matrix-group-title h3{font:600 15px var(--f);color:var(--ink)}
+.matrix-group-title .count{font:500 11px var(--f);color:var(--ink3);background:var(--s1);padding:2px 8px;border-radius:99px}
+.matrix-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.matrix-card{background:var(--canvas);border-radius:10px;padding:14px 16px;border-left:3px solid;transition:box-shadow .2s}
+.matrix-card:hover{box-shadow:var(--shadow-sm)}
+.matrix-card.critical{border-left-color:var(--danger);background:rgba(239,68,68,0.02)}
+.matrix-card.high{border-left-color:var(--warn);background:rgba(245,158,11,0.02)}
+.matrix-card.medium{border-left-color:var(--blue);background:rgba(79,110,247,0.02)}
+.matrix-card.low{border-left-color:var(--accent);background:rgba(0,200,150,0.02)}
+.matrix-card-name{font:500 13px var(--f);color:var(--ink);margin-bottom:4px}
+.matrix-card-cat{font:400 11px var(--f);color:var(--ink3);margin-bottom:6px}
+.matrix-card-desc{font:400 12px/1.5 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.matrix-card-score{font:600 11px var(--m);margin-top:6px}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:48px 24px;color:var(--ink3);font:400 14px var(--f)}
+.empty-state .empty-icon{font-size:36px;margin-bottom:12px;opacity:.5}
+.empty-state p{max-width:360px;margin:0 auto}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
+.footer-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.footer-brand{display:flex;flex-direction:column;gap:12px}
+.footer-brand .logo-icon{background:var(--accent);color:#fff}
+.footer-brand .logo-text{color:#fff}
+.footer-brand p{font:400 13px/1.6 var(--f);color:rgba(255,255,255,0.5);max-width:280px}
+.footer-col h4{font:500 12px var(--f);color:rgba(255,255,255,0.9);text-transform:uppercase;letter-spacing:.4px;margin-bottom:16px}
+.footer-col a{display:block;font:400 13px var(--f);color:rgba(255,255,255,0.5);margin-bottom:8px;transition:color .2s}
+.footer-col a:hover{color:#fff}
+.footer-bottom{max-width:var(--max);margin:0 auto;padding-top:24px;border-top:1px solid rgba(255,255,255,0.1);display:flex;justify-content:space-between;align-items:center}
+.footer-bottom span{font:400 12px var(--f);color:rgba(255,255,255,0.4)}
+.footer-bottom a{font:400 12px var(--f);color:rgba(255,255,255,0.4);margin-left:20px;transition:color .2s}
+.footer-bottom a:hover{color:#fff}
+
+/* LOADING */
+.spinner{width:32px;height:32px;border:3px solid var(--s2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-block{text-align:center;padding:48px 24px;color:var(--ink3);font:400 13px var(--f)}
+.loading-block .spinner{margin-bottom:12px}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;font:500 13px var(--f);padding:10px 20px;border-radius:8px;z-index:999;opacity:0;transition:all .3s ease;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:960px){
+  .nav-links{display:none}
+  .mobile-toggle{display:block}
+  .juris-grid{grid-template-columns:1fr 1fr}
+  .rules-grid{grid-template-columns:1fr}
+  .matrix-grid{grid-template-columns:1fr 1fr}
+  .detail-overview-top{flex-direction:column}
+}
+@media(max-width:768px){
+  .hero{padding:96px 20px 40px}
+  nav{padding:0 20px}
+  .wrap{padding:0 20px}
+  .juris-section{padding:0 20px 48px}
+  .detail-section{padding:0 20px 48px}
+  .matrix-section{padding:0 20px 48px}
+  .section-header{padding:0 20px}
+  .juris-grid{grid-template-columns:1fr}
+  .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab-btn{padding:10px 14px;font-size:12px}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  footer{padding:48px 20px 20px}
+  .hero-stats{gap:20px}
+  .detail-stats{grid-template-columns:1fr 1fr}
+  .matrix-grid{grid-template-columns:1fr}
+  .req-table-wrap{overflow-x:auto}
+  .req-table{min-width:600px}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:-1px}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+  .hero-stats{flex-direction:column;gap:12px}
+  .detail-stats{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">
+    <div class="logo-icon">IB</div>
+    <span class="logo-text">Innobridge</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+    <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+    <li><a href="contract-decoder.html" data-i18n="nav.decoder">Forensic Decoder</a></li>
+    <li><a href="compliance.html" class="active" data-i18n="nav.compliance">Compliance</a></li>
+    <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="index.html#contact" class="nav-btn" data-i18n="nav.cta">Get Started</a>
+    <a href="login.html" class="lang-toggle" id="auth-btn" style="margin-right:2px">Sign In</a>
+    <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
+    <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge"><span class="dot"></span><span data-i18n="cp.badge">Compliance Intelligence</span></div>
+    <h1 data-i18n="cp.title">Global Compliance Intelligence</h1>
+    <p class="hero-sub" data-i18n="cp.sub">Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.</p>
+    <div class="hero-stats" id="heroStats">
+      <div class="hero-stat"><div class="num" id="statJuris">--</div><div class="label" data-i18n="cp.stat.juris">Jurisdictions</div></div>
+      <div class="hero-stat"><div class="num" id="statRegs">--</div><div class="label" data-i18n="cp.stat.regs">Regulations</div></div>
+      <div class="hero-stat"><div class="num" id="statRules">--</div><div class="label" data-i18n="cp.stat.rules">Risk Rules</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- JURISDICTION GRID -->
+<div class="section-header">
+  <h2 data-i18n="cp.grid.title">Select a Jurisdiction</h2>
+  <p data-i18n="cp.grid.sub">Click on any jurisdiction to view its complete compliance profile</p>
+</div>
+<section class="juris-section">
+  <div class="juris-grid" id="jurisGrid">
+    <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading">Loading jurisdictions...</span></div>
+  </div>
+</section>
+
+<!-- DETAIL PANEL -->
+<section class="detail-section" id="detailSection">
+  <div class="detail-inner">
+    <button class="detail-back" onclick="hideDetail()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="cp.back">Back to all jurisdictions</span>
+    </button>
+
+    <!-- OVERVIEW -->
+    <div class="detail-overview" id="detailOverview"></div>
+
+    <!-- TABS -->
+    <div class="tabs" id="detailTabs">
+      <button class="tab-btn active" data-tab="regulations" onclick="switchDetailTab('regulations',this)" data-i18n="cp.tab.regs">Regulations</button>
+      <button class="tab-btn" data-tab="risk_rules" onclick="switchDetailTab('risk_rules',this)" data-i18n="cp.tab.rules">Risk Rules</button>
+      <button class="tab-btn" data-tab="cases" onclick="switchDetailTab('cases',this)" data-i18n="cp.tab.cases">Enforcement Cases</button>
+      <button class="tab-btn" data-tab="updates" onclick="switchDetailTab('updates',this)" data-i18n="cp.tab.updates">Updates</button>
+    </div>
+
+    <div class="tab-panel active" id="panel-regulations"></div>
+    <div class="tab-panel" id="panel-risk_rules"></div>
+    <div class="tab-panel" id="panel-cases"></div>
+    <div class="tab-panel" id="panel-updates"></div>
+  </div>
+</section>
+
+<!-- RISK MATRIX -->
+<section class="matrix-section" id="matrixSection">
+  <div class="matrix-inner">
+    <div class="matrix-header">
+      <h2 data-i18n="cp.matrix.title">Global Risk Rule Matrix</h2>
+      <p data-i18n="cp.matrix.sub">21 risk detection rules across all jurisdictions, grouped by severity level</p>
+    </div>
+    <div id="matrixContent">
+      <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.rules">Loading risk rules...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo" style="margin-bottom:4px">
+        <div class="logo-icon">IB</div>
+        <span class="logo-text">Innobridge</span>
+      </div>
+      <p data-i18n="ft.desc">Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.</p>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="ft.platform">Platform</h4>
+      <a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a>
+      <a href="contract-decoder.html" data-i18n="nav.decoder">Forensic Decoder</a>
+      <a href="compliance.html" data-i18n="nav.compliance">Compliance</a>
+      <a href="evidence-collection.html" data-i18n="ft.evidence">Evidence Directory</a>
+      <a href="index.html#platform" data-i18n="ft.services">Services</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="ft.resources">Resources</h4>
+      <a href="index.html#news" data-i18n="ft.news">News</a>
+      <a href="dashboard.html" data-i18n="ft.explorer">Data Explorer</a>
+      <a href="index.html#contact" data-i18n="ft.sales">Contact Sales</a>
+    </div>
+    <div class="footer-col">
+      <h4 data-i18n="ft.legal">Legal</h4>
+      <a href="privacy.html" data-i18n="ft.privacy">Privacy</a>
+      <a href="terms.html" data-i18n="ft.terms">Terms</a>
+      <a href="disclaimer.html" data-i18n="ft.disclaimer">Disclaimer</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
+    <div>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== CONFIG =====
+var API_BASE = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
+
+var FLAG_MAP = {
+  US: '\u{1F1FA}\u{1F1F8}', EU: '\u{1F1EA}\u{1F1FA}', CN: '\u{1F1E8}\u{1F1F3}',
+  HK: '\u{1F1ED}\u{1F1F0}', SG: '\u{1F1F8}\u{1F1EC}', JP: '\u{1F1EF}\u{1F1F5}',
+  KR: '\u{1F1F0}\u{1F1F7}', GB: '\u{1F1EC}\u{1F1E7}', CH: '\u{1F1E8}\u{1F1ED}',
+  AE: '\u{1F1E6}\u{1F1EA}'
+};
+
+// ===== STATE =====
+var jurisdictions = [];
+var currentJuris = null;
+var complianceData = null;
+var allRiskRules = [];
+
+// ===== I18N =====
+var I18N = {
+  en: {
+    'nav.home':'Home','nav.dashboard':'Dashboard','nav.decoder':'Forensic Decoder',
+    'nav.compliance':'Compliance','nav.contact':'Contact','nav.cta':'Get Started',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy',
+    'ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.',
+    'ft.platform':'Platform','ft.resources':'Resources','ft.legal':'Legal',
+    'ft.evidence':'Evidence Directory','ft.services':'Services','ft.news':'News',
+    'ft.explorer':'Data Explorer','ft.sales':'Contact Sales',
+    'cp.badge':'Compliance Intelligence',
+    'cp.title':'Global Compliance Intelligence',
+    'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
+    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules',
+    'cp.grid.title':'Select a Jurisdiction',
+    'cp.grid.sub':'Click on any jurisdiction to view its complete compliance profile',
+    'cp.loading':'Loading jurisdictions...',
+    'cp.loading.rules':'Loading risk rules...',
+    'cp.loading.detail':'Loading compliance data...',
+    'cp.back':'Back to all jurisdictions',
+    'cp.tab.regs':'Regulations','cp.tab.rules':'Risk Rules',
+    'cp.tab.cases':'Enforcement Cases','cp.tab.updates':'Updates',
+    'cp.regs.count':'regulations','cp.regs.authority':'Authority',
+    'cp.regs.effective':'Effective','cp.regs.source':'Source',
+    'cp.reqs.type':'Type','cp.reqs.desc':'Description','cp.reqs.threshold':'Threshold',
+    'cp.reqs.mandatory':'Mandatory','cp.reqs.penalty':'Penalty',
+    'cp.rules.category':'Category','cp.rules.score':'Impact',
+    'cp.cases.penalty':'Penalty','cp.cases.nodata':'No enforcement cases recorded for this jurisdiction.',
+    'cp.updates.nodata':'No regulation updates recorded yet. Monitoring is active.',
+    'cp.matrix.title':'Global Risk Rule Matrix',
+    'cp.matrix.sub':'21 risk detection rules across all jurisdictions, grouped by severity level',
+    'cp.card.regs':'regulations','cp.card.view':'View details',
+    'cp.card.fatf':'FATF Member',
+    'cp.overview.region':'Region','cp.overview.risk':'Risk Level',
+    'cp.overview.status':'Regulatory Status','cp.overview.fatf':'FATF',
+    'cp.overview.regs':'Regulations','cp.overview.rules':'Risk Rules',
+    'cp.overview.cases':'Cases','cp.overview.updates':'Updates',
+    'cp.yes':'Yes','cp.no':'No',
+    'cp.req.title':'Requirements'
+  },
+  cn: {
+    'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'取证解码器',
+    'nav.compliance':'合规检测','nav.contact':'联系我们','nav.cta':'立即咨询',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策',
+    'ft.terms':'服务条款','ft.disclaimer':'免责声明',
+    'ft.desc':'区块链合规与安全情报。实时黑名单监控、链上取证和监管解决方案。',
+    'ft.platform':'平台','ft.resources':'资源','ft.legal':'法律',
+    'ft.evidence':'调证目录','ft.services':'服务','ft.news':'新闻',
+    'ft.explorer':'数据探索','ft.sales':'联系销售',
+    'cp.badge':'合规情报',
+    'cp.title':'全球合规情报',
+    'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
+    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则',
+    'cp.grid.title':'选择司法管辖区',
+    'cp.grid.sub':'点击任意司法管辖区查看完整合规概况',
+    'cp.loading':'正在加载司法管辖区...',
+    'cp.loading.rules':'正在加载风险规则...',
+    'cp.loading.detail':'正在加载合规数据...',
+    'cp.back':'返回所有司法管辖区',
+    'cp.tab.regs':'法规','cp.tab.rules':'风险规则',
+    'cp.tab.cases':'执法案例','cp.tab.updates':'法规动态',
+    'cp.regs.count':'项法规','cp.regs.authority':'监管机构',
+    'cp.regs.effective':'生效日期','cp.regs.source':'来源',
+    'cp.reqs.type':'类型','cp.reqs.desc':'描述','cp.reqs.threshold':'阈值',
+    'cp.reqs.mandatory':'强制性','cp.reqs.penalty':'处罚',
+    'cp.rules.category':'类别','cp.rules.score':'影响',
+    'cp.cases.penalty':'罚款','cp.cases.nodata':'该司法管辖区暂无执法案例记录。',
+    'cp.updates.nodata':'暂无法规更新记录。监控已开启。',
+    'cp.matrix.title':'全球风险规则矩阵',
+    'cp.matrix.sub':'21项风险检测规则，按严重等级分组',
+    'cp.card.regs':'项法规','cp.card.view':'查看详情',
+    'cp.card.fatf':'FATF 成员',
+    'cp.overview.region':'地区','cp.overview.risk':'风险等级',
+    'cp.overview.status':'监管状态','cp.overview.fatf':'FATF',
+    'cp.overview.regs':'法规','cp.overview.rules':'风险规则',
+    'cp.overview.cases':'案例','cp.overview.updates':'更新',
+    'cp.yes':'是','cp.no':'否',
+    'cp.req.title':'合规要求'
+  }
+};
+
+var currentLang = localStorage.getItem('ib_lang') || 'en';
+
+function t(key) {
+  var dict = I18N[currentLang] || I18N.en;
+  return dict[key] || (I18N.en[key] || key);
+}
+
+function applyLang() {
+  var dict = I18N[currentLang] || I18N.en;
+  document.querySelectorAll('[data-i18n]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n');
+    if (dict[key] !== undefined) {
+      if (el.children.length === 0) {
+        el.innerHTML = dict[key];
+      }
+    }
+  });
+  var btn = document.getElementById('lang-btn');
+  if (btn) btn.textContent = currentLang === 'en' ? 'EN | 中' : '中 | EN';
+}
+
+function toggleLang() {
+  currentLang = currentLang === 'en' ? 'cn' : 'en';
+  localStorage.setItem('ib_lang', currentLang);
+  applyLang();
+  // Re-render dynamic content
+  if (jurisdictions.length) renderJurisGrid();
+  if (complianceData) renderDetail();
+  if (allRiskRules.length) renderMatrix();
+}
+
+// ===== HELPERS =====
+function escHtml(s) {
+  if (!s) return '';
+  var d = document.createElement('div');
+  d.textContent = s;
+  return d.innerHTML;
+}
+
+function formatUsd(n) {
+  if (!n || isNaN(n)) return '$0';
+  var num = Number(n);
+  if (num >= 1e9) return '$' + (num / 1e9).toFixed(1) + 'B';
+  if (num >= 1e6) return '$' + (num / 1e6).toFixed(1) + 'M';
+  if (num >= 1e3) return '$' + (num / 1e3).toFixed(0) + 'K';
+  return '$' + num.toLocaleString();
+}
+
+function formatDate(d) {
+  if (!d) return '--';
+  var dt = new Date(d);
+  return dt.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+}
+
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(function() { el.classList.remove('show'); }, 2000);
+}
+
+function getFlag(code) {
+  return FLAG_MAP[code] || '\u{1F30D}';
+}
+
+function getCn(item, field) {
+  if (currentLang === 'cn' && item[field + '_cn']) return item[field + '_cn'];
+  return item[field] || '';
+}
+
+function getRiskClass(level) {
+  if (!level) return 'medium';
+  return level.toLowerCase();
+}
+
+function getStatusClass(status) {
+  if (!status) return 'regulated';
+  var s = status.toLowerCase();
+  if (s.indexOf('ban') >= 0) return 'banned';
+  if (s.indexOf('restrict') >= 0) return 'restrictive';
+  if (s.indexOf('permissive') >= 0 || s.indexOf('partial') >= 0) return 'permissive';
+  return 'regulated';
+}
+
+function getCatClass(cat) {
+  if (!cat) return 'aml';
+  return cat.toLowerCase().replace(/\s+/g, '_');
+}
+
+function getSeverityClass(sev) {
+  if (!sev) return 'medium';
+  return sev.toLowerCase();
+}
+
+// ===== API CALLS =====
+function apiFetch(params) {
+  var url = API_BASE + '?' + Object.keys(params).map(function(k) {
+    return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+  }).join('&');
+  return fetch(url).then(function(r) { return r.json(); });
+}
+
+// ===== LOAD JURISDICTIONS =====
+function loadJurisdictions() {
+  apiFetch({ action: 'jurisdictions' }).then(function(data) {
+    if (data.success && data.items) {
+      jurisdictions = data.items;
+      document.getElementById('statJuris').textContent = data.total || data.items.length;
+      // Count total regs
+      var totalRegs = 0;
+      data.items.forEach(function(j) { totalRegs += (j.regulation_count || 0); });
+      document.getElementById('statRegs').textContent = totalRegs;
+      renderJurisGrid();
+    }
+  }).catch(function(err) {
+    console.error('Failed to load jurisdictions:', err);
+    document.getElementById('jurisGrid').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load jurisdictions. Please try again later.</p></div>';
+  });
+}
+
+// ===== LOAD ALL RISK RULES =====
+function loadRiskRules() {
+  apiFetch({ action: 'risk_rules' }).then(function(data) {
+    if (data.success && data.items) {
+      allRiskRules = data.items;
+      document.getElementById('statRules').textContent = data.total || data.items.length;
+      renderMatrix();
+    }
+  }).catch(function(err) {
+    console.error('Failed to load risk rules:', err);
+    document.getElementById('matrixContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load risk rules.</p></div>';
+  });
+}
+
+// ===== RENDER JURISDICTION GRID =====
+function renderJurisGrid() {
+  var grid = document.getElementById('jurisGrid');
+  if (!jurisdictions.length) {
+    grid.innerHTML = '<div class="empty-state"><p>No jurisdictions found.</p></div>';
+    return;
+  }
+  var html = '';
+  jurisdictions.forEach(function(j) {
+    var name = getCn(j, 'name');
+    var summary = getCn(j, 'summary');
+    var risk = (j.overall_risk_level || 'MEDIUM').toUpperCase();
+    var riskClass = getRiskClass(risk);
+    var statusClass = getStatusClass(j.regulatory_status);
+    var statusLabel = j.regulatory_status || 'Regulated';
+    html += '<div class="juris-card" onclick="selectJurisdiction(\'' + escHtml(j.code) + '\')">';
+    html += '<div class="juris-top">';
+    html += '<div class="juris-name"><span class="juris-flag">' + getFlag(j.code) + '</span><div><div class="juris-title">' + escHtml(name) + '</div><div class="juris-code">' + escHtml(j.code) + '</div></div></div>';
+    html += '<span class="risk-badge ' + riskClass + '">' + escHtml(risk) + '</span>';
+    html += '</div>';
+    html += '<div class="juris-meta">';
+    html += '<span class="meta-tag">' + escHtml(j.region || '') + '</span>';
+    html += '<span class="meta-tag ' + statusClass + '">' + escHtml(statusLabel) + '</span>';
+    if (j.fatf_member) html += '<span class="meta-tag fatf">' + t('cp.card.fatf') + '</span>';
+    html += '</div>';
+    html += '<div class="juris-summary">' + escHtml(summary) + '</div>';
+    html += '<div class="juris-footer">';
+    html += '<span class="juris-reg-count"><strong>' + (j.regulation_count || 0) + '</strong> ' + t('cp.card.regs') + '</span>';
+    html += '<span class="juris-arrow">' + t('cp.card.view') + ' &rarr;</span>';
+    html += '</div>';
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+// ===== SELECT JURISDICTION =====
+function selectJurisdiction(code) {
+  currentJuris = code;
+  // Scroll to detail
+  document.getElementById('detailSection').style.display = 'block';
+  document.getElementById('detailSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Show loading
+  document.getElementById('detailOverview').innerHTML = '<div class="loading-block"><div class="spinner"></div><span>' + t('cp.loading.detail') + '</span></div>';
+  document.getElementById('panel-regulations').innerHTML = '<div class="loading-block"><div class="spinner"></div></div>';
+  document.getElementById('panel-risk_rules').innerHTML = '';
+  document.getElementById('panel-cases').innerHTML = '';
+  document.getElementById('panel-updates').innerHTML = '';
+
+  // Reset tabs
+  var btns = document.querySelectorAll('#detailTabs .tab-btn');
+  btns.forEach(function(b, i) {
+    b.classList.toggle('active', i === 0);
+  });
+  var panels = document.querySelectorAll('#detailSection .tab-panel');
+  panels.forEach(function(p, i) {
+    p.classList.toggle('active', i === 0);
+  });
+
+  // Highlight card
+  document.querySelectorAll('.juris-card').forEach(function(c) { c.classList.remove('selected'); });
+  var cards = document.querySelectorAll('.juris-card');
+  var idx = jurisdictions.findIndex(function(j) { return j.code === code; });
+  if (idx >= 0 && cards[idx]) cards[idx].classList.add('selected');
+
+  // Fetch compliance data
+  apiFetch({ action: 'compliance_check', jurisdiction: code }).then(function(data) {
+    if (data.success) {
+      complianceData = data;
+      renderDetail();
+    }
+  }).catch(function(err) {
+    console.error('Failed to load compliance data:', err);
+    document.getElementById('detailOverview').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load compliance data.</p></div>';
+  });
+}
+
+// ===== RENDER DETAIL =====
+function renderDetail() {
+  if (!complianceData) return;
+  var d = complianceData;
+  var j = jurisdictions.find(function(x) { return x.code === currentJuris; }) || {};
+
+  // Overview
+  var name = getCn(j, 'name');
+  var summary = getCn(j, 'summary');
+  var risk = (j.overall_risk_level || 'MEDIUM').toUpperCase();
+  var riskClass = getRiskClass(risk);
+  var regsCount = (d.regulations || []).length;
+  var rulesCount = (d.applicable_risk_rules || []).length;
+  var casesCount = (d.recent_cases || []).length;
+  var updatesCount = (d.recent_updates || []).length;
+
+  var oh = '';
+  oh += '<div class="detail-overview-top">';
+  oh += '<div class="detail-overview-left">';
+  oh += '<span class="detail-flag-lg">' + getFlag(currentJuris) + '</span>';
+  oh += '<div class="detail-title-block"><h2>' + escHtml(name) + '</h2><div class="code">' + escHtml(currentJuris) + ' &middot; ' + escHtml(j.region || '') + '</div></div>';
+  oh += '</div>';
+  oh += '<div class="detail-overview-right">';
+  oh += '<span class="risk-badge ' + riskClass + '">' + t('cp.overview.risk') + ': ' + risk + '</span>';
+  var statusClass = getStatusClass(j.regulatory_status);
+  oh += '<span class="meta-tag ' + statusClass + '">' + escHtml(j.regulatory_status || '') + '</span>';
+  if (j.fatf_member) oh += '<span class="meta-tag fatf">FATF</span>';
+  oh += '</div>';
+  oh += '</div>';
+  oh += '<div class="detail-summary">' + escHtml(summary) + '</div>';
+  oh += '<div class="detail-stats">';
+  oh += '<div class="detail-stat"><div class="val">' + regsCount + '</div><div class="lbl">' + t('cp.overview.regs') + '</div></div>';
+  oh += '<div class="detail-stat"><div class="val">' + rulesCount + '</div><div class="lbl">' + t('cp.overview.rules') + '</div></div>';
+  oh += '<div class="detail-stat"><div class="val">' + casesCount + '</div><div class="lbl">' + t('cp.overview.cases') + '</div></div>';
+  oh += '<div class="detail-stat"><div class="val">' + updatesCount + '</div><div class="lbl">' + t('cp.overview.updates') + '</div></div>';
+  oh += '</div>';
+  document.getElementById('detailOverview').innerHTML = oh;
+
+  // Render all tabs
+  renderRegulationsTab();
+  renderRiskRulesTab();
+  renderCasesTab();
+  renderUpdatesTab();
+}
+
+// ===== REGULATIONS TAB =====
+function renderRegulationsTab() {
+  var regs = complianceData.regulations || [];
+  var reqs = complianceData.requirements || [];
+  if (!regs.length) {
+    document.getElementById('panel-regulations').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128220;</div><p>No regulations found for this jurisdiction.</p></div>';
+    return;
+  }
+  var html = '<div class="reg-list">';
+  regs.forEach(function(reg, idx) {
+    var name = getCn(reg, 'name');
+    var desc = getCn(reg, 'description');
+    var authority = getCn(reg, 'authority');
+    var catClass = getCatClass(reg.category);
+    var statusClass = (reg.status || 'active').toLowerCase();
+
+    html += '<div class="reg-card">';
+    html += '<div class="reg-header" onclick="toggleReg(' + idx + ')">';
+    html += '<div class="reg-header-left">';
+    html += '<span class="cat-badge ' + catClass + '">' + escHtml(reg.category || '') + '</span>';
+    html += '<span class="reg-name">' + escHtml(name) + '</span>';
+    html += '</div>';
+    html += '<span class="reg-authority">' + escHtml(authority) + '</span>';
+    html += '<span class="reg-status ' + statusClass + '">' + escHtml(reg.status || 'active') + '</span>';
+    html += '<span class="reg-toggle" id="regToggle' + idx + '">▾</span>';
+    html += '</div>';
+    html += '<div class="reg-body" id="regBody' + idx + '">';
+    html += '<div class="reg-desc">' + escHtml(desc) + '</div>';
+    html += '<div class="reg-meta-row">';
+    if (reg.effective_date) html += '<span>\u{1F4C5} ' + t('cp.regs.effective') + ': ' + formatDate(reg.effective_date) + '</span>';
+    if (reg.source_url) html += '<span><a href="' + escHtml(reg.source_url) + '" target="_blank" rel="noopener" class="reg-link">\u{1F517} ' + t('cp.regs.source') + '</a></span>';
+    html += '</div>';
+
+    // Requirements for this regulation
+    var regReqs = reqs.filter(function(r) { return r.regulation_id === reg.id; });
+    if (regReqs.length) {
+      html += '<h4 style="font:600 13px var(--f);color:var(--ink);margin:12px 0 8px">' + t('cp.req.title') + ' (' + regReqs.length + ')</h4>';
+      html += '<div class="req-table-wrap"><table class="req-table"><thead><tr>';
+      html += '<th>' + t('cp.reqs.type') + '</th>';
+      html += '<th>' + t('cp.reqs.desc') + '</th>';
+      html += '<th>' + t('cp.reqs.threshold') + '</th>';
+      html += '<th>' + t('cp.reqs.mandatory') + '</th>';
+      html += '<th>' + t('cp.reqs.penalty') + '</th>';
+      html += '</tr></thead><tbody>';
+      regReqs.forEach(function(rq) {
+        var rqDesc = getCn(rq, 'description');
+        var penalty = getCn(rq, 'penalty_for_violation');
+        html += '<tr>';
+        html += '<td><span class="req-type">' + escHtml(rq.requirement_type || '') + '</span></td>';
+        html += '<td>' + escHtml(rqDesc) + '</td>';
+        html += '<td style="font-family:var(--m);font-size:12px;white-space:nowrap">' + (rq.threshold_usd ? formatUsd(rq.threshold_usd) : '--') + '</td>';
+        html += '<td>' + (rq.is_mandatory ? '<span class="mandatory-yes">✓ ' + t('cp.yes') + '</span>' : '<span class="mandatory-no">' + t('cp.no') + '</span>') + '</td>';
+        html += '<td style="font-size:12px">' + escHtml(penalty) + '</td>';
+        html += '</tr>';
+      });
+      html += '</tbody></table></div>';
+    }
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('panel-regulations').innerHTML = html;
+}
+
+function toggleReg(idx) {
+  var body = document.getElementById('regBody' + idx);
+  var toggle = document.getElementById('regToggle' + idx);
+  if (body.classList.contains('open')) {
+    body.classList.remove('open');
+    body.style.display = 'none';
+    toggle.classList.remove('open');
+  } else {
+    body.classList.add('open');
+    body.style.display = 'block';
+    toggle.classList.add('open');
+  }
+}
+
+// ===== RISK RULES TAB =====
+function renderRiskRulesTab() {
+  var rules = complianceData.applicable_risk_rules || [];
+  if (!rules.length) {
+    document.getElementById('panel-risk_rules').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128737;</div><p>No risk rules applicable to this jurisdiction.</p></div>';
+    return;
+  }
+  // Sort by severity
+  var sevOrder = { critical: 0, high: 1, medium: 2, low: 3 };
+  rules.sort(function(a, b) {
+    return (sevOrder[a.severity] || 2) - (sevOrder[b.severity] || 2);
+  });
+  var html = '<div class="rules-grid">';
+  rules.forEach(function(rule) {
+    var name = getCn(rule, 'name');
+    var desc = getCn(rule, 'description');
+    var sevClass = getSeverityClass(rule.severity);
+    var score = rule.risk_score_impact || 0;
+    var scoreClass = score >= 30 ? 'high-impact' : (score >= 15 ? 'med-impact' : 'low-impact');
+    html += '<div class="rule-card">';
+    html += '<div class="rule-header">';
+    html += '<span class="rule-name">' + escHtml(name) + '</span>';
+    html += '<span class="severity-badge ' + sevClass + '">' + escHtml(rule.severity || '') + '</span>';
+    html += '</div>';
+    html += '<div class="rule-desc">' + escHtml(desc) + '</div>';
+    html += '<div class="rule-meta">';
+    html += '<span>' + t('cp.rules.category') + ': ' + escHtml(rule.category || '') + '</span>';
+    html += '<span>' + t('cp.rules.score') + ': <span class="rule-score ' + scoreClass + '">+' + score + '</span></span>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('panel-risk_rules').innerHTML = html;
+}
+
+// ===== ENFORCEMENT CASES TAB =====
+function renderCasesTab() {
+  var cases = complianceData.recent_cases || [];
+  if (!cases.length) {
+    document.getElementById('panel-cases').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9878;</div><p>' + t('cp.cases.nodata') + '</p></div>';
+    return;
+  }
+  // Sort by date descending
+  cases.sort(function(a, b) { return new Date(b.case_date) - new Date(a.case_date); });
+  var html = '<div class="cases-timeline">';
+  cases.forEach(function(c) {
+    var title = getCn(c, 'title');
+    var desc = getCn(c, 'description');
+    html += '<div class="case-card">';
+    html += '<div class="case-header">';
+    html += '<span class="case-title">' + escHtml(title) + '</span>';
+    if (c.penalty_usd) html += '<span class="case-penalty">' + formatUsd(c.penalty_usd) + '</span>';
+    html += '</div>';
+    if (c.entity_name) html += '<div class="case-entity">' + escHtml(c.entity_name) + (c.penalty_type ? ' — ' + escHtml(c.penalty_type) : '') + '</div>';
+    html += '<div class="case-desc">' + escHtml(desc) + '</div>';
+    html += '<div class="case-footer">';
+    html += '<span class="case-date">' + formatDate(c.case_date) + '</span>';
+    var tags = c.tags;
+    if (tags) {
+      html += '<div class="case-tags">';
+      var tagArr = typeof tags === 'string' ? tags.split(',') : (Array.isArray(tags) ? tags : []);
+      tagArr.forEach(function(tag) {
+        tag = tag.trim();
+        if (tag) html += '<span class="case-tag">' + escHtml(tag) + '</span>';
+      });
+      html += '</div>';
+    }
+    html += '</div>';
+    if (c.source_url) html += '<a href="' + escHtml(c.source_url) + '" target="_blank" rel="noopener" class="reg-link" style="margin-top:8px;display:inline-flex">\u{1F517} ' + t('cp.regs.source') + '</a>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('panel-cases').innerHTML = html;
+}
+
+// ===== UPDATES TAB =====
+function renderUpdatesTab() {
+  var updates = complianceData.recent_updates || [];
+  if (!updates.length) {
+    document.getElementById('panel-updates').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128225;</div><p>' + t('cp.updates.nodata') + '</p></div>';
+    return;
+  }
+  updates.sort(function(a, b) { return new Date(b.published_date) - new Date(a.published_date); });
+  var html = '<div class="updates-list">';
+  updates.forEach(function(u) {
+    var title = getCn(u, 'title');
+    var summary = getCn(u, 'summary');
+    var typeClass = (u.update_type || '').toLowerCase().replace(/\s+/g, '_');
+    html += '<div class="update-card">';
+    html += '<div class="update-header">';
+    html += '<span class="update-title">' + escHtml(title) + '</span>';
+    html += '<span class="update-type ' + typeClass + '">' + escHtml(u.update_type || '') + '</span>';
+    html += '</div>';
+    html += '<div class="update-summary">' + escHtml(summary) + '</div>';
+    html += '<div class="update-footer">';
+    html += '<span>' + formatDate(u.published_date) + '</span>';
+    if (u.severity) {
+      var sevClass = getSeverityClass(u.severity);
+      html += '<span class="severity-badge ' + sevClass + '">' + escHtml(u.severity) + '</span>';
+    }
+    if (u.source_url) html += '<a href="' + escHtml(u.source_url) + '" target="_blank" rel="noopener" class="reg-link">\u{1F517} Source</a>';
+    html += '</div>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('panel-updates').innerHTML = html;
+}
+
+// ===== DETAIL TABS =====
+function switchDetailTab(tab, btn) {
+  document.querySelectorAll('#detailTabs .tab-btn').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#detailSection .tab-panel').forEach(function(p) { p.classList.remove('active'); });
+  document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ===== HIDE DETAIL =====
+function hideDetail() {
+  document.getElementById('detailSection').style.display = 'none';
+  complianceData = null;
+  currentJuris = null;
+  document.querySelectorAll('.juris-card').forEach(function(c) { c.classList.remove('selected'); });
+  document.querySelector('.juris-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ===== RENDER RISK MATRIX =====
+function renderMatrix() {
+  if (!allRiskRules.length) {
+    document.getElementById('matrixContent').innerHTML = '<div class="empty-state"><p>No risk rules found.</p></div>';
+    return;
+  }
+
+  var groups = { critical: [], high: [], medium: [], low: [] };
+  allRiskRules.forEach(function(rule) {
+    var sev = (rule.severity || 'medium').toLowerCase();
+    if (!groups[sev]) groups[sev] = [];
+    groups[sev].push(rule);
+  });
+
+  var severityOrder = ['critical', 'high', 'medium', 'low'];
+  var severityLabels = {
+    critical: { en: 'Critical', cn: '严重' },
+    high: { en: 'High', cn: '高' },
+    medium: { en: 'Medium', cn: '中' },
+    low: { en: 'Low', cn: '低' }
+  };
+
+  var html = '';
+  severityOrder.forEach(function(sev) {
+    var items = groups[sev] || [];
+    if (!items.length) return;
+    var label = severityLabels[sev] ? severityLabels[sev][currentLang === 'cn' ? 'cn' : 'en'] : sev;
+    html += '<div class="matrix-group">';
+    html += '<div class="matrix-group-title">';
+    html += '<span class="severity-badge ' + sev + '">' + escHtml(sev.toUpperCase()) + '</span>';
+    html += '<h3>' + escHtml(label) + '</h3>';
+    html += '<span class="count">' + items.length + '</span>';
+    html += '</div>';
+    html += '<div class="matrix-grid">';
+    items.forEach(function(rule) {
+      var name = getCn(rule, 'name');
+      var desc = getCn(rule, 'description');
+      var score = rule.risk_score_impact || 0;
+      var scoreClass = score >= 30 ? 'high-impact' : (score >= 15 ? 'med-impact' : 'low-impact');
+      html += '<div class="matrix-card ' + sev + '">';
+      html += '<div class="matrix-card-name">' + escHtml(name) + '</div>';
+      html += '<div class="matrix-card-cat">' + escHtml(rule.category || '') + '</div>';
+      html += '<div class="matrix-card-desc">' + escHtml(desc) + '</div>';
+      html += '<div class="matrix-card-score"><span class="rule-score ' + scoreClass + '">+' + score + ' ' + t('cp.rules.score') + '</span></div>';
+      html += '</div>';
+    });
+    html += '</div>';
+    html += '</div>';
+  });
+  document.getElementById('matrixContent').innerHTML = html;
+}
+
+// ===== INIT =====
+applyLang();
+loadJurisdictions();
+loadRiskRules();
+</script>
+
+<!-- SUPABASE AUTH -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}}}catch(e){}})();
+</script>
+</body>
+</html>
