@@ -248,18 +248,39 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .pulse-badge{font:400 11px var(--f);color:var(--ink3);display:flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
-.pulse-scroll{display:flex;gap:32px;justify-content:center;padding:4px 4px 16px;flex-wrap:wrap}
-.pulse-item{flex:0 0 auto;width:140px;display:flex;flex-direction:column;align-items:center;cursor:default;transition:transform .2s}
-.pulse-item:hover{transform:translateY(-4px)}
-.pulse-ring{position:relative;width:96px;height:96px;border-radius:50%;display:flex;align-items:center;justify-content:center;padding:6px;transition:box-shadow .2s}
-.pulse-item:hover .pulse-ring{box-shadow:0 4px 16px rgba(0,204,136,.18)}
-.pulse-ring-inner{width:100%;height:100%;border-radius:50%;background:var(--s1);display:flex;flex-direction:column;align-items:center;justify-content:center}
-.pulse-ring-pct{font:700 20px var(--m);color:var(--ink);line-height:1}
-.pulse-ring-lbl{font:500 10px var(--f);color:var(--ink3);margin-top:2px;text-transform:uppercase;letter-spacing:.3px}
-.pulse-title{font:500 12px/1.3 var(--f);color:var(--ink2);text-align:center;margin-top:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;max-width:140px;min-height:2.6em}
-.pulse-vol{font:400 10px var(--m);color:var(--ink3);margin-top:2px}
-.pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);width:100%}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-scroll{gap:16px}.pulse-item{width:100px}.pulse-ring{width:76px;height:76px;padding:5px}.pulse-ring-pct{font-size:16px}.pulse-title{font-size:11px;max-width:100px}}
+.pulse-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.pulse-card{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:20px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
+.pulse-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--accent)}
+.pulse-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.pulse-card-cat{display:flex;align-items:center;gap:6px;font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px}
+.pulse-card-cat-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.pulse-card-pct{font:700 22px var(--m);line-height:1}
+.pulse-card-pct.high{color:var(--accent)}
+.pulse-card-pct.mid{color:var(--warn)}
+.pulse-card-pct.low{color:var(--danger)}
+.pulse-card-title{font:500 13px/1.4 var(--f);color:var(--ink);margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.8em}
+.pulse-card-analysis{font:400 11px/1.5 var(--f);color:var(--ink3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em;margin-bottom:8px}
+.pulse-card-foot{display:flex;align-items:center;justify-content:space-between;font:400 10px var(--m);color:var(--ink3)}
+.pulse-card-vol{display:flex;align-items:center;gap:3px}
+.pulse-card-arrow{font-size:10px;opacity:.5}
+.pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);grid-column:1/-1}
+.pulse-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
+.pulse-modal-overlay.show{display:flex}
+.pulse-modal{background:var(--canvas);border-radius:16px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);padding:32px;position:relative;animation:modalIn .25s ease}
+.pulse-modal-close{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:8px;border:1px solid var(--hl);background:var(--s1);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;color:var(--ink3);transition:all .15s}
+.pulse-modal-close:hover{background:var(--s2);color:var(--ink)}
+.pulse-modal-cat{font:600 11px var(--f);text-transform:uppercase;letter-spacing:.4px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.pulse-modal h3{font:600 20px/1.3 var(--f);letter-spacing:-.3px;color:var(--ink);margin-bottom:16px}
+.pulse-modal-pct-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;padding:14px;background:var(--s1);border-radius:10px}
+.pulse-modal-pct-main{font:700 32px var(--m);line-height:1}
+.pulse-modal-pct-label{font:400 12px var(--f);color:var(--ink3)}
+.pulse-modal-bar{flex:1;height:8px;background:var(--s3);border-radius:4px;overflow:hidden}
+.pulse-modal-bar-fill{height:100%;border-radius:4px;transition:width .3s}
+.pulse-modal-analysis{font:400 14px/1.8 var(--f);color:var(--ink2);margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--hl)}
+.pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
+.pulse-modal-meta a{color:var(--accent);text-decoration:none}
+.pulse-modal-meta a:hover{text-decoration:underline}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-card:last-child{grid-column:1/-1}.pulse-card{padding:14px}.pulse-card-pct{font-size:18px}.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -384,9 +405,23 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
       <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
     </div>
-    <div class="pulse-scroll" id="pulse-scroll">
+    <div class="pulse-grid" id="pulse-grid">
       <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
     </div>
+  </div>
+</div>
+<!-- Pulse Detail Modal -->
+<div class="pulse-modal-overlay" id="pulse-modal-overlay" onclick="if(event.target===this)closePulseModal()">
+  <div class="pulse-modal">
+    <button class="pulse-modal-close" onclick="closePulseModal()">&times;</button>
+    <div class="pulse-modal-cat" id="pm-cat"></div>
+    <h3 id="pm-title"></h3>
+    <div class="pulse-modal-pct-row">
+      <div><div class="pulse-modal-pct-main" id="pm-pct"></div><div class="pulse-modal-pct-label" id="pm-pct-label"></div></div>
+      <div style="flex:1"><div class="pulse-modal-bar"><div class="pulse-modal-bar-fill" id="pm-bar"></div></div></div>
+    </div>
+    <div class="pulse-modal-analysis" id="pm-analysis"></div>
+    <div class="pulse-modal-meta" id="pm-meta"></div>
   </div>
 </div>
 
@@ -1112,7 +1147,7 @@ var I18N = {
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
-    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.hot':'Top Events','pulse.bullish':'Bullish','pulse.bearish':'Bearish','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.price':'Price consensus','pulse.yes':'Yes'
+    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1142,7 +1177,7 @@ var I18N = {
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
-    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.hot':'热门事件','pulse.bullish':'看涨','pulse.bearish':'看跌','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.price':'价格共识','pulse.yes':'是'
+    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...'
   }
 };
 
@@ -1214,12 +1249,49 @@ applyLang(currentLang);
     .catch(function() {});
 })();
 
-// ===== MARKET PULSE — Polymarket Top 10 Circular =====
-var _pulseCache = null;
-function reloadMarketPulse() { if (_pulseCache) _renderPulse(_pulseCache); }
+// ===== MARKET PULSE — 5 Category Cards =====
+var _pulseData = [];
+function reloadMarketPulse() { if (_pulseData.length) _renderPulseCards(_pulseData); }
 
-function _renderPulse(events) {
-  var el = document.getElementById('pulse-scroll');
+var PULSE_CATS = [
+  { key:'btc', icon:'₿', color:'#f7931a', labelEn:'Bitcoin', labelCn:'比特币',
+    match:['bitcoin','btc','crypto'], skip:['up-or-down','price-on','above'] },
+  { key:'stocks', icon:'📈', color:'#4f6ef7', labelEn:'Stock Market', labelCn:'股市',
+    match:['s&p','nasdaq','stock market','dow jones','equity','russell','s&p 500'] },
+  { key:'policy', icon:'🏛', color:'#8b5cf6', labelEn:'Financial Policy', labelCn:'金融政策',
+    match:['fed ','interest rate','rate cut','rate hike','tariff','monetary','fomc','inflation','gdp','recession','trade deal','trade war'] },
+  { key:'politics', icon:'🗳', color:'#ec4899', labelEn:'Politics', labelCn:'政治',
+    match:['election','president','trump','congress','senate','governor','democrat','republican','poll','impeach','legislation','vote'] },
+  { key:'conflict', icon:'⚔', color:'#ef4444', labelEn:'Conflicts', labelCn:'地区冲突',
+    match:['war','conflict','ukraine','russia','iran','israel','ceasefire','peace deal','gaza','hamas','hezbollah','missile','sanction','nato','military','invasion','nuclear'] }
+];
+
+function _findBestEvent(events, cat) {
+  for (var i = 0; i < events.length; i++) {
+    var e = events[i];
+    var t = (e.title || '').toLowerCase();
+    var s = (e.slug || '').toLowerCase();
+    // Check skip patterns
+    var skipIt = false;
+    if (cat.skip) { for (var k = 0; k < cat.skip.length; k++) { if (s.indexOf(cat.skip[k]) !== -1) { skipIt = true; break; } } }
+    if (skipIt) continue;
+    // Check match patterns
+    for (var j = 0; j < cat.match.length; j++) {
+      if (t.indexOf(cat.match[j]) !== -1 || s.indexOf(cat.match[j]) !== -1) {
+        var m = e.markets && e.markets[0]; if (!m) continue;
+        var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
+        var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
+        var idx = 0;
+        for (var x = 0; x < outcomes.length; x++) { if (outcomes[x] === 'Yes' || outcomes[x] === 'Up') { idx = x; break; } }
+        return { title: e.title || m.question, pct: Math.round(parseFloat(prices[idx]) * 100), vol: e.volume24hr || 0, slug: e.slug || '' };
+      }
+    }
+  }
+  return null;
+}
+
+function _renderPulseCards(data) {
+  var el = document.getElementById('pulse-grid');
   if (!el) return;
   function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
   function fmtVol(v) {
@@ -1227,61 +1299,103 @@ function _renderPulse(events) {
     if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
     return '$' + Math.round(v);
   }
-  // Filter: only finance/politics, exclude sports/esports/entertainment
-  var skip = ['up-or-down-on-', 'price-on-', '-above-'];
-  var skipCat = ['world-cup','lol-','counter-strike','dota','nba','nfl','mlb','nhl','mls','soccer','football-','tennis','f1-','ufc','boxing','cricket','rugby','esports','league-of-legends','valorant','copa-america','champions-league','premier-league','la-liga','serie-a','bundesliga','qatar-vs','brazil-vs','argentina-vs','france-vs','germany-vs','england-vs','spain-vs','portugal-vs','netherlands-vs','italy-vs','team-we','bilibili','gen-g','t1-vs','fnatic','g2-','natus-vincere','oscars','grammy','emmy','golden-globe','super-bowl','march-madness','world-series','stanley-cup'];
-  var items = [];
-  for (var i = 0; i < events.length && items.length < 5; i++) {
-    var e = events[i];
-    var slug = (e.slug || '').toLowerCase();
-    var title = (e.title || '').toLowerCase();
-    var dominated = false;
-    for (var d = 0; d < skip.length; d++) { if (slug.indexOf(skip[d]) !== -1) { dominated = true; break; } }
-    if (!dominated) { for (var d = 0; d < skipCat.length; d++) { if (slug.indexOf(skipCat[d]) !== -1 || title.indexOf(skipCat[d]) !== -1) { dominated = true; break; } } }
-    if (dominated) continue;
-    var m = e.markets && e.markets[0];
-    if (!m) continue;
-    var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
-    var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
-    // Find Yes/Up index
-    var idx = 0;
-    for (var j = 0; j < outcomes.length; j++) { if (outcomes[j] === 'Yes' || outcomes[j] === 'Up') { idx = j; break; } }
-    var pct = Math.round(parseFloat(prices[idx]) * 100);
-    items.push({ title: e.title || m.question || '', pct: pct, vol: e.volume24hr || 0 });
-  }
-  if (!items.length) { el.innerHTML = '<div class="pulse-loading">' + dict('pulse.nodata') + '</div>'; return; }
-
-  var yesLabel = dict('pulse.yes');
   var html = '';
-  items.forEach(function(item) {
-    // Ring color: green for >=50, amber for 20-49, red-ish for <20
-    var color = item.pct >= 50 ? '#00cc88' : (item.pct >= 20 ? '#f59e0b' : '#ef4444');
-    var bg = 'conic-gradient(from -90deg,' + color + ' ' + item.pct + '%,var(--s3) ' + item.pct + '%)';
-    html += '<div class="pulse-item">'
-      + '<div class="pulse-ring" style="background:' + bg + '">'
-      + '<div class="pulse-ring-inner">'
-      + '<span class="pulse-ring-pct">' + item.pct + '%</span>'
-      + '<span class="pulse-ring-lbl">' + yesLabel + '</span>'
-      + '</div></div>'
-      + '<div class="pulse-title">' + escHtml(item.title) + '</div>'
-      + '<div class="pulse-vol">' + fmtVol(item.vol) + '</div>'
-      + '</div>';
-  });
+  for (var i = 0; i < data.length; i++) {
+    var d = data[i];
+    var cat = PULSE_CATS[i] || {};
+    var catLabel = currentLang === 'cn' ? cat.labelCn : cat.labelEn;
+    var pctClass = d.pct >= 50 ? 'high' : (d.pct >= 20 ? 'mid' : 'low');
+    var analysis = d.analysis || '';
+    if (currentLang === 'cn' && d.analysis_cn) analysis = d.analysis_cn;
+    if (currentLang === 'en' && d.analysis_en) analysis = d.analysis_en;
+    if (!analysis) analysis = dict('pulse.noanalysis');
+    html += '<div class="pulse-card" onclick="openPulseModal(' + i + ')">'
+      + '<div class="pulse-card-head">'
+      + '<div class="pulse-card-cat"><span class="pulse-card-cat-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>' + escHtml(catLabel) + '</div>'
+      + '<span class="pulse-card-pct ' + pctClass + '">' + d.pct + '%</span>'
+      + '</div>'
+      + '<div class="pulse-card-title">' + escHtml(d.title) + '</div>'
+      + '<div class="pulse-card-analysis">' + escHtml(analysis) + '</div>'
+      + '<div class="pulse-card-foot">'
+      + '<span class="pulse-card-vol">' + dict('pulse.yes') + ' · ' + fmtVol(d.vol) + '</span>'
+      + '<span class="pulse-card-arrow">→</span>'
+      + '</div></div>';
+  }
+  if (!html) html = '<div class="pulse-loading">' + dict('pulse.nodata') + '</div>';
   el.innerHTML = html;
 }
 
+function openPulseModal(idx) {
+  var d = _pulseData[idx]; if (!d) return;
+  var cat = PULSE_CATS[idx] || {};
+  function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
+  function fmtVol(v) { if (v >= 1e6) return '$'+(v/1e6).toFixed(1)+'M'; if (v >= 1e3) return '$'+(v/1e3).toFixed(0)+'K'; return '$'+Math.round(v); }
+  var catLabel = currentLang === 'cn' ? cat.labelCn : cat.labelEn;
+  var pctClass = d.pct >= 50 ? 'high' : (d.pct >= 20 ? 'mid' : 'low');
+  var barColor = d.pct >= 50 ? 'var(--accent)' : (d.pct >= 20 ? 'var(--warn)' : 'var(--danger)');
+  document.getElementById('pm-cat').innerHTML = '<span style="color:' + cat.color + '">' + cat.icon + '</span> ' + escHtml(catLabel);
+  document.getElementById('pm-title').textContent = d.title;
+  document.getElementById('pm-pct').textContent = d.pct + '%';
+  document.getElementById('pm-pct').className = 'pulse-modal-pct-main ' + pctClass;
+  document.getElementById('pm-pct-label').textContent = dict('pulse.yes');
+  document.getElementById('pm-bar').style.width = d.pct + '%';
+  document.getElementById('pm-bar').style.background = barColor;
+  var analysis = '';
+  if (currentLang === 'cn' && d.analysis_cn) analysis = d.analysis_cn;
+  else if (d.analysis_en) analysis = d.analysis_en;
+  else analysis = d.analysis || dict('pulse.noanalysis');
+  document.getElementById('pm-analysis').textContent = analysis;
+  document.getElementById('pm-meta').innerHTML = '<span>' + dict('pulse.vol') + ': ' + fmtVol(d.vol) + '</span>'
+    + '<a href="https://polymarket.com/event/' + encodeURIComponent(d.slug) + '" target="_blank" rel="noopener">Polymarket →</a>';
+  document.getElementById('pulse-modal-overlay').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePulseModal() {
+  document.getElementById('pulse-modal-overlay').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') { closePulseModal(); }
+});
+
 (function() {
   var GAMMA = 'https://gamma-api.polymarket.com';
-  // Fetch top trending events across all categories by 24h volume
-  fetch(GAMMA + '/events?active=true&closed=false&order=volume24hr&ascending=false&limit=30')
+  fetch(GAMMA + '/events?active=true&closed=false&order=volume24hr&ascending=false&limit=100')
     .then(function(r) { return r.json(); })
     .then(function(events) {
-      _pulseCache = events;
-      _renderPulse(events);
+      var results = [];
+      for (var i = 0; i < PULSE_CATS.length; i++) {
+        var found = _findBestEvent(events, PULSE_CATS[i]);
+        results.push(found || { title: 'No data available', pct: 0, vol: 0, slug: '' });
+      }
+      // Fetch AI analysis from Supabase
+      fetch('https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api/market-pulse',{headers:{'x-api-key':'innobridge-2024-secure-key'}})
+        .then(function(r){return r.ok?r.json():[];})
+        .then(function(insights){
+          if(insights&&insights.length){
+            for(var i=0;i<results.length;i++){
+              for(var j=0;j<insights.length;j++){
+                if(insights[j].category===PULSE_CATS[i].key){
+                  results[i].analysis_en=insights[j].analysis_en||'';
+                  results[i].analysis_cn=insights[j].analysis_cn||'';
+                  break;
+                }
+              }
+            }
+          }
+          _pulseData = results;
+          _renderPulseCards(results);
+        })
+        .catch(function(){
+          _pulseData = results;
+          _renderPulseCards(results);
+        });
     })
     .catch(function() {
-      var el = document.getElementById('pulse-scroll');
-      if (el) el.innerHTML = '<div class="pulse-loading">Failed to load</div>';
+      var el = document.getElementById('pulse-grid');
+      if (el) el.innerHTML = '<div class="pulse-loading">Failed to load market data</div>';
     });
 })();
 </script>
