@@ -1284,13 +1284,18 @@ function _findBestEvent(events, cat) {
         var bestM = null, bestDist = 999, bestPct = 0, bestQ = '';
         for (var mi = 0; mi < e.markets.length; mi++) {
           var m = e.markets[mi];
-          var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
-          var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
-          var idx = 0;
-          for (var x = 0; x < outcomes.length; x++) { if (outcomes[x] === 'Yes' || outcomes[x] === 'Up') { idx = x; break; } }
-          var pct = Math.round(parseFloat(prices[idx]) * 100);
-          var dist = Math.abs(pct - 50);
-          if (dist < bestDist) { bestDist = dist; bestPct = pct; bestQ = m.question || e.title; bestM = m; }
+          if (!m.outcomePrices || !m.outcomes) continue;
+          try {
+            var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
+            var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
+            if (!prices || !outcomes || !prices.length) continue;
+            var idx = 0;
+            for (var x = 0; x < outcomes.length; x++) { if (outcomes[x] === 'Yes' || outcomes[x] === 'Up') { idx = x; break; } }
+            var pct = Math.round(parseFloat(prices[idx]) * 100);
+            if (isNaN(pct)) continue;
+            var dist = Math.abs(pct - 50);
+            if (dist < bestDist) { bestDist = dist; bestPct = pct; bestQ = m.question || e.title; bestM = m; }
+          } catch(ex) { continue; }
         }
         if (!bestM) continue;
         var title = e.markets.length > 1 ? bestQ : (e.title || bestQ);
