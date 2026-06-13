@@ -205,10 +205,23 @@
 </section>
 
 <section class="tags-section">
-    <div class="tags-row">
+    <div class="tags-row" style="margin-bottom:8px">
         <span class="tag-chip active" onclick="filterChain('all', this)" data-i18n="tag.all">All Chains</span>
         <span class="tag-chip" onclick="filterChain('usdt', this)" data-i18n="tag.usdt">#USDT</span>
         <span class="tag-chip" onclick="filterChain('usdc', this)" data-i18n="tag.usdc">#USDC</span>
+        <span style="width:1px;height:20px;background:var(--border);margin:0 4px;align-self:center"></span>
+        <span class="tag-chip" onclick="filterSource('Tether', this)">Tether</span>
+        <span class="tag-chip" onclick="filterSource('Circle', this)">Circle</span>
+        <span class="tag-chip" onclick="filterSource('OFAC', this)">OFAC</span>
+        <span class="tag-chip" onclick="filterSource('On-Chain', this)">On-Chain</span>
+    </div>
+    <div class="tags-row">
+        <span class="tag-chip tag-event" onclick="filterEvent('all', this)" data-i18n="tag.allEvents" style="font-size:11px">All Events</span>
+        <span class="tag-chip tag-event" onclick="filterEvent('asset_freeze', this)" style="font-size:11px" data-i18n="tag.freeze">Asset Freeze</span>
+        <span class="tag-chip tag-event" onclick="filterEvent('sanctions', this)" style="font-size:11px" data-i18n="tag.sanctions">Sanctions</span>
+        <span class="tag-chip tag-event" onclick="filterEvent('hack', this)" style="font-size:11px" data-i18n="tag.hack">Hack</span>
+        <span class="tag-chip tag-event" onclick="filterEvent('state_actor', this)" style="font-size:11px" data-i18n="tag.stateActor">State Actor</span>
+        <span class="tag-chip tag-event" onclick="filterEvent('high_risk_vasp', this)" style="font-size:11px" data-i18n="tag.highRisk">High-Risk VASP</span>
     </div>
 </section>
 
@@ -219,7 +232,7 @@
     </div>
     <div class="table-wrapper">
         <table>
-            <thead><tr><th data-i18n="th.address">Address</th><th data-i18n="th.chain">Chain</th><th data-i18n="th.asset">Asset</th><th data-i18n="th.risk">Risk Level</th><th data-i18n="th.balance">Freeze Balance</th><th data-i18n="th.time">Freeze Time</th></tr></thead>
+            <thead><tr><th data-i18n="th.address">Address</th><th data-i18n="th.chain">Chain</th><th data-i18n="th.asset">Asset</th><th data-i18n="th.source">Source</th><th data-i18n="th.risk">Risk Level</th><th data-i18n="th.balance">Freeze Balance</th><th data-i18n="th.time">Freeze Time</th></tr></thead>
             <tbody id="recentTableBody">
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
                 <tr class="loading-row"><td><div class="skeleton skel-addr"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-badge"></div></td><td><div class="skeleton skel-amount"></div></td><td><div class="skeleton skel-time"></div></td></tr>
@@ -252,6 +265,8 @@ const BATCH_SIZE = 100;
 const MAX_PAGES = 10;
 let totalServerRows = 0;
 let activeFilter = 'all';
+let activeSource = '';
+let activeEvent = '';
 let batchOffset = 0;
 let batchData = [];
 let isLoadingData = false;
@@ -264,7 +279,7 @@ let jsonpCounter=0;
 function jsonpFetch(url){return new Promise(function(res,rej){var cb='_ib_'+(++jsonpCounter)+'_'+Date.now();var t=setTimeout(function(){delete window[cb];rej(new Error('timeout'));},15000);window[cb]=function(d){clearTimeout(t);delete window[cb];res(d);};var s=document.createElement('script');s.src=url+(url.indexOf('?')>=0?'&':'?')+'callback='+cb;s.onerror=function(){clearTimeout(t);delete window[cb];rej(new Error('err'));};document.head.appendChild(s);s.onload=function(){document.head.removeChild(s);};});}
 
 function showTableLoading(){
-    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(0,200,150,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
+    document.getElementById('recentTableBody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;"><div style="display:inline-block;width:20px;height:20px;border:2px solid rgba(0,200,150,0.15);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;"></div></td></tr>';
 }
 
 async function loadDashboardData(){
@@ -277,7 +292,7 @@ async function loadDashboardData(){
     isLoadingData=false;
 }
 async function fetchBatch(serverOffset){
-    var cacheKey=activeFilter+'_'+serverOffset;
+    var cacheKey=activeFilter+'_'+activeSource+'_'+activeEvent+'_'+serverOffset;
     if(filterCache[cacheKey]){
         totalServerRows=filterCache[cacheKey].total;
         batchOffset=serverOffset;
@@ -289,6 +304,8 @@ async function fetchBatch(serverOffset){
     try{
         var url=GAS_BASE+'?action=recent&limit='+BATCH_SIZE+'&offset='+serverOffset;
         if(activeFilter==='usdt'||activeFilter==='usdc') url+='&asset='+activeFilter;
+        if(activeSource) url+='&sanctions_source='+encodeURIComponent(activeSource);
+        if(activeEvent) url+='&event_type='+encodeURIComponent(activeEvent);
         var rd=await jsonpFetch(url);
         if(rd&&rd.error==='RATE_LIMITED'){
             alert('Too many requests. Please wait '+rd.retryAfter+' seconds.');
@@ -315,7 +332,7 @@ function renderCurrentPage(){
     filteredRecent=items.slice();
     renderTable();
 }
-function loadRecentFallback(){document.getElementById('recentTableBody').innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">Loading data... If this persists, API may need updating.</td></tr>';}
+function loadRecentFallback(){document.getElementById('recentTableBody').innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3);">Loading data... If this persists, API may need updating.</td></tr>';}
 function renderStats(data){
     var s=data.stats||data;
     var fmt=function(n){return n==null?'--':Number(n).toLocaleString('en-US');};
@@ -341,11 +358,13 @@ function renderTable(){
     var showEnd=Math.min(currentPage*PAGE_SIZE,totalServerRows);
     var showStart=(currentPage-1)*PAGE_SIZE+1;
     document.getElementById('tableCount').textContent='Showing '+showStart+'-'+showEnd+' of '+totalServerRows.toLocaleString();
-    if(!items.length){tb.innerHTML='<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
+    if(!items.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
+    var srcColors={'Tether':'#26a17b','Circle':'#2775ca','OFAC':'#c0392b','On-Chain':'#8e44ad','Government':'#e67e22','Intelligence':'#2c3e50'};
     var h='';for(var i=0;i<items.length;i++){var r=items[i],addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr,chain=(r.chain||'').toUpperCase(),asset=(r.asset||'USDT').toUpperCase(),cCls=chain==='TRON'?'tron':'eth',cLbl=chain==='TRON'?'TRC20':'ERC20',rl=(r.risk_level||'HIGH').toUpperCase(),rCls=rl==='HIGH'?'high':rl==='MEDIUM'?'medium':'low';
     var faVal=Number(r.frozen_amount_raw)||Number(r.frozen_amount)||0;var fa='';if(faVal>0)fa=faVal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});else if(r.frozen_amount_display&&r.frozen_amount_display!=='0.00 USDT'&&r.frozen_amount_display!=='0')fa=r.frozen_amount_display;else fa='0.00';
     var ft=r.firstSeen||r.added_date||r.date_added||'--';
-    h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
+    var src=r.sanctions_source||'--';var srcClr=srcColors[src]||'#8b909c';var srcBadge=src!=='--'?'<span style="font-size:11px;font-weight:600;color:'+srcClr+';background:'+srcClr+'14;padding:2px 8px;border-radius:6px;white-space:nowrap">'+src+'</span>':'--';
+    h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td>'+srcBadge+'</td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
     tb.innerHTML=h;renderPagination(totalPages);
     var fnEl=document.getElementById('footerNoteText');
     if(fnEl) fnEl.textContent='';
@@ -370,11 +389,32 @@ function goPage(p){
     document.querySelector('.table-section').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function filterChain(f,el){
-    document.querySelectorAll('.tag-chip').forEach(function(c){c.classList.remove('active');});
+    document.querySelectorAll('.tags-row:first-child .tag-chip').forEach(function(c){c.classList.remove('active');});
     if(el)el.classList.add('active');
     activeFilter=f;
+    activeSource='';
     currentPage=1;
     batchOffset=0;
+    filterCache={};
+    fetchBatch(0);
+}
+function filterSource(s,el){
+    document.querySelectorAll('.tags-row:first-child .tag-chip').forEach(function(c){c.classList.remove('active');});
+    if(el)el.classList.add('active');
+    activeFilter='all';
+    activeSource=s;
+    currentPage=1;
+    batchOffset=0;
+    filterCache={};
+    fetchBatch(0);
+}
+function filterEvent(e,el){
+    document.querySelectorAll('.tag-event').forEach(function(c){c.classList.remove('active');});
+    if(el)el.classList.add('active');
+    activeEvent=(e==='all')?'':e;
+    currentPage=1;
+    batchOffset=0;
+    filterCache={};
     fetchBatch(0);
 }
 // Load stats and table data immediately — no auth required
@@ -391,8 +431,9 @@ var I18N = {
     'search.btn':'Search','search.hint':'Supports Ethereum (0x) and Tron (T) addresses','search.ph':'Search by address (0x... or T...)',
     'stats.title':'Frozen Address Statistics','stats.usdt':'USDT (Tether) Addresses','stats.usdc':'USDC (Circle) Addresses','stats.frozen':'Total Frozen Funds',
     'tag.all':'All Chains','tag.usdt':'#USDT','tag.usdc':'#USDC',
+    'tag.allEvents':'All Events','tag.freeze':'Asset Freeze','tag.sanctions':'Sanctions','tag.hack':'Hack','tag.stateActor':'State Actor','tag.highRisk':'High-Risk VASP',
     'table.title':'Recent Frozen Addresses',
-    'th.address':'Address','th.chain':'Chain','th.asset':'Asset','th.risk':'Risk Level','th.balance':'Freeze Balance','th.time':'Freeze Time',
+    'th.address':'Address','th.chain':'Chain','th.asset':'Asset','th.source':'Source','th.risk':'Risk Level','th.balance':'Freeze Balance','th.time':'Freeze Time',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
   },
   cn: {
@@ -401,8 +442,9 @@ var I18N = {
     'search.btn':'搜索','search.hint':'支持以太坊 (0x) 和波场 (T) 地址','search.ph':'输入地址搜索 (0x... 或 T...)',
     'stats.title':'冻结地址统计','stats.usdt':'USDT (Tether) 地址','stats.usdc':'USDC (Circle) 地址','stats.frozen':'冻结资金总额',
     'tag.all':'全部链','tag.usdt':'#USDT','tag.usdc':'#USDC',
+    'tag.allEvents':'全部事件','tag.freeze':'资产冻结','tag.sanctions':'制裁','tag.hack':'黑客','tag.stateActor':'国家行为者','tag.highRisk':'高风险 VASP',
     'table.title':'最近冻结地址',
-    'th.address':'地址','th.chain':'链','th.asset':'资产','th.risk':'风险等级','th.balance':'冻结余额','th.time':'冻结时间',
+    'th.address':'地址','th.chain':'链','th.asset':'资产','th.source':'来源','th.risk':'风险等级','th.balance':'冻结余额','th.time':'冻结时间',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
   }
 };
