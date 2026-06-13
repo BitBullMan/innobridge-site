@@ -1273,8 +1273,41 @@ var PULSE_CATS = [
 ];
 var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','tweet','temperature','weather','alien','only','prime minister','minister of','euro 2026','euros 2026','copa america','champions league','premier league','la liga','serie a','bundesliga','ballon d','football','soccer','olympics','paralymp','rugby','hockey','baseball','basketball','match on','win on 2026','elimination','knockout','group stage','fifa'];
 
+function _stemWord(w) {
+  if (w.length < 4) return w;
+  if (w.endsWith('ies') && w.length > 4) return w.slice(0,-3)+'y';
+  if (w.endsWith('es') && w.length > 4) return w.slice(0,-2);
+  if (w.endsWith('s') && !w.endsWith('ss') && w.length > 3) return w.slice(0,-1);
+  if (w.endsWith('ing') && w.length > 5) return w.slice(0,-3);
+  if (w.endsWith('ed') && w.length > 4) return w.slice(0,-2);
+  return w;
+}
+var _PULSE_STOP = 'will the that this there what when where which have been from with they their than into after before between during under over about does would could should being those these each other some more most very just also only then such both same and for are was were not any all how who end by'.split(' ');
+function _titleTooSimilar(newTitle, selectedTitles) {
+  function getWords(t) {
+    var raw = t.toLowerCase().replace(/[^a-z\s]/g,'').split(/\s+/);
+    var out = [];
+    for (var i=0;i<raw.length;i++) {
+      var w = _stemWord(raw[i]);
+      if (w.length > 2 && _PULSE_STOP.indexOf(w)===-1 && _PULSE_STOP.indexOf(raw[i])===-1) out.push(w);
+    }
+    return out;
+  }
+  var nw = getWords(newTitle);
+  if (nw.length < 2) return false;
+  for (var i = 0; i < selectedTitles.length; i++) {
+    var ew = getWords(selectedTitles[i]);
+    if (ew.length < 2) continue;
+    var overlap = 0;
+    for (var j=0;j<nw.length;j++) { for (var k=0;k<ew.length;k++) { if (nw[j]===ew[k]) { overlap++; break; } } }
+    var shorter = Math.min(nw.length, ew.length);
+    if (overlap >= 2 && overlap / shorter >= 0.4) return true;
+  }
+  return false;
+}
 function _findTopEvents(events, cat, limit, usedSlugs) {
   var results = [];
+  var selectedTitles = [];
   usedSlugs = usedSlugs || {};
   for (var i = 0; i < events.length && results.length < limit; i++) {
     var e = events[i];
@@ -1308,6 +1341,8 @@ function _findTopEvents(events, cat, limit, usedSlugs) {
     }
     if (!bestM) continue;
     var title = e.markets.length > 1 ? bestQ : (e.title || bestQ);
+    if (_titleTooSimilar(title, selectedTitles)) continue;
+    selectedTitles.push(title);
     results.push({ title: title, pct: bestPct, vol: e.volume24hr || 0, slug: e.slug || '' });
   }
   return results;
