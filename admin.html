@@ -2229,6 +2229,40 @@ async function revokeLEAccess(userId) {
   loadLEPendingCount();
 }
 
+// ── Direct LE Grant / Revoke (from Platform Users tab) ──
+
+async function grantDirectLEAccess(userId, email) {
+  if (!confirm(`Grant Law Enforcement access to ${email}?\n\nThis will set their role to "law_enforcement" and allow access to evidence collection data.`)) return;
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    role: 'law_enforcement',
+    le_status: 'approved',
+    le_reviewed_at: new Date().toISOString(),
+    le_reviewed_by: currentUser.id
+  }).eq('id', userId);
+
+  if (error) { alert('Error: ' + error.message); return; }
+  await logAudit('UPDATE', 'aml_user_profiles', userId, { role: 'public' }, { role: 'law_enforcement', le_status: 'approved', granted_by: 'admin_direct' });
+  loadPlatformUsers();
+  loadLEPendingCount();
+}
+
+async function revokeDirectLEAccess(userId, email) {
+  if (!confirm(`Revoke Law Enforcement access from ${email}?\n\nThis will reset their role to "public" and remove access to evidence collection data.`)) return;
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    role: 'public',
+    le_status: 'none',
+    le_reviewed_at: new Date().toISOString(),
+    le_reviewed_by: currentUser.id
+  }).eq('id', userId);
+
+  if (error) { alert('Error: ' + error.message); return; }
+  await logAudit('UPDATE', 'aml_user_profiles', userId, { role: 'law_enforcement' }, { role: 'public', le_status: 'none', revoked_by: 'admin_direct' });
+  loadPlatformUsers();
+  loadLEPendingCount();
+}
+
 // ════════════════════════════════════════════════
 // PLATFORM USERS
 // ════════════════════════════════════════════════
@@ -2250,7 +2284,7 @@ async function loadPlatformUsers() {
   }
 
   let html = '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
-  html += '<th>Email</th><th>Name</th><th>Role</th><th>LE Status</th><th>Briefing</th><th>Logins</th><th>Last Login</th><th>Registered</th><th>Active</th>';
+  html += '<th>Email</th><th>Name</th><th>Role</th><th>LE Status</th><th>Briefing</th><th>Logins</th><th>Last Login</th><th>Registered</th><th>Active</th><th>Actions</th>';
   html += '</tr></thead><tbody>';
 
   data.forEach(u => {
@@ -2268,6 +2302,15 @@ async function loadPlatformUsers() {
     html += `<td style="font-size:12px;color:var(--text-3);">${lastLogin}</td>`;
     html += `<td style="font-size:12px;color:var(--text-3);">${created}</td>`;
     html += `<td>${u.is_active ? '<span style="color:var(--green);">Active</span>' : '<span style="color:var(--red);">Disabled</span>'}</td>`;
+    html += '<td style="white-space:nowrap;">';
+    if (u.role === 'public') {
+      html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;" onclick="grantDirectLEAccess('${u.id}','${esc(u.email)}')">Grant LE</button>`;
+    } else if (u.role === 'law_enforcement') {
+      html += `<button class="btn btn-sm btn-ghost" onclick="revokeDirectLEAccess('${u.id}','${esc(u.email)}')">Revoke LE</button>`;
+    } else {
+      html += '<span style="font-size:11px;color:var(--text-3);">—</span>';
+    }
+    html += '</td>';
     html += '</tr>';
   });
 
