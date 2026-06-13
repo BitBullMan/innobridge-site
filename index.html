@@ -1209,6 +1209,7 @@ function toggleLang() {
   applyLang(currentLang === 'en' ? 'cn' : 'en');
   if(typeof reloadNewsForLang === 'function') reloadNewsForLang();
   if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
+  if(typeof reloadMarketPulse === 'function') reloadMarketPulse();
 }
 
 applyLang(currentLang);
@@ -1248,39 +1249,24 @@ applyLang(currentLang);
 })();
 
 // ===== MARKET PULSE — Polymarket Sentiment =====
-(function loadMarketPulse() {
-  var GAMMA = 'https://gamma-api.polymarket.com';
-  var months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
-  var now = new Date();
-  var mo = months[now.getMonth()];
-  var day = now.getDate();
-  var yr = now.getFullYear();
+var _pulseCache = null;
+function reloadMarketPulse() { if (_pulseCache) _renderPulse(_pulseCache); }
 
-  var btcSlug = 'bitcoin-up-or-down-on-' + mo + '-' + day + '-' + yr;
-  var ethSlug = 'ethereum-up-or-down-on-' + mo + '-' + day + '-' + yr;
-
+function _renderPulse(results) {
   function fmtVol(v) {
     if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
     if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
     return '$' + Math.round(v);
   }
-
   function dict(k) {
     return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k);
   }
-
   function renderSentiment(elId, coin, iconClass, data) {
     var el = document.getElementById(elId);
     if (!el) return;
-    if (!data) {
-      el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>';
-      return;
-    }
+    if (!data) { el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>'; return; }
     var market = data.markets && data.markets[0];
-    if (!market) {
-      el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>';
-      return;
-    }
+    if (!market) { el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>'; return; }
     var outcomes = typeof market.outcomes === 'string' ? JSON.parse(market.outcomes) : market.outcomes;
     var prices = typeof market.outcomePrices === 'string' ? JSON.parse(market.outcomePrices) : market.outcomePrices;
     var upIdx = 0;
@@ -1290,7 +1276,6 @@ applyLang(currentLang);
     var cls = isBull ? 'bullish' : 'bearish';
     var label = isBull ? dict('pulse.bullish') : dict('pulse.bearish');
     var vol = market.volume24hr || data.volume24hr || 0;
-
     el.innerHTML = '<div class="pulse-coin">'
       + '<div class="pulse-coin-icon ' + iconClass + '">' + coin + '</div>'
       + '<span class="pulse-coin-name">' + (coin === '₿' ? 'Bitcoin' : 'Ethereum') + '</span>'
@@ -1302,11 +1287,9 @@ applyLang(currentLang);
       + '<div class="pulse-bar"><div class="pulse-bar-fill ' + cls + '" style="width:' + upPct + '%"></div></div>'
       + '<div class="pulse-sub"><span>' + dict('pulse.vol') + ': ' + fmtVol(vol) + '</span><span>' + (100 - upPct).toFixed(1) + '% ' + (isBull ? dict('pulse.bearish') : dict('pulse.bullish')) + '</span></div>';
   }
-
   function renderTrending(events) {
     var el = document.getElementById('pulse-trending');
     if (!el) return;
-    // Filter out daily price level / up-down markets, keep interesting ones
     var dominated = ['above', 'up-or-down', 'price-on'];
     var items = [];
     for (var i = 0; i < events.length && items.length < 4; i++) {
@@ -1323,40 +1306,45 @@ applyLang(currentLang);
       var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
       var yesIdx = 0;
       for (var j = 0; j < outcomes.length; j++) { if (outcomes[j] === 'Yes') yesIdx = j; }
-      items.push({
-        title: e.title || m.question || '',
-        yesPct: (parseFloat(prices[yesIdx]) * 100).toFixed(1),
-        vol: e.volume24hr || 0,
-        slug: e.slug
-      });
+      items.push({ title: e.title || m.question || '', yesPct: (parseFloat(prices[yesIdx]) * 100).toFixed(1), vol: e.volume24hr || 0, slug: e.slug });
     }
     if (!items.length) {
-      el.querySelector('.pulse-loading').textContent = dict('pulse.nodata');
+      var ld = el.querySelector('.pulse-loading');
+      if (ld) ld.textContent = dict('pulse.nodata');
       return;
     }
-    var title = el.querySelector('.pulse-trending-title').outerHTML;
-    var html = title + '<ul class="pulse-list">';
+    var titleHtml = '<div class="pulse-trending-title"><div class="pulse-trending-icon">📊</div><span class="pulse-trending-name" data-i18n="pulse.hot">' + dict('pulse.hot') + '</span></div>';
+    var html = titleHtml + '<ul class="pulse-list">';
     items.forEach(function(item) {
-      html += '<li>'
-        + '<div class="pulse-list-q">' + escHtml(item.title) + '</div>'
-        + '<div class="pulse-list-meta">'
-        + '<span class="pulse-list-yes">' + item.yesPct + '% Yes</span>'
-        + '<span class="pulse-list-vol">' + fmtVol(item.vol) + '</span>'
-        + '</div></li>';
+      html += '<li><div class="pulse-list-q">' + escHtml(item.title) + '</div>'
+        + '<div class="pulse-list-meta"><span class="pulse-list-yes">' + item.yesPct + '% Yes</span>'
+        + '<span class="pulse-list-vol">' + fmtVol(item.vol) + '</span></div></li>';
     });
     html += '</ul>';
     el.innerHTML = html;
   }
+  renderSentiment('pulse-btc', '₿', 'btc', results[0]);
+  renderSentiment('pulse-eth', 'Ξ', 'eth', results[1]);
+  renderTrending(results[2]);
+}
 
-  // Fetch all data in parallel
+(function() {
+  var GAMMA = 'https://gamma-api.polymarket.com';
+  var months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  var now = new Date();
+  var mo = months[now.getMonth()];
+  var day = now.getDate();
+  var yr = now.getFullYear();
+  var btcSlug = 'bitcoin-up-or-down-on-' + mo + '-' + day + '-' + yr;
+  var ethSlug = 'ethereum-up-or-down-on-' + mo + '-' + day + '-' + yr;
+
   var btcP = fetch(GAMMA + '/events?slug=' + btcSlug).then(function(r) { return r.json(); }).then(function(d) { return d[0] || null; }).catch(function() { return null; });
   var ethP = fetch(GAMMA + '/events?slug=' + ethSlug).then(function(r) { return r.json(); }).then(function(d) { return d[0] || null; }).catch(function() { return null; });
   var trendP = fetch(GAMMA + '/events?tag_id=21&active=true&closed=false&order=volume24hr&ascending=false&limit=12').then(function(r) { return r.json(); }).catch(function() { return []; });
 
   Promise.all([btcP, ethP, trendP]).then(function(results) {
-    renderSentiment('pulse-btc', '₿', 'btc', results[0]);
-    renderSentiment('pulse-eth', 'Ξ', 'eth', results[1]);
-    renderTrending(results[2]);
+    _pulseCache = results;
+    _renderPulse(results);
   });
 })();
 </script>
