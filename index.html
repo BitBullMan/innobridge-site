@@ -420,6 +420,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div><div class="pulse-modal-pct-main" id="pm-pct"></div><div class="pulse-modal-pct-label" id="pm-pct-label"></div></div>
       <div style="flex:1"><div class="pulse-modal-bar"><div class="pulse-modal-bar-fill" id="pm-bar"></div></div></div>
     </div>
+    <div style="font:600 12px var(--f);text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);margin-bottom:6px;display:flex;align-items:center;gap:6px" id="pm-analysis-header">🤖 AI Category Overview</div>
     <div class="pulse-modal-analysis" id="pm-analysis"></div>
     <div class="pulse-modal-meta" id="pm-meta"></div>
   </div>
@@ -1152,7 +1153,7 @@ var I18N = {
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
-    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...'
+    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1182,7 +1183,7 @@ var I18N = {
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
-    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...'
+    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览'
   }
 };
 
@@ -1259,18 +1260,18 @@ var _pulseData = [];
 function reloadMarketPulse() { if (_pulseData.length) _renderPulseCards(_pulseData); }
 
 var PULSE_CATS = [
-  { key:'btc', icon:'₿', color:'#f7931a', labelEn:'Bitcoin', labelCn:'比特币',
-    match:['bitcoin','btc'] },
-  { key:'stocks', icon:'📈', color:'#4f6ef7', labelEn:'Economy', labelCn:'经济',
-    match:['s&p','nasdaq','stock market','dow jones','crude oil','oil price','wti','spacex','largest company','market crash','ipo','recession'] },
-  { key:'policy', icon:'🏛', color:'#8b5cf6', labelEn:'Financial Policy', labelCn:'金融政策',
-    match:['fed ','interest rate','rate cut','rate hike','tariff','monetary','fomc','inflation','gdp','trade deal','trade war','fed decision'] },
-  { key:'politics', icon:'🗳', color:'#ec4899', labelEn:'Politics', labelCn:'政治',
-    match:['election','president','trump','congress','senate','governor','democrat','republican','poll','impeach','legislation','vote','prime minister'] },
-  { key:'conflict', icon:'⚔', color:'#ef4444', labelEn:'Conflicts', labelCn:'地区冲突',
-    match:['war','conflict','ukraine','russia','iran','israel','ceasefire','peace deal','gaza','hamas','hezbollah','missile','sanction','nato','military','invasion','nuclear','hormuz','invade'] }
+  { key:'crypto', icon:'₿', color:'#f7931a', labelEn:'Crypto', labelCn:'加密货币',
+    match:['bitcoin','btc','ethereum','eth','crypto','xrp','solana','sol','altcoin','dogecoin','doge','memecoin','token','defi','stablecoin','usdt','usdc','binance','coinbase'] },
+  { key:'economy', icon:'📈', color:'#4f6ef7', labelEn:'Economy & Markets', labelCn:'经济与市场',
+    match:['s&p','nasdaq','stock market','dow jones','crude oil','oil price','wti','largest company','market crash','ipo','recession','cpi','gold price','commodity','bond','treasury','housing','unemployment','earnings','revenue'] },
+  { key:'policy', icon:'🏛', color:'#8b5cf6', labelEn:'Policy & Regulation', labelCn:'政策与监管',
+    match:['fed ','interest rate','rate cut','rate hike','tariff','monetary','fomc','inflation','gdp','trade deal','trade war','fed decision','regulation','sec ','central bank','fiscal','debt ceiling','government shutdown'] },
+  { key:'geopolitics', icon:'⚔', color:'#ef4444', labelEn:'Geopolitics', labelCn:'地缘政治',
+    match:['war','conflict','ukraine','russia','iran','israel','ceasefire','peace deal','gaza','hamas','hezbollah','missile','sanction','nato','military','invasion','nuclear','hormuz','invade','middle east','taiwan','china','north korea'] },
+  { key:'aitech', icon:'🤖', color:'#06b6d4', labelEn:'AI & Tech', labelCn:'人工智能与科技',
+    match:['ai ','artificial intelligence','openai','spacex','tesla','apple','google','microsoft','nvidia','anthropic','chatgpt','agi','robot','tech','semiconductor','chip','quantum','starlink','meta ','amazon'] }
 ];
-var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','elon musk','tweet','temperature','weather','alien','only'];
+var PULSE_SKIP = ['world cup','world-cup','nba','nfl','nhl','mlb','mls','f1 ','formula 1','lol:','counter-strike','cricket','odi ','tennis','open:','grand prix','boxing','ufc','esport','tweet','temperature','weather','alien','only'];
 
 function _findTopEvents(events, cat, limit, usedSlugs) {
   var results = [];
@@ -1368,6 +1369,7 @@ function openPulseModal(catIdx, evtIdx) {
   document.getElementById('pm-pct-label').textContent = dict('pulse.yes');
   document.getElementById('pm-bar').style.width = d.pct + '%';
   document.getElementById('pm-bar').style.background = barColor;
+  document.getElementById('pm-analysis-header').textContent = '🤖 ' + dict('pulse.aiheader');
   var analysis = '';
   if (currentLang === 'cn' && sec.analysis_cn) analysis = sec.analysis_cn;
   else if (sec.analysis_en) analysis = sec.analysis_en;
