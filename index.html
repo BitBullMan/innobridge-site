@@ -242,6 +242,47 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .footer-bottom a{font:400 12px var(--f);color:rgba(255,255,255,0.4);margin-left:20px;transition:color .2s}
 .footer-bottom a:hover{color:#fff}
 
+/* MARKET PULSE */
+#market-pulse{padding:0 40px 0;background:var(--canvas)}
+.pulse-inner{max-width:var(--max);margin:0 auto;padding-top:48px}
+.pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.pulse-badge{font:400 11px var(--f);color:var(--ink3);display:flex;align-items:center;gap:6px}
+.pulse-badge svg{opacity:.5}
+.pulse-grid{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:16px}
+.pulse-card{background:var(--s1);border:1px solid var(--hl);border-radius:12px;padding:20px 24px;transition:box-shadow .2s}
+.pulse-card:hover{box-shadow:var(--shadow-sm)}
+.pulse-coin{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.pulse-coin-icon{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font:600 10px var(--f);color:#fff}
+.pulse-coin-icon.btc{background:#f7931a}
+.pulse-coin-icon.eth{background:#627eea}
+.pulse-coin-name{font:600 14px var(--f);color:var(--ink);letter-spacing:-.2px}
+.pulse-row{display:flex;align-items:baseline;gap:8px;margin-bottom:2px}
+.pulse-pct{font:600 30px var(--f);letter-spacing:-1.5px;line-height:1.1}
+.pulse-pct.bullish{color:var(--accent)}
+.pulse-pct.bearish{color:var(--danger)}
+.pulse-dir{font:500 13px var(--f)}
+.pulse-dir.bullish{color:var(--accent-h)}
+.pulse-dir.bearish{color:var(--danger)}
+.pulse-bar{height:5px;border-radius:3px;background:var(--s3);overflow:hidden;margin:10px 0}
+.pulse-bar-fill{height:100%;border-radius:3px;transition:width .8s cubic-bezier(.22,1,.36,1)}
+.pulse-bar-fill.bullish{background:linear-gradient(90deg,var(--accent),#00e6ac)}
+.pulse-bar-fill.bearish{background:linear-gradient(90deg,var(--danger),#f87171)}
+.pulse-sub{font:400 12px var(--f);color:var(--ink3);display:flex;justify-content:space-between}
+.pulse-trending-title{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.pulse-trending-icon{width:26px;height:26px;border-radius:50%;background:var(--blue-bg);display:flex;align-items:center;justify-content:center;font-size:12px}
+.pulse-trending-name{font:600 14px var(--f);color:var(--ink);letter-spacing:-.2px}
+.pulse-list{list-style:none}
+.pulse-list li{padding:9px 0;border-bottom:1px solid var(--hl)}
+.pulse-list li:last-child{border-bottom:none}
+.pulse-list-q{font:400 13px/1.4 var(--f);color:var(--ink2);margin-bottom:3px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.pulse-list-meta{display:flex;align-items:center;gap:10px;font:500 12px var(--m)}
+.pulse-list-yes{color:var(--accent)}
+.pulse-list-vol{color:var(--ink3);font:400 11px var(--f)}
+.pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f)}
+.pulse-err{text-align:center;padding:16px;color:var(--ink3);font:400 12px var(--f)}
+@media(max-width:1024px){.pulse-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:768px){#market-pulse{padding:0 20px}.pulse-grid{grid-template-columns:1fr}.pulse-inner{padding-top:32px}}
+
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
 .reveal.in{opacity:1;transform:none}
@@ -357,6 +398,31 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
   </div>
 </section>
+
+<!-- MARKET PULSE — Polymarket sentiment indicators -->
+<div id="market-pulse">
+  <div class="pulse-inner reveal">
+    <div class="pulse-header">
+      <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
+      <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
+    </div>
+    <div class="pulse-grid">
+      <div class="pulse-card" id="pulse-btc">
+        <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+      </div>
+      <div class="pulse-card" id="pulse-eth">
+        <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+      </div>
+      <div class="pulse-card" id="pulse-trending">
+        <div class="pulse-trending-title">
+          <div class="pulse-trending-icon">📊</div>
+          <span class="pulse-trending-name" data-i18n="pulse.hot">Trending Crypto Markets</span>
+        </div>
+        <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- BLACKLIST DATA — table with fade + search -->
 <section id="blacklist-section">
@@ -1079,7 +1145,8 @@ var I18N = {
     'ct.f.submit':'Submit Enquiry','ct.f.note':'All enquiries are strictly confidential. NDA available on request.',
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
-    'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet'
+    'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
+    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.hot':'Trending Crypto Markets','pulse.bullish':'Bullish','pulse.bearish':'Bearish','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.price':'Price consensus'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1108,7 +1175,8 @@ var I18N = {
     'ct.f.submit':'提交咨询','ct.f.note':'所有咨询严格保密，可按需签署保密协议。',
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
-    'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报'
+    'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
+    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.hot':'热门加密预测','pulse.bullish':'看涨','pulse.bearish':'看跌','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.price':'价格共识'
   }
 };
 
@@ -1177,6 +1245,119 @@ applyLang(currentLang);
       container.innerHTML = html;
     })
     .catch(function() {});
+})();
+
+// ===== MARKET PULSE — Polymarket Sentiment =====
+(function loadMarketPulse() {
+  var GAMMA = 'https://gamma-api.polymarket.com';
+  var months = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  var now = new Date();
+  var mo = months[now.getMonth()];
+  var day = now.getDate();
+  var yr = now.getFullYear();
+
+  var btcSlug = 'bitcoin-up-or-down-on-' + mo + '-' + day + '-' + yr;
+  var ethSlug = 'ethereum-up-or-down-on-' + mo + '-' + day + '-' + yr;
+
+  function fmtVol(v) {
+    if (v >= 1e6) return '$' + (v / 1e6).toFixed(1) + 'M';
+    if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
+    return '$' + Math.round(v);
+  }
+
+  function dict(k) {
+    return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k);
+  }
+
+  function renderSentiment(elId, coin, iconClass, data) {
+    var el = document.getElementById(elId);
+    if (!el) return;
+    if (!data) {
+      el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>';
+      return;
+    }
+    var market = data.markets && data.markets[0];
+    if (!market) {
+      el.innerHTML = '<div class="pulse-err">' + dict('pulse.nodata') + '</div>';
+      return;
+    }
+    var outcomes = typeof market.outcomes === 'string' ? JSON.parse(market.outcomes) : market.outcomes;
+    var prices = typeof market.outcomePrices === 'string' ? JSON.parse(market.outcomePrices) : market.outcomePrices;
+    var upIdx = 0;
+    for (var i = 0; i < outcomes.length; i++) { if (outcomes[i] === 'Up') upIdx = i; }
+    var upPct = (parseFloat(prices[upIdx]) * 100);
+    var isBull = upPct >= 50;
+    var cls = isBull ? 'bullish' : 'bearish';
+    var label = isBull ? dict('pulse.bullish') : dict('pulse.bearish');
+    var vol = market.volume24hr || data.volume24hr || 0;
+
+    el.innerHTML = '<div class="pulse-coin">'
+      + '<div class="pulse-coin-icon ' + iconClass + '">' + coin + '</div>'
+      + '<span class="pulse-coin-name">' + (coin === '₿' ? 'Bitcoin' : 'Ethereum') + '</span>'
+      + '</div>'
+      + '<div class="pulse-row">'
+      + '<span class="pulse-pct ' + cls + '">' + upPct.toFixed(1) + '%</span>'
+      + '<span class="pulse-dir ' + cls + '">' + (isBull ? '▲ ' : '▼ ') + label + '</span>'
+      + '</div>'
+      + '<div class="pulse-bar"><div class="pulse-bar-fill ' + cls + '" style="width:' + upPct + '%"></div></div>'
+      + '<div class="pulse-sub"><span>' + dict('pulse.vol') + ': ' + fmtVol(vol) + '</span><span>' + (100 - upPct).toFixed(1) + '% ' + (isBull ? dict('pulse.bearish') : dict('pulse.bullish')) + '</span></div>';
+  }
+
+  function renderTrending(events) {
+    var el = document.getElementById('pulse-trending');
+    if (!el) return;
+    // Filter out daily price level / up-down markets, keep interesting ones
+    var dominated = ['above', 'up-or-down', 'price-on'];
+    var items = [];
+    for (var i = 0; i < events.length && items.length < 4; i++) {
+      var e = events[i];
+      var slug = e.slug || '';
+      var dominated_match = false;
+      for (var d = 0; d < dominated.length; d++) {
+        if (slug.indexOf(dominated[d]) !== -1) { dominated_match = true; break; }
+      }
+      if (dominated_match) continue;
+      var m = e.markets && e.markets[0];
+      if (!m) continue;
+      var prices = typeof m.outcomePrices === 'string' ? JSON.parse(m.outcomePrices) : m.outcomePrices;
+      var outcomes = typeof m.outcomes === 'string' ? JSON.parse(m.outcomes) : m.outcomes;
+      var yesIdx = 0;
+      for (var j = 0; j < outcomes.length; j++) { if (outcomes[j] === 'Yes') yesIdx = j; }
+      items.push({
+        title: e.title || m.question || '',
+        yesPct: (parseFloat(prices[yesIdx]) * 100).toFixed(1),
+        vol: e.volume24hr || 0,
+        slug: e.slug
+      });
+    }
+    if (!items.length) {
+      el.querySelector('.pulse-loading').textContent = dict('pulse.nodata');
+      return;
+    }
+    var title = el.querySelector('.pulse-trending-title').outerHTML;
+    var html = title + '<ul class="pulse-list">';
+    items.forEach(function(item) {
+      html += '<li>'
+        + '<div class="pulse-list-q">' + escHtml(item.title) + '</div>'
+        + '<div class="pulse-list-meta">'
+        + '<span class="pulse-list-yes">' + item.yesPct + '% Yes</span>'
+        + '<span class="pulse-list-vol">' + fmtVol(item.vol) + '</span>'
+        + '</div></li>';
+    });
+    html += '</ul>';
+    el.innerHTML = html;
+  }
+
+  // Fetch all data in parallel
+  var btcP = fetch(GAMMA + '/events?slug=' + btcSlug).then(function(r) { return r.json(); }).then(function(d) { return d[0] || null; }).catch(function() { return null; });
+  var ethP = fetch(GAMMA + '/events?slug=' + ethSlug).then(function(r) { return r.json(); }).then(function(d) { return d[0] || null; }).catch(function() { return null; });
+  var trendP = fetch(GAMMA + '/events?tag_id=21&active=true&closed=false&order=volume24hr&ascending=false&limit=12').then(function(r) { return r.json(); }).catch(function() { return []; });
+
+  Promise.all([btcP, ethP, trendP]).then(function(results) {
+    renderSentiment('pulse-btc', '₿', 'btc', results[0]);
+    renderSentiment('pulse-eth', 'Ξ', 'eth', results[1]);
+    renderTrending(results[2]);
+  });
 })();
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
