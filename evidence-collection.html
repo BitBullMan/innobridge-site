@@ -259,122 +259,122 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
 // ===== EXCHANGE DATA =====
 var exchanges = [
 // === EXCHANGES (Email) ===
-{name:"Binance",cat:"exchange",method:"portal",entity:"Nest Services Limited",contact:"https://app.kodexglobal.com/binance-cn/signup",contactLabel:"Kodex Portal",docs:"立案决定书, 调取证据通知书(抬头: Nest Services Limited), 两名警官证正反面",notes:"2023/2/2起不再接受邮件请求，需通过Kodex平台提交。使用Chrome浏览器，勿用VPN。审核约1-2天。"},
-{name:"OKX",cat:"exchange",method:"email",entity:"Aux Cayes FinTech Co. Ltd.",contact:"evidence@okx.com",docs:"立案决定书, 调证通知书(抬头: Aux Cayes FinTech Co. Ltd.), 警官证(原件或加盖公章复印件)",notes:"调取信息请提供Excel格式表。非中国大陆电话需提供区号。哈希/地址请列明公链信息。"},
-{name:"HTX (Huobi)",cat:"exchange",method:"email",entity:"Huobi Global Limited",contact:"ls@htx-inc.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证(加盖公章+有效期内), 受案登记表或立案决定书, 联系信息",notes:"查询范围30天内1个工作日反馈，超过需3-5个工作日。地址/证件号需以表格形式发送。"},
-{name:"MEXC Global",cat:"exchange",method:"ticket",entity:"MEXC Global Ltd.",contact:"https://www.mexc.com/zh-CN/support/requests/legal",contactLabel:"MEXC Legal Portal",docs:"立案证明, 调证通知书(详细写明账号/哈希/地址/邮箱/电话/身份证号), 两名警官证复印件加盖公章, 司法调证信息附件表格"},
-{name:"Gate.io",cat:"exchange",method:"email",entity:"Gate Technology Inc.",contact:"support@gateio.zendesk.com",docs:"立案决定书, 调证通知书, 受案登记表(注意脱敏), 两名警官证复印件加盖公章",notes:"调证后需腾讯会议核实警方身份。注意接听国外/英国电话。同一案件同一邮箱认证后不需再次认证。"},
-{name:"KuCoin",cat:"exchange",method:"ticket",entity:"KuCoin",contact:"https://www.kucoin.com/legal/requests",contactLabel:"KuCoin Legal Portal",contactAlt:"rbenquiries@kucoin.com (邮件调证周期长)",docs:"执法机构名称, 两名警官证复印件, 立案决定书, 调证通知书",notes:"文件和邮件应为英文。冻结默认30天，需指定冻结期限。所有内容需可复制格式(PDF/Word/Excel)。"},
-{name:"Bybit",cat:"exchange",method:"email",entity:"",contact:"law_enforcement@bybit.com",docs:"执法机构名称, 身份证明(徽章号/内部ID), 政府域名邮箱, 联系信息, 传票/法院命令/搜查令, 加密货币类型+地址(文本/Excel格式)",notes:"紧急请求(生命危险)请在主题行注明。需使用警方授权邮箱。"},
-{name:"Bitget",cat:"exchange",method:"email",entity:"",contact:"support@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案例描述"},
-{name:"OKCoin",cat:"exchange",method:"email",entity:"OKCoin Technology Company Limited",contact:"support@okcoin.com",docs:"执法机关名称, 授权证明+职位, 身份证明(徽章号), 政府域名邮箱, 请求详细信息(Excel格式)",notes:"紧急请求在主题行说明。"},
-{name:"Bitfinex",cat:"exchange",method:"email",entity:"",contact:"inforequests@bitfinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方电子邮件查询并提供身份证明。"},
-{name:"Gemini",cat:"exchange",method:"email",entity:"",contact:"lawenforcement@gemini.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Kraken",cat:"exchange",method:"email",entity:"",contact:"support@kraken.com",docs:"官方执法邮箱, 法院传票或相关文件",notes:"合作基于收到相关法院系统的法院命令。"},
-{name:"Bitstamp",cat:"exchange",method:"email",entity:"",contact:"compliance@bitstamp.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"正式请求应由授权官员签署。"},
-{name:"BitMEX",cat:"exchange",method:"email",entity:"HDR Global Trading Ltd",contact:"directorfiu@gov.sc (塞舌尔FIU)",docs:"职级/头衔/部门/联系方式(官方警察邮箱), BitMEX账户信息",notes:"HDR在塞舌尔注册，需先联系塞舌尔金融情报机构(FIU)。未经塞舌尔当局批准无法披露客户信息。"},
-{name:"中币 (ZB.COM)",cat:"exchange",method:"email",entity:"ZBNetwork Technology Limited",contact:"inforequests@zb.com",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称, 请求内容",notes:"⚠️ ZB.COM已于2022年暂停运营，此渠道可能不再有效。"},
-{name:"Hoo (虎符)",cat:"exchange",method:"email",entity:"Hoo Pay Limited",contact:"support@hoo.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"⚠️ 虎符交易所已于2023年暂停运营，此渠道可能不再有效。"},
-{name:"Poloniex",cat:"exchange",method:"email",entity:"",contact:"compliance@poloniex.com",docs:"彩色扫描副本(带标志), 请求官员全名/固定电话, 嫌疑人信息(姓名/邮箱/身份证/国籍), 交易哈希/地址, 授权证明",notes:"必须通过政府/警方官方邮箱发送。不接受黑白扫描件。"},
-{name:"HitBTC",cat:"exchange",method:"email",entity:"HiTech Digital Business Ltd",contact:"legal@hitbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱/地址/电话",notes:"仅以清晰英语提出。请给至少15天审查时间。"},
-{name:"CoinW (币赢)",cat:"exchange",method:"email",entity:"",contact:"support@coinw.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"ZT",cat:"exchange",method:"email",entity:"",contact:"servicetur@ztb.im",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。"},
-{name:"Hotcoin Global",cat:"exchange",method:"email",entity:"",contact:"Casecn@hotcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案件需协助调查内容"},
-{name:"Dcoin (大币网)",cat:"exchange",method:"email",entity:"",contact:"support@dcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"ZBG",cat:"exchange",method:"email",entity:"ZBG.com",contact:"vip@zbg.group",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称"},
-{name:"Digifinex",cat:"exchange",method:"email",entity:"",contact:"support@digifinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Tokencan",cat:"exchange",method:"email",entity:"",contact:"service@tokencan.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BigONE",cat:"exchange",method:"email",entity:"",contact:"fraud-report@bigone.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"通常5-10个工作日反馈。"},
-{name:"CoinTiger",cat:"exchange",method:"email",entity:"",contact:"support@cointiger.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"⚠️ CoinTiger已于2023年关闭运营，此渠道可能不再有效。"},
-{name:"CCFOX",cat:"exchange",method:"email",entity:"",contact:"support@ccfox.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"No.7 Exchange",cat:"exchange",method:"email",entity:"",contact:"7ex.services@gmail.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Bithumb",cat:"exchange",method:"email",entity:"",contact:"help@bithumb.pro",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BKEX",cat:"exchange",method:"email",entity:"",contact:"support@bkex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 所需调查内容",notes:"⚠️ BKEX于2023年因接受调查暂停服务，此渠道可能不再有效。"},
-{name:"PeerCoin",cat:"exchange",method:"email",entity:"",contact:"foundation@peercoin.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"XT.COM",cat:"exchange",method:"email",entity:"",contact:"inforequests@XT.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 法律主体名称, 合理截止日期"},
-{name:"LBank",cat:"exchange",method:"email",entity:"",contact:"service@lbank.info",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"AscendEX",cat:"exchange",method:"email",entity:"",contact:"legal@ascendex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"AEX",cat:"exchange",method:"email",entity:"",contact:"service@ogmail.aex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"WhiteBIT",cat:"exchange",method:"email",entity:"",contact:"legal@whitebit.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。"},
-{name:"CoinEx",cat:"exchange",method:"email",entity:"",contact:"developer@coinex.org",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"PandaFe",cat:"exchange",method:"email",entity:"",contact:"service@pandafe.cloud",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BingX",cat:"exchange",method:"email",entity:"",contact:"support@bingx.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"FatBTC",cat:"exchange",method:"email",entity:"",contact:"123@fatbtc.com",contactAlt:"https://www.fatbtc.com/help (工单)",docs:"执法机构名称, 授权证明+职位, 身份证明, 政府域名邮箱, 联系信息, 法人实体名称, 传票标识/地址/哈希(文本/Excel格式)"},
-{name:"Exmo",cat:"exchange",method:"email",entity:"Exmo Finance LLP",contact:"compliance@exmo.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"要求正式调查请求。需使用官方执法邮箱发送。"},
-{name:"Bitcoinwin",cat:"exchange",method:"email",entity:"",contact:"service@bitcoinwin.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Newton",cat:"exchange",method:"email",entity:"",contact:"Investigations@newton.co",docs:"仅回复官方执法邮箱"},
-{name:"BW",cat:"exchange",method:"email",entity:"",contact:"support@bw.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"ProEX",cat:"exchange",method:"email",entity:"",contact:"support@proex.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BTC Markets",cat:"exchange",method:"email",entity:"",contact:"compliance@btcmarkets.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Bitforex",cat:"exchange",method:"email",entity:"",contact:"support@bitforex2.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 地址/哈希(文本/Excel格式)"},
-{name:"Bibox",cat:"exchange",method:"email",entity:"",contact:"support@bibox.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"OTCBTC",cat:"exchange",method:"email",entity:"",contact:"support@otcbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BTCC",cat:"exchange",method:"email",entity:"",contact:"support@btcc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Bitcoke",cat:"exchange",method:"email",entity:"",contact:"support@bitcoke.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"PEXPAY",cat:"exchange",method:"email",entity:"",contact:"lerequest@pexpay.com / dpo@pexpay.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"ChBtc",cat:"exchange",method:"email",entity:"",contact:"support@chbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Yunbi",cat:"exchange",method:"email",entity:"",contact:"have-a-good-day@yunbi.support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Zaif",cat:"exchange",method:"email",entity:"",contact:"zaifhelp@fcce.jp",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Luno",cat:"exchange",method:"email",entity:"",contact:"support@luno.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需通过政府域邮箱发送。"},
-{name:"BitZ",cat:"exchange",method:"email",entity:"",contact:"service@bitz.email",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BlockTrades",cat:"exchange",method:"email",entity:"",contact:"support@blocktrade.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Hopoo",cat:"exchange",method:"email",entity:"",contact:"service@hopoo.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"CoinCola",cat:"exchange",method:"email",entity:"CoinCola",contact:"evidence@coincola.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱发送",notes:"具体调用内容另写在Excel或邮件正文中。"},
-{name:"Tbitex",cat:"exchange",method:"email",entity:"",contact:"support@Tbitex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BTSE",cat:"exchange",method:"email",entity:"",contact:"compliance@btse.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"所有文件要有中文翻译。"},
-{name:"BitHub",cat:"exchange",method:"email",entity:"",contact:"hello@bithub.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Maskex",cat:"exchange",method:"email",entity:"MASK GLOBAL MARKET CO., LTD.",contact:"legal@maskex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"文书需英文翻译版本，邮件正文需英文。"},
-{name:"Pionex",cat:"exchange",method:"email",entity:"Pionex",contact:"service@pionex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 交易哈希"},
-{name:"Changelly",cat:"exchange",method:"email",entity:"Fintechvision Ltd.",contact:"legal@changelly.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 单位名称/联系方式",notes:"需通过官方邮箱发送。"},
+{name:"Binance",cat:"exchange",method:"portal",entity:"Nest Services Limited",contact:"https://app.kodexglobal.com/binance-cn/signup",contactLabel:"Kodex Portal",docs:"立案决定书, 调取证据通知书(抬头: Nest Services Limited), 两名警官证正反面",notes:"2023/2/2起不再接受邮件请求，需通过Kodex平台提交。使用Chrome浏览器，勿用VPN。审核约1-2天。",docs_en:"Case filing decision, evidence retrieval notice (addressed to: Nest Services Limited), front and back copies of two officers' IDs",notes_en:"Since 2023/2/2, email requests are no longer accepted. Submit via Kodex platform. Use Chrome browser, do not use VPN. Review takes ~1-2 days."},
+{name:"OKX",cat:"exchange",method:"email",entity:"Aux Cayes FinTech Co. Ltd.",contact:"evidence@okx.com",docs:"立案决定书, 调证通知书(抬头: Aux Cayes FinTech Co. Ltd.), 警官证(原件或加盖公章复印件)",notes:"调取信息请提供Excel格式表。非中国大陆电话需提供区号。哈希/地址请列明公链信息。",docs_en:"Case filing decision, evidence collection notice (addressed to: Aux Cayes FinTech Co. Ltd.), officers' IDs (originals or stamped copies)",notes_en:"Provide requested information in Excel format. Non-mainland China phone numbers must include country code. For hashes/addresses, specify the blockchain."},
+{name:"HTX (Huobi)",cat:"exchange",method:"email",entity:"Huobi Global Limited",contact:"ls@htx-inc.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证(加盖公章+有效期内), 受案登记表或立案决定书, 联系信息",notes:"查询范围30天内1个工作日反馈，超过需3-5个工作日。地址/证件号需以表格形式发送。",docs_en:"Evidence collection notice (must specify time range + official stamp), two officers' IDs (with official stamps + valid), case acceptance form or case filing decision, contact information",notes_en:"Queries within 30 days: 1 business day response. Over 30 days: 3-5 business days. Addresses/ID numbers must be sent in table format."},
+{name:"MEXC Global",cat:"exchange",method:"ticket",entity:"MEXC Global Ltd.",contact:"https://www.mexc.com/zh-CN/support/requests/legal",contactLabel:"MEXC Legal Portal",docs:"立案证明, 调证通知书(详细写明账号/哈希/地址/邮箱/电话/身份证号), 两名警官证复印件加盖公章, 司法调证信息附件表格",docs_en:"Case filing certificate, evidence collection notice (specify account/hash/address/email/phone/ID number in detail), copies of two officers' IDs with official stamps, judicial evidence collection attachment form"},
+{name:"Gate.io",cat:"exchange",method:"email",entity:"Gate Technology Inc.",contact:"support@gateio.zendesk.com",docs:"立案决定书, 调证通知书, 受案登记表(注意脱敏), 两名警官证复印件加盖公章",notes:"调证后需腾讯会议核实警方身份。注意接听国外/英国电话。同一案件同一邮箱认证后不需再次认证。",docs_en:"Case filing decision, evidence collection notice, case acceptance form (redact sensitive info), copies of two officers' IDs with official stamps",notes_en:"After evidence collection, a Tencent Meeting video call is required to verify police identity. Note: may receive calls from international/UK numbers. Same case with same email — no re-verification needed after initial authentication."},
+{name:"KuCoin",cat:"exchange",method:"ticket",entity:"KuCoin",contact:"https://www.kucoin.com/legal/requests",contactLabel:"KuCoin Legal Portal",contactAlt:"rbenquiries@kucoin.com (邮件调证周期长)",docs:"执法机构名称, 两名警官证复印件, 立案决定书, 调证通知书",notes:"文件和邮件应为英文。冻结默认30天，需指定冻结期限。所有内容需可复制格式(PDF/Word/Excel)。",docs_en:"Law enforcement agency name, copies of two officers' IDs, case filing decision, evidence collection notice",notes_en:"Documents and emails should be in English. Account freeze defaults to 30 days — specify the freeze period. All content must be in copyable format (PDF/Word/Excel)."},
+{name:"Bybit",cat:"exchange",method:"email",entity:"",contact:"law_enforcement@bybit.com",docs:"执法机构名称, 身份证明(徽章号/内部ID), 政府域名邮箱, 联系信息, 传票/法院命令/搜查令, 加密货币类型+地址(文本/Excel格式)",notes:"紧急请求(生命危险)请在主题行注明。需使用警方授权邮箱。",docs_en:"Law enforcement agency name, identity proof (badge number/internal ID), government domain email, contact information, subpoena/court order/search warrant, cryptocurrency type + address (text/Excel format)",notes_en:"For emergency requests (life-threatening), indicate in the subject line. Must use authorized law enforcement email."},
+{name:"Bitget",cat:"exchange",method:"email",entity:"",contact:"support@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案例描述",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, case description"},
+{name:"OKCoin",cat:"exchange",method:"email",entity:"OKCoin Technology Company Limited",contact:"support@okcoin.com",docs:"执法机关名称, 授权证明+职位, 身份证明(徽章号), 政府域名邮箱, 请求详细信息(Excel格式)",notes:"紧急请求在主题行说明。",docs_en:"Law enforcement agency name, authorization proof + position, identity proof (badge number), government domain email, request details (Excel format)",notes_en:"For emergency requests, indicate in the subject line."},
+{name:"Bitfinex",cat:"exchange",method:"email",entity:"",contact:"inforequests@bitfinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方电子邮件查询并提供身份证明。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Must use official email for inquiries and provide identity proof."},
+{name:"Gemini",cat:"exchange",method:"email",entity:"",contact:"lawenforcement@gemini.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Kraken",cat:"exchange",method:"email",entity:"",contact:"support@kraken.com",docs:"官方执法邮箱, 法院传票或相关文件",notes:"合作基于收到相关法院系统的法院命令。",docs_en:"Official law enforcement email, court subpoena or relevant documents",notes_en:"Cooperation is based on receiving court orders from the relevant court system."},
+{name:"Bitstamp",cat:"exchange",method:"email",entity:"",contact:"compliance@bitstamp.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"正式请求应由授权官员签署。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Formal requests must be signed by an authorized officer."},
+{name:"BitMEX",cat:"exchange",method:"email",entity:"HDR Global Trading Ltd",contact:"directorfiu@gov.sc (塞舌尔FIU)",docs:"职级/头衔/部门/联系方式(官方警察邮箱), BitMEX账户信息",notes:"HDR在塞舌尔注册，需先联系塞舌尔金融情报机构(FIU)。未经塞舌尔当局批准无法披露客户信息。",docs_en:"Rank/title/department/contact details (official police email), BitMEX account information",notes_en:"HDR is registered in Seychelles. Must first contact the Seychelles Financial Intelligence Unit (FIU). Cannot disclose client information without Seychelles authority approval."},
+{name:"中币 (ZB.COM)",cat:"exchange",method:"email",entity:"ZBNetwork Technology Limited",contact:"inforequests@zb.com",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称, 请求内容",notes:"⚠️ ZB.COM已于2022年暂停运营，此渠道可能不再有效。",docs_en:"Law enforcement agency name, authorization proof, identity proof, investigation letter, government domain email, legal entity name, request details",notes_en:"⚠️ ZB.COM suspended operations in 2022. This channel may no longer be active."},
+{name:"Hoo (虎符)",cat:"exchange",method:"email",entity:"Hoo Pay Limited",contact:"support@hoo.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"⚠️ 虎符交易所已于2023年暂停运营，此渠道可能不再有效。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"⚠️ Hoo Exchange suspended operations in 2023. This channel may no longer be active."},
+{name:"Poloniex",cat:"exchange",method:"email",entity:"",contact:"compliance@poloniex.com",docs:"彩色扫描副本(带标志), 请求官员全名/固定电话, 嫌疑人信息(姓名/邮箱/身份证/国籍), 交易哈希/地址, 授权证明",notes:"必须通过政府/警方官方邮箱发送。不接受黑白扫描件。",docs_en:"Color scanned copies (with logo), requesting officer's full name/landline, suspect information (name/email/ID/nationality), transaction hashes/addresses, authorization proof",notes_en:"Must be sent from an official government/police email. Black-and-white scans are not accepted."},
+{name:"HitBTC",cat:"exchange",method:"email",entity:"HiTech Digital Business Ltd",contact:"legal@hitbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱/地址/电话",notes:"仅以清晰英语提出。请给至少15天审查时间。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, official email/address/phone",notes_en:"Submit in clear English only. Allow at least 15 days for review."},
+{name:"CoinW (币赢)",cat:"exchange",method:"email",entity:"",contact:"support@coinw.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"ZT",cat:"exchange",method:"email",entity:"",contact:"servicetur@ztb.im",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Must use official email."},
+{name:"Hotcoin Global",cat:"exchange",method:"email",entity:"",contact:"Casecn@hotcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 案件需协助调查内容",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, details of investigation assistance needed"},
+{name:"Dcoin (大币网)",cat:"exchange",method:"email",entity:"",contact:"support@dcoin.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"ZBG",cat:"exchange",method:"email",entity:"ZBG.com",contact:"vip@zbg.group",docs:"执法机关名称, 授权证明, 身份证明, 调查函, 政府域名邮箱, 法律主体名称",docs_en:"Law enforcement agency name, authorization proof, identity proof, investigation letter, government domain email, legal entity name"},
+{name:"Digifinex",cat:"exchange",method:"email",entity:"",contact:"support@digifinex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Tokencan",cat:"exchange",method:"email",entity:"",contact:"service@tokencan.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BigONE",cat:"exchange",method:"email",entity:"",contact:"fraud-report@bigone.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"通常5-10个工作日反馈。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Typically 5-10 business days for response."},
+{name:"CoinTiger",cat:"exchange",method:"email",entity:"",contact:"support@cointiger.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"⚠️ CoinTiger已于2023年关闭运营，此渠道可能不再有效。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"⚠️ CoinTiger ceased operations in 2023. This channel may no longer be active."},
+{name:"CCFOX",cat:"exchange",method:"email",entity:"",contact:"support@ccfox.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"No.7 Exchange",cat:"exchange",method:"email",entity:"",contact:"7ex.services@gmail.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Bithumb",cat:"exchange",method:"email",entity:"",contact:"help@bithumb.pro",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BKEX",cat:"exchange",method:"email",entity:"",contact:"support@bkex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 所需调查内容",notes:"⚠️ BKEX于2023年因接受调查暂停服务，此渠道可能不再有效。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, details of investigation needed",notes_en:"⚠️ BKEX suspended services in 2023 due to investigation. This channel may no longer be active."},
+{name:"PeerCoin",cat:"exchange",method:"email",entity:"",contact:"foundation@peercoin.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"XT.COM",cat:"exchange",method:"email",entity:"",contact:"inforequests@XT.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 法律主体名称, 合理截止日期",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, government domain email, legal entity name, reasonable deadline"},
+{name:"LBank",cat:"exchange",method:"email",entity:"",contact:"service@lbank.info",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"AscendEX",cat:"exchange",method:"email",entity:"",contact:"legal@ascendex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"AEX",cat:"exchange",method:"email",entity:"",contact:"service@ogmail.aex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"WhiteBIT",cat:"exchange",method:"email",entity:"",contact:"legal@whitebit.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需使用官方邮箱。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Must use official email."},
+{name:"CoinEx",cat:"exchange",method:"email",entity:"",contact:"developer@coinex.org",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"PandaFe",cat:"exchange",method:"email",entity:"",contact:"service@pandafe.cloud",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BingX",cat:"exchange",method:"email",entity:"",contact:"support@bingx.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"FatBTC",cat:"exchange",method:"email",entity:"",contact:"123@fatbtc.com",contactAlt:"https://www.fatbtc.com/help (工单)",docs:"执法机构名称, 授权证明+职位, 身份证明, 政府域名邮箱, 联系信息, 法人实体名称, 传票标识/地址/哈希(文本/Excel格式)",docs_en:"Law enforcement agency name, authorization proof + position, identity proof, government domain email, contact information, legal entity name, subpoena identifiers/addresses/hashes (text/Excel format)"},
+{name:"Exmo",cat:"exchange",method:"email",entity:"Exmo Finance LLP",contact:"compliance@exmo.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"要求正式调查请求。需使用官方执法邮箱发送。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Requires a formal investigation request. Must be sent from an official law enforcement email."},
+{name:"Bitcoinwin",cat:"exchange",method:"email",entity:"",contact:"service@bitcoinwin.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Newton",cat:"exchange",method:"email",entity:"",contact:"Investigations@newton.co",docs:"仅回复官方执法邮箱",docs_en:"Responds only to official law enforcement emails"},
+{name:"BW",cat:"exchange",method:"email",entity:"",contact:"support@bw.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"ProEX",cat:"exchange",method:"email",entity:"",contact:"support@proex.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BTC Markets",cat:"exchange",method:"email",entity:"",contact:"compliance@btcmarkets.net",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Bitforex",cat:"exchange",method:"email",entity:"",contact:"support@bitforex2.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 政府域名邮箱, 地址/哈希(文本/Excel格式)",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, government domain email, addresses/hashes (text/Excel format)"},
+{name:"Bibox",cat:"exchange",method:"email",entity:"",contact:"support@bibox.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"OTCBTC",cat:"exchange",method:"email",entity:"",contact:"support@otcbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BTCC",cat:"exchange",method:"email",entity:"",contact:"support@btcc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Bitcoke",cat:"exchange",method:"email",entity:"",contact:"support@bitcoke.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"PEXPAY",cat:"exchange",method:"email",entity:"",contact:"lerequest@pexpay.com / dpo@pexpay.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"ChBtc",cat:"exchange",method:"email",entity:"",contact:"support@chbtc.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Yunbi",cat:"exchange",method:"email",entity:"",contact:"have-a-good-day@yunbi.support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Zaif",cat:"exchange",method:"email",entity:"",contact:"zaifhelp@fcce.jp",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Luno",cat:"exchange",method:"email",entity:"",contact:"support@luno.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需通过政府域邮箱发送。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Must be sent from a government domain email."},
+{name:"BitZ",cat:"exchange",method:"email",entity:"",contact:"service@bitz.email",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BlockTrades",cat:"exchange",method:"email",entity:"",contact:"support@blocktrade.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Hopoo",cat:"exchange",method:"email",entity:"",contact:"service@hopoo.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"CoinCola",cat:"exchange",method:"email",entity:"CoinCola",contact:"evidence@coincola.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 官方邮箱发送",notes:"具体调用内容另写在Excel或邮件正文中。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, send from official email",notes_en:"Specify detailed request content in a separate Excel file or email body."},
+{name:"Tbitex",cat:"exchange",method:"email",entity:"",contact:"support@Tbitex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BTSE",cat:"exchange",method:"email",entity:"",contact:"compliance@btse.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"所有文件要有中文翻译。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"All documents must include Chinese translations."},
+{name:"BitHub",cat:"exchange",method:"email",entity:"",contact:"hello@bithub.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Maskex",cat:"exchange",method:"email",entity:"MASK GLOBAL MARKET CO., LTD.",contact:"legal@maskex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"文书需英文翻译版本，邮件正文需英文。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Documents require English translation. Email body must be in English."},
+{name:"Pionex",cat:"exchange",method:"email",entity:"Pionex",contact:"service@pionex.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 交易哈希",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, transaction hashes"},
+{name:"Changelly",cat:"exchange",method:"email",entity:"Fintechvision Ltd.",contact:"legal@changelly.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 单位名称/联系方式",notes:"需通过官方邮箱发送。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, agency name/contact details",notes_en:"Must be sent from an official email."},
 // === EXCHANGES (Ticket) ===
-{name:"Bittrex",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"已关闭",notes:"Bittrex已于2023年12月关闭运营，调证渠道不再有效。建议通过美国相关司法途径获取历史数据。"},
-{name:"Coinbase Pro",cat:"exchange",method:"ticket",entity:"",contact:"https://help.coinbase.com/en/contact-us.html",contactLabel:"Coinbase Help",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需注册登陆后才可提交工单。"},
-{name:"BitFlyer",cat:"exchange",method:"ticket",entity:"",contact:"https://bitflyer.com/ja-jp/contact",contactLabel:"BitFlyer Contact",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BitMart",cat:"exchange",method:"ticket",entity:"",contact:"https://www.bitmart.com/support",contactLabel:"BitMart Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Coinone",cat:"exchange",method:"ticket",entity:"",contact:"",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"ALPEX",cat:"exchange",method:"ticket",entity:"",contact:"https://genfisupport.zendesk.com/hc/zh-cn/requests/new",contactLabel:"ALPEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Biking (币王)",cat:"exchange",method:"ticket",entity:"",contact:"https://1500644.s5.udesk.cn/hc/submit_a_request",contactLabel:"Biking Ticket",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Hotbit",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"已关闭",notes:"Hotbit已于2023年6月宣布关闭运营。建议通过其他渠道获取历史数据。"},
-{name:"CITEX",cat:"exchange",method:"ticket",entity:"",contact:"https://citex.zendesk.com/hc/zh-tw/requests/new",contactLabel:"CITEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Asproex",cat:"exchange",method:"ticket",entity:"",contact:"https://asproplus.zendesk.com/hc/zh-cn/requests/new",contactLabel:"Asproex Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BitGlobal",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bithumb.pro/hc/en-us/requests/new",contactLabel:"BitGlobal Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Jubi",cat:"exchange",method:"ticket",entity:"",contact:"https://support.jusp.ws/hc/zh-cn/requests/new",contactLabel:"Jubi Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BITMAIN",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bitmain.com/hc/en-us/requests/new",contactLabel:"BITMAIN Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
+{name:"Bittrex",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"已关闭",notes:"Bittrex已于2023年12月关闭运营，调证渠道不再有效。建议通过美国相关司法途径获取历史数据。",docs_en:"Closed",notes_en:"Bittrex ceased operations in December 2023. Evidence collection channels are no longer active. Consider obtaining historical data through US judicial channels."},
+{name:"Coinbase Pro",cat:"exchange",method:"ticket",entity:"",contact:"https://help.coinbase.com/en/contact-us.html",contactLabel:"Coinbase Help",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"需注册登陆后才可提交工单。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Must register and log in before submitting a ticket."},
+{name:"BitFlyer",cat:"exchange",method:"ticket",entity:"",contact:"https://bitflyer.com/ja-jp/contact",contactLabel:"BitFlyer Contact",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BitMart",cat:"exchange",method:"ticket",entity:"",contact:"https://www.bitmart.com/support",contactLabel:"BitMart Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Coinone",cat:"exchange",method:"ticket",entity:"",contact:"",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"ALPEX",cat:"exchange",method:"ticket",entity:"",contact:"https://genfisupport.zendesk.com/hc/zh-cn/requests/new",contactLabel:"ALPEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Biking (币王)",cat:"exchange",method:"ticket",entity:"",contact:"https://1500644.s5.udesk.cn/hc/submit_a_request",contactLabel:"Biking Ticket",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Hotbit",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"已关闭",notes:"Hotbit已于2023年6月宣布关闭运营。建议通过其他渠道获取历史数据。",docs_en:"Closed",notes_en:"Hotbit announced closure in June 2023. Consider obtaining historical data through other channels."},
+{name:"CITEX",cat:"exchange",method:"ticket",entity:"",contact:"https://citex.zendesk.com/hc/zh-tw/requests/new",contactLabel:"CITEX Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Asproex",cat:"exchange",method:"ticket",entity:"",contact:"https://asproplus.zendesk.com/hc/zh-cn/requests/new",contactLabel:"Asproex Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BitGlobal",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bithumb.pro/hc/en-us/requests/new",contactLabel:"BitGlobal Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Jubi",cat:"exchange",method:"ticket",entity:"",contact:"https://support.jusp.ws/hc/zh-cn/requests/new",contactLabel:"Jubi Zendesk",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BITMAIN",cat:"exchange",method:"ticket",entity:"",contact:"https://support.bitmain.com/hc/en-us/requests/new",contactLabel:"BITMAIN Support",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
 // === WALLETS ===
-{name:"imToken",cat:"wallet",method:"email",entity:"IMTOKEN PTE.LTD.",contact:"hack@token.im / support@token.im",docs:"立案决定书, 调取证据通知书(抬头: IMTOKEN PTE.LTD.), 警方证件复印件, 杭州网警协查函",notes:"两种途径：1)线下杭州网警外协窗口取联系单 2)内部线上系统发送协查手续。单个案件只需提交一次协查函。"},
-{name:"Bixin (币信)",cat:"wallet",method:"email",entity:"BIXIN GLOBAL CO., LTD",contact:"legal@bixin.im",docs:"两名警官证正反面(加盖公章), 调查取证函(带公章+文号)",notes:"邮件标题格式：《XXXX公安机关/刑侦大队调查取证》"},
-{name:"BitPie",cat:"wallet",method:"email",entity:"BITPIE LIMITED",contact:"support@bitpie.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证复印件加盖公章, 立案决定书, 联系信息",notes:"地址/币种/证件号/手机号需以表格形式发送。"},
-{name:"TokenPocket",cat:"wallet",method:"email",entity:"TP GLOBAL LTD",contact:"legalsupport@tokenpocket.pro",docs:"调证通知书(需说明时间范围+公章), 立案决定书(加盖公章), 两名警官证复印件加盖公章, 联系信息",notes:"单次最多5个用户，30天内1个工作日，超过需3-5天。地址需以表格形式发送。"},
-{name:"MathWallet",cat:"wallet",method:"email",entity:"MathWallet",contact:"hello@mathwallet.org",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章",notes:"可提供信息：用户创建钱包的时间/IP地址/注册设备/设备号。"},
-{name:"Coldlar (库神)",cat:"wallet",method:"email",entity:"库神",contact:"service@coldlar.com",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章"},
-{name:"SafePal",cat:"wallet",method:"email",entity:"SafePal Ltd.",contact:"legal@safepal.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法文件原件+英文翻译件"},
-{name:"Bitget Wallet (原BitKeep)",cat:"wallet",method:"email",entity:"BitKeep Global Inc.",contact:"support.web3@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"2023年8月品牌升级为Bitget Wallet。调证流程与Bitget交易所共用合规通道。"},
-{name:"Cobo",cat:"wallet",method:"email",entity:"Cobo Global Limited",contact:"regulatoryinquiry@cobo.com",docs:"与嫌疑人有关的授权令, 两名警官证复印件加盖公章",notes:"邮件标题：《XXXX公安机关/刑侦大队调取平台资料》"},
-{name:"Atomic Wallet",cat:"wallet",method:"email",entity:"Atomic Wallet",contact:"support@atomicwallet.io",docs:"通过官方邮箱发送, 附上确认邮件来源的证明"},
+{name:"imToken",cat:"wallet",method:"email",entity:"IMTOKEN PTE.LTD.",contact:"hack@token.im / support@token.im",docs:"立案决定书, 调取证据通知书(抬头: IMTOKEN PTE.LTD.), 警方证件复印件, 杭州网警协查函",notes:"两种途径：1)线下杭州网警外协窗口取联系单 2)内部线上系统发送协查手续。单个案件只需提交一次协查函。",docs_en:"Case filing decision, evidence retrieval notice (addressed to: IMTOKEN PTE.LTD.), officers' ID copies, Hangzhou Cyber Police coordination letter",notes_en:"Two channels: 1) Offline via Hangzhou Cyber Police external coordination window for contact slip 2) Internal online system for sending coordination documents. Each case only needs to submit the coordination letter once."},
+{name:"Bixin (币信)",cat:"wallet",method:"email",entity:"BIXIN GLOBAL CO., LTD",contact:"legal@bixin.im",docs:"两名警官证正反面(加盖公章), 调查取证函(带公章+文号)",notes:"邮件标题格式：《XXXX公安机关/刑侦大队调查取证》",docs_en:"Front and back copies of two officers' IDs (with official stamps), investigation and evidence collection letter (with official stamp + document number)",notes_en:"Email subject format: 'XXXX Public Security Bureau/Criminal Investigation Brigade Evidence Collection'"},
+{name:"BitPie",cat:"wallet",method:"email",entity:"BITPIE LIMITED",contact:"support@bitpie.com",docs:"调证通知书(需说明时间范围+公章), 两名警官证复印件加盖公章, 立案决定书, 联系信息",notes:"地址/币种/证件号/手机号需以表格形式发送。",docs_en:"Evidence collection notice (must specify time range + official stamp), copies of two officers' IDs with official stamps, case filing decision, contact information",notes_en:"Addresses/cryptocurrency types/ID numbers/phone numbers must be sent in table format."},
+{name:"TokenPocket",cat:"wallet",method:"email",entity:"TP GLOBAL LTD",contact:"legalsupport@tokenpocket.pro",docs:"调证通知书(需说明时间范围+公章), 立案决定书(加盖公章), 两名警官证复印件加盖公章, 联系信息",notes:"单次最多5个用户，30天内1个工作日，超过需3-5天。地址需以表格形式发送。",docs_en:"Evidence collection notice (must specify time range + official stamp), case filing decision (with official stamp), copies of two officers' IDs with official stamps, contact information",notes_en:"Maximum 5 users per request. Within 30 days: 1 business day. Over 30 days: 3-5 days. Addresses must be sent in table format."},
+{name:"MathWallet",cat:"wallet",method:"email",entity:"MathWallet",contact:"hello@mathwallet.org",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章",notes:"可提供信息：用户创建钱包的时间/IP地址/注册设备/设备号。",docs_en:"Case filing certificate, evidence collection notice and copies, copies of two officers' IDs with official stamps",notes_en:"Available information: wallet creation time/IP address/registered device/device ID."},
+{name:"Coldlar (库神)",cat:"wallet",method:"email",entity:"库神",contact:"service@coldlar.com",docs:"立案证明, 调证通知书及副本, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice and copies, copies of two officers' IDs with official stamps"},
+{name:"SafePal",cat:"wallet",method:"email",entity:"SafePal Ltd.",contact:"legal@safepal.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法文件原件+英文翻译件",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, original law enforcement documents + English translation"},
+{name:"Bitget Wallet (原BitKeep)",cat:"wallet",method:"email",entity:"BitKeep Global Inc.",contact:"support.web3@bitget.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",notes:"2023年8月品牌升级为Bitget Wallet。调证流程与Bitget交易所共用合规通道。",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps",notes_en:"Rebranded to Bitget Wallet in August 2023. Evidence collection process shares the compliance channel with Bitget exchange."},
+{name:"Cobo",cat:"wallet",method:"email",entity:"Cobo Global Limited",contact:"regulatoryinquiry@cobo.com",docs:"与嫌疑人有关的授权令, 两名警官证复印件加盖公章",notes:"邮件标题：《XXXX公安机关/刑侦大队调取平台资料》",docs_en:"Authorization warrant related to the suspect, copies of two officers' IDs with official stamps",notes_en:"Email subject: 'XXXX Public Security Bureau/Criminal Investigation Brigade Platform Data Retrieval'"},
+{name:"Atomic Wallet",cat:"wallet",method:"email",entity:"Atomic Wallet",contact:"support@atomicwallet.io",docs:"通过官方邮箱发送, 附上确认邮件来源的证明",docs_en:"Send via official email, attach proof confirming email origin"},
 // === SWAP PLATFORMS ===
-{name:"ChangeNow",cat:"swap",method:"email",entity:"CHN Group LLC",contact:"compliance@changenow.io",docs:"立案证明, 调证通知书(全英文版), 两名警官证复印件加盖公章, 案件基本情况, 交易和地址信息",notes:"交易哈希和地址需在单独的.xlsx/.csv电子表格中提供。"},
-{name:"SimpleSwap",cat:"swap",method:"email",entity:"SimpleSwap Ltd.",contact:"security@simpleswap.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"FixedFloat",cat:"swap",method:"email",entity:"FixedFloat",contact:"info@fixedfloat.com",docs:"立案证明, 全英文版调证通知书(含案件说明), 两名警官证复印件加盖公章, 交易哈希/地址(.xlsx/.csv)",notes:"邮件正文需全英文。抬头：To head of the FixedFloat company。"},
-{name:"SWFT Blockchain",cat:"swap",method:"email",entity:"EXPLORERX DIGITAL LIMITED",contact:"support@swftcoin.org",docs:"调证通知书(时间范围+公章), 两名警官证复印件(加盖公章+有效期内), 立案决定书",notes:"去中心化协议，无法限制/划转资产。单次最多5个用户，默认30天(1个工作日)，最长12个月。"},
+{name:"ChangeNow",cat:"swap",method:"email",entity:"CHN Group LLC",contact:"compliance@changenow.io",docs:"立案证明, 调证通知书(全英文版), 两名警官证复印件加盖公章, 案件基本情况, 交易和地址信息",notes:"交易哈希和地址需在单独的.xlsx/.csv电子表格中提供。",docs_en:"Case filing certificate, evidence collection notice (full English version), copies of two officers' IDs with official stamps, basic case information, transaction and address information",notes_en:"Transaction hashes and addresses must be provided in a separate .xlsx/.csv spreadsheet."},
+{name:"SimpleSwap",cat:"swap",method:"email",entity:"SimpleSwap Ltd.",contact:"security@simpleswap.io",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"FixedFloat",cat:"swap",method:"email",entity:"FixedFloat",contact:"info@fixedfloat.com",docs:"立案证明, 全英文版调证通知书(含案件说明), 两名警官证复印件加盖公章, 交易哈希/地址(.xlsx/.csv)",notes:"邮件正文需全英文。抬头：To head of the FixedFloat company。",docs_en:"Case filing certificate, full English evidence collection notice (with case description), copies of two officers' IDs with official stamps, transaction hashes/addresses (.xlsx/.csv)",notes_en:"Email body must be entirely in English. Address to: 'To head of the FixedFloat company'."},
+{name:"SWFT Blockchain",cat:"swap",method:"email",entity:"EXPLORERX DIGITAL LIMITED",contact:"support@swftcoin.org",docs:"调证通知书(时间范围+公章), 两名警官证复印件(加盖公章+有效期内), 立案决定书",notes:"去中心化协议，无法限制/划转资产。单次最多5个用户，默认30天(1个工作日)，最长12个月。",docs_en:"Evidence collection notice (time range + official stamp), copies of two officers' IDs (with official stamps + valid), case filing decision",notes_en:"Decentralized protocol — cannot restrict/transfer assets. Maximum 5 users per request. Default 30 days (1 business day), maximum 12 months."},
 // === CROSS-CHAIN ===
-{name:"SideShift.ai",cat:"crosschain",method:"email",entity:"",contact:"legal@sideshift.ai",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法机构详细信息, 请求信息详情(地址/交易ID/IP/时间日期)"},
+{name:"SideShift.ai",cat:"crosschain",method:"email",entity:"",contact:"legal@sideshift.ai",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章, 执法机构详细信息, 请求信息详情(地址/交易ID/IP/时间日期)",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps, law enforcement agency details, request information details (addresses/transaction IDs/IPs/dates)"},
 // === MINING POOLS ===
-{name:"Ethermine",cat:"mining",method:"email",entity:"",contact:"privacy@bitfly.at",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"Poolin (币印)",cat:"mining",method:"email",entity:"",contact:"support@blockin-wallethelp.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章"},
-{name:"BTC.com",cat:"mining",method:"email",entity:"",contact:"support@btc.com",docs:"立案证明, 调证通知书, 两名警官正反面复印件加盖公章, 政府域名邮箱, 法律主体名称, 地址/交易ID(文本/Excel)",notes:"紧急请求在主题行说明。"},
+{name:"Ethermine",cat:"mining",method:"email",entity:"",contact:"privacy@bitfly.at",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"Poolin (币印)",cat:"mining",method:"email",entity:"",contact:"support@blockin-wallethelp.zendesk.com",docs:"立案证明, 调证通知书, 两名警官证复印件加盖公章",docs_en:"Case filing certificate, evidence collection notice, copies of two officers' IDs with official stamps"},
+{name:"BTC.com",cat:"mining",method:"email",entity:"",contact:"support@btc.com",docs:"立案证明, 调证通知书, 两名警官正反面复印件加盖公章, 政府域名邮箱, 法律主体名称, 地址/交易ID(文本/Excel)",notes:"紧急请求在主题行说明。",docs_en:"Case filing certificate, evidence collection notice, front and back copies of two officers' IDs with official stamps, government domain email, legal entity name, addresses/transaction IDs (text/Excel)",notes_en:"For emergency requests, indicate in the subject line."},
 // === UNSUPPORTED ===
-{name:"AOFEX, WBFex, Upbit, BiKi, Bione, LOEX, Orangex, CoinBene, ZGYE, BINVET, GIBXChange, Coincheck, BFX, HKEx.one, Kine Protocol, BQB, BitWell, 78EX, Bitbank, CKcoin, EXX, DeerBit, Sunbit, COINBIG, BitFx, WhaleEx, WankeJia, Tokok, BBKX, BTCBOX, CyberBank, Bitop, CoinMate, FCoin, BCEX, Deepcoin, PearCoin, GOKO, Paxful, AAX",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"目前不支持调证",notes:"这些交易所目前不支持执法调证程序。"},
-{name:"Metamask, Coinbase Wallet, AToken, kcash, Ledger, Trust Wallet, Robinhood 等",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"钱包平台目前不支持调证",notes:"去中心化钱包/硬件钱包通常无法提供用户信息。"}
+{name:"AOFEX, WBFex, Upbit, BiKi, Bione, LOEX, Orangex, CoinBene, ZGYE, BINVET, GIBXChange, Coincheck, BFX, HKEx.one, Kine Protocol, BQB, BitWell, 78EX, Bitbank, CKcoin, EXX, DeerBit, Sunbit, COINBIG, BitFx, WhaleEx, WankeJia, Tokok, BBKX, BTCBOX, CyberBank, Bitop, CoinMate, FCoin, BCEX, Deepcoin, PearCoin, GOKO, Paxful, AAX",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"目前不支持调证",notes:"这些交易所目前不支持执法调证程序。",docs_en:"Evidence collection not currently supported",notes_en:"These exchanges do not currently support law enforcement evidence collection procedures."},
+{name:"Metamask, Coinbase Wallet, AToken, kcash, Ledger, Trust Wallet, Robinhood 等",cat:"unsupported",method:"defunct",entity:"",contact:"",docs:"钱包平台目前不支持调证",notes:"去中心化钱包/硬件钱包通常无法提供用户信息。",docs_en:"Wallet platforms do not currently support evidence collection",notes_en:"Decentralized wallets and hardware wallets typically cannot provide user information."}
 ];
 
 var currentFilter = 'all';
 var categoryLabels = {
-  exchange:{emoji:'&#x1F3E6;',label:'Exchanges'},
-  wallet:{emoji:'&#x1F4B3;',label:'Wallet Platforms'},
-  swap:{emoji:'&#x1F504;',label:'Swap Platforms'},
-  crosschain:{emoji:'&#x1F310;',label:'Cross-chain Platforms'},
-  mining:{emoji:'&#x26CF;&#xFE0F;',label:'Mining Pools'},
-  unsupported:{emoji:'&#x274C;',label:'Not Currently Supported'}
+  exchange:{emoji:'&#x1F3E6;',label:'Exchanges',label_cn:'交易所'},
+  wallet:{emoji:'&#x1F4B3;',label:'Wallet Platforms',label_cn:'钱包平台'},
+  swap:{emoji:'&#x1F504;',label:'Swap Platforms',label_cn:'闪兑平台'},
+  crosschain:{emoji:'&#x1F310;',label:'Cross-chain Platforms',label_cn:'跨链平台'},
+  mining:{emoji:'&#x26CF;&#xFE0F;',label:'Mining Pools',label_cn:'矿池'},
+  unsupported:{emoji:'&#x274C;',label:'Not Currently Supported',label_cn:'暂不支持'}
 };
 
 function escHtml(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML;}
@@ -391,9 +391,10 @@ function renderCards(items){
   var html = '';
   order.forEach(function(cat){
     if(!grouped[cat] || grouped[cat].length===0) return;
-    var info = categoryLabels[cat]||{emoji:'',label:cat};
+    var info = categoryLabels[cat]||{emoji:'',label:cat,label_cn:cat};
+    var catLabel = (currentLang==='cn' && info.label_cn) ? info.label_cn : info.label;
     html += '<div class="category-section" data-cat="'+cat+'">';
-    html += '<div class="category-title"><span class="emoji">'+info.emoji+'</span> '+info.label+' <span class="category-count">'+grouped[cat].length+'</span></div>';
+    html += '<div class="category-title"><span class="emoji">'+info.emoji+'</span> '+catLabel+' <span class="category-count">'+grouped[cat].length+'</span></div>';
     html += '<div class="exchange-grid">';
     grouped[cat].forEach(function(ex){
       var methodTag = ex.method==='email'?'<span class="tag email">Email</span>':
@@ -415,8 +416,10 @@ function renderCards(items){
       html += '<div class="ex-header"><span class="ex-name">'+escHtml(ex.name)+'</span>'+methodTag+'</div>';
       if(ex.entity) html += '<div class="ex-entity">'+escHtml(ex.entity)+'</div>';
       if(contactHtml) html += '<div class="ex-contact">'+contactHtml+'</div>';
-      html += '<div class="ex-docs"><strong>Required:</strong> '+escHtml(ex.docs)+'</div>';
-      if(ex.notes) html += '<div class="ex-notes">'+escHtml(ex.notes)+'</div>';
+      var docsText = (currentLang==='en' && ex.docs_en) ? ex.docs_en : ex.docs;
+      html += '<div class="ex-docs"><strong>'+(currentLang==='en'?'Required':'所需文件')+':</strong> '+escHtml(docsText)+'</div>';
+      var notesText = (currentLang==='en' && ex.notes_en) ? ex.notes_en : ex.notes;
+      if(ex.notes) html += '<div class="ex-notes">'+escHtml(notesText)+'</div>';
       html += '</div>';
     });
     html += '</div></div>';
@@ -494,6 +497,8 @@ function applyLang(lang) {
   });
   var btn = document.getElementById('lang-btn');
   if (btn) btn.textContent = lang === 'en' ? 'EN | 中' : '中 | EN';
+  // Re-render cards with new language
+  if(typeof filterCards === 'function') filterCards();
 }
 function toggleLang() { applyLang(currentLang === 'en' ? 'cn' : 'en'); }
 applyLang(currentLang);
