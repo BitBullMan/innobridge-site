@@ -138,6 +138,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .reg-status.active{background:var(--accent-bg);color:var(--accent-h)}
 .reg-status.proposed{background:rgba(245,158,11,0.08);color:#d97706}
 .reg-status.pending{background:var(--blue-bg);color:var(--blue)}
+.reg-status.repealed{background:var(--danger-bg);color:var(--danger);text-decoration:line-through}
+.reg-status.amended{background:rgba(245,158,11,0.08);color:#d97706}
 .reg-toggle{font-size:16px;color:var(--ink3);transition:transform .2s;flex-shrink:0}
 .reg-toggle.open{transform:rotate(180deg)}
 .reg-body{display:none;padding:0 20px 16px;border-top:1px solid var(--hl)}
@@ -204,6 +206,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .update-type.amendment{background:var(--blue-bg);color:var(--blue)}
 .update-type.enforcement{background:var(--danger-bg);color:var(--danger)}
 .update-type.guidance{background:rgba(139,92,246,0.08);color:var(--purple)}
+.update-type.effective_date{background:var(--accent-bg);color:var(--accent-h)}
+.update-type.consultation{background:rgba(245,158,11,0.08);color:#d97706}
+.update-type.repeal{background:var(--danger-bg);color:var(--danger)}
 .update-summary{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:8px}
 .update-footer{display:flex;align-items:center;gap:16px;font:400 12px var(--f);color:var(--ink3)}
 
@@ -249,6 +254,85 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .footer-bottom a{font:400 12px var(--f);color:rgba(255,255,255,0.4);margin-left:20px;transition:color .2s}
 .footer-bottom a:hover{color:#fff}
 
+/* COMPLIANCE CHECK TOOL */
+.check-section{padding:0 40px 64px}
+.check-inner{max-width:var(--max);margin:0 auto}
+.check-header{margin-bottom:24px}
+.check-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.check-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.check-login-gate{background:var(--s1);border:1.5px dashed var(--hl2);border-radius:14px;padding:48px 32px;text-align:center}
+.check-login-gate .gate-icon{font-size:40px;margin-bottom:16px;opacity:.6}
+.check-login-gate h3{font:600 18px var(--f);color:var(--ink);margin-bottom:8px}
+.check-login-gate p{font:400 14px var(--f);color:var(--ink3);max-width:480px;margin:0 auto 20px}
+.check-login-gate .nav-btn{display:inline-block;padding:10px 28px;font-size:14px}
+.check-container{display:none}
+
+/* WIZARD STEPS */
+.wizard-progress{display:flex;gap:0;margin-bottom:28px;background:var(--s1);border-radius:10px;padding:4px;overflow:hidden}
+.wiz-step{flex:1;text-align:center;padding:10px 8px;font:500 12px var(--f);color:var(--ink3);border-radius:8px;transition:all .3s;cursor:default;position:relative}
+.wiz-step.active{background:var(--canvas);color:var(--accent-h);box-shadow:var(--shadow-sm);font-weight:600}
+.wiz-step.done{color:var(--accent);cursor:pointer}
+.wiz-step .step-num{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--s2);font:600 10px var(--f);margin-right:6px;color:var(--ink3);transition:all .3s}
+.wiz-step.active .step-num{background:var(--accent);color:#fff}
+.wiz-step.done .step-num{background:var(--accent);color:#fff}
+.wiz-panel{display:none}
+.wiz-panel.active{display:block}
+.wiz-actions{display:flex;justify-content:space-between;margin-top:24px;gap:12px}
+.wiz-btn{font:500 13px var(--f);padding:10px 24px;border-radius:8px;border:1px solid var(--hl);cursor:pointer;transition:all .2s;background:var(--canvas);color:var(--ink)}
+.wiz-btn:hover{border-color:var(--hl2);background:var(--s1)}
+.wiz-btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.wiz-btn.primary:hover{background:var(--accent-h)}
+.wiz-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* FORM STYLES */
+.form-group{margin-bottom:18px}
+.form-group label{display:block;font:500 13px var(--f);color:var(--ink);margin-bottom:6px}
+.form-group label .req{color:var(--danger);margin-left:2px}
+.form-hint{font:400 12px var(--f);color:var(--ink3);margin-top:4px}
+.form-input{width:100%;padding:9px 14px;border:1.5px solid var(--hl);border-radius:8px;font:400 14px var(--f);color:var(--ink);background:var(--canvas);transition:border-color .2s;outline:none}
+.form-input:focus{border-color:var(--accent)}
+.form-select{width:100%;padding:9px 14px;border:1.5px solid var(--hl);border-radius:8px;font:400 14px var(--f);color:var(--ink);background:var(--canvas);cursor:pointer;outline:none;appearance:auto}
+.form-select:focus{border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.check-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px}
+.check-item{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid var(--hl);border-radius:8px;cursor:pointer;transition:all .2s;font:400 13px var(--f);color:var(--ink2)}
+.check-item:hover{border-color:var(--accent);background:var(--accent-bg)}
+.check-item.checked{border-color:var(--accent);background:var(--accent-bg);color:var(--ink)}
+.check-item input[type="checkbox"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.radio-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px}
+.radio-item{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1.5px solid var(--hl);border-radius:8px;cursor:pointer;transition:all .2s;font:400 13px var(--f);color:var(--ink2)}
+.radio-item:hover{border-color:var(--accent)}
+.radio-item.selected{border-color:var(--accent);background:var(--accent-bg);color:var(--ink)}
+.radio-item input[type="radio"]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer}
+.juris-specific{margin-top:16px;padding-top:16px;border-top:1px solid var(--hl)}
+
+/* RESULTS */
+.result-container{display:none}
+.result-summary{background:var(--s1);border:1.5px solid var(--hl);border-radius:14px;padding:28px;margin-bottom:24px}
+.result-score-row{display:flex;align-items:center;gap:24px;margin-bottom:20px;flex-wrap:wrap}
+.score-circle{width:100px;height:100px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font:700 32px var(--f);color:#fff;flex-shrink:0}
+.score-circle.score-high{background:linear-gradient(135deg,#00c896,#00a67d)}
+.score-circle.score-medium{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.score-circle.score-low{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.score-circle .score-label{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.5px;margin-top:-2px;opacity:.9}
+.result-headline h3{font:600 20px var(--f);color:var(--ink);margin-bottom:6px}
+.result-headline p{font:400 14px/1.6 var(--f);color:var(--ink2)}
+.result-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:24px}
+.result-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:12px;padding:20px}
+.result-card h4{font:600 14px var(--f);color:var(--ink);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.result-item{display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--hl);font:400 13px/1.5 var(--f);color:var(--ink2)}
+.result-item:last-child{border-bottom:none}
+.result-item .ri-icon{flex-shrink:0;margin-top:2px}
+.result-item.pass .ri-icon{color:var(--accent)}
+.result-item.fail .ri-icon{color:var(--danger)}
+.result-item.warn .ri-icon{color:var(--warn)}
+.result-recs{background:var(--blue-bg);border:1px solid rgba(79,110,247,0.15);border-radius:12px;padding:20px}
+.result-recs h4{font:600 14px var(--f);color:var(--blue);margin-bottom:12px}
+.result-recs ul{list-style:none;padding:0}
+.result-recs li{padding:6px 0;font:400 13px/1.6 var(--f);color:var(--ink2);display:flex;align-items:flex-start;gap:8px}
+.result-recs li::before{content:'→';color:var(--blue);font-weight:600;flex-shrink:0}
+.result-restart{text-align:center;margin-top:20px}
+
 /* LOADING */
 .spinner{width:32px;height:32px;border:3px solid var(--s2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -275,7 +359,15 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .juris-section{padding:0 20px 48px}
   .detail-section{padding:0 20px 48px}
   .matrix-section{padding:0 20px 48px}
+  .check-section{padding:0 20px 48px}
   .section-header{padding:0 20px}
+  .form-row{grid-template-columns:1fr}
+  .check-grid{grid-template-columns:1fr 1fr}
+  .radio-grid{grid-template-columns:1fr}
+  .result-cards{grid-template-columns:1fr}
+  .wizard-progress{overflow-x:auto}
+  .wiz-step span:not(.step-num){display:none}
+  .result-score-row{flex-direction:column;align-items:flex-start}
   .juris-grid{grid-template-columns:1fr}
   .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .tab-btn{padding:10px 14px;font-size:12px}
@@ -383,6 +475,180 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
+<!-- COMPLIANCE SELF-CHECK TOOL -->
+<section class="check-section" id="checkSection">
+  <div class="check-inner">
+    <div class="check-header">
+      <h2 data-i18n="cp.check.title">Project Compliance Self-Check</h2>
+      <p data-i18n="cp.check.sub">Fill in your project details to assess regulatory compliance across jurisdictions. Available for registered users only.</p>
+    </div>
+
+    <!-- LOGIN GATE -->
+    <div class="check-login-gate" id="checkLoginGate">
+      <div class="gate-icon">&#128274;</div>
+      <h3 data-i18n="cp.check.gate.title">Sign In to Use Compliance Check</h3>
+      <p data-i18n="cp.check.gate.desc">This tool requires a registered account. Sign in or create an account to assess your project's compliance status across multiple jurisdictions.</p>
+      <a href="login.html" class="nav-btn" data-i18n="cp.check.gate.btn">Sign In / Register</a>
+    </div>
+
+    <!-- WIZARD CONTAINER (shown after login) -->
+    <div class="check-container" id="checkContainer">
+      <!-- PROGRESS BAR -->
+      <div class="wizard-progress" id="wizProgress">
+        <div class="wiz-step active" data-step="1" onclick="goToStep(1)">
+          <span class="step-num">1</span><span data-i18n="cp.check.step1">Jurisdiction</span>
+        </div>
+        <div class="wiz-step" data-step="2">
+          <span class="step-num">2</span><span data-i18n="cp.check.step2">Project Info</span>
+        </div>
+        <div class="wiz-step" data-step="3">
+          <span class="step-num">3</span><span data-i18n="cp.check.step3">Compliance</span>
+        </div>
+        <div class="wiz-step" data-step="4">
+          <span class="step-num">4</span><span data-i18n="cp.check.step4">Assessment</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: JURISDICTION -->
+      <div class="wiz-panel active" id="wizPanel1">
+        <div class="form-group">
+          <label data-i18n="cp.check.juris.label">Select Operating Jurisdiction <span class="req">*</span></label>
+          <select class="form-select" id="checkJuris" onchange="onJurisChange()">
+            <option value="" data-i18n="cp.check.juris.placeholder">-- Select a jurisdiction --</option>
+          </select>
+          <div class="form-hint" data-i18n="cp.check.juris.hint">Choose the primary jurisdiction where your project operates or plans to operate.</div>
+        </div>
+        <div id="jurisWarning" style="display:none"></div>
+        <div class="wiz-actions">
+          <div></div>
+          <button class="wiz-btn primary" id="btnStep1Next" onclick="nextStep()" disabled data-i18n="cp.check.next">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: PROJECT INFO -->
+      <div class="wiz-panel" id="wizPanel2">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="cp.check.pname">Project / Company Name <span class="req">*</span></label>
+            <input type="text" class="form-input" id="checkProjectName" placeholder="e.g. MyCryptoExchange">
+          </div>
+          <div class="form-group">
+            <label data-i18n="cp.check.ptype">Project Type <span class="req">*</span></label>
+            <select class="form-select" id="checkProjectType">
+              <option value="">-- Select --</option>
+              <option value="exchange">Centralized Exchange (CEX)</option>
+              <option value="dex">Decentralized Exchange (DEX)</option>
+              <option value="wallet">Wallet Provider</option>
+              <option value="custodian">Custodian / Asset Management</option>
+              <option value="payment">Payment Processor / Remittance</option>
+              <option value="defi">DeFi Protocol</option>
+              <option value="nft">NFT Marketplace</option>
+              <option value="stablecoin">Stablecoin Issuer</option>
+              <option value="mining">Mining Operation</option>
+              <option value="rwa">RWA Tokenization</option>
+              <option value="lending">Lending / Borrowing Platform</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="cp.check.services">Services Offered <span class="req">*</span></label>
+          <div class="check-grid" id="servicesGrid">
+            <label class="check-item"><input type="checkbox" value="spot_trading"> <span>Spot Trading</span></label>
+            <label class="check-item"><input type="checkbox" value="derivatives"> <span>Derivatives / Futures</span></label>
+            <label class="check-item"><input type="checkbox" value="custody"> <span>Custody</span></label>
+            <label class="check-item"><input type="checkbox" value="staking"> <span>Staking</span></label>
+            <label class="check-item"><input type="checkbox" value="lending"> <span>Lending / Borrowing</span></label>
+            <label class="check-item"><input type="checkbox" value="fiat_onramp"> <span>Fiat On/Off Ramp</span></label>
+            <label class="check-item"><input type="checkbox" value="token_issuance"> <span>Token Issuance / ICO</span></label>
+            <label class="check-item"><input type="checkbox" value="nft"> <span>NFT Minting / Trading</span></label>
+            <label class="check-item"><input type="checkbox" value="payment"> <span>Payment Processing</span></label>
+            <label class="check-item"><input type="checkbox" value="advisory"> <span>Advisory / Research</span></label>
+            <label class="check-item"><input type="checkbox" value="rwa_tokenization"> <span>RWA Tokenization</span></label>
+            <label class="check-item"><input type="checkbox" value="cross_border"> <span>Cross-border Transfers</span></label>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="cp.check.customers">Target Customers <span class="req">*</span></label>
+            <select class="form-select" id="checkCustomers">
+              <option value="">-- Select --</option>
+              <option value="retail">Retail Only</option>
+              <option value="institutional">Institutional Only</option>
+              <option value="both">Both Retail & Institutional</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="cp.check.stage">Project Stage <span class="req">*</span></label>
+            <select class="form-select" id="checkStage">
+              <option value="">-- Select --</option>
+              <option value="planning">Planning / Pre-launch</option>
+              <option value="operating">Currently Operating</option>
+              <option value="expanding">Expanding to New Jurisdiction</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="wiz-actions">
+          <button class="wiz-btn" onclick="prevStep()" data-i18n="cp.check.prev">&larr; Back</button>
+          <button class="wiz-btn primary" onclick="nextStep()" data-i18n="cp.check.next">Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: COMPLIANCE MEASURES -->
+      <div class="wiz-panel" id="wizPanel3">
+        <div class="form-group">
+          <label data-i18n="cp.check.measures">Compliance Measures in Place</label>
+          <div class="form-hint" data-i18n="cp.check.measures.hint">Select all compliance measures your project has currently implemented.</div>
+          <div class="check-grid" id="measuresGrid" style="margin-top:10px">
+            <label class="check-item"><input type="checkbox" value="kyc"> <span>KYC Verification</span></label>
+            <label class="check-item"><input type="checkbox" value="aml_policy"> <span>AML/CFT Policy</span></label>
+            <label class="check-item"><input type="checkbox" value="tx_monitoring"> <span>Transaction Monitoring</span></label>
+            <label class="check-item"><input type="checkbox" value="sar_reporting"> <span>SAR/STR Reporting</span></label>
+            <label class="check-item"><input type="checkbox" value="sanctions_screening"> <span>Sanctions Screening</span></label>
+            <label class="check-item"><input type="checkbox" value="travel_rule"> <span>Travel Rule Compliance</span></label>
+            <label class="check-item"><input type="checkbox" value="record_keeping"> <span>Record Keeping (5+ years)</span></label>
+            <label class="check-item"><input type="checkbox" value="staff_training"> <span>Staff AML Training</span></label>
+            <label class="check-item"><input type="checkbox" value="risk_assessment"> <span>Risk Assessment Program</span></label>
+            <label class="check-item"><input type="checkbox" value="compliance_officer"> <span>Designated Compliance Officer</span></label>
+            <label class="check-item"><input type="checkbox" value="audit"> <span>External AML Audit</span></label>
+            <label class="check-item"><input type="checkbox" value="cold_storage"> <span>Cold Storage / Asset Segregation</span></label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label data-i18n="cp.check.license">Do you hold any license or registration?</label>
+          <div class="radio-grid" id="licenseGrid">
+            <label class="radio-item"><input type="radio" name="license" value="yes"> <span>Yes, licensed/registered</span></label>
+            <label class="radio-item"><input type="radio" name="license" value="pending"> <span>Application pending</span></label>
+            <label class="radio-item"><input type="radio" name="license" value="no"> <span>No license yet</span></label>
+            <label class="radio-item"><input type="radio" name="license" value="na"> <span>Not applicable</span></label>
+          </div>
+        </div>
+
+        <!-- Jurisdiction-specific questions (dynamically populated) -->
+        <div class="juris-specific" id="jurisSpecific" style="display:none"></div>
+
+        <div class="wiz-actions">
+          <button class="wiz-btn" onclick="prevStep()" data-i18n="cp.check.prev">&larr; Back</button>
+          <button class="wiz-btn primary" onclick="runAssessment()" data-i18n="cp.check.run">Run Assessment &#9889;</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: RESULTS -->
+      <div class="wiz-panel" id="wizPanel4">
+        <div id="assessmentResults"></div>
+        <div class="wiz-actions" style="margin-top:24px">
+          <button class="wiz-btn" onclick="resetCheck()" data-i18n="cp.check.restart">&#8634; Start New Assessment</button>
+          <div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
@@ -481,7 +747,43 @@ var I18N = {
     'cp.overview.regs':'Regulations','cp.overview.rules':'Risk Rules',
     'cp.overview.cases':'Cases','cp.overview.updates':'Updates',
     'cp.yes':'Yes','cp.no':'No',
-    'cp.req.title':'Requirements'
+    'cp.req.title':'Requirements',
+    'cp.check.title':'Project Compliance Self-Check',
+    'cp.check.sub':'Fill in your project details to assess regulatory compliance across jurisdictions. Available for registered users only.',
+    'cp.check.gate.title':'Sign In to Use Compliance Check',
+    'cp.check.gate.desc':'This tool requires a registered account. Sign in or create an account to assess your project\'s compliance status across multiple jurisdictions.',
+    'cp.check.gate.btn':'Sign In / Register',
+    'cp.check.step1':'Jurisdiction',
+    'cp.check.step2':'Project Info',
+    'cp.check.step3':'Compliance',
+    'cp.check.step4':'Assessment',
+    'cp.check.juris.label':'Select Operating Jurisdiction',
+    'cp.check.juris.placeholder':'-- Select a jurisdiction --',
+    'cp.check.juris.hint':'Choose the primary jurisdiction where your project operates or plans to operate.',
+    'cp.check.next':'Next →',
+    'cp.check.prev':'← Back',
+    'cp.check.pname':'Project / Company Name',
+    'cp.check.ptype':'Project Type',
+    'cp.check.services':'Services Offered',
+    'cp.check.customers':'Target Customers',
+    'cp.check.stage':'Project Stage',
+    'cp.check.measures':'Compliance Measures in Place',
+    'cp.check.measures.hint':'Select all compliance measures your project has currently implemented.',
+    'cp.check.license':'Do you hold any license or registration?',
+    'cp.check.run':'Run Assessment ⚡',
+    'cp.check.restart':'↺ Start New Assessment',
+    'cp.check.banned.title':'Prohibited Jurisdiction',
+    'cp.check.banned.desc':'Cryptocurrency activities are banned in this jurisdiction. Operating here carries extreme legal risk.',
+    'cp.result.score':'Compliance Score',
+    'cp.result.high':'Good Compliance Standing',
+    'cp.result.medium':'Partial Compliance — Action Needed',
+    'cp.result.low':'Significant Compliance Gaps',
+    'cp.result.reqs':'Requirement Analysis',
+    'cp.result.measures':'Compliance Measures',
+    'cp.result.recs':'Recommendations',
+    'cp.result.met':'Met',
+    'cp.result.notmet':'Not Met',
+    'cp.result.partial':'Partial'
   },
   cn: {
     'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'取证解码器',
@@ -520,7 +822,43 @@ var I18N = {
     'cp.overview.regs':'法规','cp.overview.rules':'风险规则',
     'cp.overview.cases':'案例','cp.overview.updates':'更新',
     'cp.yes':'是','cp.no':'否',
-    'cp.req.title':'合规要求'
+    'cp.req.title':'合规要求',
+    'cp.check.title':'项目合规自检工具',
+    'cp.check.sub':'填写您的项目详情，评估在各司法管辖区的合规状况。仅限注册用户使用。',
+    'cp.check.gate.title':'登录后使用合规检测',
+    'cp.check.gate.desc':'此工具需要注册账户。请登录或注册以评估您项目在多个司法管辖区的合规状况。',
+    'cp.check.gate.btn':'登录 / 注册',
+    'cp.check.step1':'管辖区域',
+    'cp.check.step2':'项目信息',
+    'cp.check.step3':'合规措施',
+    'cp.check.step4':'评估结果',
+    'cp.check.juris.label':'选择运营司法管辖区',
+    'cp.check.juris.placeholder':'-- 请选择管辖区域 --',
+    'cp.check.juris.hint':'选择您项目运营或计划运营的主要司法管辖区。',
+    'cp.check.next':'下一步 →',
+    'cp.check.prev':'← 上一步',
+    'cp.check.pname':'项目/公司名称',
+    'cp.check.ptype':'项目类型',
+    'cp.check.services':'提供的服务',
+    'cp.check.customers':'目标客户',
+    'cp.check.stage':'项目阶段',
+    'cp.check.measures':'已实施的合规措施',
+    'cp.check.measures.hint':'选择您的项目目前已实施的所有合规措施。',
+    'cp.check.license':'是否持有牌照或注册？',
+    'cp.check.run':'开始评估 ⚡',
+    'cp.check.restart':'↺ 重新评估',
+    'cp.check.banned.title':'禁止管辖区',
+    'cp.check.banned.desc':'该司法管辖区禁止加密货币活动。在此运营面临极高的法律风险。',
+    'cp.result.score':'合规评分',
+    'cp.result.high':'合规状况良好',
+    'cp.result.medium':'部分合规 — 需采取行动',
+    'cp.result.low':'存在重大合规缺口',
+    'cp.result.reqs':'要求分析',
+    'cp.result.measures':'合规措施',
+    'cp.result.recs':'建议',
+    'cp.result.met':'已满足',
+    'cp.result.notmet':'未满足',
+    'cp.result.partial':'部分满足'
   }
 };
 
@@ -1035,6 +1373,484 @@ function renderMatrix() {
   document.getElementById('matrixContent').innerHTML = html;
 }
 
+// ===== COMPLIANCE SELF-CHECK =====
+var checkStep = 1;
+var checkJurisData = null;
+
+// Initialize check-item toggle behavior
+document.querySelectorAll('.check-item').forEach(function(item) {
+  item.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT') return; // let checkbox handle itself
+    var cb = item.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    item.classList.toggle('checked', cb.checked);
+  });
+  var cb = item.querySelector('input[type="checkbox"]');
+  if (cb) cb.addEventListener('change', function() { item.classList.toggle('checked', cb.checked); });
+});
+
+document.querySelectorAll('.radio-item').forEach(function(item) {
+  item.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT') return;
+    var rb = item.querySelector('input[type="radio"]');
+    rb.checked = true;
+    var name = rb.name;
+    document.querySelectorAll('.radio-item input[name="' + name + '"]').forEach(function(r) {
+      r.closest('.radio-item').classList.toggle('selected', r.checked);
+    });
+  });
+  var rb = item.querySelector('input[type="radio"]');
+  if (rb) rb.addEventListener('change', function() {
+    document.querySelectorAll('.radio-item input[name="' + rb.name + '"]').forEach(function(r) {
+      r.closest('.radio-item').classList.toggle('selected', r.checked);
+    });
+  });
+});
+
+function populateJurisSelect() {
+  var sel = document.getElementById('checkJuris');
+  if (!sel || sel.options.length > 1) return;
+  jurisdictions.forEach(function(j) {
+    var name = getCn(j, 'name');
+    var opt = document.createElement('option');
+    opt.value = j.code;
+    opt.textContent = getFlag(j.code) + ' ' + name + ' (' + j.code + ')';
+    sel.appendChild(opt);
+  });
+}
+
+function onJurisChange() {
+  var code = document.getElementById('checkJuris').value;
+  var btn = document.getElementById('btnStep1Next');
+  var warn = document.getElementById('jurisWarning');
+
+  if (!code) {
+    btn.disabled = true;
+    warn.style.display = 'none';
+    return;
+  }
+
+  var j = jurisdictions.find(function(x) { return x.code === code; });
+  var isBanned = j && j.regulatory_status && j.regulatory_status.toLowerCase().indexOf('ban') >= 0;
+
+  if (isBanned) {
+    warn.style.display = 'block';
+    warn.innerHTML = '<div style="background:var(--danger-bg);border:1.5px solid rgba(239,68,68,0.2);border-radius:10px;padding:16px 20px;margin-top:12px">' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><span style="font-size:20px">&#9888;</span><strong style="font:600 14px var(--f);color:var(--danger)">' + t('cp.check.banned.title') + '</strong></div>' +
+      '<p style="font:400 13px/1.6 var(--f);color:var(--ink2)">' + t('cp.check.banned.desc') + '</p></div>';
+  } else {
+    warn.style.display = 'none';
+  }
+  btn.disabled = false;
+
+  // Pre-fetch compliance data for this jurisdiction
+  apiFetch({ action: 'compliance_check', jurisdiction: code }).then(function(data) {
+    if (data.success) checkJurisData = data;
+  });
+}
+
+function goToStep(step) {
+  if (step >= checkStep) return; // can only go back to completed steps
+  checkStep = step;
+  updateWizard();
+}
+
+function nextStep() {
+  if (checkStep === 1) {
+    if (!document.getElementById('checkJuris').value) return;
+  }
+  if (checkStep === 2) {
+    if (!document.getElementById('checkProjectName').value.trim() ||
+        !document.getElementById('checkProjectType').value ||
+        !document.getElementById('checkCustomers').value ||
+        !document.getElementById('checkStage').value) {
+      showToast(currentLang === 'cn' ? '请填写所有必填项' : 'Please fill in all required fields');
+      return;
+    }
+    var services = document.querySelectorAll('#servicesGrid input:checked');
+    if (!services.length) {
+      showToast(currentLang === 'cn' ? '请至少选择一项服务' : 'Please select at least one service');
+      return;
+    }
+  }
+  if (checkStep < 4) {
+    checkStep++;
+    updateWizard();
+    if (checkStep === 3) populateJurisSpecific();
+  }
+}
+
+function prevStep() {
+  if (checkStep > 1) {
+    checkStep--;
+    updateWizard();
+  }
+}
+
+function updateWizard() {
+  document.querySelectorAll('.wiz-step').forEach(function(s) {
+    var sn = parseInt(s.getAttribute('data-step'));
+    s.classList.remove('active', 'done');
+    if (sn === checkStep) s.classList.add('active');
+    else if (sn < checkStep) s.classList.add('done');
+  });
+  document.querySelectorAll('.wiz-panel').forEach(function(p, i) {
+    p.classList.toggle('active', i + 1 === checkStep);
+  });
+}
+
+// Jurisdiction-specific questions
+var JURIS_QUESTIONS = {
+  US: [
+    { id: 'us_msb', label: 'FinCEN MSB Registration', labelCn: 'FinCEN MSB注册', type: 'select', options: [
+      { value: 'yes', label: 'Registered', labelCn: '已注册' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not registered', labelCn: '未注册' }
+    ]},
+    { id: 'us_state', label: 'State Money Transmitter License(s)', labelCn: '州级货币传输许可证', type: 'select', options: [
+      { value: 'all', label: 'Licensed in all operating states', labelCn: '在所有运营州已获许可' },
+      { value: 'some', label: 'Licensed in some states', labelCn: '在部分州已获许可' },
+      { value: 'no', label: 'No state licenses', labelCn: '无州级许可' }
+    ]},
+    { id: 'us_sec', label: 'SEC/CFTC Registration (if applicable)', labelCn: 'SEC/CFTC注册（如适用）', type: 'select', options: [
+      { value: 'yes', label: 'Registered', labelCn: '已注册' },
+      { value: 'na', label: 'Not applicable', labelCn: '不适用' },
+      { value: 'no', label: 'Not registered', labelCn: '未注册' }
+    ]}
+  ],
+  EU: [
+    { id: 'eu_mica', label: 'MiCA CASP Authorization', labelCn: 'MiCA CASP授权', type: 'select', options: [
+      { value: 'yes', label: 'Authorized', labelCn: '已获授权' },
+      { value: 'pending', label: 'Application pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not authorized', labelCn: '未获授权' }
+    ]},
+    { id: 'eu_dora', label: 'DORA ICT Risk Compliance', labelCn: 'DORA ICT风险合规', type: 'select', options: [
+      { value: 'yes', label: 'Compliant', labelCn: '已合规' },
+      { value: 'partial', label: 'Partially compliant', labelCn: '部分合规' },
+      { value: 'no', label: 'Not assessed', labelCn: '未评估' }
+    ]}
+  ],
+  GB: [
+    { id: 'gb_fca', label: 'FCA Crypto Registration', labelCn: 'FCA加密注册', type: 'select', options: [
+      { value: 'yes', label: 'Registered', labelCn: '已注册' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not registered', labelCn: '未注册' }
+    ]},
+    { id: 'gb_promo', label: 'Financial Promotions Compliance', labelCn: '金融推广合规', type: 'select', options: [
+      { value: 'yes', label: 'Compliant', labelCn: '已合规' },
+      { value: 'partial', label: 'Partially', labelCn: '部分合规' },
+      { value: 'no', label: 'Not assessed', labelCn: '未评估' }
+    ]}
+  ],
+  SG: [
+    { id: 'sg_mas', label: 'MAS DPT Service License', labelCn: 'MAS DPT服务许可', type: 'select', options: [
+      { value: 'yes', label: 'Licensed', labelCn: '已获许可' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not licensed', labelCn: '未获许可' }
+    ]}
+  ],
+  JP: [
+    { id: 'jp_fsa', label: 'JFSA VASP Registration', labelCn: 'JFSA VASP注册', type: 'select', options: [
+      { value: 'yes', label: 'Registered', labelCn: '已注册' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not registered', labelCn: '未注册' }
+    ]}
+  ],
+  KR: [
+    { id: 'kr_fsc', label: 'FSC VASP Registration', labelCn: 'FSC VASP注册', type: 'select', options: [
+      { value: 'yes', label: 'Registered', labelCn: '已注册' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not registered', labelCn: '未注册' }
+    ]},
+    { id: 'kr_isms', label: 'ISMS Certification', labelCn: 'ISMS认证', type: 'select', options: [
+      { value: 'yes', label: 'Certified', labelCn: '已认证' },
+      { value: 'no', label: 'Not certified', labelCn: '未认证' }
+    ]}
+  ],
+  HK: [
+    { id: 'hk_sfc', label: 'SFC VASP License', labelCn: '证监会VASP牌照', type: 'select', options: [
+      { value: 'yes', label: 'Licensed', labelCn: '已获牌照' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not licensed', labelCn: '未获牌照' }
+    ]}
+  ],
+  AE: [
+    { id: 'ae_vara', label: 'VARA/ADGM/DFSA License', labelCn: 'VARA/ADGM/DFSA许可', type: 'select', options: [
+      { value: 'yes', label: 'Licensed', labelCn: '已获许可' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not licensed', labelCn: '未获许可' }
+    ]}
+  ],
+  CH: [
+    { id: 'ch_finma', label: 'FINMA Authorization', labelCn: 'FINMA授权', type: 'select', options: [
+      { value: 'yes', label: 'Authorized', labelCn: '已获授权' },
+      { value: 'pending', label: 'Pending', labelCn: '申请中' },
+      { value: 'no', label: 'Not authorized', labelCn: '未获授权' }
+    ]},
+    { id: 'ch_sro', label: 'SRO Membership', labelCn: 'SRO会员资格', type: 'select', options: [
+      { value: 'yes', label: 'Member', labelCn: '已加入' },
+      { value: 'no', label: 'Not a member', labelCn: '未加入' }
+    ]}
+  ]
+};
+
+function populateJurisSpecific() {
+  var code = document.getElementById('checkJuris').value;
+  var container = document.getElementById('jurisSpecific');
+  var questions = JURIS_QUESTIONS[code];
+
+  if (!questions || !questions.length) {
+    container.style.display = 'none';
+    return;
+  }
+
+  container.style.display = 'block';
+  var j = jurisdictions.find(function(x) { return x.code === code; }) || {};
+  var name = getCn(j, 'name');
+  var html = '<h4 style="font:600 14px var(--f);color:var(--ink);margin-bottom:14px">' + getFlag(code) + ' ' + escHtml(name) + (currentLang === 'cn' ? ' 特定要求' : ' Specific Requirements') + '</h4>';
+
+  questions.forEach(function(q) {
+    var label = currentLang === 'cn' ? (q.labelCn || q.label) : q.label;
+    html += '<div class="form-group"><label>' + escHtml(label) + '</label>';
+    html += '<select class="form-select" id="jq_' + q.id + '">';
+    html += '<option value="">-- ' + (currentLang === 'cn' ? '请选择' : 'Select') + ' --</option>';
+    q.options.forEach(function(opt) {
+      var optLabel = currentLang === 'cn' ? (opt.labelCn || opt.label) : opt.label;
+      html += '<option value="' + opt.value + '">' + escHtml(optLabel) + '</option>';
+    });
+    html += '</select></div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function runAssessment() {
+  var code = document.getElementById('checkJuris').value;
+  var j = jurisdictions.find(function(x) { return x.code === code; }) || {};
+  var projectType = document.getElementById('checkProjectType').value;
+  var projectName = document.getElementById('checkProjectName').value;
+  var customers = document.getElementById('checkCustomers').value;
+  var stage = document.getElementById('checkStage').value;
+
+  // Gather selected services
+  var services = [];
+  document.querySelectorAll('#servicesGrid input:checked').forEach(function(cb) { services.push(cb.value); });
+
+  // Gather compliance measures
+  var measures = [];
+  document.querySelectorAll('#measuresGrid input:checked').forEach(function(cb) { measures.push(cb.value); });
+
+  // License status
+  var licenseEl = document.querySelector('input[name="license"]:checked');
+  var license = licenseEl ? licenseEl.value : 'no';
+
+  // Jurisdiction-specific answers
+  var jurisAnswers = {};
+  var questions = JURIS_QUESTIONS[code] || [];
+  questions.forEach(function(q) {
+    var el = document.getElementById('jq_' + q.id);
+    if (el) jurisAnswers[q.id] = el.value;
+  });
+
+  // ---- SCORING LOGIC ----
+  var score = 0;
+  var maxScore = 100;
+  var findings = [];
+  var recommendations = [];
+  var isBanned = j.regulatory_status && j.regulatory_status.toLowerCase().indexOf('ban') >= 0;
+
+  if (isBanned) {
+    // Banned jurisdiction
+    score = 0;
+    findings.push({ text: currentLang === 'cn' ? '该司法管辖区禁止所有加密货币活动' : 'All cryptocurrency activities are prohibited in this jurisdiction', status: 'fail' });
+    findings.push({ text: currentLang === 'cn' ? '在此运营面临刑事起诉风险' : 'Operating here risks criminal prosecution', status: 'fail' });
+    if (services.indexOf('rwa_tokenization') >= 0) {
+      findings.push({ text: currentLang === 'cn' ? 'RWA代币化在此管辖区明确被禁止（银发〔2026〕42号）' : 'RWA tokenization is explicitly prohibited (银发〔2026〕42号)', status: 'fail' });
+    }
+    recommendations.push(currentLang === 'cn' ? '考虑在监管更友好的司法管辖区运营（如新加坡、香港、瑞士、阿联酋）' : 'Consider operating in a more regulatory-friendly jurisdiction (e.g. Singapore, Hong Kong, Switzerland, UAE)');
+    recommendations.push(currentLang === 'cn' ? '如需服务中国用户，请咨询中国法律专家了解最新合规要求' : 'If you need to serve Chinese users, consult Chinese legal experts on the latest compliance requirements');
+  } else {
+    // SCORING: Base measures (60 points max)
+    var coreChecks = [
+      { key: 'kyc', weight: 10, label: 'KYC Verification', labelCn: 'KYC身份验证' },
+      { key: 'aml_policy', weight: 8, label: 'AML/CFT Policy', labelCn: 'AML/CFT政策' },
+      { key: 'tx_monitoring', weight: 10, label: 'Transaction Monitoring', labelCn: '交易监控' },
+      { key: 'sar_reporting', weight: 8, label: 'SAR/STR Reporting', labelCn: '可疑交易报告' },
+      { key: 'sanctions_screening', weight: 8, label: 'Sanctions Screening', labelCn: '制裁筛查' },
+      { key: 'record_keeping', weight: 5, label: 'Record Keeping', labelCn: '记录保存' },
+      { key: 'compliance_officer', weight: 6, label: 'Compliance Officer', labelCn: '合规负责人' },
+      { key: 'risk_assessment', weight: 5, label: 'Risk Assessment', labelCn: '风险评估' }
+    ];
+
+    coreChecks.forEach(function(chk) {
+      var label = currentLang === 'cn' ? chk.labelCn : chk.label;
+      if (measures.indexOf(chk.key) >= 0) {
+        score += chk.weight;
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 已实施' : ' — Implemented'), status: 'pass' });
+      } else {
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 未实施' : ' — Not implemented'), status: 'fail' });
+        recommendations.push((currentLang === 'cn' ? '实施' : 'Implement ') + label);
+      }
+    });
+
+    // Bonus measures (10 points)
+    var bonusChecks = [
+      { key: 'travel_rule', weight: 4, label: 'Travel Rule', labelCn: '旅行规则' },
+      { key: 'staff_training', weight: 2, label: 'Staff Training', labelCn: '员工培训' },
+      { key: 'audit', weight: 2, label: 'External Audit', labelCn: '外部审计' },
+      { key: 'cold_storage', weight: 2, label: 'Cold Storage', labelCn: '冷存储' }
+    ];
+    bonusChecks.forEach(function(chk) {
+      var label = currentLang === 'cn' ? chk.labelCn : chk.label;
+      if (measures.indexOf(chk.key) >= 0) {
+        score += chk.weight;
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 已实施（加分项）' : ' — Implemented (bonus)'), status: 'pass' });
+      } else {
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 建议实施' : ' — Recommended'), status: 'warn' });
+      }
+    });
+
+    // License scoring (20 points)
+    if (license === 'yes') {
+      score += 20;
+      findings.push({ text: currentLang === 'cn' ? '已获得相关牌照/注册' : 'Licensed/registered with relevant authority', status: 'pass' });
+    } else if (license === 'pending') {
+      score += 10;
+      findings.push({ text: currentLang === 'cn' ? '牌照/注册申请中' : 'License application pending', status: 'warn' });
+      recommendations.push(currentLang === 'cn' ? '跟进牌照申请进度' : 'Follow up on license application progress');
+    } else if (license === 'na') {
+      score += 15;
+      findings.push({ text: currentLang === 'cn' ? '该业务类型不需要特定牌照' : 'No specific license required for this business type', status: 'pass' });
+    } else {
+      findings.push({ text: currentLang === 'cn' ? '未持有任何牌照/注册' : 'No license or registration held', status: 'fail' });
+      recommendations.push(currentLang === 'cn' ? '尽快申请相关司法管辖区的牌照或注册' : 'Apply for relevant licensing or registration in your jurisdiction');
+    }
+
+    // Jurisdiction-specific scoring (10 points)
+    var jurisScore = 0;
+    var jurisMax = 10;
+    questions.forEach(function(q) {
+      var val = jurisAnswers[q.id] || '';
+      var label = currentLang === 'cn' ? (q.labelCn || q.label) : q.label;
+      if (val === 'yes' || val === 'all') {
+        jurisScore += jurisMax / questions.length;
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 已满足' : ' — Met'), status: 'pass' });
+      } else if (val === 'pending' || val === 'some' || val === 'partial') {
+        jurisScore += (jurisMax / questions.length) * 0.5;
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 部分满足' : ' — Partially met'), status: 'warn' });
+      } else if (val === 'na') {
+        jurisScore += jurisMax / questions.length;
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 不适用' : ' — N/A'), status: 'pass' });
+      } else if (val) {
+        findings.push({ text: label + (currentLang === 'cn' ? ' — 未满足' : ' — Not met'), status: 'fail' });
+        recommendations.push((currentLang === 'cn' ? '申请' : 'Obtain ') + label);
+      }
+    });
+    score += Math.round(jurisScore);
+
+    // Service-specific warnings
+    if (services.indexOf('fiat_onramp') >= 0 && measures.indexOf('kyc') < 0) {
+      recommendations.unshift(currentLang === 'cn' ? '法币出入金服务必须实施KYC — 这是绝大多数管辖区的强制要求' : 'Fiat on/off ramp services MUST implement KYC — mandatory in virtually all jurisdictions');
+    }
+    if (services.indexOf('derivatives') >= 0) {
+      recommendations.push(currentLang === 'cn' ? '衍生品交易可能需要额外的监管批准（如SEC/CFTC注册）' : 'Derivatives trading may require additional regulatory approval (e.g. SEC/CFTC registration)');
+    }
+    if (services.indexOf('rwa_tokenization') >= 0 && code !== 'CN') {
+      recommendations.push(currentLang === 'cn' ? 'RWA代币化是新兴监管领域 — 密切关注各管辖区最新法规' : 'RWA tokenization is an evolving regulatory area — monitor regulatory developments closely');
+    }
+    if (customers === 'retail' || customers === 'both') {
+      if (measures.indexOf('cold_storage') < 0) {
+        recommendations.push(currentLang === 'cn' ? '为零售客户提供服务时强烈建议实施冷存储/资产隔离' : 'Cold storage/asset segregation is strongly recommended when serving retail customers');
+      }
+    }
+  }
+
+  score = Math.min(100, Math.max(0, score));
+
+  // Generate results HTML
+  var scoreClass = score >= 70 ? 'score-high' : (score >= 40 ? 'score-medium' : 'score-low');
+  var headlineText = score >= 70 ? t('cp.result.high') : (score >= 40 ? t('cp.result.medium') : t('cp.result.low'));
+  var name = getCn(j, 'name');
+
+  var rhtml = '';
+  rhtml += '<div class="result-summary">';
+  rhtml += '<div class="result-score-row">';
+  rhtml += '<div class="score-circle ' + scoreClass + '"><span>' + score + '</span><span class="score-label">/100</span></div>';
+  rhtml += '<div class="result-headline"><h3>' + escHtml(headlineText) + '</h3>';
+  rhtml += '<p>' + getFlag(code) + ' ' + escHtml(name) + ' — ' + escHtml(projectName) + ' (' + escHtml(projectType) + ')</p>';
+  rhtml += '</div></div></div>';
+
+  // Findings cards
+  var passed = findings.filter(function(f) { return f.status === 'pass'; });
+  var warned = findings.filter(function(f) { return f.status === 'warn'; });
+  var failed = findings.filter(function(f) { return f.status === 'fail'; });
+
+  rhtml += '<div class="result-cards">';
+  if (failed.length) {
+    rhtml += '<div class="result-card"><h4><span style="color:var(--danger)">&#10060;</span> ' + t('cp.result.notmet') + ' (' + failed.length + ')</h4>';
+    failed.forEach(function(f) {
+      rhtml += '<div class="result-item fail"><span class="ri-icon">&#10060;</span><span>' + escHtml(f.text) + '</span></div>';
+    });
+    rhtml += '</div>';
+  }
+  if (warned.length) {
+    rhtml += '<div class="result-card"><h4><span style="color:var(--warn)">&#9888;</span> ' + t('cp.result.partial') + ' (' + warned.length + ')</h4>';
+    warned.forEach(function(f) {
+      rhtml += '<div class="result-item warn"><span class="ri-icon">&#9888;</span><span>' + escHtml(f.text) + '</span></div>';
+    });
+    rhtml += '</div>';
+  }
+  if (passed.length) {
+    rhtml += '<div class="result-card"><h4><span style="color:var(--accent)">&#10004;</span> ' + t('cp.result.met') + ' (' + passed.length + ')</h4>';
+    passed.forEach(function(f) {
+      rhtml += '<div class="result-item pass"><span class="ri-icon">&#10004;</span><span>' + escHtml(f.text) + '</span></div>';
+    });
+    rhtml += '</div>';
+  }
+  rhtml += '</div>';
+
+  // Recommendations
+  if (recommendations.length) {
+    rhtml += '<div class="result-recs"><h4>&#128161; ' + t('cp.result.recs') + '</h4><ul>';
+    recommendations.forEach(function(r) {
+      rhtml += '<li>' + escHtml(r) + '</li>';
+    });
+    rhtml += '</ul></div>';
+  }
+
+  // Disclaimer
+  rhtml += '<p style="font:400 11px/1.5 var(--f);color:var(--ink3);margin-top:16px;text-align:center">' +
+    (currentLang === 'cn' ? '⚠ 此评估仅供参考，不构成法律意见。请咨询专业法律顾问获取正式的合规建议。' :
+    '⚠ This assessment is for informational purposes only and does not constitute legal advice. Please consult qualified legal counsel for formal compliance guidance.') + '</p>';
+
+  document.getElementById('assessmentResults').innerHTML = rhtml;
+  checkStep = 4;
+  updateWizard();
+}
+
+function resetCheck() {
+  checkStep = 1;
+  checkJurisData = null;
+  document.getElementById('checkJuris').value = '';
+  document.getElementById('checkProjectName').value = '';
+  document.getElementById('checkProjectType').value = '';
+  document.getElementById('checkCustomers').value = '';
+  document.getElementById('checkStage').value = '';
+  document.getElementById('btnStep1Next').disabled = true;
+  document.getElementById('jurisWarning').style.display = 'none';
+  document.getElementById('jurisSpecific').style.display = 'none';
+  document.getElementById('assessmentResults').innerHTML = '';
+  document.querySelectorAll('#servicesGrid input, #measuresGrid input[type="checkbox"]').forEach(function(cb) {
+    cb.checked = false;
+    cb.closest('.check-item').classList.remove('checked');
+  });
+  document.querySelectorAll('input[name="license"]').forEach(function(rb) {
+    rb.checked = false;
+    rb.closest('.radio-item').classList.remove('selected');
+  });
+  updateWizard();
+}
+
 // ===== INIT =====
 applyLang();
 loadJurisdictions();
@@ -1044,7 +1860,9 @@ loadRiskRules();
 <!-- SUPABASE AUTH -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}}}catch(e){}})();
+(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}
+// Show compliance check tool for logged-in users
+document.getElementById('checkLoginGate').style.display='none';document.getElementById('checkContainer').style.display='block';populateJurisSelect();}}catch(e){}})();
 </script>
 </body>
 </html>
