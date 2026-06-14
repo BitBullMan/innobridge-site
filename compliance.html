@@ -333,6 +333,96 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .result-recs li::before{content:'→';color:var(--blue);font-weight:600;flex-shrink:0}
 .result-restart{text-align:center;margin-top:20px}
 
+/* SANCTIONS SCREENING */
+.screen-section{padding:0 40px 64px}
+.screen-inner{max-width:var(--max);margin:0 auto}
+.screen-header{margin-bottom:24px}
+.screen-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.screen-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.screen-box{background:var(--s1);border:1.5px solid var(--hl);border-radius:14px;padding:28px;margin-bottom:20px}
+.screen-input-row{display:flex;gap:12px;margin-bottom:16px}
+.screen-input{flex:1;padding:11px 16px;border:1.5px solid var(--hl);border-radius:8px;font:400 14px var(--f);color:var(--ink);background:var(--canvas);outline:none;transition:border-color .2s}
+.screen-input:focus{border-color:var(--accent)}
+.screen-input::placeholder{color:var(--ink3)}
+.screen-btn{font:500 13px var(--f);padding:11px 24px;border-radius:8px;border:none;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.screen-btn.primary{background:var(--accent);color:#fff}
+.screen-btn.primary:hover{background:var(--accent-h)}
+.screen-btn.outline{background:var(--canvas);color:var(--ink2);border:1.5px solid var(--hl)}
+.screen-btn.outline:hover{border-color:var(--accent);color:var(--ink)}
+.screen-btn:disabled{opacity:.4;cursor:not-allowed}
+.screen-tabs{display:flex;gap:0;margin-bottom:16px;border-bottom:1.5px solid var(--hl)}
+.screen-tab{font:500 13px var(--f);color:var(--ink3);padding:10px 20px;border:none;background:none;cursor:pointer;border-bottom:2px solid transparent;transition:all .2s}
+.screen-tab:hover{color:var(--ink)}
+.screen-tab.active{color:var(--accent-h);border-bottom-color:var(--accent)}
+.screen-textarea{width:100%;min-height:100px;padding:12px 16px;border:1.5px solid var(--hl);border-radius:8px;font:400 13px/1.6 var(--m);color:var(--ink);background:var(--canvas);outline:none;resize:vertical;transition:border-color .2s}
+.screen-textarea:focus{border-color:var(--accent)}
+.screen-textarea::placeholder{font-family:var(--f);color:var(--ink3)}
+.screen-hint{font:400 11px var(--f);color:var(--ink3);margin-top:6px}
+.screen-results{margin-top:20px}
+.screen-result-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:10px;padding:16px 20px;margin-bottom:10px;transition:border-color .2s}
+.screen-result-card.clean{border-left:4px solid var(--accent)}
+.screen-result-card.flagged{border-left:4px solid var(--danger)}
+.screen-result-card.error{border-left:4px solid var(--warn)}
+.screen-result-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap;gap:8px}
+.screen-addr{font:500 13px var(--m);color:var(--ink);word-break:break-all}
+.screen-status{font:600 11px var(--f);padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px}
+.screen-status.clean{background:var(--accent-bg);color:var(--accent-h)}
+.screen-status.flagged{background:var(--danger-bg);color:var(--danger)}
+.screen-status.error{background:rgba(245,158,11,0.08);color:#d97706}
+.screen-detail-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.screen-detail-item{font:400 12px var(--f);color:var(--ink2)}
+.screen-detail-item strong{color:var(--ink);font-weight:600;margin-right:4px}
+.screen-summary{display:flex;gap:20px;margin-bottom:16px;flex-wrap:wrap}
+.screen-summary-card{flex:1;min-width:140px;background:var(--canvas);border:1.5px solid var(--hl);border-radius:10px;padding:16px;text-align:center}
+.screen-summary-card .num{font:700 24px var(--f);letter-spacing:-.5px}
+.screen-summary-card .num.clean-c{color:var(--accent)}
+.screen-summary-card .num.flag-c{color:var(--danger)}
+.screen-summary-card .num.total-c{color:var(--ink)}
+.screen-summary-card .lab{font:400 11px var(--f);color:var(--ink3);margin-top:2px}
+.screen-export{display:flex;justify-content:flex-end;gap:8px;margin-top:16px}
+
+/* POLICY TEMPLATES */
+.policy-section{padding:0 40px 64px}
+.policy-inner{max-width:var(--max);margin:0 auto}
+.policy-header{margin-bottom:24px}
+.policy-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.policy-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.policy-filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.policy-filter{font:500 12px var(--f);padding:6px 14px;border-radius:99px;border:1.5px solid var(--hl);background:var(--canvas);color:var(--ink3);cursor:pointer;transition:all .2s}
+.policy-filter:hover{border-color:var(--accent);color:var(--ink)}
+.policy-filter.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.policy-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.policy-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:12px;padding:24px;transition:all .25s;position:relative}
+.policy-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.policy-card-icon{font-size:28px;margin-bottom:12px}
+.policy-card-title{font:600 15px var(--f);color:var(--ink);margin-bottom:6px}
+.policy-card-cat{display:inline-block;font:500 10px var(--f);padding:3px 8px;border-radius:4px;text-transform:uppercase;letter-spacing:.3px;margin-bottom:10px}
+.policy-card-cat.aml{background:var(--accent-bg);color:var(--accent-h)}
+.policy-card-cat.kyc{background:var(--blue-bg);color:var(--blue)}
+.policy-card-cat.sanctions{background:var(--danger-bg);color:var(--danger)}
+.policy-card-cat.reporting{background:rgba(245,158,11,0.08);color:#d97706}
+.policy-card-cat.governance{background:rgba(139,92,246,0.08);color:var(--purple)}
+.policy-card-cat.risk{background:rgba(236,72,153,0.08);color:#db2777}
+.policy-card-desc{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.policy-card-meta{display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid var(--hl)}
+.policy-card-juris{display:flex;gap:4px;flex-wrap:wrap}
+.policy-juris-tag{font:500 10px var(--f);padding:2px 6px;border-radius:4px;background:var(--s1);color:var(--ink3)}
+.policy-card-dl{font:500 12px var(--f);color:var(--accent);display:flex;align-items:center;gap:4px;cursor:pointer;transition:gap .2s;background:none;border:none}
+.policy-card-dl:hover{gap:8px}
+.policy-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.policy-modal-overlay.show{display:flex}
+.policy-modal{background:var(--canvas);border-radius:16px;max-width:720px;width:100%;max-height:80vh;overflow-y:auto;padding:32px;position:relative;box-shadow:var(--shadow-lg)}
+.policy-modal-close{position:absolute;top:16px;right:16px;width:32px;height:32px;border-radius:8px;border:none;background:var(--s1);color:var(--ink3);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.policy-modal-close:hover{background:var(--s2);color:var(--ink)}
+.policy-modal h3{font:600 20px var(--f);color:var(--ink);margin-bottom:6px}
+.policy-modal .modal-cat{font:500 11px var(--f);padding:4px 10px;border-radius:4px;text-transform:uppercase;display:inline-block;margin-bottom:16px}
+.policy-modal-section{margin-bottom:20px}
+.policy-modal-section h4{font:600 14px var(--f);color:var(--ink);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.policy-modal-section ul{list-style:none;padding:0}
+.policy-modal-section li{padding:5px 0;font:400 13px/1.6 var(--f);color:var(--ink2);display:flex;align-items:flex-start;gap:8px}
+.policy-modal-section li::before{content:'•';color:var(--accent);font-weight:700;flex-shrink:0}
+.policy-modal-actions{display:flex;gap:10px;margin-top:24px;flex-wrap:wrap}
+
 /* LOADING */
 .spinner{width:32px;height:32px;border:3px solid var(--s2);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -360,7 +450,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .detail-section{padding:0 20px 48px}
   .matrix-section{padding:0 20px 48px}
   .check-section{padding:0 20px 48px}
+  .screen-section{padding:0 20px 48px}
+  .policy-section{padding:0 20px 48px}
   .section-header{padding:0 20px}
+  .screen-input-row{flex-direction:column}
+  .policy-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .check-grid{grid-template-columns:1fr 1fr}
   .radio-grid{grid-template-columns:1fr}
@@ -421,6 +515,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="hero-stat"><div class="num" id="statJuris">--</div><div class="label" data-i18n="cp.stat.juris">Jurisdictions</div></div>
       <div class="hero-stat"><div class="num" id="statRegs">--</div><div class="label" data-i18n="cp.stat.regs">Regulations</div></div>
       <div class="hero-stat"><div class="num" id="statRules">--</div><div class="label" data-i18n="cp.stat.rules">Risk Rules</div></div>
+      <div class="hero-stat"><div class="num">8</div><div class="label" data-i18n="cp.stat.templates">Policy Templates</div></div>
     </div>
   </div>
 </section>
@@ -649,6 +744,72 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
+<!-- SANCTIONS SCREENING TOOL -->
+<section class="screen-section" id="screenSection">
+  <div class="screen-inner">
+    <div class="screen-header">
+      <h2 data-i18n="cp.screen.title">Sanctions Screening Tool</h2>
+      <p data-i18n="cp.screen.sub">Screen wallet addresses against our blacklist database and global sanctions lists. Enter a single address or paste multiple addresses for batch screening.</p>
+    </div>
+
+    <div class="screen-box">
+      <!-- Mode tabs -->
+      <div class="screen-tabs">
+        <button class="screen-tab active" onclick="switchScreenMode('single',this)" data-i18n="cp.screen.single">Single Address</button>
+        <button class="screen-tab" onclick="switchScreenMode('batch',this)" data-i18n="cp.screen.batch">Batch Screening</button>
+      </div>
+
+      <!-- Single address mode -->
+      <div id="screenSingle">
+        <div class="screen-input-row">
+          <input type="text" class="screen-input" id="screenAddr" placeholder="Enter wallet address (0x... or T...)" data-i18n-ph="cp.screen.ph">
+          <button class="screen-btn primary" id="screenRunBtn" onclick="runScreening()" data-i18n="cp.screen.run">&#128269; Screen Address</button>
+        </div>
+        <div class="screen-hint" data-i18n="cp.screen.hint">Supports Ethereum (0x...) and TRON (T...) addresses. Checks against stablecoin issuer blacklists, OFAC SDN, and known high-risk entity databases.</div>
+      </div>
+
+      <!-- Batch mode -->
+      <div id="screenBatch" style="display:none">
+        <textarea class="screen-textarea" id="screenBatchInput" placeholder="Paste addresses, one per line&#10;0x1234...&#10;T5678...&#10;0xabcd..." data-i18n-ph="cp.screen.batchph"></textarea>
+        <div class="screen-hint" style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <span data-i18n="cp.screen.batchhint">One address per line. Maximum 20 addresses per batch.</span>
+          <span id="batchCount" style="font-weight:600;color:var(--ink)">0 / 20</span>
+        </div>
+        <div style="margin-top:12px;display:flex;gap:10px">
+          <button class="screen-btn primary" onclick="runBatchScreening()" data-i18n="cp.screen.runbatch">&#128269; Screen All</button>
+          <button class="screen-btn outline" onclick="clearBatch()" data-i18n="cp.screen.clear">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results -->
+    <div id="screenResults" style="display:none">
+      <div class="screen-summary" id="screenSummary"></div>
+      <div id="screenResultsList"></div>
+      <div class="screen-export" id="screenExport">
+        <button class="screen-btn outline" onclick="exportScreenResults()" data-i18n="cp.screen.export">&#128196; Export CSV Report</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPLIANCE POLICY TEMPLATES -->
+<section class="policy-section" id="policySection">
+  <div class="policy-inner">
+    <div class="policy-header">
+      <h2 data-i18n="cp.policy.title">Compliance Policy Templates</h2>
+      <p data-i18n="cp.policy.sub">Pre-built AML/KYC/CTF compliance policy templates by category. Click any template to preview its structure, then customize for your organization.</p>
+    </div>
+    <div class="policy-filters" id="policyFilters"></div>
+    <div class="policy-grid" id="policyGrid"></div>
+  </div>
+</section>
+
+<!-- POLICY MODAL -->
+<div class="policy-modal-overlay" id="policyModal" onclick="if(event.target===this)closePolicyModal()">
+  <div class="policy-modal" id="policyModalContent"></div>
+</div>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-grid">
@@ -722,7 +883,7 @@ var I18N = {
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
-    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules',
+    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.templates':'Policy Templates',
     'cp.grid.title':'Select a Jurisdiction',
     'cp.grid.sub':'Click on any jurisdiction to view its complete compliance profile',
     'cp.loading':'Loading jurisdictions...',
@@ -783,7 +944,41 @@ var I18N = {
     'cp.result.recs':'Recommendations',
     'cp.result.met':'Met',
     'cp.result.notmet':'Not Met',
-    'cp.result.partial':'Partial'
+    'cp.result.partial':'Partial',
+    'cp.screen.title':'Sanctions Screening Tool',
+    'cp.screen.sub':'Screen wallet addresses against our blacklist database and global sanctions lists. Enter a single address or paste multiple addresses for batch screening.',
+    'cp.screen.single':'Single Address',
+    'cp.screen.batch':'Batch Screening',
+    'cp.screen.ph':'Enter wallet address (0x... or T...)',
+    'cp.screen.run':'🔍 Screen Address',
+    'cp.screen.hint':'Supports Ethereum (0x...) and TRON (T...) addresses. Checks against stablecoin issuer blacklists, OFAC SDN, and known high-risk entity databases.',
+    'cp.screen.batchph':'Paste addresses, one per line',
+    'cp.screen.batchhint':'One address per line. Maximum 20 addresses per batch.',
+    'cp.screen.runbatch':'🔍 Screen All',
+    'cp.screen.clear':'Clear',
+    'cp.screen.export':'📄 Export CSV Report',
+    'cp.screen.clean':'CLEAR',
+    'cp.screen.flagged':'FLAGGED',
+    'cp.screen.total':'Total Screened',
+    'cp.screen.cleancount':'Clear',
+    'cp.screen.flagcount':'Flagged',
+    'cp.screen.chain':'Chain',
+    'cp.screen.asset':'Asset',
+    'cp.screen.frozen':'Frozen Amount',
+    'cp.screen.source':'Source',
+    'cp.screen.category':'Category',
+    'cp.screen.firstseen':'First Seen',
+    'cp.screen.notfound':'Not found in blacklist database',
+    'cp.screen.checking':'Screening...',
+    'cp.policy.title':'Compliance Policy Templates',
+    'cp.policy.sub':'Pre-built AML/KYC/CTF compliance policy templates by category. Click any template to preview its structure, then customize for your organization.',
+    'cp.policy.all':'All',
+    'cp.policy.preview':'Preview Template',
+    'cp.policy.scope':'Scope & Applicability',
+    'cp.policy.keysections':'Key Sections',
+    'cp.policy.juris':'Applicable Jurisdictions',
+    'cp.policy.download':'Download Template',
+    'cp.policy.customize':'Customize & Download'
   },
   cn: {
     'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'取证解码器',
@@ -797,7 +992,7 @@ var I18N = {
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
-    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则',
+    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.templates':'政策模板',
     'cp.grid.title':'选择司法管辖区',
     'cp.grid.sub':'点击任意司法管辖区查看完整合规概况',
     'cp.loading':'正在加载司法管辖区...',
@@ -858,7 +1053,41 @@ var I18N = {
     'cp.result.recs':'建议',
     'cp.result.met':'已满足',
     'cp.result.notmet':'未满足',
-    'cp.result.partial':'部分满足'
+    'cp.result.partial':'部分满足',
+    'cp.screen.title':'制裁筛查工具',
+    'cp.screen.sub':'对钱包地址进行黑名单数据库和全球制裁名单筛查。输入单个地址或批量粘贴多个地址进行筛查。',
+    'cp.screen.single':'单地址筛查',
+    'cp.screen.batch':'批量筛查',
+    'cp.screen.ph':'输入钱包地址 (0x... 或 T...)',
+    'cp.screen.run':'🔍 开始筛查',
+    'cp.screen.hint':'支持以太坊 (0x...) 和波场 (T...) 地址。对比稳定币发行方黑名单、OFAC SDN 名单和已知高风险实体数据库。',
+    'cp.screen.batchph':'粘贴地址，每行一个',
+    'cp.screen.batchhint':'每行一个地址，最多支持20个地址批量筛查。',
+    'cp.screen.runbatch':'🔍 批量筛查',
+    'cp.screen.clear':'清空',
+    'cp.screen.export':'📄 导出CSV报告',
+    'cp.screen.clean':'清洁',
+    'cp.screen.flagged':'标记',
+    'cp.screen.total':'筛查总数',
+    'cp.screen.cleancount':'清洁',
+    'cp.screen.flagcount':'标记',
+    'cp.screen.chain':'链',
+    'cp.screen.asset':'资产',
+    'cp.screen.frozen':'冻结金额',
+    'cp.screen.source':'来源',
+    'cp.screen.category':'分类',
+    'cp.screen.firstseen':'首次发现',
+    'cp.screen.notfound':'未在黑名单数据库中发现',
+    'cp.screen.checking':'正在筛查...',
+    'cp.policy.title':'合规政策模板库',
+    'cp.policy.sub':'按类别整理的AML/KYC/CTF合规政策模板。点击任意模板预览结构，可根据您的组织需求定制。',
+    'cp.policy.all':'全部',
+    'cp.policy.preview':'预览模板',
+    'cp.policy.scope':'适用范围',
+    'cp.policy.keysections':'核心章节',
+    'cp.policy.juris':'适用司法管辖区',
+    'cp.policy.download':'下载模板',
+    'cp.policy.customize':'定制下载'
   }
 };
 
@@ -879,6 +1108,10 @@ function applyLang() {
       }
     }
   });
+  document.querySelectorAll('[data-i18n-ph]').forEach(function(el) {
+    var key = el.getAttribute('data-i18n-ph');
+    if (dict[key] !== undefined) el.placeholder = dict[key];
+  });
   var btn = document.getElementById('lang-btn');
   if (btn) btn.textContent = currentLang === 'en' ? 'EN | 中' : '中 | EN';
 }
@@ -891,6 +1124,10 @@ function toggleLang() {
   if (jurisdictions.length) renderJurisGrid();
   if (complianceData) renderDetail();
   if (allRiskRules.length) renderMatrix();
+  // Re-render new sections
+  renderPolicyFilters();
+  renderPolicyGrid();
+  if (screenResults.length) renderScreenResults();
 }
 
 // ===== HELPERS =====
@@ -1855,10 +2092,558 @@ function resetCheck() {
   updateWizard();
 }
 
+// ===== SANCTIONS SCREENING =====
+var screenResults = [];
+
+function switchScreenMode(mode, btn) {
+  document.querySelectorAll('.screen-tab').forEach(function(t) { t.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('screenSingle').style.display = mode === 'single' ? 'block' : 'none';
+  document.getElementById('screenBatch').style.display = mode === 'batch' ? 'block' : 'none';
+}
+
+document.getElementById('screenBatchInput').addEventListener('input', function() {
+  var lines = this.value.split('\n').filter(function(l) { return l.trim().length > 0; });
+  document.getElementById('batchCount').textContent = Math.min(lines.length, 20) + ' / 20';
+});
+
+document.getElementById('screenAddr').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') runScreening();
+});
+
+function screenAddress(addr) {
+  return new Promise(function(resolve) {
+    var url = API_BASE + '?address=' + encodeURIComponent(addr) + '&callback=__scr_' + Date.now();
+    var cbName = '__scr_' + Date.now() + '_' + Math.random().toString(36).slice(2,6);
+    var timeout = setTimeout(function() {
+      delete window[cbName];
+      resolve({ address: addr, found: false, error: 'timeout' });
+    }, 10000);
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      resolve(data);
+    };
+    // Use fetch instead of JSONP for cleaner handling
+    fetch(API_BASE + '?address=' + encodeURIComponent(addr))
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        clearTimeout(timeout);
+        delete window[cbName];
+        resolve(data);
+      })
+      .catch(function(err) {
+        clearTimeout(timeout);
+        delete window[cbName];
+        resolve({ address: addr, found: false, error: err.message });
+      });
+  });
+}
+
+function runScreening() {
+  var addr = document.getElementById('screenAddr').value.trim();
+  if (!addr) { showToast(currentLang === 'cn' ? '请输入钱包地址' : 'Please enter a wallet address'); return; }
+  if (!addr.match(/^(0x[a-fA-F0-9]{40}|T[a-zA-Z0-9]{33})$/)) {
+    showToast(currentLang === 'cn' ? '地址格式无效' : 'Invalid address format');
+    return;
+  }
+  var btn = document.getElementById('screenRunBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:16px;height:16px;border-width:2px;margin:0"></span> ' + t('cp.screen.checking');
+  screenAddress(addr).then(function(data) {
+    screenResults = [processScreenResult(data, addr)];
+    renderScreenResults();
+    btn.disabled = false;
+    btn.innerHTML = '&#128269; ' + t('cp.screen.run').replace(/^[^\s]+\s/, '');
+  });
+}
+
+function runBatchScreening() {
+  var raw = document.getElementById('screenBatchInput').value;
+  var lines = raw.split('\n').map(function(l) { return l.trim(); }).filter(function(l) { return l.length > 0; });
+  if (!lines.length) { showToast(currentLang === 'cn' ? '请输入至少一个地址' : 'Please enter at least one address'); return; }
+  lines = lines.slice(0, 20);
+  var valid = lines.filter(function(a) { return a.match(/^(0x[a-fA-F0-9]{40}|T[a-zA-Z0-9]{33})$/); });
+  if (!valid.length) { showToast(currentLang === 'cn' ? '未发现有效地址' : 'No valid addresses found'); return; }
+
+  document.getElementById('screenResults').style.display = 'block';
+  document.getElementById('screenResultsList').innerHTML = '<div class="loading-block"><div class="spinner"></div><span>' + t('cp.screen.checking') + ' ' + valid.length + ' addresses...</span></div>';
+  document.getElementById('screenSummary').innerHTML = '';
+
+  screenResults = [];
+  var completed = 0;
+  var total = valid.length;
+
+  // Sequential to avoid rate limiting
+  function processNext(i) {
+    if (i >= total) {
+      renderScreenResults();
+      return;
+    }
+    screenAddress(valid[i]).then(function(data) {
+      screenResults.push(processScreenResult(data, valid[i]));
+      completed++;
+      processNext(i + 1);
+    });
+  }
+  processNext(0);
+}
+
+function processScreenResult(data, addr) {
+  if (data && data.success && data.found && data.results && data.results.length > 0) {
+    var r = data.results[0];
+    var faVal = Number(r.frozen_amount) || 0;
+    if (faVal > 1000000000) faVal = faVal / 1000000;
+    return {
+      address: r.address || addr,
+      flagged: true,
+      chain: (r.chain || '').toUpperCase(),
+      asset: (r.asset || 'USDT').toUpperCase(),
+      frozen_amount: faVal,
+      source: r.source || r.sanctions_source || 'Issuer Blacklist',
+      category: r.category || r.label || 'Blacklisted',
+      first_seen: r.firstseen || r.firstSeen || r.added_date || r.date_added || '--',
+      risk_score: parseInt(r.risk_score) || 95
+    };
+  } else if (data && data.error) {
+    return { address: addr, flagged: false, error: data.error === 'RATE_LIMITED' ? 'Rate limited' : data.error };
+  } else {
+    return { address: addr, flagged: false };
+  }
+}
+
+function renderScreenResults() {
+  var container = document.getElementById('screenResults');
+  container.style.display = 'block';
+  var list = document.getElementById('screenResultsList');
+  var summary = document.getElementById('screenSummary');
+
+  var total = screenResults.length;
+  var flagged = screenResults.filter(function(r) { return r.flagged; }).length;
+  var clean = total - flagged;
+
+  summary.innerHTML =
+    '<div class="screen-summary-card"><div class="num total-c">' + total + '</div><div class="lab">' + t('cp.screen.total') + '</div></div>' +
+    '<div class="screen-summary-card"><div class="num clean-c">' + clean + '</div><div class="lab">' + t('cp.screen.cleancount') + '</div></div>' +
+    '<div class="screen-summary-card"><div class="num flag-c">' + flagged + '</div><div class="lab">' + t('cp.screen.flagcount') + '</div></div>';
+
+  var html = '';
+  screenResults.forEach(function(r) {
+    var statusClass = r.flagged ? 'flagged' : (r.error ? 'error' : 'clean');
+    var statusText = r.flagged ? t('cp.screen.flagged') : (r.error ? r.error : t('cp.screen.clean'));
+
+    html += '<div class="screen-result-card ' + statusClass + '">';
+    html += '<div class="screen-result-top">';
+    html += '<span class="screen-addr">' + escHtml(r.address) + '</span>';
+    html += '<span class="screen-status ' + statusClass + '">' + escHtml(statusText) + '</span>';
+    html += '</div>';
+
+    if (r.flagged) {
+      var frozenStr = r.frozen_amount > 0 ? '$' + r.frozen_amount.toLocaleString(undefined, {maximumFractionDigits:2}) : '--';
+      html += '<div class="screen-detail-grid">';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.chain') + ':</strong> ' + escHtml(r.chain || '--') + '</div>';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.asset') + ':</strong> ' + escHtml(r.asset) + '</div>';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.frozen') + ':</strong> <span style="color:var(--danger);font-weight:600">' + frozenStr + '</span></div>';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.source') + ':</strong> ' + escHtml(r.source) + '</div>';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.category') + ':</strong> ' + escHtml(r.category) + '</div>';
+      html += '<div class="screen-detail-item"><strong>' + t('cp.screen.firstseen') + ':</strong> ' + escHtml(r.first_seen) + '</div>';
+      html += '</div>';
+    } else if (!r.error) {
+      html += '<div style="font:400 12px var(--f);color:var(--accent);margin-top:4px">' + t('cp.screen.notfound') + '</div>';
+    }
+    html += '</div>';
+  });
+  list.innerHTML = html;
+}
+
+function clearBatch() {
+  document.getElementById('screenBatchInput').value = '';
+  document.getElementById('batchCount').textContent = '0 / 20';
+  document.getElementById('screenResults').style.display = 'none';
+  screenResults = [];
+}
+
+function exportScreenResults() {
+  if (!screenResults.length) return;
+  var csv = 'Address,Status,Chain,Asset,Frozen Amount,Source,Category,First Seen,Risk Score\n';
+  screenResults.forEach(function(r) {
+    csv += '"' + (r.address || '') + '","' + (r.flagged ? 'FLAGGED' : 'CLEAR') + '","' + (r.chain || '') + '","' + (r.asset || '') + '","' + (r.frozen_amount || '') + '","' + (r.source || '') + '","' + (r.category || '') + '","' + (r.first_seen || '') + '","' + (r.risk_score || '') + '"\n';
+  });
+  var blob = new Blob([csv], { type: 'text/csv' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'sanctions_screening_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(currentLang === 'cn' ? '报告已导出' : 'Report exported');
+}
+
+// ===== POLICY TEMPLATES =====
+var POLICY_TEMPLATES = [
+  {
+    id: 'aml_cft',
+    icon: '\u{1F6E1}',
+    title: 'AML/CFT Policy',
+    titleCn: '反洗钱/反恐融资政策',
+    cat: 'aml',
+    catLabel: 'AML',
+    desc: 'Comprehensive Anti-Money Laundering and Counter-Terrorist Financing policy framework. Covers risk-based approach, CDD procedures, transaction monitoring, and suspicious activity reporting.',
+    descCn: '全面的反洗钱和反恐融资政策框架。涵盖风险为本方法、客户尽职调查、交易监控和可疑活动报告。',
+    juris: ['US','EU','GB','SG','HK','JP','AE','CH'],
+    scope: 'All employees, contractors, and third-party service providers involved in customer-facing operations, transaction processing, or compliance oversight.',
+    scopeCn: '所有参与客户服务运营、交易处理或合规监督的员工、承包商和第三方服务提供商。',
+    sections: [
+      'Policy Statement & Objectives',
+      'Regulatory Framework & Obligations',
+      'Risk-Based Approach (RBA)',
+      'Customer Due Diligence (CDD/EDD)',
+      'Transaction Monitoring Program',
+      'Suspicious Activity Reporting (SAR/STR)',
+      'Record Keeping Requirements',
+      'Staff Training & Awareness',
+      'Compliance Officer Responsibilities',
+      'Internal Audit & Review',
+      'Penalties for Non-Compliance'
+    ],
+    sectionsCn: ['政策声明与目标','监管框架与义务','风险为本方法 (RBA)','客户尽职调查 (CDD/EDD)','交易监控计划','可疑活动报告 (SAR/STR)','记录保存要求','员工培训与意识','合规负责人职责','内部审计与审查','违规处罚']
+  },
+  {
+    id: 'kyc_cdd',
+    icon: '\u{1F464}',
+    title: 'KYC/CDD Policy',
+    titleCn: 'KYC/客户尽职调查政策',
+    cat: 'kyc',
+    catLabel: 'KYC',
+    desc: 'Know Your Customer and Customer Due Diligence policy. Defines identity verification procedures, beneficial ownership identification, ongoing monitoring, and enhanced due diligence triggers.',
+    descCn: '了解你的客户和客户尽职调查政策。定义身份验证程序、受益所有人识别、持续监控和增强尽职调查触发条件。',
+    juris: ['US','EU','GB','SG','HK','JP','KR','AE','CH'],
+    scope: 'Customer onboarding teams, compliance department, operations staff processing account applications or conducting periodic reviews.',
+    scopeCn: '客户入驻团队、合规部门、处理账户申请或进行定期审查的运营人员。',
+    sections: [
+      'Customer Identification Program (CIP)',
+      'Individual Verification Requirements',
+      'Corporate/Entity Verification',
+      'Beneficial Ownership Identification',
+      'Simplified Due Diligence (SDD)',
+      'Enhanced Due Diligence (EDD)',
+      'PEP Screening Procedures',
+      'Ongoing Customer Monitoring',
+      'Periodic Review Schedule',
+      'De-risking & Account Closure Criteria'
+    ],
+    sectionsCn: ['客户身份识别计划 (CIP)','个人身份验证要求','公司/实体验证','受益所有人识别','简化尽职调查 (SDD)','增强尽职调查 (EDD)','政治敏感人物 (PEP) 筛查','持续客户监控','定期审查安排','风险退出与账户关闭标准']
+  },
+  {
+    id: 'sanctions',
+    icon: '\u{1F6AB}',
+    title: 'Sanctions Compliance Policy',
+    titleCn: '制裁合规政策',
+    cat: 'sanctions',
+    catLabel: 'Sanctions',
+    desc: 'Sanctions screening and compliance framework. Covers OFAC, EU, UN, and jurisdiction-specific sanctions lists, screening procedures, escalation protocols, and governance structure.',
+    descCn: '制裁筛查和合规框架。涵盖 OFAC、EU、UN 及辖区特定制裁名单、筛查程序、升级协议和治理架构。',
+    juris: ['US','EU','GB','SG','HK','AE','CH'],
+    scope: 'Compliance team, operations staff, risk management, senior management, and any personnel involved in transaction processing or customer screening.',
+    scopeCn: '合规团队、运营人员、风险管理、高级管理层及所有参与交易处理或客户筛查的人员。',
+    sections: [
+      'Sanctions Program Overview',
+      'Applicable Sanctions Regimes (OFAC, EU, UN)',
+      'Real-time Screening Procedures',
+      'Blockchain Address Screening',
+      'Name & Entity Matching Methodology',
+      'False Positive Handling',
+      'Escalation & Reporting Protocols',
+      'Sanctions Evasion Red Flags',
+      'Governance & Oversight',
+      'Technology & System Requirements',
+      'Testing & Audit Schedule'
+    ],
+    sectionsCn: ['制裁计划概述','适用制裁制度 (OFAC, EU, UN)','实时筛查程序','区块链地址筛查','姓名和实体匹配方法','误报处理','升级与报告协议','制裁规避红旗','治理与监督','技术与系统要求','测试与审计安排']
+  },
+  {
+    id: 'sar_str',
+    icon: '\u{1F4CB}',
+    title: 'SAR/STR Reporting Procedures',
+    titleCn: 'SAR/STR可疑交易报告程序',
+    cat: 'reporting',
+    catLabel: 'Reporting',
+    desc: 'Suspicious Activity Report and Suspicious Transaction Report procedures. Covers identification criteria, internal escalation workflows, filing timelines, and regulatory reporting obligations.',
+    descCn: '可疑活动报告和可疑交易报告程序。涵盖识别标准、内部升级流程、申报时限和监管报告义务。',
+    juris: ['US','EU','GB','SG','HK','JP','KR','AE'],
+    scope: 'All staff responsible for detecting, evaluating, and reporting suspicious activities. Includes front-line staff, compliance analysts, and the MLRO/BSA Officer.',
+    scopeCn: '所有负责检测、评估和报告可疑活动的人员。包括一线员工、合规分析师和反洗钱报告官/BSA官。',
+    sections: [
+      'SAR/STR Trigger Indicators',
+      'Crypto-specific Red Flags',
+      'Internal Detection & Escalation',
+      'Investigation Procedures',
+      'Filing Decision Framework',
+      'Regulatory Filing Requirements by Jurisdiction',
+      'Filing Timelines & Deadlines',
+      'Tipping Off Prohibition',
+      'Record Retention',
+      'Quality Assurance & Review'
+    ],
+    sectionsCn: ['SAR/STR 触发指标','加密货币特定红旗','内部检测与升级','调查程序','申报决策框架','各辖区监管申报要求','申报时限与截止日期','禁止泄露原则','记录保存','质量保证与审查']
+  },
+  {
+    id: 'travel_rule',
+    icon: '\u{2708}',
+    title: 'Travel Rule Compliance',
+    titleCn: '旅行规则合规',
+    cat: 'aml',
+    catLabel: 'AML',
+    desc: 'FATF Travel Rule implementation guide for virtual asset transfers. Covers originator/beneficiary data requirements, counterparty VASP verification, and cross-border transfer protocols.',
+    descCn: 'FATF旅行规则虚拟资产转移实施指南。涵盖发起方/受益方数据要求、对手方VASP验证和跨境转移协议。',
+    juris: ['US','EU','GB','SG','HK','JP','KR','CH'],
+    scope: 'Operations and compliance teams managing virtual asset transfers, technology teams integrating Travel Rule solutions.',
+    scopeCn: '管理虚拟资产转移的运营和合规团队，集成旅行规则解决方案的技术团队。',
+    sections: [
+      'FATF Recommendation 16 Overview',
+      'Threshold Requirements by Jurisdiction',
+      'Originator Information Requirements',
+      'Beneficiary Information Requirements',
+      'Counterparty VASP Verification',
+      'Unhosted Wallet Transfers',
+      'Technology Solutions & Integration',
+      'Data Privacy Considerations',
+      'Cross-border Transfer Protocols',
+      'Compliance Monitoring & Reporting'
+    ],
+    sectionsCn: ['FATF第16项建议概述','各辖区阈值要求','发起方信息要求','受益方信息要求','对手方VASP验证','非托管钱包转移','技术解决方案与集成','数据隐私考虑','跨境转移协议','合规监控与报告']
+  },
+  {
+    id: 'risk_assessment',
+    icon: '\u{1F4CA}',
+    title: 'Risk Assessment Framework',
+    titleCn: '风险评估框架',
+    cat: 'risk',
+    catLabel: 'Risk',
+    desc: 'Enterprise-wide ML/TF risk assessment framework. Covers inherent risk identification, control effectiveness evaluation, residual risk scoring, and risk appetite alignment.',
+    descCn: '企业级反洗钱/反恐融资风险评估框架。涵盖固有风险识别、控制有效性评估、残余风险评分和风险偏好对齐。',
+    juris: ['US','EU','GB','SG','HK','AE','CH'],
+    scope: 'Senior management, compliance officers, risk management teams, internal audit, and business unit heads.',
+    scopeCn: '高级管理层、合规负责人、风险管理团队、内部审计和业务部门负责人。',
+    sections: [
+      'Risk Assessment Methodology',
+      'Inherent Risk Categories (Customer, Product, Geographic, Channel)',
+      'Customer Risk Rating Model',
+      'Product/Service Risk Assessment',
+      'Geographic Risk Factors',
+      'Delivery Channel Risk',
+      'Control Effectiveness Evaluation',
+      'Residual Risk Calculation',
+      'Risk Appetite Statement',
+      'Periodic Review & Update Schedule',
+      'Board Reporting Requirements'
+    ],
+    sectionsCn: ['风险评估方法论','固有风险类别（客户、产品、地理、渠道）','客户风险评级模型','产品/服务风险评估','地理风险因素','交付渠道风险','控制有效性评估','残余风险计算','风险偏好声明','定期审查与更新安排','董事会报告要求']
+  },
+  {
+    id: 'compliance_governance',
+    icon: '\u{1F3DB}',
+    title: 'Compliance Governance Framework',
+    titleCn: '合规治理框架',
+    cat: 'governance',
+    catLabel: 'Governance',
+    desc: 'Three lines of defense model for financial crime compliance. Covers organizational structure, committee mandates, escalation procedures, regulatory engagement, and change management.',
+    descCn: '金融犯罪合规的三道防线模型。涵盖组织架构、委员会职责、升级程序、监管对接和变更管理。',
+    juris: ['US','EU','GB','SG','HK','JP','AE','CH'],
+    scope: 'Board of directors, senior management, compliance committee, MLRO, all business and support functions.',
+    scopeCn: '董事会、高级管理层、合规委员会、反洗钱报告官、所有业务和支持部门。',
+    sections: [
+      'Three Lines of Defense Model',
+      'Compliance Organizational Structure',
+      'MLRO / Compliance Officer Role & Mandate',
+      'Compliance Committee Charter',
+      'Policy Lifecycle Management',
+      'Regulatory Change Management',
+      'Incident Management & Escalation',
+      'Regulatory Examination Readiness',
+      'Third-party Risk Management',
+      'Compliance Culture & Tone from the Top',
+      'Annual Compliance Program Review'
+    ],
+    sectionsCn: ['三道防线模型','合规组织架构','反洗钱报告官/合规负责人角色与职责','合规委员会章程','政策生命周期管理','监管变化管理','事件管理与升级','监管检查准备','第三方风险管理','合规文化与高层基调','年度合规计划审查']
+  },
+  {
+    id: 'tx_monitoring',
+    icon: '\u{1F50D}',
+    title: 'Transaction Monitoring Program',
+    titleCn: '交易监控计划',
+    cat: 'aml',
+    catLabel: 'AML',
+    desc: 'Transaction monitoring rules, alert investigation workflows, and model validation procedures for crypto asset service providers. Includes blockchain-specific detection scenarios.',
+    descCn: '加密资产服务商的交易监控规则、预警调查流程和模型验证程序。包括区块链特定的检测场景。',
+    juris: ['US','EU','GB','SG','HK','JP','KR'],
+    scope: 'Transaction monitoring analysts, compliance investigators, technology teams managing monitoring systems, model validation teams.',
+    scopeCn: '交易监控分析师、合规调查员、管理监控系统的技术团队、模型验证团队。',
+    sections: [
+      'Monitoring Program Objectives',
+      'Rule/Scenario Design Methodology',
+      'Crypto-specific Detection Scenarios',
+      'Threshold Setting & Calibration',
+      'Alert Prioritization & Triage',
+      'Investigation Procedures',
+      'Disposition & Documentation',
+      'Model Performance Metrics',
+      'Tuning & Optimization Process',
+      'Above-the-line / Below-the-line Testing',
+      'Annual Model Validation'
+    ],
+    sectionsCn: ['监控计划目标','规则/场景设计方法论','加密货币特定检测场景','阈值设置与校准','预警优先级与分流','调查程序','处置与文档记录','模型性能指标','调优与优化流程','线上/线下测试','年度模型验证']
+  }
+];
+
+var activePolicyCat = 'all';
+
+function renderPolicyFilters() {
+  var cats = [{id:'all',label:t('cp.policy.all')}];
+  var seen = {};
+  POLICY_TEMPLATES.forEach(function(p) {
+    if (!seen[p.cat]) {
+      seen[p.cat] = true;
+      cats.push({id:p.cat, label:p.catLabel});
+    }
+  });
+  var html = '';
+  cats.forEach(function(c) {
+    html += '<button class="policy-filter' + (c.id === activePolicyCat ? ' active' : '') + '" onclick="filterPolicies(\'' + c.id + '\',this)">' + c.label + '</button>';
+  });
+  document.getElementById('policyFilters').innerHTML = html;
+}
+
+function filterPolicies(cat, btn) {
+  activePolicyCat = cat;
+  document.querySelectorAll('.policy-filter').forEach(function(f) { f.classList.remove('active'); });
+  btn.classList.add('active');
+  renderPolicyGrid();
+}
+
+function renderPolicyGrid() {
+  var grid = document.getElementById('policyGrid');
+  var filtered = activePolicyCat === 'all' ? POLICY_TEMPLATES : POLICY_TEMPLATES.filter(function(p) { return p.cat === activePolicyCat; });
+
+  var html = '';
+  filtered.forEach(function(p) {
+    var title = currentLang === 'cn' ? p.titleCn : p.title;
+    var desc = currentLang === 'cn' ? p.descCn : p.desc;
+    html += '<div class="policy-card" onclick="openPolicyModal(\'' + p.id + '\')">';
+    html += '<div class="policy-card-icon">' + p.icon + '</div>';
+    html += '<div class="policy-card-title">' + escHtml(title) + '</div>';
+    html += '<span class="policy-card-cat ' + p.cat + '">' + p.catLabel + '</span>';
+    html += '<div class="policy-card-desc">' + escHtml(desc) + '</div>';
+    html += '<div class="policy-card-meta">';
+    html += '<div class="policy-card-juris">';
+    p.juris.slice(0, 5).forEach(function(j) {
+      html += '<span class="policy-juris-tag">' + getFlag(j) + ' ' + j + '</span>';
+    });
+    if (p.juris.length > 5) html += '<span class="policy-juris-tag">+' + (p.juris.length - 5) + '</span>';
+    html += '</div>';
+    html += '<button class="policy-card-dl">' + t('cp.policy.preview') + ' &rarr;</button>';
+    html += '</div></div>';
+  });
+  grid.innerHTML = html;
+}
+
+function openPolicyModal(id) {
+  var p = POLICY_TEMPLATES.find(function(t) { return t.id === id; });
+  if (!p) return;
+  var title = currentLang === 'cn' ? p.titleCn : p.title;
+  var desc = currentLang === 'cn' ? p.descCn : p.desc;
+  var scope = currentLang === 'cn' ? p.scopeCn : p.scope;
+  var sections = currentLang === 'cn' ? p.sectionsCn : p.sections;
+
+  var html = '<button class="policy-modal-close" onclick="closePolicyModal()">&times;</button>';
+  html += '<div style="font-size:36px;margin-bottom:12px">' + p.icon + '</div>';
+  html += '<h3>' + escHtml(title) + '</h3>';
+  html += '<span class="modal-cat policy-card-cat ' + p.cat + '">' + p.catLabel + '</span>';
+  html += '<p style="font:400 14px/1.6 var(--f);color:var(--ink2);margin-bottom:20px">' + escHtml(desc) + '</p>';
+
+  html += '<div class="policy-modal-section"><h4>&#127919; ' + t('cp.policy.scope') + '</h4>';
+  html += '<p style="font:400 13px/1.6 var(--f);color:var(--ink2)">' + escHtml(scope) + '</p></div>';
+
+  html += '<div class="policy-modal-section"><h4>&#128221; ' + t('cp.policy.keysections') + '</h4><ul>';
+  sections.forEach(function(s, i) {
+    html += '<li><strong>' + (i+1) + '.</strong> ' + escHtml(s) + '</li>';
+  });
+  html += '</ul></div>';
+
+  html += '<div class="policy-modal-section"><h4>&#127760; ' + t('cp.policy.juris') + '</h4>';
+  html += '<div style="display:flex;gap:6px;flex-wrap:wrap">';
+  p.juris.forEach(function(j) {
+    var jObj = jurisdictions.find(function(x) { return x.code === j; });
+    var name = jObj ? getCn(jObj, 'name') : j;
+    html += '<span class="policy-juris-tag" style="padding:4px 10px;font-size:11px">' + getFlag(j) + ' ' + escHtml(name) + '</span>';
+  });
+  html += '</div></div>';
+
+  html += '<div class="policy-modal-actions">';
+  html += '<button class="wiz-btn primary" onclick="downloadPolicyTemplate(\'' + id + '\')">' + t('cp.policy.customize') + '</button>';
+  html += '<button class="wiz-btn" onclick="closePolicyModal()">' + (currentLang === 'cn' ? '关闭' : 'Close') + '</button>';
+  html += '</div>';
+
+  document.getElementById('policyModalContent').innerHTML = html;
+  document.getElementById('policyModal').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePolicyModal() {
+  document.getElementById('policyModal').classList.remove('show');
+  document.body.style.overflow = '';
+}
+
+function downloadPolicyTemplate(id) {
+  var p = POLICY_TEMPLATES.find(function(t) { return t.id === id; });
+  if (!p) return;
+  var title = currentLang === 'cn' ? p.titleCn : p.title;
+  var scope = currentLang === 'cn' ? p.scopeCn : p.scope;
+  var sections = currentLang === 'cn' ? p.sectionsCn : p.sections;
+  var orgName = currentLang === 'cn' ? '[公司名称]' : '[Company Name]';
+  var dateStr = new Date().toISOString().slice(0,10);
+
+  var md = '# ' + title + '\n\n';
+  md += '**' + (currentLang === 'cn' ? '组织' : 'Organization') + ':** ' + orgName + '\n';
+  md += '**' + (currentLang === 'cn' ? '版本' : 'Version') + ':** 1.0\n';
+  md += '**' + (currentLang === 'cn' ? '生效日期' : 'Effective Date') + ':** ' + dateStr + '\n';
+  md += '**' + (currentLang === 'cn' ? '审批人' : 'Approved By') + ':** _________________\n\n';
+  md += '---\n\n';
+  md += '## ' + (currentLang === 'cn' ? '适用范围' : 'Scope & Applicability') + '\n\n' + scope + '\n\n';
+
+  sections.forEach(function(s, i) {
+    md += '## ' + (i+1) + '. ' + s + '\n\n';
+    md += (currentLang === 'cn' ? '[请在此处填写具体政策内容...]' : '[Insert specific policy content here...]') + '\n\n';
+  });
+
+  md += '---\n\n';
+  md += '**' + (currentLang === 'cn' ? '文档历史' : 'Document History') + '**\n\n';
+  md += '| ' + (currentLang === 'cn' ? '版本' : 'Version') + ' | ' + (currentLang === 'cn' ? '日期' : 'Date') + ' | ' + (currentLang === 'cn' ? '作者' : 'Author') + ' | ' + (currentLang === 'cn' ? '变更说明' : 'Changes') + ' |\n';
+  md += '|---------|------|--------|----------|\n';
+  md += '| 1.0 | ' + dateStr + ' | | ' + (currentLang === 'cn' ? '初始版本' : 'Initial version') + ' |\n';
+
+  var blob = new Blob([md], { type: 'text/markdown' });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = p.id + '_policy_template.md';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast(currentLang === 'cn' ? '模板已下载' : 'Template downloaded');
+  closePolicyModal();
+}
+
+// Init policy grid
+function initPolicies() {
+  renderPolicyFilters();
+  renderPolicyGrid();
+}
+
 // ===== INIT =====
 applyLang();
 loadJurisdictions();
 loadRiskRules();
+initPolicies();
 </script>
 
 <!-- SUPABASE AUTH -->
