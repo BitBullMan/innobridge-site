@@ -1410,6 +1410,10 @@ document.querySelectorAll('.radio-item').forEach(function(item) {
 function populateJurisSelect() {
   var sel = document.getElementById('checkJuris');
   if (!sel || sel.options.length > 1) return;
+  if (!jurisdictions.length) {
+    setTimeout(populateJurisSelect, 500);
+    return;
+  }
   jurisdictions.forEach(function(j) {
     var name = getCn(j, 'name');
     var opt = document.createElement('option');
