@@ -125,6 +125,9 @@ select.form-input{appearance:none;background-image:url("data:image/svg+xml,%3Csv
 .toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
 .toggle-saved{font:600 11px var(--f);color:var(--accent);opacity:0;transition:opacity .3s;margin-left:8px}
 .toggle-saved.show{opacity:1}
+.lang-pref-btns{display:flex;gap:4px;background:var(--s2);border-radius:8px;padding:3px}
+.lang-pref-btn{font:500 12px var(--f);padding:5px 14px;border:none;border-radius:6px;background:transparent;color:var(--ink3);cursor:pointer;transition:all .2s}
+.lang-pref-btn.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
 /* Action buttons */
 .profile-actions{display:flex;gap:10px;margin-top:24px}
 .btn-secondary{flex:1;padding:11px;font:500 13px var(--f);color:var(--ink2);background:var(--s1);border:1px solid var(--s3);border-radius:8px;cursor:pointer;transition:all .2s;text-align:center}
@@ -346,6 +349,19 @@ footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);backgr
                 </label>
               </div>
             </div>
+            <div class="toggle-row" id="lang-pref-row" style="border-top:1px solid var(--hl);padding-top:14px;margin-top:2px">
+              <div>
+                <div class="toggle-label" data-i18n="profile.briefingLang">Briefing Language</div>
+                <div class="toggle-desc" id="lang-pref-desc">Choose which language you'd like the daily briefing in</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span class="toggle-saved" id="save-lang">Saved</span>
+                <div class="lang-pref-btns" id="lang-pref-btns">
+                  <button class="lang-pref-btn" data-val="en" onclick="setLangPref('en')">EN</button>
+                  <button class="lang-pref-btn" data-val="cn" onclick="setLangPref('cn')">中文</button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <!-- Account -->
@@ -560,6 +576,19 @@ async function togglePref(field, value, saveId) {
   }
 }
 
+// ── Language preference ──
+async function setLangPref(val) {
+  document.querySelectorAll('.lang-pref-btn').forEach(b => b.classList.toggle('active', b.dataset.val === val));
+  const saveEl = document.getElementById('save-lang');
+  const { error } = await sb.from('aml_user_profiles').update({ language_preference: val }).eq('id', currentUser.id);
+  if (!error) {
+    currentProfile.language_preference = val;
+    saveEl.textContent = lang === 'zh' ? '已保存' : 'Saved';
+    saveEl.classList.add('show');
+    setTimeout(() => saveEl.classList.remove('show'), 2000);
+  }
+}
+
 // ── Inline field editing ──
 async function editField(field) {
   const fieldMap = { full_name: 'field-name', organization: 'field-org' };
@@ -674,6 +703,13 @@ function renderProfileView() {
 
   // Subscription toggle
   document.getElementById('pref-briefing').checked = currentProfile.subscribe_daily_briefing || false;
+
+  // Language preference
+  const lp = currentProfile.language_preference || 'en';
+  document.querySelectorAll('.lang-pref-btn').forEach(b => b.classList.toggle('active', b.dataset.val === lp));
+  document.getElementById('lang-pref-desc').textContent = lang === 'zh'
+    ? '选择您希望接收的每日简报语言'
+    : "Choose which language you'd like the daily briefing in";
 }
 
 function showLEApplyFromProfile() {
@@ -733,6 +769,7 @@ const i18n = {
     'profile.org': '所属机构', 'profile.memberSince': '注册时间',
     'profile.subscriptions': '订阅服务',
     'profile.briefing': '每日情报简报',
+    'profile.briefingLang': '简报语言',
     'profile.account': '账户信息', 'profile.lastLogin': '上次登录', 'profile.loginCount': '登录次数',
     'profile.home': '返回首页', 'profile.logout': '退出登录',
     'nav.blacklist': '黑名单数据', 'nav.news': '新闻', 'nav.dashboard': '数据仪表盘',
