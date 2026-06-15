@@ -252,17 +252,22 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-cat-section{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
 .pulse-cat-header{display:flex;align-items:center;gap:6px;padding:14px 16px 10px;font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--hl)}
 .pulse-cat-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
+.pulse-top-event{padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(0,0,0,0.06)}
+.pulse-top-event:hover{background:rgba(0,0,0,0.02)}
 .pulse-event-item{padding:10px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(0,0,0,0.04)}
 .pulse-event-item:last-child{border-bottom:none}
 .pulse-event-item:hover{background:rgba(0,0,0,0.02)}
-.pulse-event-title{font:500 12px/1.35 var(--f);color:var(--ink);margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.2em}
+.pulse-event-title{font:500 12.5px/1.4 var(--f);color:var(--ink);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.2em}
 .pulse-event-foot{display:flex;align-items:center;justify-content:space-between}
-.pulse-event-pct{font:700 16px var(--m);line-height:1}
+.pulse-event-pct{font:700 18px var(--m);line-height:1}
 .pulse-event-pct.high{color:var(--accent)}
 .pulse-event-pct.mid{color:var(--warn)}
 .pulse-event-pct.low{color:var(--danger)}
 .pulse-event-vol{font:400 10px var(--m);color:var(--ink3)}
 .pulse-event-arrow{font-size:10px;opacity:.4;color:var(--ink3)}
+.pulse-analysis{padding:10px 16px 14px;background:var(--s1)}
+.pulse-analysis-label{font:600 10px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
+.pulse-analysis-text{font:400 11.5px/1.55 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
 .pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);grid-column:1/-1}
 .pulse-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
 .pulse-modal-overlay.show{display:flex}
@@ -280,7 +285,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
 .pulse-modal-meta a{color:var(--accent);text-decoration:none}
 .pulse-modal-meta a:hover{text-decoration:underline}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-cat-section:last-child{grid-column:1/-1}.pulse-cat-header{padding:10px 12px 8px}.pulse-event-item{padding:8px 12px}.pulse-event-vol{display:none}.pulse-modal{margin:16px;padding:24px}}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-cat-section:last-child{grid-column:1/-1}.pulse-cat-header{padding:10px 12px 8px}.pulse-top-event{padding:8px 12px}.pulse-event-item{padding:8px 12px}.pulse-event-vol{display:none}.pulse-analysis{padding:8px 12px 10px}.pulse-analysis-text{-webkit-line-clamp:4;font-size:11px}.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -1369,19 +1374,24 @@ function _renderPulseCards(data) {
       + escHtml(catLabel)
       + '</div>';
     if (sec.events && sec.events.length) {
-      for (var j = 0; j < sec.events.length; j++) {
-        var evt = sec.events[j];
-        var pctClass = evt.pct >= 50 ? 'high' : (evt.pct >= 20 ? 'mid' : 'low');
-        html += '<div class="pulse-event-item" onclick="openPulseModal(' + i + ',' + j + ')">'
-          + '<div class="pulse-event-title">' + escHtml(evt.title) + '</div>'
-          + '<div class="pulse-event-foot">'
-          + '<span class="pulse-event-pct ' + pctClass + '">' + evt.pct + '%</span>'
-          + '<span class="pulse-event-vol">' + dict('pulse.yes') + ' · ' + fmtVol(evt.vol) + '</span>'
-          + '<span class="pulse-event-arrow">→</span>'
-          + '</div></div>';
+      var evt = sec.events[0];
+      var pctClass = evt.pct >= 50 ? 'high' : (evt.pct >= 20 ? 'mid' : 'low');
+      html += '<div class="pulse-top-event" onclick="openPulseModal(' + i + ',0)">'
+        + '<div class="pulse-event-title">' + escHtml(evt.title) + '</div>'
+        + '<div class="pulse-event-foot">'
+        + '<span class="pulse-event-pct ' + pctClass + '">' + evt.pct + '%</span>'
+        + '<span class="pulse-event-vol">' + dict('pulse.yes') + ' · ' + fmtVol(evt.vol) + '</span>'
+        + '<span class="pulse-event-arrow">→</span>'
+        + '</div></div>';
+      var analysis = currentLang === 'cn' ? sec.analysis_cn : sec.analysis_en;
+      if (analysis) {
+        html += '<div class="pulse-analysis">'
+          + '<div class="pulse-analysis-label">🤖 ' + dict('pulse.aiheader') + '</div>'
+          + '<div class="pulse-analysis-text">' + escHtml(analysis) + '</div>'
+          + '</div>';
       }
     } else {
-      html += '<div class="pulse-event-item" style="cursor:default;text-align:center;color:var(--ink3)">' + dict('pulse.nodata') + '</div>';
+      html += '<div class="pulse-top-event" style="cursor:default;text-align:center;color:var(--ink3)">' + dict('pulse.nodata') + '</div>';
     }
     html += '</div>';
   }
@@ -1434,7 +1444,7 @@ document.addEventListener('keydown', function(e) {
       var sections = [];
       var usedSlugs = {};
       for (var i = 0; i < PULSE_CATS.length; i++) {
-        var catEvents = _findTopEvents(events, PULSE_CATS[i], 5, usedSlugs);
+        var catEvents = _findTopEvents(events, PULSE_CATS[i], 1, usedSlugs);
         for (var u = 0; u < catEvents.length; u++) { if (catEvents[u].slug) usedSlugs[catEvents[u].slug] = true; }
         sections.push({ cat: PULSE_CATS[i], events: catEvents, analysis_en: '', analysis_cn: '' });
       }
