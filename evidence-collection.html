@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Exchange Evidence Collection Hub — Innobridge</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<meta name="description" content="Exchange Evidence Collection Hub — Standardized templates for law enforcement to request data from cryptocurrency exchanges.">
+<meta property="og:title" content="Evidence Collection Hub — Innobridge">
+<meta property="og:description" content="Standardized templates for law enforcement to request data from cryptocurrency exchanges.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://innobridgetech.github.io/evidence-collection.html">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://innobridgetech.github.io/evidence-collection.html">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -14,11 +23,11 @@
   --accent-soft:rgba(0,200,150,0.08);
   --border:rgba(0,0,0,0.06);--border2:rgba(0,200,150,0.18);
   --shadow:0 2px 12px rgba(0,0,0,0.04);--shadow-lg:0 8px 32px rgba(0,0,0,0.08);
-  --font:'Nunito',sans-serif;--mono:'JetBrains Mono',monospace;
+  --f:'Inter',system-ui,sans-serif;--m:'JetBrains Mono',monospace;
   --radius:16px;--radius-sm:10px;
 }
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.7}
+body{background:var(--bg);color:var(--text);font-family:var(--f);line-height:1.7}
 
 nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
@@ -37,7 +46,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .hero .gradient{background:linear-gradient(135deg,#00c896,#00b386);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 
 .search-bar{max-width:600px;margin:0 auto 16px;display:flex;gap:10px}
-.search-input{flex:1;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--font);font-size:15px;color:var(--text);outline:none;background:var(--bg2);transition:border-color .2s;font-weight:500}
+.search-input{flex:1;padding:14px 18px;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:var(--f);font-size:15px;color:var(--text);outline:none;background:var(--bg2);transition:border-color .2s;font-weight:500}
 .search-input:focus{border-color:var(--accent)}
 .search-input::placeholder{color:var(--text3)}
 
@@ -63,14 +72,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .ex-card.defunct{opacity:0.6}
 .ex-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
 .ex-name{font-size:16px;font-weight:800}
-.ex-entity{font-size:11px;color:var(--text3);font-weight:600;font-family:var(--mono)}
+.ex-entity{font-size:11px;color:var(--text3);font-weight:600;font-family:var(--m)}
 .ex-method{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:8px}
 .ex-method .tag{padding:2px 8px;border-radius:6px;font-size:10px;font-weight:700;text-transform:uppercase}
 .ex-method .tag.email{background:rgba(0,200,150,0.1);color:#00c896}
 .ex-method .tag.ticket{background:rgba(0,200,150,0.1);color:#00b386}
 .ex-method .tag.portal{background:rgba(34,201,151,0.1);color:#22c997}
 .ex-method .tag.defunct{background:rgba(239,68,68,0.1);color:#ef4444}
-.ex-contact{font-family:var(--mono);font-size:12px;color:var(--text2);word-break:break-all;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:6px}
+.ex-contact{font-family:var(--m);font-size:12px;color:var(--text2);word-break:break-all;margin-bottom:8px;padding:6px 10px;background:var(--bg3);border-radius:6px}
 .ex-contact a{color:var(--accent);text-decoration:none}
 .ex-contact a:hover{text-decoration:underline}
 .ex-docs{font-size:12px;color:var(--text3);line-height:1.6;font-weight:500}
@@ -123,16 +132,16 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
 <div id="auth-gate" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:100;background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);align-items:center;justify-content:center">
   <div style="text-align:center;max-width:480px;padding:40px">
     <div style="width:64px;height:64px;border-radius:16px;background:rgba(79,110,247,0.08);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px">&#x1F512;</div>
-    <h2 id="gate-title" style="font-family:'Nunito',sans-serif;font-size:24px;font-weight:800;color:#1a1d23;margin-bottom:8px">Restricted Access</h2>
-    <p id="gate-desc" style="font-family:'Nunito',sans-serif;font-size:14px;color:#5a5f6b;line-height:1.7;margin-bottom:24px">
+    <h2 id="gate-title" style="font-family:'Inter',system-ui,sans-serif;font-size:24px;font-weight:800;color:#1a1d23;margin-bottom:8px">Restricted Access</h2>
+    <p id="gate-desc" style="font-family:'Inter',system-ui,sans-serif;font-size:14px;color:#5a5f6b;line-height:1.7;margin-bottom:24px">
       The Evidence Collection Hub is available to verified law enforcement officers, prosecutors, and compliance professionals. Please sign in and complete verification to access this resource.
     </p>
     <div id="gate-actions">
-      <a href="login.html?redirect=evidence-collection.html&msg=le-required" id="gate-login-btn" style="display:inline-block;padding:12px 32px;background:#00c896;color:#fff;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;transition:background .2s;margin-right:8px">Sign In / Register</a>
-      <a href="index.html" id="gate-home-btn" style="display:inline-block;padding:12px 24px;background:rgba(0,0,0,0.04);color:#5a5f6b;border-radius:10px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:600">Back to Home</a>
+      <a href="login.html?redirect=evidence-collection.html&msg=le-required" id="gate-login-btn" style="display:inline-block;padding:12px 32px;background:#00c896;color:#fff;border-radius:10px;font-family:'Inter',system-ui,sans-serif;font-size:14px;font-weight:700;transition:background .2s;margin-right:8px">Sign In / Register</a>
+      <a href="index.html" id="gate-home-btn" style="display:inline-block;padding:12px 24px;background:rgba(0,0,0,0.04);color:#5a5f6b;border-radius:10px;font-family:'Inter',system-ui,sans-serif;font-size:14px;font-weight:600">Back to Home</a>
     </div>
     <div id="gate-pending" style="display:none;margin-top:16px;padding:14px;background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.15);border-radius:10px">
-      <p style="font-family:'Nunito',sans-serif;font-size:13px;color:#d97706;font-weight:600" id="gate-pending-text">Your application is under review. Please check back later.</p>
+      <p style="font-family:'Inter',system-ui,sans-serif;font-size:13px;color:#d97706;font-weight:600" id="gate-pending-text">Your application is under review. Please check back later.</p>
     </div>
   </div>
 </div>

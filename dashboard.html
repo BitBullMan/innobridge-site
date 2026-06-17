@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innobridge Blacklist - Stablecoin Freeze Intelligence</title>
+    <meta name="description" content="Innobridge AML Dashboard — Monitor blacklisted blockchain addresses, frozen assets, and compliance data across TRON and Ethereum networks.">
+    <meta property="og:title" content="AML Dashboard — Innobridge">
+    <meta property="og:description" content="Monitor blacklisted blockchain addresses, frozen assets, and compliance data across TRON and Ethereum networks.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://innobridgetech.github.io/dashboard.html">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://innobridgetech.github.io/dashboard.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
@@ -29,11 +37,11 @@
             --surface3: #e2e5eb;
             --r: 20px;
             --r-sm: 12px;
-            --font: 'Nunito', sans-serif;
-            --mono: 'JetBrains Mono', monospace;
+            --f:'Inter',system-ui,sans-serif;
+            --m:'JetBrains Mono',monospace;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font); background:var(--bg); color:#1a1d23; line-height:1.5; }
+        body { font-family:var(--f); background:var(--bg); color:#1a1d23; line-height:1.5; }
 
         /* Nav */
         nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
@@ -55,7 +63,7 @@
         .hero p { color:var(--text-2); font-size:14px; margin-bottom:24px; }
         .search-wrap { max-width:520px; margin:0 auto; display:flex; background:#fff; border:1.5px solid var(--border); border-radius:var(--r-sm); overflow:hidden; transition:border-color .2s; }
         .search-wrap:focus-within { border-color:var(--accent); }
-        .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:var(--mono); background:transparent; }
+        .search-wrap input { flex:1; padding:12px 16px; border:none; outline:none; font-size:14px; font-family:var(--m); background:transparent; }
         .search-wrap input::placeholder { color:#bbb; }
         .search-wrap button { background:var(--accent); color:#fff; border:none; padding:0 20px; font-size:13px; font-weight:600; cursor:pointer; font-family:inherit; border-radius:0 var(--r-sm) var(--r-sm) 0; }
         .search-wrap button:hover { opacity:.9; }
@@ -94,7 +102,7 @@
         tbody tr:last-child { border-bottom:none; }
         tbody tr:hover { background:var(--bg-hover); }
         tbody td { padding:11px 14px; font-size:13px; }
-        .addr-cell { font-family:var(--mono); font-size:12px; color:var(--accent); cursor:pointer; text-decoration:none; }
+        .addr-cell { font-family:var(--m); font-size:12px; color:var(--accent); cursor:pointer; text-decoration:none; }
         .addr-cell:hover { text-decoration:underline; }
         .chain-badge { display:inline-block; padding:2px 8px; border-radius:6px; font-size:10px; font-weight:700; }
         .chain-badge.eth { background:rgba(0,200,150,0.08); color:var(--accent); }

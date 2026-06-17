@@ -4,8 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Detail - Innobridge Blacklist</title>
+    <meta name="description" content="Address Detail — View comprehensive blockchain address information including transaction history and compliance status.">
+    <meta property="og:title" content="Address Detail — Innobridge">
+    <meta property="og:description" content="View comprehensive blockchain address information including transaction history and compliance status.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://innobridgetech.github.io/detail.html">
+    <meta name="twitter:card" content="summary">
+    <link rel="canonical" href="https://innobridgetech.github.io/detail.html">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <!-- Firebase removed: public access with rate limiting -->
     <style>
         :root {
@@ -29,11 +37,11 @@
             --accent-hover: #00b386;
             --r: 20px;
             --r-sm: 12px;
-            --font: 'Nunito', sans-serif;
-            --mono: 'JetBrains Mono', monospace;
+            --f:'Inter',system-ui,sans-serif;
+            --m:'JetBrains Mono',monospace;
         }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family:var(--font); background:var(--bg); color:var(--text); line-height:1.5; min-height:100vh; }
+        body { font-family:var(--f); background:var(--bg); color:var(--text); line-height:1.5; min-height:100vh; }
 
         /* Nav */
         nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:14px 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
@@ -68,7 +76,7 @@
         .freeze-badge.frozen { background:#fff0f0; color:var(--red); }
         .freeze-badge.safe { background:#eafbef; color:var(--green); }
         .asset-label { font-size:12px; color:var(--text-3); font-weight:600; }
-        .addr-full { font-family:var(--mono); font-size:14px; color:var(--blue); word-break:break-all; margin-bottom:24px; }
+        .addr-full { font-family:var(--m); font-size:14px; color:var(--blue); word-break:break-all; margin-bottom:24px; }
 
         /* Risk Score Gauge */
         .gauge-section { display:grid; grid-template-columns:200px 1fr; gap:16px; margin-bottom:24px; align-items:start; }
