@@ -219,6 +219,57 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .update-summary{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:8px}
 .update-footer{display:flex;align-items:center;gap:16px;font:400 12px var(--f);color:var(--ink3)}
 
+/* REGULATED ENTITIES TAB */
+.entities-summary{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.entity-badge{display:inline-flex;align-items:center;gap:6px;font:500 12px var(--f);padding:6px 14px;border-radius:8px;border:1px solid var(--hl);background:var(--canvas);color:var(--ink2);cursor:pointer;transition:all .2s;user-select:none}
+.entity-badge:hover{border-color:var(--hl2);color:var(--ink)}
+.entity-badge.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-h)}
+.entity-badge .cnt{font:600 11px var(--f);padding:1px 7px;border-radius:99px;background:var(--s1);color:var(--ink3);min-width:18px;text-align:center}
+.entity-badge.active .cnt{background:rgba(0,200,150,0.15);color:var(--accent-h)}
+.badge-green{border-color:rgba(0,200,150,0.25);color:var(--accent-h)}
+.badge-green.active{background:var(--accent-bg);border-color:var(--accent)}
+.badge-yellow{border-color:rgba(245,158,11,0.25);color:#d97706}
+.badge-yellow.active{background:rgba(245,158,11,0.08);border-color:#d97706}
+.badge-red{border-color:rgba(239,68,68,0.25);color:var(--danger)}
+.badge-red.active{background:var(--danger-bg);border-color:var(--danger)}
+.badge-gray{border-color:var(--hl);color:var(--ink3)}
+.badge-gray.active{background:var(--s1);border-color:var(--hl2)}
+.badge-orange{border-color:rgba(249,115,22,0.25);color:#ea580c}
+.badge-orange.active{background:rgba(249,115,22,0.08);border-color:#ea580c}
+.entities-type-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--hl)}
+.type-btn{font:500 11px var(--f);padding:4px 12px;border-radius:6px;border:1px solid var(--hl);background:var(--canvas);color:var(--ink3);cursor:pointer;transition:all .2s;text-transform:capitalize}
+.type-btn:hover{border-color:var(--hl2);color:var(--ink)}
+.type-btn.active{background:var(--s1);border-color:var(--hl2);color:var(--ink);font-weight:600}
+.entities-table-wrap{overflow-x:auto;border:1px solid var(--hl);border-radius:10px;background:var(--canvas)}
+.entities-table{width:100%;border-collapse:collapse;font:400 13px var(--f)}
+.entities-table thead th{font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;background:var(--s1);border-bottom:1px solid var(--hl);text-align:left;white-space:nowrap;position:sticky;top:0}
+.entities-table tbody tr{border-bottom:1px solid var(--hl);transition:background .15s}
+.entities-table tbody tr:last-child{border-bottom:none}
+.entities-table tbody tr:hover{background:var(--s1)}
+.entities-table td{padding:10px 14px;vertical-align:top}
+.entity-row.st-licensed{border-left:3px solid var(--accent)}
+.entity-row.st-pending{border-left:3px solid #f59e0b}
+.entity-row.st-sanctioned{border-left:3px solid var(--danger)}
+.entity-row.st-revoked{border-left:3px solid #ef4444}
+.entity-row.st-withdrawn{border-left:3px solid #9ca3af}
+.entity-row.st-suspended{border-left:3px solid #ea580c}
+.entity-row.st-denied{border-left:3px solid #7c3aed}
+.entity-name-cell{font:500 13px var(--f);color:var(--ink);max-width:200px}
+.reg-num{display:block;font:400 11px var(--f);color:var(--ink3);margin-top:2px}
+.entity-type-tag{font:500 10px var(--f);padding:2px 8px;border-radius:5px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl);text-transform:capitalize;white-space:nowrap}
+.entity-status{display:inline-flex;align-items:center;font:600 11px var(--f);padding:3px 10px;border-radius:6px;white-space:nowrap}
+.entity-status.st-licensed{background:var(--accent-bg);color:var(--accent-h)}
+.entity-status.st-pending{background:rgba(245,158,11,0.08);color:#d97706}
+.entity-status.st-sanctioned{background:var(--danger-bg);color:var(--danger)}
+.entity-status.st-revoked{background:var(--danger-bg);color:var(--danger)}
+.entity-status.st-withdrawn{background:var(--s1);color:var(--ink3)}
+.entity-status.st-suspended{background:rgba(249,115,22,0.08);color:#ea580c}
+.entity-status.st-denied{background:rgba(124,58,237,0.08);color:#7c3aed}
+.status-detail{display:block;font:400 11px/1.4 var(--f);color:var(--ink3);margin-top:3px;max-width:180px}
+.date-cell{font:400 12px var(--f);color:var(--ink3);white-space:nowrap}
+.notes-cell{font:400 12px/1.5 var(--f);color:var(--ink2);max-width:220px}
+.entities-footer{padding:12px 16px;font:400 12px var(--f);color:var(--ink3);border-top:1px solid var(--hl);background:var(--s1);border-radius:0 0 10px 10px}
+
 /* RISK MATRIX SECTION */
 .matrix-section{padding:0 40px 64px}
 .matrix-inner{max-width:var(--max);margin:0 auto}
@@ -479,6 +530,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .matrix-grid{grid-template-columns:1fr}
   .req-table-wrap{overflow-x:auto}
   .req-table{min-width:600px}
+  .entities-summary{gap:6px}
+  .entity-badge{padding:5px 10px;font-size:11px}
+  .entities-table{min-width:700px}
+  .entity-name-cell{max-width:140px}
+  .notes-cell{max-width:150px}
 }
 @media(max-width:480px){
   .hero h1{letter-spacing:-1px}
@@ -556,12 +612,14 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <button class="tab-btn" data-tab="risk_rules" onclick="switchDetailTab('risk_rules',this)" data-i18n="cp.tab.rules">Risk Rules</button>
       <button class="tab-btn" data-tab="cases" onclick="switchDetailTab('cases',this)" data-i18n="cp.tab.cases">Enforcement Cases</button>
       <button class="tab-btn" data-tab="updates" onclick="switchDetailTab('updates',this)" data-i18n="cp.tab.updates">Updates</button>
+      <button class="tab-btn" data-tab="entities" onclick="switchDetailTab('entities',this)" data-i18n="cp.tab.entities">Regulated Entities</button>
     </div>
 
     <div class="tab-panel active" id="panel-regulations"></div>
     <div class="tab-panel" id="panel-risk_rules"></div>
     <div class="tab-panel" id="panel-cases"></div>
     <div class="tab-panel" id="panel-updates"></div>
+    <div class="tab-panel" id="panel-entities"></div>
   </div>
 </section>
 
@@ -931,7 +989,11 @@ var I18N = {
     'cp.loading.detail':'Loading compliance data...',
     'cp.back':'Back to all jurisdictions',
     'cp.tab.regs':'Regulations','cp.tab.rules':'Risk Rules',
-    'cp.tab.cases':'Enforcement Cases','cp.tab.updates':'Updates',
+    'cp.tab.cases':'Enforcement Cases','cp.tab.updates':'Updates','cp.tab.entities':'Regulated Entities',
+    'cp.entities.licensed':'Licensed','cp.entities.pending':'Pending','cp.entities.sanctioned':'Sanctioned','cp.entities.revoked':'Revoked','cp.entities.withdrawn':'Withdrawn','cp.entities.suspended':'Suspended','cp.entities.denied':'Denied',
+    'cp.entities.all':'All','cp.entities.exchange':'Exchange','cp.entities.payment':'Payment','cp.entities.custodian':'Custodian','cp.entities.broker':'Broker','cp.entities.bank':'Bank','cp.entities.other':'Other',
+    'cp.entities.nodata':'No regulated entity data for this jurisdiction.',
+    'cp.entities.name':'Entity Name','cp.entities.type':'Type','cp.entities.license':'License','cp.entities.regulator':'Regulator','cp.entities.status':'Status','cp.entities.date':'Date','cp.entities.notes':'Notes',
     'cp.regs.count':'regulations','cp.regs.authority':'Authority',
     'cp.regs.effective':'Effective','cp.regs.source':'Source',
     'cp.reqs.type':'Type','cp.reqs.desc':'Description','cp.reqs.threshold':'Threshold',
@@ -1048,7 +1110,11 @@ var I18N = {
     'cp.loading.detail':'正在加载合规数据...',
     'cp.back':'返回所有司法管辖区',
     'cp.tab.regs':'法规','cp.tab.rules':'风险规则',
-    'cp.tab.cases':'执法案例','cp.tab.updates':'法规动态',
+    'cp.tab.cases':'执法案例','cp.tab.updates':'法规动态','cp.tab.entities':'监管实体',
+    'cp.entities.licensed':'持牌','cp.entities.pending':'申请中','cp.entities.sanctioned':'被制裁','cp.entities.revoked':'已吊销','cp.entities.withdrawn':'已撤回','cp.entities.suspended':'已暂停','cp.entities.denied':'已拒绝',
+    'cp.entities.all':'全部','cp.entities.exchange':'交易所','cp.entities.payment':'支付','cp.entities.custodian':'托管','cp.entities.broker':'经纪商','cp.entities.bank':'银行','cp.entities.other':'其他',
+    'cp.entities.nodata':'该司法管辖区暂无监管实体数据。',
+    'cp.entities.name':'实体名称','cp.entities.type':'类型','cp.entities.license':'牌照','cp.entities.regulator':'监管机构','cp.entities.status':'状态','cp.entities.date':'日期','cp.entities.notes':'备注',
     'cp.regs.count':'项法规','cp.regs.authority':'监管机构',
     'cp.regs.effective':'生效日期','cp.regs.source':'来源',
     'cp.reqs.type':'类型','cp.reqs.desc':'描述','cp.reqs.threshold':'阈值',
@@ -1337,6 +1403,7 @@ function selectJurisdiction(code) {
   document.getElementById('panel-risk_rules').innerHTML = '';
   document.getElementById('panel-cases').innerHTML = '';
   document.getElementById('panel-updates').innerHTML = '';
+  document.getElementById('panel-entities').innerHTML = '';
 
   // Reset tabs
   var btns = document.querySelectorAll('#detailTabs .tab-btn');
@@ -1409,6 +1476,7 @@ function renderDetail() {
   renderRiskRulesTab();
   renderCasesTab();
   renderUpdatesTab();
+  loadAndRenderEntitiesTab();
 }
 
 // ===== REGULATIONS TAB =====
@@ -1609,6 +1677,118 @@ function renderUpdatesTab() {
   });
   html += '</div>';
   document.getElementById('panel-updates').innerHTML = html;
+}
+
+// ===== REGULATED ENTITIES TAB =====
+var entitiesData = [];
+var entitiesFilter = { status: 'all', type: 'all' };
+
+function loadAndRenderEntitiesTab() {
+  document.getElementById('panel-entities').innerHTML = '<div class="loading-block"><div class="spinner"></div></div>';
+  apiFetch({ action: 'regulated_entities', jurisdiction: currentJuris, limit: 200 }).then(function(data) {
+    if (data.success) {
+      entitiesData = data.items || [];
+      entitiesFilter = { status: 'all', type: 'all' };
+      renderEntitiesTab();
+    } else {
+      document.getElementById('panel-entities').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load regulated entities.</p></div>';
+    }
+  }).catch(function() {
+    document.getElementById('panel-entities').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load regulated entities.</p></div>';
+  });
+}
+
+function filterEntities(field, value) {
+  entitiesFilter[field] = value;
+  renderEntitiesTab();
+}
+
+function renderEntitiesTab() {
+  var items = entitiesData;
+  if (!items.length) {
+    document.getElementById('panel-entities').innerHTML = '<div class="empty-state"><div class="empty-icon">&#127970;</div><p>' + t('cp.entities.nodata') + '</p></div>';
+    return;
+  }
+
+  // Count by status
+  var statusCounts = { all: items.length, licensed: 0, pending: 0, sanctioned: 0, revoked: 0, withdrawn: 0, suspended: 0, denied: 0 };
+  items.forEach(function(e) { if (statusCounts[e.status] !== undefined) statusCounts[e.status]++; });
+
+  // Filter
+  var filtered = items;
+  if (entitiesFilter.status !== 'all') {
+    filtered = filtered.filter(function(e) { return e.status === entitiesFilter.status; });
+  }
+  if (entitiesFilter.type !== 'all') {
+    filtered = filtered.filter(function(e) { return e.entity_type === entitiesFilter.type; });
+  }
+
+  var html = '';
+
+  // Summary badges
+  html += '<div class="entities-summary">';
+  var statuses = ['all','licensed','pending','sanctioned','revoked','withdrawn','suspended','denied'];
+  statuses.forEach(function(s) {
+    if (statusCounts[s] > 0 || s === 'all') {
+      var cls = entitiesFilter.status === s ? 'entity-badge active' : 'entity-badge';
+      var colorCls = s === 'licensed' ? 'badge-green' : s === 'pending' ? 'badge-yellow' : s === 'sanctioned' ? 'badge-red' : s === 'revoked' ? 'badge-red' : s === 'withdrawn' ? 'badge-gray' : s === 'suspended' ? 'badge-orange' : s === 'denied' ? 'badge-red' : '';
+      html += '<button class="' + cls + ' ' + colorCls + '" onclick="filterEntities(\'status\',\'' + s + '\')">' + t('cp.entities.' + s) + ' (' + statusCounts[s] + ')</button>';
+    }
+  });
+  html += '</div>';
+
+  // Type filter
+  var types = {};
+  items.forEach(function(e) { types[e.entity_type] = (types[e.entity_type] || 0) + 1; });
+  html += '<div class="entities-type-filter">';
+  html += '<button class="' + (entitiesFilter.type === 'all' ? 'type-btn active' : 'type-btn') + '" onclick="filterEntities(\'type\',\'all\')">' + t('cp.entities.all') + '</button>';
+  Object.keys(types).sort().forEach(function(tp) {
+    var label = tp.charAt(0).toUpperCase() + tp.slice(1).replace(/_/g, ' ');
+    html += '<button class="' + (entitiesFilter.type === tp ? 'type-btn active' : 'type-btn') + '" onclick="filterEntities(\'type\',\'' + tp + '\')">' + escHtml(label) + ' (' + types[tp] + ')</button>';
+  });
+  html += '</div>';
+
+  // Table
+  html += '<div class="entities-table-wrap"><table class="entities-table">';
+  html += '<thead><tr>';
+  html += '<th>' + t('cp.entities.name') + '</th>';
+  html += '<th>' + t('cp.entities.type') + '</th>';
+  html += '<th>' + t('cp.entities.license') + '</th>';
+  html += '<th>' + t('cp.entities.regulator') + '</th>';
+  html += '<th>' + t('cp.entities.status') + '</th>';
+  html += '<th>' + t('cp.entities.date') + '</th>';
+  html += '<th>' + t('cp.entities.notes') + '</th>';
+  html += '</tr></thead><tbody>';
+
+  filtered.forEach(function(e) {
+    var name = getCn(e, 'entity_name');
+    var license = getCn(e, 'license_type');
+    var regulator = getCn(e, 'regulator');
+    var notes = getCn(e, 'notes') || '';
+    var statusDetail = getCn(e, 'status_detail') || '';
+    var statusCls = e.status === 'licensed' ? 'st-licensed' : e.status === 'pending' ? 'st-pending' : e.status === 'sanctioned' ? 'st-sanctioned' : e.status === 'revoked' ? 'st-revoked' : e.status === 'withdrawn' ? 'st-withdrawn' : e.status === 'suspended' ? 'st-suspended' : 'st-denied';
+    var statusLabel = t('cp.entities.' + e.status) || e.status;
+    var dateStr = e.status === 'sanctioned' || e.status === 'revoked' || e.status === 'suspended' || e.status === 'denied' ? (e.date_revoked ? formatDate(e.date_revoked) : '-') : (e.date_granted ? formatDate(e.date_granted) : '-');
+    var typeLabel = e.entity_type ? e.entity_type.charAt(0).toUpperCase() + e.entity_type.slice(1).replace(/_/g, ' ') : '-';
+
+    html += '<tr class="entity-row ' + statusCls + '">';
+    html += '<td class="entity-name-cell"><strong>' + escHtml(name) + '</strong>';
+    if (e.registration_number) html += '<br><span class="reg-num">#' + escHtml(e.registration_number) + '</span>';
+    html += '</td>';
+    html += '<td><span class="entity-type-tag">' + escHtml(typeLabel) + '</span></td>';
+    html += '<td>' + escHtml(license || '-') + '</td>';
+    html += '<td>' + escHtml(regulator || '-') + '</td>';
+    html += '<td><span class="entity-status ' + statusCls + '">' + escHtml(statusLabel) + '</span>';
+    if (statusDetail) html += '<br><small class="status-detail">' + escHtml(statusDetail) + '</small>';
+    html += '</td>';
+    html += '<td class="date-cell">' + dateStr + '</td>';
+    html += '<td class="notes-cell">' + escHtml(notes) + '</td>';
+    html += '</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  html += '<div class="entities-footer">' + filtered.length + ' / ' + items.length + ' entities</div>';
+  document.getElementById('panel-entities').innerHTML = html;
 }
 
 // ===== DETAIL TABS =====
