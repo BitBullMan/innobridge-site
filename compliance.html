@@ -2978,7 +2978,7 @@ function renderGlobalEnforcement() {
     var metaLine = '';
     if (c.action_type) metaLine += escHtml(c.action_type.replace(/_/g,' '));
     if (agencyName) metaLine += (metaLine ? ' — ' : '') + escHtml(agencyName);
-    if (c.jurisdiction_name) metaLine += (metaLine ? ' | ' : '') + escHtml(isCn ? (c.jurisdiction_name_cn || c.jurisdiction_name) : c.jurisdiction_name);
+    if (c.jurisdiction_name) metaLine += (metaLine ? ' | ' : '') + escHtml(currentLang === 'cn' ? (c.jurisdiction_name_cn || c.jurisdiction_name) : c.jurisdiction_name);
     if (metaLine) html += '<div class="case-entity">' + metaLine + '</div>';
     if (desc) html += '<div class="case-desc">' + escHtml(desc) + '</div>';
     if (penaltyDesc) html += '<div style="font:400 12px/1.5 var(--f);color:var(--ink3);margin-bottom:8px"><em>' + escHtml(penaltyDesc) + '</em></div>';
@@ -3066,7 +3066,7 @@ function renderGlobalRegUpdates() {
     html += '<div class="update-summary">' + escHtml(summary) + '</div>';
     html += '<div class="update-footer">';
     html += '<span>' + formatDate(u.published_date) + '</span>';
-    if (u.jurisdiction_name) html += '<span style="color:var(--ink3)">' + escHtml(isCn ? (u.jurisdiction_name_cn || u.jurisdiction_name) : u.jurisdiction_name) + '</span>';
+    if (u.jurisdiction_name) html += '<span style="color:var(--ink3)">' + escHtml(currentLang === 'cn' ? (u.jurisdiction_name_cn || u.jurisdiction_name) : u.jurisdiction_name) + '</span>';
     if (u.severity) {
       var sevClass = getSeverityClass(u.severity);
       html += '<span class="severity-badge ' + sevClass + '">' + escHtml(u.severity) + '</span>';
