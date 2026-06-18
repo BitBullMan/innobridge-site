@@ -491,8 +491,18 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;font:500 13px var(--f);padding:10px 20px;border-radius:8px;z-index:999;opacity:0;transition:all .3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* SIDEBAR NAV */
+.side-nav{position:fixed;left:0;top:56px;bottom:0;width:180px;z-index:100;padding:24px 0;overflow-y:auto;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,0.7);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-right:1px solid var(--hl);scrollbar-width:none}
+.side-nav::-webkit-scrollbar{display:none}
+.side-nav-item{display:flex;align-items:center;gap:8px;padding:9px 16px;font:500 12.5px var(--f);color:var(--ink3);cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.side-nav-item:hover{color:var(--ink);background:var(--hl)}
+.side-nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-bg);font-weight:600}
+.side-nav-item .side-icon{font-size:15px;line-height:1;flex-shrink:0;width:20px;text-align:center}
+.side-nav-label{overflow:hidden;text-overflow:ellipsis}
+
 /* RESPONSIVE */
 @media(max-width:960px){
+  .side-nav{display:none}
   .nav-links{display:none}
   .mobile-toggle{display:block}
   .juris-grid{grid-template-columns:1fr 1fr}
@@ -568,6 +578,31 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </nav>
 
+<!-- SIDEBAR NAV -->
+<aside class="side-nav" id="sideNav">
+  <a class="side-nav-item active" href="#jurisSection" data-section="jurisSection">
+    <span class="side-icon">&#127760;</span><span class="side-nav-label" data-i18n="side.juris">Jurisdictions</span>
+  </a>
+  <a class="side-nav-item" href="#matrixSection" data-section="matrixSection">
+    <span class="side-icon">&#9878;</span><span class="side-nav-label" data-i18n="side.matrix">Risk Matrix</span>
+  </a>
+  <a class="side-nav-item" href="#enforcementSection" data-section="enforcementSection">
+    <span class="side-icon">&#9879;</span><span class="side-nav-label" data-i18n="side.enforce">Enforcement</span>
+  </a>
+  <a class="side-nav-item" href="#regUpdatesSection" data-section="regUpdatesSection">
+    <span class="side-icon">&#128240;</span><span class="side-nav-label" data-i18n="side.updates">Reg Updates</span>
+  </a>
+  <a class="side-nav-item" href="#checkSection" data-section="checkSection">
+    <span class="side-icon">&#9989;</span><span class="side-nav-label" data-i18n="side.check">Self-Check</span>
+  </a>
+  <a class="side-nav-item" href="#screenSection" data-section="screenSection">
+    <span class="side-icon">&#128269;</span><span class="side-nav-label" data-i18n="side.screen">Screening</span>
+  </a>
+  <a class="side-nav-item" href="#policySection" data-section="policySection">
+    <span class="side-icon">&#128196;</span><span class="side-nav-label" data-i18n="side.policy">Templates</span>
+  </a>
+</aside>
+
 <!-- HERO -->
 <section class="hero">
   <div class="hero-inner">
@@ -589,7 +624,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <h2 data-i18n="cp.grid.title">Select a Jurisdiction</h2>
   <p data-i18n="cp.grid.sub">Click on any jurisdiction to view its complete compliance profile</p>
 </div>
-<section class="juris-section">
+<section class="juris-section" id="jurisSection">
   <div class="juris-grid" id="jurisGrid">
     <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading">Loading jurisdictions...</span></div>
   </div>
@@ -978,6 +1013,7 @@ var I18N = {
     'ft.platform':'Platform','ft.resources':'Resources','ft.legal':'Legal',
     'ft.evidence':'Evidence Directory','ft.services':'Services','ft.news':'News',
     'ft.explorer':'Data Explorer','ft.sales':'Contact Sales',
+    'side.juris':'Jurisdictions','side.matrix':'Risk Matrix','side.enforce':'Enforcement','side.updates':'Reg Updates','side.check':'Self-Check','side.screen':'Screening','side.policy':'Templates',
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
@@ -1099,6 +1135,7 @@ var I18N = {
     'ft.platform':'平台','ft.resources':'资源','ft.legal':'法律',
     'ft.evidence':'调证目录','ft.services':'服务','ft.news':'新闻',
     'ft.explorer':'数据探索','ft.sales':'联系销售',
+    'side.juris':'司法管辖区','side.matrix':'风险规则矩阵','side.enforce':'执法行动追踪','side.updates':'法规动态','side.check':'合规自检','side.screen':'制裁筛查','side.policy':'政策模板',
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
@@ -3273,6 +3310,60 @@ loadRiskRules();
 loadGlobalEnforcement();
 loadGlobalRegUpdates();
 initPolicies();
+
+// SIDEBAR NAV - Scroll tracking with IntersectionObserver
+(function() {
+  var sideNav = document.getElementById('sideNav');
+  if (!sideNav) return;
+
+  var sideItems = sideNav.querySelectorAll('.side-nav-item');
+  var sectionIds = [];
+  sideItems.forEach(function(item) {
+    sectionIds.push(item.getAttribute('data-section'));
+  });
+
+  // Click handler with smooth scroll
+  sideItems.forEach(function(item) {
+    item.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = this.getAttribute('data-section');
+      var target = document.getElementById(targetId);
+      if (target) {
+        var offset = 70;
+        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
+        window.scrollTo({ top: top, behavior: 'smooth' });
+      }
+    });
+  });
+
+  // IntersectionObserver for active state
+  var currentActive = null;
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        if (id && currentActive !== id) {
+          currentActive = id;
+          sideItems.forEach(function(item) {
+            if (item.getAttribute('data-section') === id) {
+              item.classList.add('active');
+            } else {
+              item.classList.remove('active');
+            }
+          });
+        }
+      }
+    });
+  }, {
+    rootMargin: '-80px 0px -60% 0px',
+    threshold: 0
+  });
+
+  sectionIds.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+})();
 </script>
 
 <!-- SUPABASE AUTH -->
