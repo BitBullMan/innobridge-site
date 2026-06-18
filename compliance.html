@@ -522,6 +522,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="hero-stat"><div class="num" id="statJuris">--</div><div class="label" data-i18n="cp.stat.juris">Jurisdictions</div></div>
       <div class="hero-stat"><div class="num" id="statRegs">--</div><div class="label" data-i18n="cp.stat.regs">Regulations</div></div>
       <div class="hero-stat"><div class="num" id="statRules">--</div><div class="label" data-i18n="cp.stat.rules">Risk Rules</div></div>
+      <div class="hero-stat"><div class="num" id="statEnforce">--</div><div class="label" data-i18n="cp.stat.enforce">Enforcement Cases</div></div>
       <div class="hero-stat"><div class="num">8</div><div class="label" data-i18n="cp.stat.templates">Policy Templates</div></div>
     </div>
   </div>
@@ -573,6 +574,38 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
     <div id="matrixContent">
       <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.rules">Loading risk rules...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL ENFORCEMENT ACTIONS -->
+<section class="matrix-section" id="enforcementSection">
+  <div class="matrix-inner">
+    <div class="matrix-header">
+      <h2 data-i18n="cp.enforce.title">Enforcement Actions Tracker</h2>
+      <p data-i18n="cp.enforce.sub">Major regulatory enforcement actions against crypto entities worldwide</p>
+    </div>
+    <div class="enforce-filters" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="policy-filter active" onclick="filterEnforcement('all',this)" data-i18n="cp.enforce.all">All Jurisdictions</button>
+    </div>
+    <div id="enforcementContent">
+      <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.enforce">Loading enforcement actions...</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL REGULATION UPDATES -->
+<section class="matrix-section" id="regUpdatesSection">
+  <div class="matrix-inner">
+    <div class="matrix-header">
+      <h2 data-i18n="cp.regupdates.title">Latest Regulatory Updates</h2>
+      <p data-i18n="cp.regupdates.sub">Recent regulatory developments and policy changes across all jurisdictions</p>
+    </div>
+    <div class="enforce-filters" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="policy-filter active" onclick="filterRegUpdates('all',this)" data-i18n="cp.regupdates.all">All Jurisdictions</button>
+    </div>
+    <div id="regUpdatesContent">
+      <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.updates">Loading regulation updates...</span></div>
     </div>
   </div>
 </section>
@@ -890,7 +923,7 @@ var I18N = {
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
-    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.templates':'Policy Templates',
+    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement Cases','cp.stat.templates':'Policy Templates',
     'cp.grid.title':'Select a Jurisdiction',
     'cp.grid.sub':'Click on any jurisdiction to view its complete compliance profile',
     'cp.loading':'Loading jurisdictions...',
@@ -908,6 +941,14 @@ var I18N = {
     'cp.updates.nodata':'No regulation updates recorded yet. Monitoring is active.',
     'cp.matrix.title':'Global Risk Rule Matrix',
     'cp.matrix.sub':'21 risk detection rules across all jurisdictions, grouped by severity level',
+    'cp.enforce.title':'Enforcement Actions Tracker',
+    'cp.enforce.sub':'Major regulatory enforcement actions against crypto entities worldwide',
+    'cp.enforce.all':'All Jurisdictions',
+    'cp.loading.enforce':'Loading enforcement actions...',
+    'cp.regupdates.title':'Latest Regulatory Updates',
+    'cp.regupdates.sub':'Recent regulatory developments and policy changes across all jurisdictions',
+    'cp.regupdates.all':'All Jurisdictions',
+    'cp.loading.updates':'Loading regulation updates...',
     'cp.card.regs':'regulations','cp.card.view':'View details',
     'cp.card.fatf':'FATF Member',
     'cp.overview.region':'Region','cp.overview.risk':'Risk Level',
@@ -999,7 +1040,7 @@ var I18N = {
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
-    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.templates':'政策模板',
+    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'执法案例','cp.stat.templates':'政策模板',
     'cp.grid.title':'选择司法管辖区',
     'cp.grid.sub':'点击任意司法管辖区查看完整合规概况',
     'cp.loading':'正在加载司法管辖区...',
@@ -1017,6 +1058,14 @@ var I18N = {
     'cp.updates.nodata':'暂无法规更新记录。监控已开启。',
     'cp.matrix.title':'全球风险规则矩阵',
     'cp.matrix.sub':'21项风险检测规则，按严重等级分组',
+    'cp.enforce.title':'执法行动追踪',
+    'cp.enforce.sub':'全球加密货币实体重大监管执法行动',
+    'cp.enforce.all':'所有司法管辖区',
+    'cp.loading.enforce':'正在加载执法行动...',
+    'cp.regupdates.title':'最新法规动态',
+    'cp.regupdates.sub':'各司法管辖区最新监管发展和政策变化',
+    'cp.regupdates.all':'所有司法管辖区',
+    'cp.loading.updates':'正在加载法规动态...',
     'cp.card.regs':'项法规','cp.card.view':'查看详情',
     'cp.card.fatf':'FATF 成员',
     'cp.overview.region':'地区','cp.overview.risk':'风险等级',
@@ -1483,20 +1532,34 @@ function renderCasesTab() {
     return;
   }
   // Sort by date descending
-  cases.sort(function(a, b) { return new Date(b.case_date) - new Date(a.case_date); });
+  cases.sort(function(a, b) { return new Date(b.action_date) - new Date(a.action_date); });
   var html = '<div class="cases-timeline">';
   cases.forEach(function(c) {
-    var title = getCn(c, 'title');
-    var desc = getCn(c, 'description');
+    var entityName = getCn(c, 'entity_name');
+    var desc = getCn(c, 'summary');
+    var penaltyDesc = getCn(c, 'penalty_description');
+    var agencyName = getCn(c, 'enforcing_agency');
+    var sevClass = getSeverityClass(c.severity);
     html += '<div class="case-card">';
     html += '<div class="case-header">';
-    html += '<span class="case-title">' + escHtml(title) + '</span>';
-    if (c.penalty_usd) html += '<span class="case-penalty">' + formatUsd(c.penalty_usd) + '</span>';
+    html += '<div><span class="case-title">' + escHtml(entityName) + '</span>';
+    if (c.entity_type) html += ' <span class="meta-tag" style="font-size:10px;vertical-align:middle">' + escHtml(c.entity_type.replace(/_/g,' ')) + '</span>';
     html += '</div>';
-    if (c.entity_name) html += '<div class="case-entity">' + escHtml(c.entity_name) + (c.penalty_type ? ' — ' + escHtml(c.penalty_type) : '') + '</div>';
-    html += '<div class="case-desc">' + escHtml(desc) + '</div>';
+    if (c.penalty_amount_usd) html += '<span class="case-penalty">' + formatUsd(c.penalty_amount_usd) + '</span>';
+    html += '</div>';
+    var metaLine = '';
+    if (c.action_type) metaLine += escHtml(c.action_type.replace(/_/g,' '));
+    if (agencyName) metaLine += (metaLine ? ' — ' : '') + escHtml(agencyName);
+    if (metaLine) html += '<div class="case-entity">' + metaLine + '</div>';
+    if (desc) html += '<div class="case-desc">' + escHtml(desc) + '</div>';
+    if (penaltyDesc) html += '<div style="font:400 12px/1.5 var(--f);color:var(--ink3);margin-bottom:8px"><em>' + escHtml(penaltyDesc) + '</em></div>';
     html += '<div class="case-footer">';
-    html += '<span class="case-date">' + formatDate(c.case_date) + '</span>';
+    html += '<span class="case-date">' + formatDate(c.action_date) + '</span>';
+    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+    if (c.severity) html += '<span class="severity-badge ' + sevClass + '">' + escHtml(c.severity) + '</span>';
+    if (c.status && c.status !== 'resolved') html += '<span class="meta-tag">' + escHtml(c.status) + '</span>';
+    if (c.violation_type) html += '<span class="case-tag">' + escHtml(c.violation_type.replace(/_/g,' ')) + '</span>';
+    html += '</div>';
     var tags = c.tags;
     if (tags) {
       html += '<div class="case-tags">';
@@ -2849,10 +2912,186 @@ function initPolicies() {
   renderPolicyGrid();
 }
 
+// ===== GLOBAL ENFORCEMENT ACTIONS =====
+var globalEnforcementData = [];
+var enforcementFilter = 'all';
+
+function loadGlobalEnforcement() {
+  apiFetch({ action: 'enforcement_cases', limit: 50 }).then(function(data) {
+    if (data.success && data.items) {
+      globalEnforcementData = data.items;
+      document.getElementById('statEnforce').textContent = data.total || data.items.length;
+      buildEnforcementFilters();
+      renderGlobalEnforcement();
+    }
+  }).catch(function(err) {
+    console.error('Failed to load enforcement actions:', err);
+    document.getElementById('enforcementContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load enforcement actions.</p></div>';
+  });
+}
+
+function buildEnforcementFilters() {
+  var codes = [];
+  globalEnforcementData.forEach(function(c) {
+    if (c.jurisdiction_code && codes.indexOf(c.jurisdiction_code) === -1) codes.push(c.jurisdiction_code);
+  });
+  var container = document.querySelector('#enforcementSection .enforce-filters');
+  var html = '<button class="policy-filter active" onclick="filterEnforcement(\'all\',this)">' + t('cp.enforce.all') + '</button>';
+  codes.forEach(function(code) {
+    html += '<button class="policy-filter" onclick="filterEnforcement(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function filterEnforcement(code, btn) {
+  enforcementFilter = code;
+  btn.parentElement.querySelectorAll('.policy-filter').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGlobalEnforcement();
+}
+
+function renderGlobalEnforcement() {
+  var items = globalEnforcementData;
+  if (enforcementFilter !== 'all') {
+    items = items.filter(function(c) { return c.jurisdiction_code === enforcementFilter; });
+  }
+  if (!items.length) {
+    document.getElementById('enforcementContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9878;</div><p>No enforcement actions found.</p></div>';
+    return;
+  }
+  var html = '<div class="cases-timeline">';
+  items.forEach(function(c) {
+    var entityName = getCn(c, 'entity_name');
+    var desc = getCn(c, 'summary');
+    var penaltyDesc = getCn(c, 'penalty_description');
+    var agencyName = getCn(c, 'enforcing_agency');
+    var sevClass = getSeverityClass(c.severity);
+    html += '<div class="case-card">';
+    html += '<div class="case-header">';
+    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+    html += '<span style="font-size:20px">' + getFlag(c.jurisdiction_code) + '</span>';
+    html += '<span class="case-title">' + escHtml(entityName) + '</span>';
+    if (c.entity_type) html += '<span class="meta-tag" style="font-size:10px">' + escHtml(c.entity_type.replace(/_/g,' ')) + '</span>';
+    html += '</div>';
+    if (c.penalty_amount_usd) html += '<span class="case-penalty">' + formatUsd(c.penalty_amount_usd) + '</span>';
+    html += '</div>';
+    var metaLine = '';
+    if (c.action_type) metaLine += escHtml(c.action_type.replace(/_/g,' '));
+    if (agencyName) metaLine += (metaLine ? ' — ' : '') + escHtml(agencyName);
+    if (c.jurisdiction_name) metaLine += (metaLine ? ' | ' : '') + escHtml(isCn ? (c.jurisdiction_name_cn || c.jurisdiction_name) : c.jurisdiction_name);
+    if (metaLine) html += '<div class="case-entity">' + metaLine + '</div>';
+    if (desc) html += '<div class="case-desc">' + escHtml(desc) + '</div>';
+    if (penaltyDesc) html += '<div style="font:400 12px/1.5 var(--f);color:var(--ink3);margin-bottom:8px"><em>' + escHtml(penaltyDesc) + '</em></div>';
+    html += '<div class="case-footer">';
+    html += '<span class="case-date">' + formatDate(c.action_date) + '</span>';
+    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
+    if (c.severity) html += '<span class="severity-badge ' + sevClass + '">' + escHtml(c.severity) + '</span>';
+    if (c.status && c.status !== 'resolved') html += '<span class="meta-tag">' + escHtml(c.status) + '</span>';
+    if (c.violation_type) html += '<span class="case-tag">' + escHtml(c.violation_type.replace(/_/g,' ')) + '</span>';
+    html += '</div>';
+    html += '</div>';
+    var tags = c.tags;
+    if (tags) {
+      html += '<div class="case-tags" style="margin-top:8px">';
+      var tagArr = typeof tags === 'string' ? tags.split(',') : (Array.isArray(tags) ? tags : []);
+      tagArr.forEach(function(tag) { tag = tag.trim(); if (tag) html += '<span class="case-tag">' + escHtml(tag) + '</span>'; });
+      html += '</div>';
+    }
+    if (c.source_url) html += '<a href="' + escHtml(c.source_url) + '" target="_blank" rel="noopener" class="reg-link" style="margin-top:8px;display:inline-flex">' + (c.source_name ? escHtml(c.source_name) : 'Source') + ' &#8599;</a>';
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('enforcementContent').innerHTML = html;
+}
+
+// ===== GLOBAL REGULATION UPDATES =====
+var globalRegUpdates = [];
+var regUpdatesFilter = 'all';
+
+function loadGlobalRegUpdates() {
+  apiFetch({ action: 'regulation_updates', limit: 50 }).then(function(data) {
+    if (data.success && data.items) {
+      globalRegUpdates = data.items;
+      buildRegUpdatesFilters();
+      renderGlobalRegUpdates();
+    }
+  }).catch(function(err) {
+    console.error('Failed to load regulation updates:', err);
+    document.getElementById('regUpdatesContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;</div><p>Failed to load regulation updates.</p></div>';
+  });
+}
+
+function buildRegUpdatesFilters() {
+  var codes = [];
+  globalRegUpdates.forEach(function(u) {
+    if (u.jurisdiction_code && codes.indexOf(u.jurisdiction_code) === -1) codes.push(u.jurisdiction_code);
+  });
+  var container = document.querySelector('#regUpdatesSection .enforce-filters');
+  var html = '<button class="policy-filter active" onclick="filterRegUpdates(\'all\',this)">' + t('cp.regupdates.all') + '</button>';
+  codes.forEach(function(code) {
+    html += '<button class="policy-filter" onclick="filterRegUpdates(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
+  });
+  container.innerHTML = html;
+}
+
+function filterRegUpdates(code, btn) {
+  regUpdatesFilter = code;
+  btn.parentElement.querySelectorAll('.policy-filter').forEach(function(b) { b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderGlobalRegUpdates();
+}
+
+function renderGlobalRegUpdates() {
+  var items = globalRegUpdates;
+  if (regUpdatesFilter !== 'all') {
+    items = items.filter(function(u) { return u.jurisdiction_code === regUpdatesFilter; });
+  }
+  if (!items.length) {
+    document.getElementById('regUpdatesContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128225;</div><p>No regulation updates found.</p></div>';
+    return;
+  }
+  var html = '<div class="updates-list">';
+  items.forEach(function(u) {
+    var title = getCn(u, 'title');
+    var summary = getCn(u, 'summary');
+    var typeClass = (u.update_type || '').toLowerCase().replace(/\s+/g, '_');
+    html += '<div class="update-card">';
+    html += '<div class="update-header">';
+    html += '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">';
+    html += '<span style="font-size:18px;flex-shrink:0">' + getFlag(u.jurisdiction_code) + '</span>';
+    html += '<span class="update-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(title) + '</span>';
+    html += '</div>';
+    html += '<span class="update-type ' + typeClass + '">' + escHtml(u.update_type || '') + '</span>';
+    html += '</div>';
+    html += '<div class="update-summary">' + escHtml(summary) + '</div>';
+    html += '<div class="update-footer">';
+    html += '<span>' + formatDate(u.published_date) + '</span>';
+    if (u.jurisdiction_name) html += '<span style="color:var(--ink3)">' + escHtml(isCn ? (u.jurisdiction_name_cn || u.jurisdiction_name) : u.jurisdiction_name) + '</span>';
+    if (u.severity) {
+      var sevClass = getSeverityClass(u.severity);
+      html += '<span class="severity-badge ' + sevClass + '">' + escHtml(u.severity) + '</span>';
+    }
+    if (u.source_url) html += '<a href="' + escHtml(u.source_url) + '" target="_blank" rel="noopener" class="reg-link">' + (u.source_name ? escHtml(u.source_name) : 'Source') + ' &#8599;</a>';
+    html += '</div>';
+    var tags = u.tags;
+    if (tags) {
+      html += '<div class="case-tags" style="margin-top:8px">';
+      var tagArr = typeof tags === 'string' ? tags.split(',') : (Array.isArray(tags) ? tags : []);
+      tagArr.forEach(function(tag) { tag = tag.trim(); if (tag) html += '<span class="case-tag">' + escHtml(tag) + '</span>'; });
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+  html += '</div>';
+  document.getElementById('regUpdatesContent').innerHTML = html;
+}
+
 // ===== INIT =====
 applyLang();
 loadJurisdictions();
 loadRiskRules();
+loadGlobalEnforcement();
+loadGlobalRegUpdates();
 initPolicies();
 </script>
 
