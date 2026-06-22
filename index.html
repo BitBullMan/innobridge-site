@@ -250,46 +250,50 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 #market-pulse{padding:0 40px 0;background:var(--canvas)}
 .pulse-inner{max-width:var(--max);margin:0 auto;padding-top:48px}
 .pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.pulse-layout{display:flex;gap:20px;align-items:stretch}
+.pulse-layout{display:flex;gap:20px;align-items:stretch;max-height:480px}
 .pulse-left{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--s1);overflow:hidden;display:flex;flex-direction:column}
 .pulse-right{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--canvas);overflow:hidden;display:flex;flex-direction:column}
 /* Gauge */
-.pulse-gauge-wrap{padding:24px 24px 8px;text-align:center}
-.pulse-gauge-svg{width:220px;height:130px}
-.pulse-gauge-val{font:700 28px var(--m);color:var(--ink);margin-top:4px}
-.pulse-gauge-label{font:400 12px var(--f);color:var(--ink3);margin-top:2px}
+.pulse-gauge-wrap{padding:18px 24px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.pulse-gauge-svg{width:180px;height:108px}
+.pulse-gauge-val{font:700 24px var(--m);color:var(--ink);margin-top:2px}
+.pulse-gauge-label{font:400 11px var(--f);color:var(--ink3);margin-top:1px}
+/* Formula */
+.pulse-formula{padding:4px 20px 8px;text-align:center}
+.pulse-formula-text{font:400 10px/1.5 var(--m);color:var(--ink3);background:var(--canvas);border:1px solid var(--hl);border-radius:6px;padding:5px 10px;display:inline-block}
+.pulse-formula-text span{color:var(--ink2);font-weight:500}
 /* Compact category list */
-.pulse-cat-list{flex:1;padding:0}
-.pulse-cat-row{display:flex;align-items:center;gap:10px;padding:11px 20px;border-top:1px solid var(--hl);cursor:pointer;transition:background .15s}
+.pulse-cat-list{flex:1;padding:0;overflow-y:auto}
+.pulse-cat-row{display:flex;align-items:center;gap:10px;padding:10px 20px;border-top:1px solid var(--hl);cursor:pointer;transition:background .15s}
 .pulse-cat-row:hover{background:rgba(0,0,0,0.02)}
-.pulse-cat-row-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
-.pulse-cat-row-name{font:600 12px var(--f);color:var(--ink);width:100px;flex-shrink:0}
-.pulse-cat-row-pct{font:700 15px var(--m);width:48px;flex-shrink:0;text-align:right}
+.pulse-cat-row-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.pulse-cat-row-name{font:600 11px var(--f);color:var(--ink);width:90px;flex-shrink:0}
+.pulse-cat-row-pct{font:700 13px var(--m);width:42px;flex-shrink:0;text-align:right}
 .pulse-cat-row-pct.high{color:var(--accent)}
 .pulse-cat-row-pct.mid{color:var(--warn)}
 .pulse-cat-row-pct.low{color:var(--danger)}
-.pulse-cat-row-title{flex:1;font:400 12px/1.4 var(--f);color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pulse-cat-row-title{flex:1;font:400 11px/1.4 var(--f);color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .pulse-cat-row-arrow{color:var(--ink3);opacity:.4;font-size:10px;flex-shrink:0}
-.pulse-powered{padding:10px 20px;border-top:1px solid var(--hl);text-align:right}
-.pulse-badge{font:400 11px var(--f);color:var(--ink3);display:inline-flex;align-items:center;gap:6px}
+.pulse-powered{padding:8px 20px;border-top:1px solid var(--hl);text-align:right}
+.pulse-badge{font:400 10px var(--f);color:var(--ink3);display:inline-flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
 /* Whale in pulse right */
-.pulse-whale-header{padding:14px 20px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
+.pulse-whale-header{padding:12px 20px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
 .pulse-whale-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite}
-.pulse-whale-title{font:600 14px var(--f);color:var(--ink)}
+.pulse-whale-title{font:600 13px var(--f);color:var(--ink)}
 .pulse-whale-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--s3) transparent}
 .pulse-whale-list::-webkit-scrollbar{width:4px}
 .pulse-whale-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
 /* Whale item styles */
-.whale-item{padding:12px 20px;border-bottom:1px solid var(--hl);transition:background .15s;cursor:pointer}
+.whale-item{padding:10px 20px;border-bottom:1px solid var(--hl);transition:background .15s;cursor:pointer}
 .whale-item:last-child{border-bottom:none}
 .whale-item:hover{background:var(--s1)}
-.whale-type{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:3px}
+.whale-type{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:3px}
 .whale-type.hl{background:rgba(139,92,246,0.08);color:var(--purple)}
 .whale-type.tx{background:var(--blue-bg);color:var(--blue)}
-.whale-desc{font:400 12px/1.5 var(--f);color:var(--ink2);margin-bottom:4px}
+.whale-desc{font:400 12px/1.4 var(--f);color:var(--ink2);margin-bottom:2px}
 .whale-desc strong{font-weight:500;color:var(--ink)}
-.whale-time{font:400 11px var(--f);color:var(--ink3)}
+.whale-time{font:400 10px var(--f);color:var(--ink3)}
 .whale-empty{padding:40px 16px;text-align:center;color:var(--ink3);font:400 12px var(--f)}
 /* Keep existing modal styles */
 .pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f)}
@@ -309,7 +313,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
 .pulse-modal-meta a{color:var(--accent);text-decoration:none}
 .pulse-modal-meta a:hover{text-decoration:underline}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-layout{flex-direction:column}.pulse-gauge-svg{width:180px;height:110px}.pulse-cat-row-title{display:none}.pulse-modal{margin:16px;padding:24px}}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-layout{flex-direction:column;max-height:none}.pulse-gauge-svg{width:160px;height:96px}.pulse-cat-row-title{display:none}.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -442,7 +446,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="pulse-left">
         <div class="pulse-gauge-wrap">
           <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge">
-            <!-- Background arc -->
             <defs>
               <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" style="stop-color:#ef4444"/>
@@ -452,16 +455,17 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
             </defs>
             <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
             <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
-            <!-- Needle -->
             <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
             <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
-            <!-- Labels -->
-            <text x="15" y="128" font-size="10" fill="#9ca3af" font-family="var(--f)">0</text>
-            <text x="105" y="18" font-size="10" fill="#9ca3af" font-family="var(--f)" text-anchor="middle">50</text>
-            <text x="200" y="128" font-size="10" fill="#9ca3af" font-family="var(--f)" text-anchor="end">100</text>
+            <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
+            <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
+            <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
           </svg>
           <div class="pulse-gauge-val" id="gauge-val">--</div>
           <div class="pulse-gauge-label" data-i18n="pulse.sentiment">Market Sentiment Index</div>
+        </div>
+        <div class="pulse-formula" id="pulse-formula">
+          <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula">Loading formula...</div>
         </div>
         <div class="pulse-cat-list" id="pulse-cat-list">
           <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
@@ -1035,12 +1039,25 @@ function decodeHtml(s){
 loadNews();
 
 // ===== WHALE ALERTS SIDEBAR =====
+var _whaleLongShortRatio = 50; // default 50:50
 function loadWhaleAlerts(){
   fetch(API_BASE + '?action=whale_alerts&limit=30')
   .then(function(r){ return r.json(); })
   .then(function(resp){
     var items = (resp && resp.success && resp.items) ? resp.items : [];
     var container = document.getElementById('whale-list');
+    // Calculate long/short ratio from whale data
+    var longCount = 0, shortCount = 0;
+    for(var j = 0; j < items.length; j++){
+      if(items[j].type === 'hyperliquid'){
+        if(items[j].direction === 'long') longCount++;
+        else if(items[j].direction === 'short') shortCount++;
+      }
+    }
+    var total = longCount + shortCount;
+    _whaleLongShortRatio = total > 0 ? Math.round((longCount / total) * 100) : 50;
+    // Re-render gauge if pulse data loaded
+    if(typeof _pulseData !== 'undefined' && _pulseData && _pulseData.length) _renderPulseCards(_pulseData);
     if(!container) return;
     if(items.length === 0){
       var dict = I18N[currentLang] || I18N.en;
@@ -1267,7 +1284,7 @@ var I18N = {
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.compliance':'Compliance Intelligence','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
-    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview','pulse.sentiment':'Market Sentiment Index','pulse.bullish':'Bullish','pulse.bearish':'Bearish'
+    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview','pulse.sentiment':'Market Sentiment Index','pulse.bullish':'Bullish','pulse.bearish':'Bearish','pulse.formula':'Loading formula...'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.compliance':'合规检测','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1303,7 +1320,7 @@ var I18N = {
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.compliance':'合规情报','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
-    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览','pulse.sentiment':'市场情绪指数','pulse.bullish':'看涨','pulse.bearish':'看跌'
+    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览','pulse.sentiment':'市场情绪指数','pulse.bullish':'看涨','pulse.bearish':'看跌','pulse.formula':'加载公式...'
   }
 };
 
@@ -1477,7 +1494,7 @@ function _renderPulseCards(data) {
     if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
     return '$' + Math.round(v);
   }
-  // Calculate aggregate sentiment
+  // Calculate aggregate sentiment from Polymarket events
   var totalPct = 0, count = 0;
   for (var i = 0; i < data.length; i++) {
     if (data[i].events && data[i].events.length && data[i].events[0].pct !== undefined) {
@@ -1485,9 +1502,12 @@ function _renderPulseCards(data) {
       count++;
     }
   }
-  var avgPct = count > 0 ? Math.round(totalPct / count) : 50;
-  // Update gauge
-  _updateGauge(avgPct);
+  var sentimentPct = count > 0 ? Math.round(totalPct / count) : 50;
+  // Composite index: 60% market sentiment + 40% whale long/short ratio
+  var longShort = typeof _whaleLongShortRatio !== 'undefined' ? _whaleLongShortRatio : 50;
+  var composite = Math.round(sentimentPct * 0.6 + longShort * 0.4);
+  // Update gauge with composite + formula breakdown
+  _updateGauge(composite, sentimentPct, longShort);
   // Render category rows
   var html = '';
   for (var i = 0; i < data.length; i++) {
@@ -1517,24 +1537,29 @@ function _renderPulseCards(data) {
   el.innerHTML = html;
 }
 
-function _updateGauge(pct) {
-  // pct: 0-100
+function _updateGauge(pct, sentimentPct, longShortPct) {
   var arc = document.getElementById('gauge-arc');
   var needle = document.getElementById('gauge-needle');
   var valEl = document.getElementById('gauge-val');
+  var formulaEl = document.getElementById('gauge-formula-text');
   if (!arc || !needle || !valEl) return;
-  // Arc: total length ~283, show portion based on pct
   var offset = 283 - (283 * pct / 100);
   arc.setAttribute('stroke-dashoffset', offset);
-  // Needle rotation: -90 (left, 0%) to +90 (right, 100%)
   var angle = -90 + (pct / 100) * 180;
   needle.setAttribute('transform', 'rotate(' + angle + ',110,115)');
-  // Value text
   function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
   if (pct >= 50) {
-    valEl.innerHTML = pct + '% <span style="font-size:16px;font-weight:500;color:var(--accent)">' + dict('pulse.bullish') + '</span>';
+    valEl.innerHTML = pct + '% <span style="font-size:14px;font-weight:500;color:var(--accent)">' + dict('pulse.bullish') + '</span>';
   } else {
-    valEl.innerHTML = pct + '% <span style="font-size:16px;font-weight:500;color:var(--danger)">' + dict('pulse.bearish') + '</span>';
+    valEl.innerHTML = pct + '% <span style="font-size:14px;font-weight:500;color:var(--danger)">' + dict('pulse.bearish') + '</span>';
+  }
+  // Update formula display
+  if (formulaEl && sentimentPct !== undefined && longShortPct !== undefined) {
+    if (currentLang === 'cn') {
+      formulaEl.innerHTML = '<span>' + pct + '</span> = <span>' + sentimentPct + '</span>(情绪) &times; 0.6 + <span>' + longShortPct + '</span>(多空比) &times; 0.4';
+    } else {
+      formulaEl.innerHTML = '<span>' + pct + '</span> = <span>' + sentimentPct + '</span>(Sentiment) &times; 0.6 + <span>' + longShortPct + '</span>(L/S Ratio) &times; 0.4';
+    }
   }
 }
 
