@@ -111,34 +111,47 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .section-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
 .section-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
 
-/* JURISDICTION GRID */
-.juris-section{padding:0 40px 64px}
-.juris-grid{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
-.juris-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:14px;padding:24px;cursor:pointer;transition:all .25s ease;position:relative;overflow:hidden}
-.juris-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
-.juris-card.selected{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,0.12)}
-.juris-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.juris-name{display:flex;align-items:center;gap:10px}
-.juris-flag{font-size:28px;line-height:1}
-.juris-title{font:600 16px var(--f);color:var(--ink)}
-.juris-code{font:500 11px var(--m);color:var(--ink3);margin-top:1px}
+/* JURISDICTION DROPDOWN */
+.juris-section{padding:0 40px 48px}
+.juris-selector-wrap{max-width:var(--max);margin:0 auto}
+.juris-selector-header{margin-bottom:16px}
+.juris-selector-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
+.juris-selector-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.juris-dropdown-row{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.juris-dropdown-wrap{flex:1;min-width:280px;max-width:480px}
+.juris-dropdown{width:100%;padding:12px 16px;font:500 14px var(--f);color:var(--ink);background:var(--canvas);border:1.5px solid var(--hl);border-radius:10px;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' viewBox='0 0 12 12'%3E%3Cpath d='M3 4.5L6 7.5L9 4.5' stroke='%2394a3b8' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;transition:border-color .2s,box-shadow .2s}
+.juris-dropdown:hover{border-color:var(--accent)}
+.juris-dropdown:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,0.12)}
+.juris-quick-stats{display:flex;gap:12px;flex-wrap:wrap}
+.jqs-item{display:flex;align-items:center;gap:6px;padding:8px 14px;background:var(--s1);border:1px solid var(--hl);border-radius:8px}
+.jqs-item .jqs-label{font:400 11px var(--f);color:var(--ink3)}
+.jqs-item .jqs-val{font:600 13px var(--f);color:var(--ink)}
 .risk-badge{display:inline-flex;align-items:center;gap:5px;font:600 11px var(--f);padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px}
 .risk-badge.low{background:var(--accent-bg);color:var(--accent-h)}
 .risk-badge.medium{background:rgba(245,158,11,0.08);color:#d97706}
 .risk-badge.high{background:var(--danger-bg);color:var(--danger)}
-.juris-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .meta-tag{font:500 11px var(--f);padding:3px 10px;border-radius:6px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl)}
 .meta-tag.fatf{background:var(--blue-bg);color:var(--blue);border-color:transparent}
 .meta-tag.regulated{background:var(--accent-bg);color:var(--accent-h);border-color:transparent}
 .meta-tag.permissive{background:rgba(245,158,11,0.08);color:#d97706;border-color:transparent}
 .meta-tag.restrictive{background:rgba(239,68,68,0.06);color:var(--danger);border-color:transparent}
 .meta-tag.banned{background:var(--danger-bg);color:var(--danger);border-color:transparent}
-.juris-summary{font:400 13px/1.6 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.juris-footer{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--hl)}
-.juris-reg-count{font:500 12px var(--f);color:var(--ink3)}
-.juris-reg-count strong{color:var(--ink);font-weight:600}
-.juris-arrow{font:500 12px var(--f);color:var(--accent);display:flex;align-items:center;gap:4px;transition:gap .2s}
-.juris-card:hover .juris-arrow{gap:8px}
+
+/* INTEL FEED DUAL PANEL */
+.intel-section{padding:0 40px 48px}
+.intel-inner{max-width:var(--max);margin:0 auto}
+.intel-dual{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.intel-panel{background:var(--canvas);border:1.5px solid var(--hl);border-radius:14px;padding:0;display:flex;flex-direction:column;overflow:hidden}
+.intel-panel-header{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.intel-panel-header h3{font:600 16px var(--f);color:var(--ink);letter-spacing:-.3px}
+.intel-filters{padding:12px 20px;display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--hl)}
+.intel-filter{font:500 11px var(--f);padding:4px 10px;border-radius:6px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl);cursor:pointer;transition:all .15s;white-space:nowrap}
+.intel-filter:hover{border-color:var(--accent);color:var(--ink)}
+.intel-filter.active{background:var(--accent-bg);color:var(--accent-h);border-color:var(--accent)}
+.intel-scroll{padding:16px 20px;max-height:600px;overflow-y:auto;flex:1}
+.intel-scroll::-webkit-scrollbar{width:4px}
+.intel-scroll::-webkit-scrollbar-thumb{background:var(--hl);border-radius:4px}
+.intel-scroll::-webkit-scrollbar-thumb:hover{background:var(--ink3)}
 
 /* DETAIL PANEL */
 .detail-section{padding:0 40px 64px;display:none}
@@ -548,21 +561,22 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .side-nav{display:none}
   .nav-links{display:none}
   .mobile-toggle{display:block}
-  .juris-grid{grid-template-columns:1fr 1fr}
   .rules-grid{grid-template-columns:1fr}
   .matrix-grid{grid-template-columns:1fr 1fr}
   .detail-overview-top{flex-direction:column}
+  .intel-dual{grid-template-columns:1fr}
 }
 @media(max-width:768px){
   .hero{padding:96px 20px 40px}
   nav{padding:0 20px}
   .wrap{padding:0 20px}
-  .juris-section{padding:0 20px 48px}
+  .juris-section{padding:0 20px 36px}
   .detail-section{padding:0 20px 48px}
   .matrix-section{padding:0 20px 48px}
   .check-section{padding:0 20px 48px}
   .screen-section{padding:0 20px 48px}
   .policy-section{padding:0 20px 48px}
+  .intel-section{padding:0 20px 48px}
   .section-header{padding:0 20px}
   .screen-input-row{flex-direction:column}
   .policy-grid{grid-template-columns:1fr}
@@ -573,9 +587,9 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .wizard-progress{overflow-x:auto}
   .wiz-step span:not(.step-num){display:none}
   .result-score-row{flex-direction:column;align-items:flex-start}
-  .juris-grid{grid-template-columns:1fr}
   .tabs{overflow-x:auto;-webkit-overflow-scrolling:touch}
   .tab-btn{padding:10px 14px;font-size:12px}
+  .intel-scroll{max-height:400px}
   .footer-grid{grid-template-columns:1fr 1fr}
   footer{padding:48px 20px 20px}
   .hero-stats{gap:20px}
@@ -630,10 +644,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <span class="side-icon">&#9878;</span><span class="side-nav-label" data-i18n="side.matrix">Risk Matrix</span>
   </a>
   <a class="side-nav-item" href="#enforcementSection" data-section="enforcementSection">
-    <span class="side-icon">&#9879;</span><span class="side-nav-label" data-i18n="side.enforce">Enforcement</span>
-  </a>
-  <a class="side-nav-item" href="#regUpdatesSection" data-section="regUpdatesSection">
-    <span class="side-icon">&#128240;</span><span class="side-nav-label" data-i18n="side.updates">Reg Updates</span>
+    <span class="side-icon">&#128226;</span><span class="side-nav-label" data-i18n="side.intel">Intel Feed</span>
   </a>
   <a class="side-nav-item" href="#checkSection" data-section="checkSection">
     <span class="side-icon">&#9989;</span><span class="side-nav-label" data-i18n="side.check">Self-Check</span>
@@ -662,14 +673,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- JURISDICTION GRID -->
-<div class="section-header">
-  <h2 data-i18n="cp.grid.title">Select a Jurisdiction</h2>
-  <p data-i18n="cp.grid.sub">Click on any jurisdiction to view its complete compliance profile</p>
-</div>
+<!-- JURISDICTION SELECTOR -->
 <section class="juris-section" id="jurisSection">
-  <div class="juris-grid" id="jurisGrid">
-    <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading">Loading jurisdictions...</span></div>
+  <div class="juris-selector-wrap">
+    <div class="juris-selector-header">
+      <h2 data-i18n="cp.grid.title">Select a Jurisdiction</h2>
+      <p data-i18n="cp.grid.sub">Choose a jurisdiction to view its complete compliance profile</p>
+    </div>
+    <div class="juris-dropdown-row">
+      <div class="juris-dropdown-wrap">
+        <select class="juris-dropdown" id="jurisDropdown" onchange="onJurisDropdownChange(this.value)">
+          <option value="" data-i18n="cp.juris.placeholder">-- Select a jurisdiction --</option>
+        </select>
+      </div>
+      <div class="juris-quick-stats" id="jurisQuickStats"></div>
+    </div>
   </div>
 </section>
 
@@ -678,7 +696,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <div class="detail-inner">
     <button class="detail-back" onclick="hideDetail()">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 12L6 8l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      <span data-i18n="cp.back">Back to all jurisdictions</span>
+      <span data-i18n="cp.back">Clear Selection</span>
     </button>
 
     <!-- OVERVIEW -->
@@ -714,34 +732,34 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- GLOBAL ENFORCEMENT ACTIONS -->
-<section class="matrix-section" id="enforcementSection">
-  <div class="matrix-inner">
-    <div class="matrix-header">
-      <h2 data-i18n="cp.enforce.title">Enforcement Actions Tracker</h2>
-      <p data-i18n="cp.enforce.sub">Major regulatory enforcement actions against crypto entities worldwide</p>
-    </div>
-    <div class="enforce-filters" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="policy-filter active" onclick="filterEnforcement('all',this)" data-i18n="cp.enforce.all">All Jurisdictions</button>
-    </div>
-    <div id="enforcementContent">
-      <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.enforce">Loading enforcement actions...</span></div>
-    </div>
-  </div>
-</section>
-
-<!-- GLOBAL REGULATION UPDATES -->
-<section class="matrix-section" id="regUpdatesSection">
-  <div class="matrix-inner">
-    <div class="matrix-header">
-      <h2 data-i18n="cp.regupdates.title">Latest Regulatory Updates</h2>
-      <p data-i18n="cp.regupdates.sub">Recent regulatory developments and policy changes across all jurisdictions</p>
-    </div>
-    <div class="enforce-filters" style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
-      <button class="policy-filter active" onclick="filterRegUpdates('all',this)" data-i18n="cp.regupdates.all">All Jurisdictions</button>
-    </div>
-    <div id="regUpdatesContent">
-      <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.updates">Loading regulation updates...</span></div>
+<!-- INTEL FEED: ENFORCEMENT + REG UPDATES SIDE BY SIDE -->
+<section class="intel-section" id="enforcementSection">
+  <div class="intel-inner">
+    <div class="intel-dual" id="regUpdatesSection">
+      <!-- LEFT: ENFORCEMENT -->
+      <div class="intel-panel">
+        <div class="intel-panel-header">
+          <h3 data-i18n="cp.enforce.title">Enforcement Tracker</h3>
+        </div>
+        <div class="intel-filters" id="enforceFiltersWrap">
+          <button class="intel-filter active" onclick="filterEnforcement('all',this)" data-i18n="cp.enforce.all">All</button>
+        </div>
+        <div class="intel-scroll" id="enforcementContent">
+          <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.enforce">Loading...</span></div>
+        </div>
+      </div>
+      <!-- RIGHT: REG UPDATES -->
+      <div class="intel-panel">
+        <div class="intel-panel-header">
+          <h3 data-i18n="cp.regupdates.title">Regulatory Updates</h3>
+        </div>
+        <div class="intel-filters" id="regUpdatesFiltersWrap">
+          <button class="intel-filter active" onclick="filterRegUpdates('all',this)" data-i18n="cp.regupdates.all">All</button>
+        </div>
+        <div class="intel-scroll" id="regUpdatesContent">
+          <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.updates">Loading...</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1062,17 +1080,18 @@ var I18N = {
     'ft.platform':'Platform','ft.resources':'Resources','ft.legal':'Legal',
     'ft.evidence':'Evidence Directory','ft.services':'Services','ft.news':'News',
     'ft.explorer':'Data Explorer','ft.sales':'Contact Sales',
-    'side.juris':'Jurisdictions','side.matrix':'Risk Matrix','side.enforce':'Enforcement','side.updates':'Reg Updates','side.check':'Self-Check','side.screen':'Screening','side.license':'Licensing',
+    'side.juris':'Jurisdictions','side.matrix':'Risk Matrix','side.intel':'Intel Feed','side.check':'Self-Check','side.screen':'Screening','side.license':'Licensing',
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
     'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement Cases','cp.stat.deadlines':'Key Deadlines',
     'cp.grid.title':'Select a Jurisdiction',
-    'cp.grid.sub':'Click on any jurisdiction to view its complete compliance profile',
+    'cp.grid.sub':'Choose a jurisdiction to view its complete compliance profile',
+    'cp.juris.placeholder':'-- Select a jurisdiction --',
     'cp.loading':'Loading jurisdictions...',
     'cp.loading.rules':'Loading risk rules...',
     'cp.loading.detail':'Loading compliance data...',
-    'cp.back':'Back to all jurisdictions',
+    'cp.back':'Clear Selection',
     'cp.tab.regs':'Regulations','cp.tab.rules':'Risk Rules',
     'cp.tab.cases':'Enforcement Cases','cp.tab.updates':'Updates','cp.tab.entities':'Regulated Entities',
     'cp.entities.licensed':'Licensed','cp.entities.pending':'Pending','cp.entities.sanctioned':'Sanctioned','cp.entities.revoked':'Revoked','cp.entities.withdrawn':'Withdrawn','cp.entities.suspended':'Suspended','cp.entities.denied':'Denied',
@@ -1088,11 +1107,11 @@ var I18N = {
     'cp.updates.nodata':'No regulation updates recorded yet. Monitoring is active.',
     'cp.matrix.title':'Global Risk Rule Matrix',
     'cp.matrix.sub':'21 risk detection rules across all jurisdictions, grouped by severity level',
-    'cp.enforce.title':'Enforcement Actions Tracker',
+    'cp.enforce.title':'Enforcement Tracker',
     'cp.enforce.sub':'Major regulatory enforcement actions against crypto entities worldwide',
-    'cp.enforce.all':'All Jurisdictions',
-    'cp.loading.enforce':'Loading enforcement actions...',
-    'cp.regupdates.title':'Latest Regulatory Updates',
+    'cp.enforce.all':'All',
+    'cp.loading.enforce':'Loading...',
+    'cp.regupdates.title':'Regulatory Updates',
     'cp.regupdates.sub':'Recent regulatory developments and policy changes across all jurisdictions',
     'cp.regupdates.all':'All Jurisdictions',
     'cp.loading.updates':'Loading regulation updates...',
@@ -1188,17 +1207,18 @@ var I18N = {
     'ft.platform':'平台','ft.resources':'资源','ft.legal':'法律',
     'ft.evidence':'调证目录','ft.services':'服务','ft.news':'新闻',
     'ft.explorer':'数据探索','ft.sales':'联系销售',
-    'side.juris':'司法管辖区','side.matrix':'风险规则矩阵','side.enforce':'执法行动追踪','side.updates':'法规动态','side.check':'合规自检','side.screen':'制裁筛查','side.license':'牌照要求',
+    'side.juris':'司法管辖区','side.matrix':'风险规则矩阵','side.intel':'动态追踪','side.check':'合规自检','side.screen':'制裁筛查','side.license':'牌照要求',
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
     'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'执法案例','cp.stat.deadlines':'关键日期',
     'cp.grid.title':'选择司法管辖区',
-    'cp.grid.sub':'点击任意司法管辖区查看完整合规概况',
+    'cp.grid.sub':'选择司法管辖区查看完整合规概况',
+    'cp.juris.placeholder':'-- 请选择司法管辖区 --',
     'cp.loading':'正在加载司法管辖区...',
     'cp.loading.rules':'正在加载风险规则...',
     'cp.loading.detail':'正在加载合规数据...',
-    'cp.back':'返回所有司法管辖区',
+    'cp.back':'清除选择',
     'cp.tab.regs':'法规','cp.tab.rules':'风险规则',
     'cp.tab.cases':'执法案例','cp.tab.updates':'法规动态','cp.tab.entities':'监管实体',
     'cp.entities.licensed':'持牌','cp.entities.pending':'申请中','cp.entities.sanctioned':'被制裁','cp.entities.revoked':'已吊销','cp.entities.withdrawn':'已撤回','cp.entities.suspended':'已暂停','cp.entities.denied':'已拒绝',
@@ -1214,14 +1234,14 @@ var I18N = {
     'cp.updates.nodata':'暂无法规更新记录。监控已开启。',
     'cp.matrix.title':'全球风险规则矩阵',
     'cp.matrix.sub':'21项风险检测规则，按严重等级分组',
-    'cp.enforce.title':'执法行动追踪',
+    'cp.enforce.title':'执法追踪',
     'cp.enforce.sub':'全球加密货币实体重大监管执法行动',
-    'cp.enforce.all':'所有司法管辖区',
-    'cp.loading.enforce':'正在加载执法行动...',
-    'cp.regupdates.title':'最新法规动态',
+    'cp.enforce.all':'全部',
+    'cp.loading.enforce':'加载中...',
+    'cp.regupdates.title':'法规动态',
     'cp.regupdates.sub':'各司法管辖区最新监管发展和政策变化',
-    'cp.regupdates.all':'所有司法管辖区',
-    'cp.loading.updates':'正在加载法规动态...',
+    'cp.regupdates.all':'全部',
+    'cp.loading.updates':'加载中...',
     'cp.card.regs':'项法规','cp.card.view':'查看详情',
     'cp.card.fatf':'FATF 成员',
     'cp.overview.region':'地区','cp.overview.risk':'风险等级',
@@ -1344,6 +1364,9 @@ function toggleLang() {
   renderDeadlines();
   renderLicenseRequirements();
   if (screenResults.length) renderScreenResults();
+  // Re-render intel feed
+  if (globalEnforcementData.length) { buildEnforcementFilters(); renderGlobalEnforcement(); }
+  if (globalRegUpdates.length) { buildRegUpdatesFilters(); renderGlobalRegUpdates(); }
 }
 
 // ===== HELPERS =====
@@ -1449,39 +1472,38 @@ function loadRiskRules() {
   });
 }
 
-// ===== RENDER JURISDICTION GRID =====
+// ===== RENDER JURISDICTION DROPDOWN =====
 function renderJurisGrid() {
-  var grid = document.getElementById('jurisGrid');
-  if (!jurisdictions.length) {
-    grid.innerHTML = '<div class="empty-state"><p>No jurisdictions found.</p></div>';
-    return;
-  }
-  var html = '';
+  var dd = document.getElementById('jurisDropdown');
+  if (!jurisdictions.length) return;
+  var html = '<option value="">' + t('cp.juris.placeholder') + '</option>';
   jurisdictions.forEach(function(j) {
     var name = getCn(j, 'name');
-    var summary = getCn(j, 'summary');
+    var flag = getFlag(j.code);
+    var risk = (j.overall_risk_level || 'MEDIUM').toUpperCase();
+    html += '<option value="' + escHtml(j.code) + '">' + flag + '  ' + escHtml(name) + ' (' + escHtml(j.code) + ') — ' + risk + ' Risk</option>';
+  });
+  dd.innerHTML = html;
+  // Restore selection if detail is open
+  if (currentJuris) dd.value = currentJuris;
+}
+
+function onJurisDropdownChange(code) {
+  if (!code) {
+    hideDetail();
+    document.getElementById('jurisQuickStats').innerHTML = '';
+    return;
+  }
+  // Show quick stats beside dropdown
+  var j = jurisdictions.find(function(x) { return x.code === code; });
+  if (j) {
     var risk = (j.overall_risk_level || 'MEDIUM').toUpperCase();
     var riskClass = getRiskClass(risk);
-    var statusClass = getStatusClass(j.regulatory_status);
-    var statusLabel = j.regulatory_status || 'Regulated';
-    html += '<div class="juris-card" onclick="selectJurisdiction(\'' + escHtml(j.code) + '\')">';
-    html += '<div class="juris-top">';
-    html += '<div class="juris-name"><span class="juris-flag">' + getFlag(j.code) + '</span><div><div class="juris-title">' + escHtml(name) + '</div><div class="juris-code">' + escHtml(j.code) + '</div></div></div>';
-    html += '<span class="risk-badge ' + riskClass + '">' + escHtml(risk) + '</span>';
-    html += '</div>';
-    html += '<div class="juris-meta">';
-    html += '<span class="meta-tag">' + escHtml(j.region || '') + '</span>';
-    html += '<span class="meta-tag ' + statusClass + '">' + escHtml(statusLabel) + '</span>';
-    if (j.fatf_member) html += '<span class="meta-tag fatf">' + t('cp.card.fatf') + '</span>';
-    html += '</div>';
-    html += '<div class="juris-summary">' + escHtml(summary) + '</div>';
-    html += '<div class="juris-footer">';
-    html += '<span class="juris-reg-count"><strong>' + (j.regulation_count || 0) + '</strong> ' + t('cp.card.regs') + '</span>';
-    html += '<span class="juris-arrow">' + t('cp.card.view') + ' &rarr;</span>';
-    html += '</div>';
-    html += '</div>';
-  });
-  grid.innerHTML = html;
+    var statsHtml = '<span class="risk-badge ' + riskClass + '">' + escHtml(risk) + '</span>';
+    statsHtml += '<div class="jqs-item"><span class="jqs-val">' + (j.regulation_count || 0) + '</span><span class="jqs-label">' + t('cp.stat.regs') + '</span></div>';
+    document.getElementById('jurisQuickStats').innerHTML = statsHtml;
+  }
+  selectJurisdiction(code);
 }
 
 // ===== SELECT JURISDICTION =====
@@ -1509,11 +1531,9 @@ function selectJurisdiction(code) {
     p.classList.toggle('active', i === 0);
   });
 
-  // Highlight card
-  document.querySelectorAll('.juris-card').forEach(function(c) { c.classList.remove('selected'); });
-  var cards = document.querySelectorAll('.juris-card');
-  var idx = jurisdictions.findIndex(function(j) { return j.code === code; });
-  if (idx >= 0 && cards[idx]) cards[idx].classList.add('selected');
+  // Sync dropdown
+  var dd = document.getElementById('jurisDropdown');
+  if (dd && dd.value !== code) dd.value = code;
 
   // Fetch compliance data
   apiFetch({ action: 'compliance_check', jurisdiction: code }).then(function(data) {
@@ -1898,7 +1918,9 @@ function hideDetail() {
   document.getElementById('detailSection').style.display = 'none';
   complianceData = null;
   currentJuris = null;
-  document.querySelectorAll('.juris-card').forEach(function(c) { c.classList.remove('selected'); });
+  var dd = document.getElementById('jurisDropdown');
+  if (dd) dd.value = '';
+  document.getElementById('jurisQuickStats').innerHTML = '';
   document.querySelector('.juris-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -3375,17 +3397,18 @@ function buildEnforcementFilters() {
   globalEnforcementData.forEach(function(c) {
     if (c.jurisdiction_code && codes.indexOf(c.jurisdiction_code) === -1) codes.push(c.jurisdiction_code);
   });
-  var container = document.querySelector('#enforcementSection .enforce-filters');
-  var html = '<button class="policy-filter active" onclick="filterEnforcement(\'all\',this)">' + t('cp.enforce.all') + '</button>';
+  var container = document.getElementById('enforceFiltersWrap');
+  if (!container) return;
+  var html = '<button class="intel-filter active" onclick="filterEnforcement(\'all\',this)">' + t('cp.enforce.all') + '</button>';
   codes.forEach(function(code) {
-    html += '<button class="policy-filter" onclick="filterEnforcement(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
+    html += '<button class="intel-filter" onclick="filterEnforcement(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
   });
   container.innerHTML = html;
 }
 
 function filterEnforcement(code, btn) {
   enforcementFilter = code;
-  btn.parentElement.querySelectorAll('.policy-filter').forEach(function(b) { b.classList.remove('active'); });
+  btn.parentElement.querySelectorAll('.intel-filter').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   renderGlobalEnforcement();
 }
@@ -3466,17 +3489,18 @@ function buildRegUpdatesFilters() {
   globalRegUpdates.forEach(function(u) {
     if (u.jurisdiction_code && codes.indexOf(u.jurisdiction_code) === -1) codes.push(u.jurisdiction_code);
   });
-  var container = document.querySelector('#regUpdatesSection .enforce-filters');
-  var html = '<button class="policy-filter active" onclick="filterRegUpdates(\'all\',this)">' + t('cp.regupdates.all') + '</button>';
+  var container = document.getElementById('regUpdatesFiltersWrap');
+  if (!container) return;
+  var html = '<button class="intel-filter active" onclick="filterRegUpdates(\'all\',this)">' + t('cp.regupdates.all') + '</button>';
   codes.forEach(function(code) {
-    html += '<button class="policy-filter" onclick="filterRegUpdates(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
+    html += '<button class="intel-filter" onclick="filterRegUpdates(\'' + code + '\',this)">' + getFlag(code) + ' ' + code + '</button>';
   });
   container.innerHTML = html;
 }
 
 function filterRegUpdates(code, btn) {
   regUpdatesFilter = code;
-  btn.parentElement.querySelectorAll('.policy-filter').forEach(function(b) { b.classList.remove('active'); });
+  btn.parentElement.querySelectorAll('.intel-filter').forEach(function(b) { b.classList.remove('active'); });
   btn.classList.add('active');
   renderGlobalRegUpdates();
 }
