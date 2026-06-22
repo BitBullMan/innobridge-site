@@ -36,6 +36,49 @@ body{background:var(--canvas);color:var(--ink);font:400 15px/1.6 var(--f);overfl
 a{text-decoration:none;color:inherit}
 .wrap{max-width:var(--max);margin:0 auto;padding:0 40px}
 
+/* DEADLINE TRACKER */
+.deadline-section{padding:0 40px 64px}
+.deadline-grid{max-width:var(--max);display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px}
+.deadline-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:14px;padding:24px;transition:all .25s ease;position:relative;overflow:hidden}
+.deadline-card:hover{border-color:var(--accent);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.deadline-card .dl-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px}
+.deadline-card .dl-flag{font-size:24px;margin-right:8px}
+.deadline-card .dl-name{font:600 15px var(--f);color:var(--ink);margin-bottom:2px}
+.deadline-card .dl-reg{font:500 12px var(--f);color:var(--ink2)}
+.deadline-card .dl-urgency{font:600 11px var(--f);padding:4px 10px;border-radius:6px;text-transform:uppercase;letter-spacing:.3px;white-space:nowrap}
+.dl-urgency.critical{background:var(--danger-bg);color:var(--danger)}
+.dl-urgency.upcoming{background:rgba(245,158,11,0.08);color:#d97706}
+.dl-urgency.planned{background:var(--blue-bg);color:var(--blue)}
+.deadline-card .dl-desc{font:400 13px/1.6 var(--f);color:var(--ink2);margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deadline-card .dl-countdown{display:flex;align-items:center;gap:8px;padding-top:12px;border-top:1px solid var(--hl)}
+.dl-countdown .dl-days{font:700 22px var(--f);color:var(--accent)}
+.dl-countdown .dl-days.urgent{color:var(--danger)}
+.dl-countdown .dl-days.warning{color:#d97706}
+.dl-countdown .dl-label{font:400 12px var(--f);color:var(--ink3)}
+.dl-countdown .dl-date{font:500 12px var(--m);color:var(--ink3);margin-left:auto}
+
+/* LICENSING REQUIREMENTS */
+.license-section{padding:0 40px 64px}
+.license-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+.license-tab{font:500 13px var(--f);padding:7px 16px;border-radius:8px;border:1.5px solid var(--hl);background:var(--canvas);color:var(--ink2);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px}
+.license-tab:hover{border-color:var(--accent);color:var(--ink)}
+.license-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.license-content{max-width:var(--max)}
+.license-card{background:var(--canvas);border:1.5px solid var(--hl);border-radius:14px;padding:28px;margin-bottom:20px}
+.license-card h3{font:600 18px var(--f);color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:10px}
+.license-card h3 .lc-flag{font-size:24px}
+.license-card .lc-sub{font:400 13px var(--f);color:var(--ink3);margin-bottom:20px}
+.license-card .lc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.lc-item{background:var(--s1);border-radius:10px;padding:18px}
+.lc-item .lc-item-title{font:600 13px var(--f);color:var(--ink);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.lc-item .lc-item-title .lc-icon{font-size:16px}
+.lc-item .lc-item-body{font:400 12.5px/1.65 var(--f);color:var(--ink2)}
+.lc-item .lc-item-body strong{color:var(--ink);font-weight:600}
+.lc-badge{display:inline-flex;align-items:center;gap:4px;font:600 10px var(--f);padding:3px 8px;border-radius:5px;text-transform:uppercase;letter-spacing:.3px}
+.lc-badge.required{background:var(--danger-bg);color:var(--danger)}
+.lc-badge.recommended{background:rgba(245,158,11,0.08);color:#d97706}
+.lc-badge.optional{background:var(--accent-bg);color:var(--accent-h)}
+
 /* NAV */
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 40px;background:rgba(255,255,255,0.88);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--hl)}
 .logo{display:flex;align-items:center;gap:10px}
@@ -598,8 +641,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <a class="side-nav-item" href="#screenSection" data-section="screenSection">
     <span class="side-icon">&#128269;</span><span class="side-nav-label" data-i18n="side.screen">Screening</span>
   </a>
-  <a class="side-nav-item" href="#policySection" data-section="policySection">
-    <span class="side-icon">&#128196;</span><span class="side-nav-label" data-i18n="side.policy">Templates</span>
+  <a class="side-nav-item" href="#licenseSection" data-section="licenseSection">
+    <span class="side-icon">&#127970;</span><span class="side-nav-label" data-i18n="side.license">Licensing</span>
   </a>
 </aside>
 
@@ -614,7 +657,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="hero-stat"><div class="num" id="statRegs">--</div><div class="label" data-i18n="cp.stat.regs">Regulations</div></div>
       <div class="hero-stat"><div class="num" id="statRules">--</div><div class="label" data-i18n="cp.stat.rules">Risk Rules</div></div>
       <div class="hero-stat"><div class="num" id="statEnforce">--</div><div class="label" data-i18n="cp.stat.enforce">Enforcement Cases</div></div>
-      <div class="hero-stat"><div class="num">8</div><div class="label" data-i18n="cp.stat.templates">Policy Templates</div></div>
+      <div class="hero-stat"><div class="num" id="statDeadlines">6</div><div class="label" data-i18n="cp.stat.deadlines">Key Deadlines</div></div>
     </div>
   </div>
 </section>
@@ -926,22 +969,28 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- COMPLIANCE POLICY TEMPLATES -->
-<section class="policy-section" id="policySection">
-  <div class="policy-inner">
-    <div class="policy-header">
-      <h2 data-i18n="cp.policy.title">Compliance Policy Templates</h2>
-      <p data-i18n="cp.policy.sub">Pre-built AML/KYC/CTF compliance policy templates by category. Click any template to preview its structure, then customize for your organization.</p>
+<!-- REGULATORY DEADLINE TRACKER -->
+<section class="deadline-section" id="deadlineSection">
+  <div class="wrap">
+    <div class="section-header" style="padding:0;margin-bottom:24px">
+      <h2 data-i18n="cp.deadline.title">Regulatory Deadline Tracker</h2>
+      <p data-i18n="cp.deadline.sub">Critical compliance deadlines for crypto exchanges and stablecoin issuers worldwide. Stay ahead of regulatory changes.</p>
     </div>
-    <div class="policy-filters" id="policyFilters"></div>
-    <div class="policy-grid" id="policyGrid"></div>
+    <div class="deadline-grid" id="deadlineGrid"></div>
   </div>
 </section>
 
-<!-- POLICY MODAL -->
-<div class="policy-modal-overlay" id="policyModal" onclick="if(event.target===this)closePolicyModal()">
-  <div class="policy-modal" id="policyModalContent"></div>
-</div>
+<!-- VASP LICENSING REQUIREMENTS -->
+<section class="license-section" id="licenseSection">
+  <div class="wrap">
+    <div class="section-header" style="padding:0;margin-bottom:24px">
+      <h2 data-i18n="cp.license.title">VASP Licensing Requirements</h2>
+      <p data-i18n="cp.license.sub">Licensing and registration requirements for crypto exchanges and stablecoin issuers across major jurisdictions.</p>
+    </div>
+    <div class="license-tabs" id="licenseTabs"></div>
+    <div class="license-content" id="licenseContent"></div>
+  </div>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -1013,11 +1062,11 @@ var I18N = {
     'ft.platform':'Platform','ft.resources':'Resources','ft.legal':'Legal',
     'ft.evidence':'Evidence Directory','ft.services':'Services','ft.news':'News',
     'ft.explorer':'Data Explorer','ft.sales':'Contact Sales',
-    'side.juris':'Jurisdictions','side.matrix':'Risk Matrix','side.enforce':'Enforcement','side.updates':'Reg Updates','side.check':'Self-Check','side.screen':'Screening','side.policy':'Templates',
+    'side.juris':'Jurisdictions','side.matrix':'Risk Matrix','side.enforce':'Enforcement','side.updates':'Reg Updates','side.check':'Self-Check','side.screen':'Screening','side.license':'Licensing',
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
-    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement Cases','cp.stat.templates':'Policy Templates',
+    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement Cases','cp.stat.deadlines':'Key Deadlines',
     'cp.grid.title':'Select a Jurisdiction',
     'cp.grid.sub':'Click on any jurisdiction to view its complete compliance profile',
     'cp.loading':'Loading jurisdictions...',
@@ -1124,7 +1173,11 @@ var I18N = {
     'cp.policy.keysections':'Key Sections',
     'cp.policy.juris':'Applicable Jurisdictions',
     'cp.policy.download':'Download Template',
-    'cp.policy.customize':'Customize & Download'
+    'cp.policy.customize':'Customize & Download',
+    'cp.deadline.title':'Regulatory Deadline Tracker',
+    'cp.deadline.sub':'Critical compliance deadlines for crypto exchanges and stablecoin issuers worldwide. Stay ahead of regulatory changes.',
+    'cp.license.title':'VASP Licensing Requirements',
+    'cp.license.sub':'Licensing and registration requirements for crypto exchanges and stablecoin issuers across major jurisdictions.'
   },
   cn: {
     'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'取证解码器',
@@ -1135,11 +1188,11 @@ var I18N = {
     'ft.platform':'平台','ft.resources':'资源','ft.legal':'法律',
     'ft.evidence':'调证目录','ft.services':'服务','ft.news':'新闻',
     'ft.explorer':'数据探索','ft.sales':'联系销售',
-    'side.juris':'司法管辖区','side.matrix':'风险规则矩阵','side.enforce':'执法行动追踪','side.updates':'法规动态','side.check':'合规自检','side.screen':'制裁筛查','side.policy':'政策模板',
+    'side.juris':'司法管辖区','side.matrix':'风险规则矩阵','side.enforce':'执法行动追踪','side.updates':'法规动态','side.check':'合规自检','side.screen':'制裁筛查','side.license':'牌照要求',
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
-    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'执法案例','cp.stat.templates':'政策模板',
+    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'执法案例','cp.stat.deadlines':'关键日期',
     'cp.grid.title':'选择司法管辖区',
     'cp.grid.sub':'点击任意司法管辖区查看完整合规概况',
     'cp.loading':'正在加载司法管辖区...',
@@ -1246,7 +1299,11 @@ var I18N = {
     'cp.policy.keysections':'核心章节',
     'cp.policy.juris':'适用司法管辖区',
     'cp.policy.download':'下载模板',
-    'cp.policy.customize':'定制下载'
+    'cp.policy.customize':'定制下载',
+    'cp.deadline.title':'监管截止日期追踪',
+    'cp.deadline.sub':'全球加密货币交易所和稳定币发行商的关键合规截止日期。提前应对监管变化。',
+    'cp.license.title':'VASP 牌照要求',
+    'cp.license.sub':'主要司法管辖区对加密货币交易所和稳定币发行商的牌照和注册要求。'
   }
 };
 
@@ -1284,8 +1341,8 @@ function toggleLang() {
   if (complianceData) renderDetail();
   if (allRiskRules.length) renderMatrix();
   // Re-render new sections
-  renderPolicyFilters();
-  renderPolicyGrid();
+  renderDeadlines();
+  renderLicenseRequirements();
   if (screenResults.length) renderScreenResults();
 }
 
@@ -3125,8 +3182,174 @@ function downloadPolicyTemplate(id) {
 
 // Init policy grid
 function initPolicies() {
-  renderPolicyFilters();
-  renderPolicyGrid();
+  renderDeadlines();
+  renderLicenseRequirements();
+}
+
+// ===== REGULATORY DEADLINE TRACKER =====
+var DEADLINES = [
+  {id:'mica',flag:'\u{1F1EA}\u{1F1FA}',name:'MiCA Full Enforcement',reg:'EU Markets in Crypto-Assets Regulation',date:'2026-07-01',urgency:'critical',
+   desc_en:'All CASPs must be authorized under MiCA or cease operations. Transition period ends for previously registered EU crypto firms.',
+   desc_cn:'所有加密资产服务提供商必须获得MiCA授权或停止运营。此前已注册的欧盟crypto公司过渡期结束。'},
+  {id:'genius',flag:'\u{1F1FA}\u{1F1F8}',name:'GENIUS Act Finalization',reg:'US Stablecoin Regulatory Framework',date:'2026-07-18',urgency:'critical',
+   desc_en:'Expected finalization of GENIUS Act stablecoin regulations. Establishes federal licensing for stablecoin issuers with reserve and audit requirements.',
+   desc_cn:'GENIUS法案稳定币监管预计最终确定。建立联邦稳定币发行牌照制度，含储备金和审计要求。'},
+  {id:'hk-vasp',flag:'\u{1F1ED}\u{1F1F0}',name:'HK VASP License Deadline',reg:'Hong Kong SFC VASP Licensing',date:'2026-09-01',urgency:'upcoming',
+   desc_en:'Non-compliant virtual asset trading platforms must cease operations in Hong Kong. SFC enforcing mandatory licensing for all retail-facing exchanges.',
+   desc_cn:'不合规虚拟资产交易平台须在香港停止运营。证监会强制所有面向零售的交易所持牌经营。'},
+  {id:'fatf-review',flag:'\u{1F30D}',name:'FATF Mutual Evaluation',reg:'FATF 5th Round Reviews',date:'2026-10-01',urgency:'upcoming',
+   desc_en:'FATF 5th round mutual evaluations begin assessing Travel Rule implementation and VASP supervision effectiveness across member jurisdictions.',
+   desc_cn:'FATF第五轮互评启动，评估各成员国旅行规则实施和VASP监管有效性。'},
+  {id:'sg-psa',flag:'\u{1F1F8}\u{1F1EC}',name:'Singapore PSA Amendments',reg:'Payment Services Act Enhanced Requirements',date:'2026-12-31',urgency:'planned',
+   desc_en:'Enhanced custody, segregation of customer assets, and risk management requirements for all licensed Digital Payment Token service providers.',
+   desc_cn:'所有持牌数字支付代币服务商须满足增强的托管、客户资产隔离和风险管理要求。'},
+  {id:'kr-vasp',flag:'\u{1F1F0}\u{1F1F7}',name:'Korea VASP Compliance Review',reg:'Virtual Asset User Protection Act',date:'2027-01-01',urgency:'planned',
+   desc_en:'Korean FSC annual VASP compliance review. Exchanges must demonstrate full compliance with deposit protection, market manipulation prevention, and disclosure requirements.',
+   desc_cn:'韩国金融委员会年度VASP合规审查。交易所须证明完全遵守存款保护、防止市场操纵和信息披露要求。'}
+];
+
+function renderDeadlines() {
+  var grid = document.getElementById('deadlineGrid');
+  if (!grid) return;
+  var today = new Date();
+  var html = '';
+  DEADLINES.forEach(function(d) {
+    var target = new Date(d.date);
+    var diff = Math.ceil((target - today) / (1000*60*60*24));
+    var dayClass = diff <= 14 ? 'urgent' : diff <= 60 ? 'warning' : '';
+    var daysText = diff <= 0 ? 'PASSED' : diff + '';
+    var daysLabel = diff <= 0 ? '' : (diff === 1 ? 'day remaining' : 'days remaining');
+    if (currentLang === 'cn') daysLabel = diff <= 0 ? '已到期' : '天后到期';
+    var desc = currentLang === 'cn' ? d.desc_cn : d.desc_en;
+    var dateStr = target.toLocaleDateString('en-US', {year:'numeric',month:'short',day:'numeric'});
+    html += '<div class="deadline-card">'
+      + '<div class="dl-top"><div><div class="dl-name">' + d.flag + ' ' + d.name + '</div><div class="dl-reg">' + d.reg + '</div></div>'
+      + '<span class="dl-urgency ' + d.urgency + '">' + d.urgency + '</span></div>'
+      + '<div class="dl-desc">' + desc + '</div>'
+      + '<div class="dl-countdown"><span class="dl-days ' + dayClass + '">' + daysText + '</span>'
+      + '<span class="dl-label">' + daysLabel + '</span>'
+      + '<span class="dl-date">' + dateStr + '</span></div>'
+      + '</div>';
+  });
+  grid.innerHTML = html;
+  var statEl = document.getElementById('statDeadlines');
+  if (statEl) statEl.textContent = DEADLINES.length;
+}
+
+// ===== VASP LICENSING REQUIREMENTS =====
+var LICENSE_DATA = [
+  {code:'US',flag:'\u{1F1FA}\u{1F1F8}',name:'United States',sub_en:'Federal + State dual licensing regime',sub_cn:'联邦+州双重牌照体系',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'Money Transmitter License (MTL)',title_cn:'货币转移牌照',badge:'required',
+     body_en:'Required in each state of operation. <strong>Timeline:</strong> 6-18 months per state. <strong>Cost:</strong> $5K-500K per state (surety bonds). Must register with FinCEN as MSB.',
+     body_cn:'须在每个运营州申请。<strong>时间：</strong>每州6-18个月。<strong>费用：</strong>每州5千-50万美元（保证金）。须在FinCEN注册为MSB。'},
+    {icon:'\u{1F4CB}',title_en:'BitLicense (New York)',title_cn:'纽约BitLicense',badge:'required',
+     body_en:'Mandatory for any crypto business serving NY customers. <strong>Timeline:</strong> 12-24 months. <strong>Capital:</strong> Minimum based on risk assessment. Ongoing compliance with NYDFS examinations.',
+     body_cn:'服务纽约客户的加密业务必须持有。<strong>时间：</strong>12-24个月。<strong>资金：</strong>基于风险评估的最低要求。须接受NYDFS持续检查。'},
+    {icon:'\u{1F50D}',title_en:'SEC/CFTC Registration',title_cn:'SEC/CFTC注册',badge:'recommended',
+     body_en:'Broker-dealer or ATS registration if listing securities tokens. CFTC registration for derivatives/futures. <strong>2026 Update:</strong> Joint SEC-CFTC classification framework now active.',
+     body_cn:'若上线证券型代币须注册为经纪商或ATS。衍生品/期货须CFTC注册。<strong>2026更新：</strong>SEC-CFTC联合分类框架已生效。'},
+    {icon:'\u{1F4B5}',title_en:'Stablecoin Issuer License',title_cn:'稳定币发行牌照',badge:'required',
+     body_en:'Under GENIUS Act (expected July 2026): Federal or state charter required. <strong>Reserves:</strong> 1:1 backing with monthly attestation. <strong>Audit:</strong> Annual third-party audit mandatory.',
+     body_cn:'GENIUS法案下（预计2026年7月）：须持联邦或州牌照。<strong>储备：</strong>1:1支持，月度证明。<strong>审计：</strong>年度第三方审计。'}
+  ]},
+  {code:'EU',flag:'\u{1F1EA}\u{1F1FA}',name:'European Union',sub_en:'MiCA unified framework (effective July 1, 2026)',sub_cn:'MiCA统一框架（2026年7月1日生效）',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'CASP Authorization',title_cn:'CASP授权',badge:'required',
+     body_en:'Crypto-Asset Service Provider license from any EU member state NCA. <strong>Timeline:</strong> 3-6 months. <strong>Passporting:</strong> Single license valid across all 27 EU member states.',
+     body_cn:'须从任一欧盟成员国NCA获得加密资产服务提供商牌照。<strong>时间：</strong>3-6个月。<strong>通行证：</strong>单一牌照在27个成员国通用。'},
+    {icon:'\u{1F4B0}',title_en:'Capital Requirements',title_cn:'资本要求',badge:'required',
+     body_en:'Minimum capital: €50K-€150K based on service type. Exchanges: €150K. Custodians: €125K. Advisory: €50K. <strong>Insurance:</strong> Professional indemnity or equivalent.',
+     body_cn:'最低资本：基于服务类型5万-15万欧元。交易所：15万。托管：12.5万。咨询：5万。<strong>保险：</strong>专业赔偿保险或同等。'},
+    {icon:'\u{1FA99}',title_en:'EMT/ART Issuer License',title_cn:'EMT/ART发行牌照',badge:'required',
+     body_en:'E-Money Token: Requires e-money institution license. Asset-Referenced Token: EBA authorization if significant (>€5B or 10M holders). <strong>Reserves:</strong> Segregated, liquid, 1:1.',
+     body_cn:'电子货币代币：须持电子货币机构牌照。资产挂钩代币：若重大（>50亿欧元或1千万持有人）须EBA授权。<strong>储备：</strong>隔离、流动、1:1。'},
+    {icon:'\u{1F4CA}',title_en:'Ongoing Obligations',title_cn:'持续义务',badge:'required',
+     body_en:'<strong>Reporting:</strong> Quarterly to NCA. <strong>Complaints:</strong> Formal handling procedure. <strong>Conflicts of interest:</strong> Written policy. <strong>IT security:</strong> DORA compliance by Jan 2025.',
+     body_cn:'<strong>报告：</strong>季度向NCA报告。<strong>投诉：</strong>正式处理程序。<strong>利益冲突：</strong>书面政策。<strong>IT安全：</strong>DORA合规。'}
+  ]},
+  {code:'HK',flag:'\u{1F1ED}\u{1F1F0}',name:'Hong Kong',sub_en:'SFC VASP licensing regime',sub_cn:'证监会VASP牌照制度',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'SFC VASP License',title_cn:'证监会VASP牌照',badge:'required',
+     body_en:'Mandatory for all centralized virtual asset trading platforms. <strong>Timeline:</strong> 6-12 months. <strong>Capital:</strong> HK$5M minimum (up to HK$50M for complex operations).',
+     body_cn:'所有中心化虚拟资产交易平台必须持有。<strong>时间：</strong>6-12个月。<strong>资金：</strong>最低500万港元（复杂业务可达5000万）。'},
+    {icon:'\u{1F6E1}\u{FE0F}',title_en:'Investor Protection',title_cn:'投资者保护',badge:'required',
+     body_en:'<strong>Client assets:</strong> 98% cold storage. <strong>Insurance:</strong> Mandatory for custodial assets. <strong>Retail access:</strong> Suitability assessment required. <strong>Token listing:</strong> Due diligence committee.',
+     body_cn:'<strong>客户资产：</strong>98%冷存储。<strong>保险：</strong>托管资产强制保险。<strong>零售准入：</strong>须适当性评估。<strong>代币上市：</strong>尽职调查委员会。'},
+    {icon:'\u{1F4B5}',title_en:'Stablecoin Issuer License',title_cn:'稳定币发行牌照',badge:'required',
+     body_en:'HKMA licensing for fiat-referenced stablecoin issuers under the Stablecoins Bill. <strong>Reserves:</strong> 100% high-quality liquid assets. <strong>Redemption:</strong> At par within 5 business days.',
+     body_cn:'HKMA对法币挂钩稳定币发行商的牌照。<strong>储备：</strong>100%高质量流动资产。<strong>赎回：</strong>5个工作日内按面值赎回。'}
+  ]},
+  {code:'SG',flag:'\u{1F1F8}\u{1F1EC}',name:'Singapore',sub_en:'MAS Payment Services Act framework',sub_cn:'MAS支付服务法框架',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'Major Payment Institution (MPI)',title_cn:'主要支付机构牌照',badge:'required',
+     body_en:'Required for DPT service providers exceeding threshold. <strong>Capital:</strong> S$250K base + risk-based. <strong>Timeline:</strong> 6-12 months. MAS known for rigorous due diligence.',
+     body_cn:'超过门槛的数字支付代币服务商必须持有。<strong>资金：</strong>25万新元基础+风险资本。<strong>时间：</strong>6-12个月。MAS以严格尽调著称。'},
+    {icon:'\u{1F512}',title_en:'Customer Safeguarding',title_cn:'客户资产保障',badge:'required',
+     body_en:'<strong>Segregation:</strong> Statutory trust or guarantee bond. <strong>Custody:</strong> Independent custodian required above threshold. <strong>2026 Enhancement:</strong> Stricter segregation rules effective.',
+     body_cn:'<strong>隔离：</strong>法定信托或担保债券。<strong>托管：</strong>超过门槛须独立托管人。<strong>2026增强：</strong>更严格的隔离规则已生效。'}
+  ]},
+  {code:'JP',flag:'\u{1F1EF}\u{1F1F5}',name:'Japan',sub_en:'FSA CAESBE / ESBA framework',sub_cn:'FSA CAESBE/ESBA框架',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'CAESBE Registration',title_cn:'CAESBE注册',badge:'required',
+     body_en:'Crypto-Asset Exchange Service Business Entity registration with JFSA. <strong>Capital:</strong> ¥10M minimum. <strong>Audit:</strong> Annual CPA audit. <strong>Timeline:</strong> 6-9 months.',
+     body_cn:'须在日本金融厅注册为加密资产交换服务业务实体。<strong>资金：</strong>最低1000万日元。<strong>审计：</strong>年度CPA审计。<strong>时间：</strong>6-9个月。'},
+    {icon:'\u{1F4B5}',title_en:'ESBA License (Stablecoins)',title_cn:'ESBA牌照（稳定币）',badge:'required',
+     body_en:'Electronic Settlement Business Agent license for stablecoin intermediaries. Issuers must be licensed banks or trust companies. <strong>Reserves:</strong> Bank deposits or trust assets.',
+     body_cn:'稳定币中介须持电子结算业务代理牌照。发行方须为持牌银行或信托公司。<strong>储备：</strong>银行存款或信托资产。'}
+  ]},
+  {code:'GB',flag:'\u{1F1EC}\u{1F1E7}',name:'United Kingdom',sub_en:'FCA authorization under Cryptoassets Regulations 2026',sub_cn:'FCA授权（2026加密资产法规）',
+   items:[
+    {icon:'\u{1F3DB}\u{FE0F}',title_en:'FCA Authorization',title_cn:'FCA授权',badge:'required',
+     body_en:'Full authorization required under Cryptoassets Regulations 2026 (effective Feb 2026). Replaces temporary registration. <strong>Capital:</strong> Based on operational risk. <strong>Timeline:</strong> 6-12 months.',
+     body_cn:'2026年加密资产法规下须获得完整授权（2026年2月生效）。取代临时注册。<strong>资金：</strong>基于运营风险。<strong>时间：</strong>6-12个月。'},
+    {icon:'\u{1F4E2}',title_en:'Financial Promotions',title_cn:'金融推广',badge:'required',
+     body_en:'All crypto marketing must be approved by FCA-authorized firm. <strong>Risk warnings:</strong> Mandatory on all promotions. <strong>Cooling-off:</strong> 24-hour period for first-time investors.',
+     body_cn:'所有加密营销须经FCA授权公司批准。<strong>风险警告：</strong>所有推广必须包含。<strong>冷静期：</strong>首次投资者24小时。'}
+  ]}
+];
+
+function renderLicenseRequirements() {
+  var tabs = document.getElementById('licenseTabs');
+  var content = document.getElementById('licenseContent');
+  if (!tabs || !content) return;
+
+  var tabHtml = '<div class="license-tab active" onclick="filterLicense(\'all\')" data-lic="all">' + t('cp.policy.all') + '</div>';
+  LICENSE_DATA.forEach(function(j) {
+    tabHtml += '<div class="license-tab" onclick="filterLicense(\'' + j.code + '\')" data-lic="' + j.code + '">' + j.flag + ' ' + j.code + '</div>';
+  });
+  tabs.innerHTML = tabHtml;
+
+  renderLicenseCards('all');
+}
+
+var activeLicFilter = 'all';
+function filterLicense(code) {
+  activeLicFilter = code;
+  document.querySelectorAll('.license-tab').forEach(function(t) {
+    t.classList.toggle('active', t.getAttribute('data-lic') === code);
+  });
+  renderLicenseCards(code);
+}
+
+function renderLicenseCards(filter) {
+  var content = document.getElementById('licenseContent');
+  var data = filter === 'all' ? LICENSE_DATA : LICENSE_DATA.filter(function(j) { return j.code === filter; });
+  var html = '';
+  data.forEach(function(j) {
+    var sub = currentLang === 'cn' ? j.sub_cn : j.sub_en;
+    html += '<div class="license-card"><h3><span class="lc-flag">' + j.flag + '</span>' + j.name + '</h3>'
+      + '<div class="lc-sub">' + sub + '</div><div class="lc-grid">';
+    j.items.forEach(function(item) {
+      var title = currentLang === 'cn' ? item.title_cn : item.title_en;
+      var body = currentLang === 'cn' ? item.body_cn : item.body_en;
+      html += '<div class="lc-item"><div class="lc-item-title"><span class="lc-icon">' + item.icon + '</span>' + title
+        + ' <span class="lc-badge ' + item.badge + '">' + item.badge + '</span></div>'
+        + '<div class="lc-item-body">' + body + '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  content.innerHTML = html;
 }
 
 // ===== GLOBAL ENFORCEMENT ACTIONS =====
