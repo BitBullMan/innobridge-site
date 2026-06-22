@@ -217,8 +217,24 @@ h2{font:600 clamp(24px,3vw,36px)/1.15 var(--f);letter-spacing:-.8px;color:var(--
 .le-stat-label{font:400 13px var(--f);color:var(--ink2);margin-top:2px}
 .le-cta{margin-top:24px}
 
+/* COMPLIANCE INTELLIGENCE */
+#compliance-intel{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl)}
+.ci-intro{max-width:640px;margin-bottom:36px}
+.ci-intro p{font:400 15px/1.7 var(--f);color:var(--ink2);margin-top:10px}
+.ci-features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:28px}
+.ci-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:24px;transition:box-shadow .2s}
+.ci-card:hover{box-shadow:var(--shadow-sm)}
+.ci-card-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.ci-card h3{font:600 15px/1.3 var(--f);color:var(--ink);margin-bottom:6px;letter-spacing:-.2px}
+.ci-card p{font:400 13px/1.6 var(--f);color:var(--ink2)}
+.ci-stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.ci-stat{background:var(--canvas);border:1px solid var(--hl);border-radius:10px;padding:16px 24px;flex:1;min-width:120px;text-align:center}
+.ci-stat-val{font:600 24px var(--f);color:var(--ink);letter-spacing:-.5px}
+.ci-stat-label{font:400 12px var(--f);color:var(--ink3);margin-top:2px}
+.ci-cta{margin-top:4px}
+
 /* CONTACT */
-#contact{background:var(--s1);border-top:1px solid var(--hl)}
+#contact{background:var(--canvas);border-top:1px solid var(--hl)}
 .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;margin-top:32px}
 .contact-info{display:flex;flex-direction:column;justify-content:space-between}
 .contact-items{display:flex;flex-direction:column;gap:12px;margin-top:24px}
@@ -320,6 +336,9 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .bl-search{width:100%}
   .le-stats{flex-direction:column}
   .le-stat{min-width:auto}
+  .ci-features{grid-template-columns:1fr}
+  .ci-stats{flex-direction:column}
+  .ci-stat{min-width:auto}
   footer{padding:48px 20px 20px}
   .news-modal{margin:20px;padding:24px}
 }
@@ -626,6 +645,53 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
+<!-- COMPLIANCE INTELLIGENCE -->
+<section id="compliance-intel">
+  <div class="wrap">
+    <div class="ci-intro reveal">
+      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
+      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
+      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.</p>
+    </div>
+    <div class="ci-stats reveal">
+      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
+    </div>
+    <div class="ci-features reveal">
+      <div class="ci-card">
+        <div class="ci-card-icon" style="background:var(--blue-bg);color:var(--blue)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        </div>
+        <h3 data-i18n="ci.f1.title">Jurisdiction Profiles</h3>
+        <p data-i18n="ci.f1.desc">Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.</p>
+      </div>
+      <div class="ci-card">
+        <div class="ci-card-icon" style="background:var(--danger-bg);color:var(--danger)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <h3 data-i18n="ci.f2.title">Enforcement Tracker</h3>
+        <p data-i18n="ci.f2.desc">Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.</p>
+      </div>
+      <div class="ci-card">
+        <div class="ci-card-icon" style="background:var(--accent-bg);color:var(--accent-h)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        </div>
+        <h3 data-i18n="ci.f3.title">Regulatory Updates</h3>
+        <p data-i18n="ci.f3.desc">Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.</p>
+      </div>
+    </div>
+    <div class="ci-cta reveal">
+      <a href="compliance.html" class="btn-p">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- CONTACT -->
 <section id="contact">
   <div class="wrap">
@@ -694,6 +760,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <a href="#blacklist-section" data-i18n="ft.blacklist">Blacklist Data</a>
       <a href="evidence-collection.html" data-i18n="ft.evidence">Evidence Directory</a>
       <a href="contract-decoder.html" data-i18n="ft.decoder">Forensic Decoder</a>
+      <a href="compliance.html" data-i18n="ft.compliance">Compliance Intelligence</a>
       <a href="#platform" data-i18n="ft.services">Services</a>
     </div>
     <div class="footer-col">
@@ -1159,13 +1226,19 @@ var I18N = {
     'le.label':'For Law Enforcement','le.title':'Evidence Request Procedures','le.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
     'le.c1.val':'68','le.c1.label':'Exchanges','le.c2.val':'10','le.c2.label':'Wallets','le.c3.val':'4','le.c3.label':'Swap Platforms','le.c4.val':'3','le.c4.label':'Mining Pools',
     'le.cta':'View Full Evidence Directory',
+    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.',
+    'ci.s1':'Jurisdictions','ci.s2':'Regulations','ci.s3':'Enforcement Cases','ci.s4':'Risk Rules','ci.s5':'Regulated Entities',
+    'ci.f1.title':'Jurisdiction Profiles','ci.f1.desc':'Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.',
+    'ci.f2.title':'Enforcement Tracker','ci.f2.desc':'Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.',
+    'ci.f3.title':'Regulatory Updates','ci.f3.desc':'Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.',
+    'ci.cta':'Explore Compliance Intelligence',
     'ct.label':'Contact','ct.title':'Start an investigation.','ct.desc':'Tell us what you\'re working on. Confidential assessment within 24 hours.',
     'ct.email':'info@innobridge.io','ct.response':'Response within 24 hours','ct.web':'innobridge.io',
     'ct.f.fname':'First Name','ct.f.lname':'Last Name','ct.f.org':'Organisation','ct.f.email':'Email','ct.f.service':'What do you need?','ct.f.msg':'Brief Description',
     'ct.f.opt0':'Select...','ct.f.opt1':'AML Label API Access','ct.f.opt2':'On-chain Tracing (specific case)','ct.f.opt3':'Legal Forensic Report','ct.f.opt4':'VASP Compliance Package','ct.f.opt5':'Litigation Support','ct.f.opt6':'Consultation',
     'ct.f.submit':'Submit Enquiry','ct.f.note':'All enquiries are strictly confidential. NDA available on request.',
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
-    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.compliance':'Compliance Intelligence','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
     'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview'
   },
@@ -1189,13 +1262,19 @@ var I18N = {
     'le.label':'执法支持','le.title':'取证请求流程','le.desc':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
     'le.c1.val':'68','le.c1.label':'交易所','le.c2.val':'10','le.c2.label':'钱包','le.c3.val':'4','le.c3.label':'闪兑平台','le.c4.val':'3','le.c4.label':'矿池',
     'le.cta':'查看完整取证目录',
+    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'覆盖10个主要金融中心的司法管辖区 AML 要求、风险规则和执法行动。由我们的合规情报引擎驱动实时法规追踪。',
+    'ci.s1':'司法管辖区','ci.s2':'法规','ci.s3':'执法案例','ci.s4':'风险规则','ci.s5':'持牌实体',
+    'ci.f1.title':'司法管辖区档案','ci.f1.desc':'每个管辖区的完整合规档案：法规、风险规则、执法案例、法规动态和持牌实体。',
+    'ci.f2.title':'执法追踪','ci.f2.desc':'追踪全球对加密实体的重大监管行动 — 从 SEC 和解到欧盟 MiCA 执法和 VARA 处罚。',
+    'ci.f3.title':'法规动态','ci.f3.desc':'实时更新各管辖区的新立法、修正案和政策指引。可按地区和类型筛选。',
+    'ci.cta':'探索合规情报',
     'ct.label':'联系我们','ct.title':'开始调查。','ct.desc':'告诉我们您的需求，24 小时内提供保密评估。',
     'ct.email':'info@innobridge.io','ct.response':'24 小时内回复','ct.web':'innobridge.io',
     'ct.f.fname':'名','ct.f.lname':'姓','ct.f.org':'所属机构','ct.f.email':'邮箱','ct.f.service':'您需要什么服务？','ct.f.msg':'简要描述',
     'ct.f.opt0':'请选择...','ct.f.opt1':'AML 标签 API 接入','ct.f.opt2':'链上追踪（具体案件）','ct.f.opt3':'法律取证报告','ct.f.opt4':'VASP 合规方案','ct.f.opt5':'诉讼支持','ct.f.opt6':'咨询服务',
     'ct.f.submit':'提交咨询','ct.f.note':'所有咨询严格保密，可按需签署保密协议。',
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
-    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.compliance':'合规情报','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
     'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览'
   }
