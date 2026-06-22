@@ -327,11 +327,18 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .entities-footer{padding:12px 16px;font:400 12px var(--f);color:var(--ink3);border-top:1px solid var(--hl);background:var(--s1);border-radius:0 0 10px 10px}
 
 /* RISK MATRIX SECTION */
-.matrix-section{padding:0 40px 64px}
+.matrix-section{padding:0 40px 48px}
 .matrix-inner{max-width:var(--max);margin:0 auto}
-.matrix-header{margin-bottom:24px}
-.matrix-header h2{font:600 22px var(--f);color:var(--ink);letter-spacing:-.5px}
-.matrix-header p{font:400 14px var(--f);color:var(--ink3);margin-top:4px}
+.matrix-toggle{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;background:var(--canvas);border:1.5px solid var(--hl);border-radius:12px;cursor:pointer;transition:all .2s}
+.matrix-toggle:hover{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,0.08)}
+.matrix-toggle-left{display:flex;align-items:center;gap:12px}
+.matrix-toggle-left h2{font:600 16px var(--f);color:var(--ink);letter-spacing:-.3px;margin:0}
+.matrix-toggle-left .matrix-count{font:500 11px var(--f);color:var(--ink3);background:var(--s1);padding:2px 10px;border-radius:99px}
+.matrix-toggle-left p{font:400 13px var(--f);color:var(--ink3);margin:0}
+.matrix-chevron{width:20px;height:20px;color:var(--ink3);transition:transform .25s ease}
+.matrix-section.open .matrix-chevron{transform:rotate(180deg)}
+#matrixContent{max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .25s ease;opacity:0;margin-top:0}
+.matrix-section.open #matrixContent{max-height:3000px;opacity:1;margin-top:16px}
 .matrix-group{margin-bottom:24px}
 .matrix-group-title{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--hl)}
 .matrix-group-title h3{font:600 15px var(--f);color:var(--ink)}
@@ -719,12 +726,16 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- RISK MATRIX -->
+<!-- RISK MATRIX (collapsible) -->
 <section class="matrix-section" id="matrixSection">
   <div class="matrix-inner">
-    <div class="matrix-header">
-      <h2 data-i18n="cp.matrix.title">Global Risk Rule Matrix</h2>
-      <p data-i18n="cp.matrix.sub">21 risk detection rules across all jurisdictions, grouped by severity level</p>
+    <div class="matrix-toggle" onclick="toggleMatrix()">
+      <div class="matrix-toggle-left">
+        <h2 data-i18n="cp.matrix.title">Global Risk Rule Matrix</h2>
+        <span class="matrix-count" id="matrixRuleCount"></span>
+        <p data-i18n="cp.matrix.sub2">Click to expand</p>
+      </div>
+      <svg class="matrix-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
     </div>
     <div id="matrixContent">
       <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.rules">Loading risk rules...</span></div>
@@ -1107,6 +1118,10 @@ var I18N = {
     'cp.updates.nodata':'No regulation updates recorded yet. Monitoring is active.',
     'cp.matrix.title':'Global Risk Rule Matrix',
     'cp.matrix.sub':'21 risk detection rules across all jurisdictions, grouped by severity level',
+    'cp.matrix.sub2':'Click to expand',
+    'cp.matrix.expand':'Click to expand',
+    'cp.matrix.collapse':'Click to collapse',
+    'cp.matrix.rules':'rules',
     'cp.enforce.title':'Enforcement Tracker',
     'cp.enforce.sub':'Major regulatory enforcement actions against crypto entities worldwide',
     'cp.enforce.all':'All',
@@ -1234,6 +1249,10 @@ var I18N = {
     'cp.updates.nodata':'暂无法规更新记录。监控已开启。',
     'cp.matrix.title':'全球风险规则矩阵',
     'cp.matrix.sub':'21项风险检测规则，按严重等级分组',
+    'cp.matrix.sub2':'点击展开',
+    'cp.matrix.expand':'点击展开',
+    'cp.matrix.collapse':'点击收起',
+    'cp.matrix.rules':'条规则',
     'cp.enforce.title':'执法追踪',
     'cp.enforce.sub':'全球加密货币实体重大监管执法行动',
     'cp.enforce.all':'全部',
@@ -1924,8 +1943,20 @@ function hideDetail() {
   document.querySelector('.juris-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ===== TOGGLE RISK MATRIX =====
+function toggleMatrix() {
+  document.getElementById('matrixSection').classList.toggle('open');
+  var sub = document.querySelector('#matrixSection .matrix-toggle-left p');
+  if (sub) {
+    var isOpen = document.getElementById('matrixSection').classList.contains('open');
+    sub.textContent = isOpen ? t('cp.matrix.collapse') : t('cp.matrix.expand');
+  }
+}
+
 // ===== RENDER RISK MATRIX =====
 function renderMatrix() {
+  var countEl = document.getElementById('matrixRuleCount');
+  if (countEl) countEl.textContent = allRiskRules.length + ' ' + t('cp.matrix.rules');
   if (!allRiskRules.length) {
     document.getElementById('matrixContent').innerHTML = '<div class="empty-state"><p>No risk rules found.</p></div>';
     return;
