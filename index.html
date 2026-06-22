@@ -253,13 +253,13 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-layout{display:flex;gap:20px;align-items:stretch;max-height:480px}
 .pulse-left{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--s1);overflow:hidden;display:flex;flex-direction:column}
 .pulse-right{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--canvas);overflow:hidden;display:flex;flex-direction:column}
-/* Gauge */
-.pulse-gauge-wrap{padding:18px 24px 6px;text-align:center;display:flex;flex-direction:column;align-items:center}
+/* Gauge - centered above panels */
+.pulse-gauge-wrap{padding:12px 24px 4px;text-align:center;display:flex;flex-direction:column;align-items:center}
 .pulse-gauge-svg{width:180px;height:108px}
 .pulse-gauge-val{font:700 24px var(--m);color:var(--ink);margin-top:2px}
 .pulse-gauge-label{font:400 11px var(--f);color:var(--ink3);margin-top:1px}
 /* Formula */
-.pulse-formula{padding:4px 20px 8px;text-align:center}
+.pulse-formula{padding:2px 20px 16px;text-align:center}
 .pulse-formula-text{font:400 10px/1.5 var(--m);color:var(--ink3);background:var(--canvas);border:1px solid var(--hl);border-radius:6px;padding:5px 10px;display:inline-block}
 .pulse-formula-text span{color:var(--ink2);font-weight:500}
 /* Compact category list */
@@ -441,32 +441,33 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <div class="pulse-header">
       <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
     </div>
+    <!-- Gauge centered above panels -->
+    <div class="pulse-gauge-wrap">
+      <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge">
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#ef4444"/>
+            <stop offset="50%" style="stop-color:#f59e0b"/>
+            <stop offset="100%" style="stop-color:#10b981"/>
+          </linearGradient>
+        </defs>
+        <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+        <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
+        <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
+        <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
+        <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
+        <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
+        <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
+      </svg>
+      <div class="pulse-gauge-val" id="gauge-val">--</div>
+      <div class="pulse-gauge-label" data-i18n="pulse.sentiment">Market Sentiment Index</div>
+    </div>
+    <div class="pulse-formula" id="pulse-formula">
+      <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula">Loading formula...</div>
+    </div>
     <div class="pulse-layout">
-      <!-- Left: Sentiment Gauge + Category List -->
+      <!-- Left: Category List -->
       <div class="pulse-left">
-        <div class="pulse-gauge-wrap">
-          <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge">
-            <defs>
-              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" style="stop-color:#ef4444"/>
-                <stop offset="50%" style="stop-color:#f59e0b"/>
-                <stop offset="100%" style="stop-color:#10b981"/>
-              </linearGradient>
-            </defs>
-            <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
-            <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
-            <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
-            <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
-            <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
-            <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
-            <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
-          </svg>
-          <div class="pulse-gauge-val" id="gauge-val">--</div>
-          <div class="pulse-gauge-label" data-i18n="pulse.sentiment">Market Sentiment Index</div>
-        </div>
-        <div class="pulse-formula" id="pulse-formula">
-          <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula">Loading formula...</div>
-        </div>
         <div class="pulse-cat-list" id="pulse-cat-list">
           <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
         </div>
