@@ -161,28 +161,8 @@ h2{font:600 clamp(24px,3vw,36px)/1.15 var(--f);letter-spacing:-.8px;color:var(--
 .news-more-btn{font:500 13px var(--f);color:var(--accent-h);background:transparent;border:1px solid var(--hl);padding:8px 24px;border-radius:7px;cursor:pointer;transition:all .2s}
 .news-more-btn:hover{border-color:var(--accent);color:var(--accent)}
 
-/* NEWS + WHALE ALERTS LAYOUT */
-.news-layout{display:flex;gap:20px;align-items:flex-start}
-.news-main{flex:1;min-width:0}
-.whale-sidebar{width:300px;flex-shrink:0}
-.whale-sidebar-inner{border:1px solid var(--hl);border-radius:10px;background:var(--canvas);overflow:hidden;display:flex;flex-direction:column;max-height:560px}
-.whale-header{padding:12px 16px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
-.whale-header-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite}
-.whale-header-title{font:500 13px var(--f);color:var(--ink)}
-.whale-list{overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--s3) transparent;flex:1}
-.whale-list::-webkit-scrollbar{width:4px}
-.whale-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
-.whale-item{padding:12px 16px;border-bottom:1px solid var(--hl);transition:background .15s;cursor:pointer}
-.whale-item:last-child{border-bottom:none}
-.whale-item:hover{background:var(--s1)}
-.whale-type{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:3px}
-.whale-type.hl{background:rgba(139,92,246,0.08);color:var(--purple)}
-.whale-type.tx{background:var(--blue-bg);color:var(--blue)}
-.whale-desc{font:400 12px/1.5 var(--f);color:var(--ink2);margin-bottom:4px}
-.whale-desc strong{font-weight:500;color:var(--ink)}
-.whale-time{font:400 11px var(--f);color:var(--ink3)}
-.whale-empty{padding:40px 16px;text-align:center;color:var(--ink3);font:400 12px var(--f)}
-@media(max-width:900px){.news-layout{flex-direction:column}.whale-sidebar{width:100%}.news-scroll{max-height:none}.whale-list{max-height:300px}}
+/* NEWS LAYOUT */
+.news-main{width:100%}
 
 /* NEWS MODAL */
 .news-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
@@ -266,33 +246,53 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .footer-bottom a{font:400 12px var(--f);color:rgba(255,255,255,0.4);margin-left:20px;transition:color .2s}
 .footer-bottom a:hover{color:#fff}
 
-/* MARKET PULSE */
+/* MARKET PULSE + WHALE */
 #market-pulse{padding:0 40px 0;background:var(--canvas)}
 .pulse-inner{max-width:var(--max);margin:0 auto;padding-top:48px}
 .pulse-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
-.pulse-badge{font:400 11px var(--f);color:var(--ink3);display:flex;align-items:center;gap:6px}
+.pulse-layout{display:flex;gap:20px;align-items:stretch}
+.pulse-left{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--s1);overflow:hidden;display:flex;flex-direction:column}
+.pulse-right{flex:1;border:1px solid var(--hl);border-radius:14px;background:var(--canvas);overflow:hidden;display:flex;flex-direction:column}
+/* Gauge */
+.pulse-gauge-wrap{padding:24px 24px 8px;text-align:center}
+.pulse-gauge-svg{width:220px;height:130px}
+.pulse-gauge-val{font:700 28px var(--m);color:var(--ink);margin-top:4px}
+.pulse-gauge-label{font:400 12px var(--f);color:var(--ink3);margin-top:2px}
+/* Compact category list */
+.pulse-cat-list{flex:1;padding:0}
+.pulse-cat-row{display:flex;align-items:center;gap:10px;padding:11px 20px;border-top:1px solid var(--hl);cursor:pointer;transition:background .15s}
+.pulse-cat-row:hover{background:rgba(0,0,0,0.02)}
+.pulse-cat-row-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.pulse-cat-row-name{font:600 12px var(--f);color:var(--ink);width:100px;flex-shrink:0}
+.pulse-cat-row-pct{font:700 15px var(--m);width:48px;flex-shrink:0;text-align:right}
+.pulse-cat-row-pct.high{color:var(--accent)}
+.pulse-cat-row-pct.mid{color:var(--warn)}
+.pulse-cat-row-pct.low{color:var(--danger)}
+.pulse-cat-row-title{flex:1;font:400 12px/1.4 var(--f);color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pulse-cat-row-arrow{color:var(--ink3);opacity:.4;font-size:10px;flex-shrink:0}
+.pulse-powered{padding:10px 20px;border-top:1px solid var(--hl);text-align:right}
+.pulse-badge{font:400 11px var(--f);color:var(--ink3);display:inline-flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
-.pulse-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;align-items:start}
-.pulse-cat-section{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
-.pulse-cat-header{display:flex;align-items:center;gap:6px;padding:14px 16px 10px;font:600 11px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--hl)}
-.pulse-cat-icon{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px}
-.pulse-top-event{padding:12px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(0,0,0,0.06)}
-.pulse-top-event:hover{background:rgba(0,0,0,0.02)}
-.pulse-event-item{padding:10px 16px;cursor:pointer;transition:background .15s;border-bottom:1px solid rgba(0,0,0,0.04)}
-.pulse-event-item:last-child{border-bottom:none}
-.pulse-event-item:hover{background:rgba(0,0,0,0.02)}
-.pulse-event-title{font:500 12.5px/1.4 var(--f);color:var(--ink);margin-bottom:6px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.2em}
-.pulse-event-foot{display:flex;align-items:center;justify-content:space-between}
-.pulse-event-pct{font:700 18px var(--m);line-height:1}
-.pulse-event-pct.high{color:var(--accent)}
-.pulse-event-pct.mid{color:var(--warn)}
-.pulse-event-pct.low{color:var(--danger)}
-.pulse-event-vol{font:400 10px var(--m);color:var(--ink3)}
-.pulse-event-arrow{font-size:10px;opacity:.4;color:var(--ink3)}
-.pulse-analysis{padding:10px 16px 14px;background:var(--s1)}
-.pulse-analysis-label{font:600 10px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:6px}
-.pulse-analysis-text{font:400 11.5px/1.55 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
-.pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f);grid-column:1/-1}
+/* Whale in pulse right */
+.pulse-whale-header{padding:14px 20px;border-bottom:1px solid var(--hl);display:flex;align-items:center;gap:8px}
+.pulse-whale-dot{width:6px;height:6px;border-radius:50%;background:#f59e0b;animation:pulse 2s infinite}
+.pulse-whale-title{font:600 14px var(--f);color:var(--ink)}
+.pulse-whale-list{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--s3) transparent}
+.pulse-whale-list::-webkit-scrollbar{width:4px}
+.pulse-whale-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+/* Whale item styles */
+.whale-item{padding:12px 20px;border-bottom:1px solid var(--hl);transition:background .15s;cursor:pointer}
+.whale-item:last-child{border-bottom:none}
+.whale-item:hover{background:var(--s1)}
+.whale-type{font:500 10px var(--f);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;display:inline-flex;align-items:center;gap:4px;padding:2px 6px;border-radius:3px}
+.whale-type.hl{background:rgba(139,92,246,0.08);color:var(--purple)}
+.whale-type.tx{background:var(--blue-bg);color:var(--blue)}
+.whale-desc{font:400 12px/1.5 var(--f);color:var(--ink2);margin-bottom:4px}
+.whale-desc strong{font-weight:500;color:var(--ink)}
+.whale-time{font:400 11px var(--f);color:var(--ink3)}
+.whale-empty{padding:40px 16px;text-align:center;color:var(--ink3);font:400 12px var(--f)}
+/* Keep existing modal styles */
+.pulse-loading{text-align:center;padding:24px;color:var(--ink3);font:400 12px var(--f)}
 .pulse-modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;background:rgba(0,0,0,0.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);justify-content:center;align-items:center;padding:40px}
 .pulse-modal-overlay.show{display:flex}
 .pulse-modal{background:var(--canvas);border-radius:16px;max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);padding:32px;position:relative;animation:modalIn .25s ease}
@@ -309,7 +309,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
 .pulse-modal-meta a{color:var(--accent);text-decoration:none}
 .pulse-modal-meta a:hover{text-decoration:underline}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-grid{grid-template-columns:repeat(2,1fr);gap:10px}.pulse-grid>.pulse-cat-section:last-child{grid-column:1/-1}.pulse-cat-header{padding:10px 12px 8px}.pulse-top-event{padding:8px 12px}.pulse-event-item{padding:8px 12px}.pulse-event-vol{display:none}.pulse-analysis{padding:8px 12px 10px}.pulse-analysis-text{-webkit-line-clamp:4;font-size:11px}.pulse-modal{margin:16px;padding:24px}}
+@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-layout{flex-direction:column}.pulse-gauge-svg{width:180px;height:110px}.pulse-cat-row-title{display:none}.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -431,19 +431,59 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- MARKET PULSE — Polymarket top 10 trending events -->
+<!-- MARKET PULSE + WHALE ALERTS -->
 <div id="market-pulse">
   <div class="pulse-inner reveal">
     <div class="pulse-header">
       <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
-      <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
     </div>
-    <div class="pulse-grid" id="pulse-grid">
-      <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+    <div class="pulse-layout">
+      <!-- Left: Sentiment Gauge + Category List -->
+      <div class="pulse-left">
+        <div class="pulse-gauge-wrap">
+          <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge">
+            <!-- Background arc -->
+            <defs>
+              <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#ef4444"/>
+                <stop offset="50%" style="stop-color:#f59e0b"/>
+                <stop offset="100%" style="stop-color:#10b981"/>
+              </linearGradient>
+            </defs>
+            <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
+            <!-- Needle -->
+            <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
+            <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
+            <!-- Labels -->
+            <text x="15" y="128" font-size="10" fill="#9ca3af" font-family="var(--f)">0</text>
+            <text x="105" y="18" font-size="10" fill="#9ca3af" font-family="var(--f)" text-anchor="middle">50</text>
+            <text x="200" y="128" font-size="10" fill="#9ca3af" font-family="var(--f)" text-anchor="end">100</text>
+          </svg>
+          <div class="pulse-gauge-val" id="gauge-val">--</div>
+          <div class="pulse-gauge-label" data-i18n="pulse.sentiment">Market Sentiment Index</div>
+        </div>
+        <div class="pulse-cat-list" id="pulse-cat-list">
+          <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+        </div>
+        <div class="pulse-powered">
+          <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
+        </div>
+      </div>
+      <!-- Right: Whale Alerts -->
+      <div class="pulse-right">
+        <div class="pulse-whale-header">
+          <div class="pulse-whale-dot"></div>
+          <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
+        </div>
+        <div class="pulse-whale-list" id="whale-list">
+          <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<!-- Pulse Detail Modal -->
+<!-- Pulse Detail Modal (keep as-is) -->
 <div class="pulse-modal-overlay" id="pulse-modal-overlay" onclick="if(event.target===this)closePulseModal()">
   <div class="pulse-modal">
     <button class="pulse-modal-close" onclick="closePulseModal()">&times;</button>
@@ -514,7 +554,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- NEWS — horizontal scroll with popup -->
+<!-- NEWS — list with popup -->
 <section id="news">
   <div class="wrap">
     <div class="news-top reveal">
@@ -526,25 +566,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         </div>
       </div>
     </div>
-    <div class="news-layout">
-      <div class="news-main">
-        <div class="news-scroll" id="news-grid">
-          <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
-        </div>
-        <div id="news-more" style="display:none">
-          <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
-        </div>
+    <div class="news-main">
+      <div class="news-scroll" id="news-grid">
+        <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
       </div>
-      <div class="whale-sidebar">
-        <div class="whale-sidebar-inner">
-          <div class="whale-header">
-            <div class="whale-header-dot"></div>
-            <div class="whale-header-title" data-i18n="whale.title">Whale Alerts</div>
-          </div>
-          <div class="whale-list" id="whale-list">
-            <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
-          </div>
-        </div>
+      <div id="news-more" style="display:none">
+        <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
       </div>
     </div>
   </div>
@@ -1240,7 +1267,7 @@ var I18N = {
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Law firm, exchange, institution...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Describe your situation. All information is strictly confidential.',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Blacklist Data','ft.evidence':'Evidence Directory','ft.decoder':'Forensic Decoder','ft.compliance':'Compliance Intelligence','ft.services':'Services','ft.resources':'Resources','ft.news':'News','ft.explorer':'Data Explorer','ft.contact':'Contact Sales','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
-    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview'
+    'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview','pulse.sentiment':'Market Sentiment Index','pulse.bullish':'Bullish','pulse.bearish':'Bearish'
   },
   cn: {
     'nav.news':'新闻','nav.blacklist':'黑名单数据','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.compliance':'合规检测','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'立即咨询',
@@ -1276,7 +1303,7 @@ var I18N = {
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'律所、交易所、机构...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'描述您的情况，所有信息严格保密。',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'区块链合规与安全情报平台。实时黑名单监控、链上取证分析与监管合规解决方案。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'黑名单数据','ft.evidence':'调证目录','ft.decoder':'合约解码器','ft.compliance':'合规情报','ft.services':'服务','ft.resources':'资源','ft.news':'新闻','ft.explorer':'数据浏览器','ft.contact':'商务咨询','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
-    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览'
+    'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览','pulse.sentiment':'市场情绪指数','pulse.bullish':'看涨','pulse.bearish':'看跌'
   }
 };
 
@@ -1442,7 +1469,7 @@ function _findTopEvents(events, cat, limit, usedSlugs) {
 }
 
 function _renderPulseCards(data) {
-  var el = document.getElementById('pulse-grid');
+  var el = document.getElementById('pulse-cat-list');
   if (!el) return;
   function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
   function fmtVol(v) {
@@ -1450,40 +1477,65 @@ function _renderPulseCards(data) {
     if (v >= 1e3) return '$' + (v / 1e3).toFixed(0) + 'K';
     return '$' + Math.round(v);
   }
+  // Calculate aggregate sentiment
+  var totalPct = 0, count = 0;
+  for (var i = 0; i < data.length; i++) {
+    if (data[i].events && data[i].events.length && data[i].events[0].pct !== undefined) {
+      totalPct += data[i].events[0].pct;
+      count++;
+    }
+  }
+  var avgPct = count > 0 ? Math.round(totalPct / count) : 50;
+  // Update gauge
+  _updateGauge(avgPct);
+  // Render category rows
   var html = '';
   for (var i = 0; i < data.length; i++) {
     var sec = data[i];
     var cat = sec.cat || PULSE_CATS[i] || {};
     var catLabel = currentLang === 'cn' ? cat.labelCn : cat.labelEn;
-    html += '<div class="pulse-cat-section">'
-      + '<div class="pulse-cat-header">'
-      + '<span class="pulse-cat-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>'
-      + escHtml(catLabel)
-      + '</div>';
     if (sec.events && sec.events.length) {
       var evt = sec.events[0];
       var pctClass = evt.pct >= 50 ? 'high' : (evt.pct >= 20 ? 'mid' : 'low');
-      html += '<div class="pulse-top-event" onclick="openPulseModal(' + i + ',0)">'
-        + '<div class="pulse-event-title">' + escHtml(evt.title) + '</div>'
-        + '<div class="pulse-event-foot">'
-        + '<span class="pulse-event-pct ' + pctClass + '">' + evt.pct + '%</span>'
-        + '<span class="pulse-event-vol">' + dict('pulse.yes') + ' · ' + fmtVol(evt.vol) + '</span>'
-        + '<span class="pulse-event-arrow">→</span>'
-        + '</div></div>';
-      var analysis = currentLang === 'cn' ? sec.analysis_cn : sec.analysis_en;
-      if (analysis) {
-        html += '<div class="pulse-analysis">'
-          + '<div class="pulse-analysis-label">🤖 ' + dict('pulse.aiheader') + '</div>'
-          + '<div class="pulse-analysis-text">' + escHtml(analysis) + '</div>'
-          + '</div>';
-      }
+      html += '<div class="pulse-cat-row" onclick="openPulseModal(' + i + ',0)">'
+        + '<span class="pulse-cat-row-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>'
+        + '<span class="pulse-cat-row-name">' + escHtml(catLabel) + '</span>'
+        + '<span class="pulse-cat-row-pct ' + pctClass + '">' + evt.pct + '%</span>'
+        + '<span class="pulse-cat-row-title">' + escHtml(evt.title) + '</span>'
+        + '<span class="pulse-cat-row-arrow">&rarr;</span>'
+        + '</div>';
     } else {
-      html += '<div class="pulse-top-event" style="cursor:default;text-align:center;color:var(--ink3)">' + dict('pulse.nodata') + '</div>';
+      html += '<div class="pulse-cat-row" style="cursor:default">'
+        + '<span class="pulse-cat-row-icon" style="background:' + cat.color + '20;color:' + cat.color + '">' + cat.icon + '</span>'
+        + '<span class="pulse-cat-row-name">' + escHtml(catLabel) + '</span>'
+        + '<span class="pulse-cat-row-pct" style="color:var(--ink3)">--</span>'
+        + '<span class="pulse-cat-row-title" style="color:var(--ink3)">' + dict('pulse.nodata') + '</span>'
+        + '</div>';
     }
-    html += '</div>';
   }
   if (!html) html = '<div class="pulse-loading">' + dict('pulse.nodata') + '</div>';
   el.innerHTML = html;
+}
+
+function _updateGauge(pct) {
+  // pct: 0-100
+  var arc = document.getElementById('gauge-arc');
+  var needle = document.getElementById('gauge-needle');
+  var valEl = document.getElementById('gauge-val');
+  if (!arc || !needle || !valEl) return;
+  // Arc: total length ~283, show portion based on pct
+  var offset = 283 - (283 * pct / 100);
+  arc.setAttribute('stroke-dashoffset', offset);
+  // Needle rotation: -90 (left, 0%) to +90 (right, 100%)
+  var angle = -90 + (pct / 100) * 180;
+  needle.setAttribute('transform', 'rotate(' + angle + ',110,115)');
+  // Value text
+  function dict(k) { return (I18N[currentLang] || I18N.en)[k] || (I18N.en[k] || k); }
+  if (pct >= 50) {
+    valEl.innerHTML = pct + '% <span style="font-size:16px;font-weight:500;color:var(--accent)">' + dict('pulse.bullish') + '</span>';
+  } else {
+    valEl.innerHTML = pct + '% <span style="font-size:16px;font-weight:500;color:var(--danger)">' + dict('pulse.bearish') + '</span>';
+  }
 }
 
 function openPulseModal(catIdx, evtIdx) {
@@ -1550,7 +1602,7 @@ document.addEventListener('keydown', function(e) {
         .catch(function(){ _pulseData = sections; _renderPulseCards(sections); });
     })
     .catch(function() {
-      var el = document.getElementById('pulse-grid');
+      var el = document.getElementById('pulse-cat-list');
       if (el) el.innerHTML = '<div class="pulse-loading">Failed to load market data</div>';
     });
 })();
