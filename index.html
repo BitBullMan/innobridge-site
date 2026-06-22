@@ -263,18 +263,18 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-formula-text{font:400 10px/1.5 var(--m);color:var(--ink3);background:var(--canvas);border:1px solid var(--hl);border-radius:6px;padding:5px 10px;display:inline-block}
 .pulse-formula-text span{color:var(--ink2);font-weight:500}
 /* Compact category list */
-.pulse-cat-list{flex:1;padding:0;overflow-y:auto}
-.pulse-cat-row{display:flex;align-items:center;gap:10px;padding:10px 20px;border-top:1px solid var(--hl);cursor:pointer;transition:background .15s}
+.pulse-cat-list{flex:1;padding:0;overflow-y:auto;display:flex;flex-direction:column}
+.pulse-cat-row{display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--hl);cursor:pointer;transition:background .15s;flex:1}
 .pulse-cat-row:hover{background:rgba(0,0,0,0.02)}
-.pulse-cat-row-icon{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
-.pulse-cat-row-name{font:600 11px var(--f);color:var(--ink);width:90px;flex-shrink:0}
-.pulse-cat-row-pct{font:700 13px var(--m);width:42px;flex-shrink:0;text-align:right}
+.pulse-cat-row-icon{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.pulse-cat-row-name{font:600 13px var(--f);color:var(--ink);width:100px;flex-shrink:0}
+.pulse-cat-row-pct{font:700 16px var(--m);width:46px;flex-shrink:0;text-align:right}
 .pulse-cat-row-pct.high{color:var(--accent)}
 .pulse-cat-row-pct.mid{color:var(--warn)}
 .pulse-cat-row-pct.low{color:var(--danger)}
-.pulse-cat-row-title{flex:1;font:400 11px/1.4 var(--f);color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.pulse-cat-row-title{flex:1;font:400 12px/1.4 var(--f);color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
 .pulse-cat-row-arrow{color:var(--ink3);opacity:.4;font-size:10px;flex-shrink:0}
-.pulse-powered{padding:8px 20px;border-top:1px solid var(--hl);text-align:right}
+.pulse-powered{padding:10px 20px;border-top:1px solid var(--hl);text-align:right}
 .pulse-badge{font:400 10px var(--f);color:var(--ink3);display:inline-flex;align-items:center;gap:6px}
 .pulse-badge svg{opacity:.5}
 /* Whale in pulse right */
