@@ -149,6 +149,28 @@
             .hero h1 { font-size:22px; }
         }
         @media (max-width:480px) { .stats-grid { grid-template-columns:1fr; } }
+
+        /* Address Labels Section */
+        .labels-section { max-width:1100px; margin:0 auto; padding:0 24px 48px; }
+        .labels-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px; }
+        .labels-title { font-size:16px; font-weight:700; color:var(--text); display:flex; align-items:center; gap:8px; }
+        .labels-badge { font-size:11px; font-weight:600; background:var(--accent-light); color:var(--accent); padding:3px 10px; border-radius:12px; }
+        .labels-stats-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:16px; }
+        .label-stat { background:#fff; border:1px solid var(--border); border-radius:var(--r-sm); padding:14px; text-align:center; }
+        .label-stat-val { font-size:22px; font-weight:800; color:var(--text); }
+        .label-stat-lbl { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; font-weight:600; margin-top:2px; }
+        .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:6px; margin-bottom:16px; }
+        .cat-chip { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:10px; background:#fff; border:1px solid var(--border); cursor:pointer; transition:all .15s; font-size:12px; }
+        .cat-chip:hover { background:var(--bg-hover); border-color:var(--accent); }
+        .cat-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
+        .cat-chip .cat-cnt { font-weight:700; font-size:11px; }
+        .cat-chip.active .cat-cnt { color:rgba(255,255,255,0.8); }
+        .labels-search { display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+        .labels-search input { flex:1; min-width:200px; padding:9px 14px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:13px; font-family:var(--m); outline:none; background:var(--bg-input); transition:border-color .2s; }
+        .labels-search input:focus { border-color:var(--accent); }
+        .labels-search select { padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:12px; font-weight:600; background:#fff; cursor:pointer; outline:none; color:var(--text); }
+        @media (max-width:768px) { .labels-stats-grid { grid-template-columns:repeat(3,1fr); } .cat-grid { grid-template-columns:repeat(3,1fr); } }
+        @media (max-width:480px) { .labels-stats-grid { grid-template-columns:repeat(2,1fr); } .cat-grid { grid-template-columns:repeat(2,1fr); } }
     </style>
 </head>
 <body>
@@ -252,6 +274,41 @@
     </div>
     <div style="text-align:center; margin-top:10px;" id="tableFooterNote">
         <span class="footer-note" id="footerNoteText"></span>
+    </div>
+</section>
+
+<section class="labels-section" id="address-labels">
+    <div class="labels-header">
+        <div class="labels-title"><span data-i18n="labels.title">Address Intelligence Labels</span> <span class="labels-badge" id="labelTotalBadge">--</span></div>
+        <div style="font-size:11px;color:var(--text-3)" id="labelSourceInfo"></div>
+    </div>
+    <div class="labels-stats-grid" id="labelStatsGrid">
+        <div class="label-stat"><div class="label-stat-val" id="lsTotal">--</div><div class="label-stat-lbl" data-i18n="ls.total">Total Labels</div></div>
+        <div class="label-stat"><div class="label-stat-val" id="lsAddresses">--</div><div class="label-stat-lbl" data-i18n="ls.addresses">Unique Addresses</div></div>
+        <div class="label-stat"><div class="label-stat-val" id="lsChains">--</div><div class="label-stat-lbl" data-i18n="ls.chains">Chains</div></div>
+        <div class="label-stat"><div class="label-stat-val" id="lsEntities">--</div><div class="label-stat-lbl" data-i18n="ls.entities">Entities</div></div>
+        <div class="label-stat"><div class="label-stat-val" id="lsSources">--</div><div class="label-stat-lbl" data-i18n="ls.sources">Sources</div></div>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+    <div class="labels-search">
+        <input type="text" id="labelSearchInput" placeholder="Search entity, address, or tag..." data-i18n-ph="ls.searchPh">
+        <select id="labelChainFilter" onchange="searchLabels()">
+            <option value="">All Chains</option>
+        </select>
+        <select id="labelRiskFilter" onchange="searchLabels()">
+            <option value="">All Risk</option>
+            <option value="critical">Critical</option>
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="none">None</option>
+        </select>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th data-i18n="lth.address">Address</th><th data-i18n="lth.chain">Chain</th><th data-i18n="lth.entity">Entity</th><th data-i18n="lth.tag">Name Tag</th><th data-i18n="lth.category">Category</th><th data-i18n="lth.risk">Risk</th><th data-i18n="lth.source">Source</th></tr></thead>
+            <tbody id="labelTableBody"><tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)" data-i18n="ls.loading">Loading address labels...</td></tr></tbody>
+        </table>
+        <div class="pagination" id="labelPagination"></div>
     </div>
 </section>
 
@@ -432,6 +489,96 @@ document.addEventListener('DOMContentLoaded',function(){
     loadDashboardData();
 });
 
+// ===== Address Labels =====
+var labelPage=1, labelTotal=0, labelCat='', labelSearchTimer=null;
+var CAT_ICONS={'exchange':'\u{1F3E6}','defi':'\u{1F4B0}','infrastructure':'\u{2699}️','nft':'\u{1F5BC}️','scam':'⚠️','sanctions':'\u{1F6AB}','staking':'\u{1F4E6}','bridge':'\u{1F309}','mev':'\u{1F916}','social':'\u{1F4AC}','grants':'\u{1F381}','airdrop':'\u{1F4E9}','dao':'\u{1F3DB}️','mining':'⛏️','token':'\u{1FA99}','token-sale':'\u{1F4B5}','stablecoin':'\u{1F4B2}','other':'\u{1F4CB}'};
+async function loadLabelStats(){
+    try{
+        var d=await jsonpFetch(GAS_BASE+'?action=address_label_stats');
+        if(!d||!d.success)return;
+        var fk=function(n){if(!n)return'--';if(n>=1e6)return(n/1e6).toFixed(1)+'M';if(n>=1e3)return(n/1e3).toFixed(1)+'K';return n.toLocaleString();};
+        document.getElementById('lsTotal').textContent=fk(d.total_labels);
+        document.getElementById('lsAddresses').textContent=fk(d.unique_addresses);
+        document.getElementById('lsChains').textContent=d.chains||'--';
+        document.getElementById('lsEntities').textContent=fk(d.entities);
+        document.getElementById('lsSources').textContent=d.sources||'--';
+        document.getElementById('labelTotalBadge').textContent=fk(d.total_labels)+' labels';
+        document.getElementById('labelSourceInfo').textContent='Sources: eth-labels, Etherscan, OFAC SDN, ScamSniffer, Manual';
+        // Render category chips
+        if(d.by_category){
+            var cg=document.getElementById('catGrid');
+            var h='<div class="cat-chip active" onclick="filterLabelCat(\\'\\',this)"><span>All</span><span class="cat-cnt">'+fk(d.total_labels)+'</span></div>';
+            d.by_category.forEach(function(c){
+                var icon=CAT_ICONS[c.category]||'\u{1F4CB}';
+                h+='<div class="cat-chip" onclick="filterLabelCat(\\''+c.category+'\\',this)"><span>'+icon+' '+c.category+'</span><span class="cat-cnt">'+fk(c.cnt)+'</span></div>';
+            });
+            cg.innerHTML=h;
+        }
+        // Populate chain filter
+        if(d.by_chain){
+            var sel=document.getElementById('labelChainFilter');
+            d.by_chain.forEach(function(c){ var o=document.createElement('option'); o.value=c.chain; o.textContent=c.chain+' ('+fk(c.cnt)+')'; sel.appendChild(o); });
+        }
+    }catch(e){console.warn('label stats fail',e);}
+}
+function filterLabelCat(cat,el){
+    document.querySelectorAll('.cat-chip').forEach(function(c){c.classList.remove('active');});
+    if(el)el.classList.add('active');
+    labelCat=cat; labelPage=1; searchLabels();
+}
+function searchLabels(){
+    clearTimeout(labelSearchTimer);
+    labelSearchTimer=setTimeout(doLabelSearch,300);
+}
+async function doLabelSearch(){
+    var q=document.getElementById('labelSearchInput').value.trim();
+    var chain=document.getElementById('labelChainFilter').value;
+    var risk=document.getElementById('labelRiskFilter').value;
+    var url=GAS_BASE+'?action=address_labels&limit=10&offset='+((labelPage-1)*10);
+    if(q) url+='&q='+encodeURIComponent(q);
+    if(labelCat) url+='&category='+encodeURIComponent(labelCat);
+    if(chain) url+='&chain='+encodeURIComponent(chain);
+    if(risk) url+='&risk_level='+encodeURIComponent(risk);
+    try{
+        var d=await jsonpFetch(url);
+        if(!d||!d.success)return;
+        labelTotal=d.total||0;
+        var tb=document.getElementById('labelTableBody');
+        if(!d.results||!d.results.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--text-3)">No labels found</td></tr>';document.getElementById('labelPagination').innerHTML='';return;}
+        var riskColors={'critical':'#dc2626','high':'#ef4444','medium':'#f59e0b','low':'#22c997','none':'#8b909c'};
+        var h='';d.results.forEach(function(r){
+            var addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr;
+            var rc=riskColors[r.risk_level]||'#8b909c';
+            h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td>';
+            h+='<td><span class="chain-badge" style="background:rgba(0,200,150,0.08);color:var(--accent)">'+escH(r.chain)+'</span></td>';
+            h+='<td style="font-weight:600;font-size:12px">'+escH(r.entity||'--')+'</td>';
+            h+='<td style="font-size:12px;color:var(--text-2)">'+escH(r.name_tag||'--')+'</td>';
+            h+='<td><span style="font-size:11px;font-weight:600;padding:2px 8px;border-radius:6px;background:'+rc+'14;color:'+rc+'">'+escH(r.category)+'</span></td>';
+            h+='<td><span style="font-size:11px;font-weight:600;color:'+rc+'">'+escH(r.risk_level||'none')+'</span></td>';
+            h+='<td style="font-size:11px;color:var(--text-3)">'+escH(r.source)+'</td></tr>';
+        });
+        tb.innerHTML=h;
+        renderLabelPagination();
+    }catch(e){console.warn('label search fail',e);}
+}
+function escH(s){if(!s)return'';return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderLabelPagination(){
+    var tp=Math.max(1,Math.ceil(labelTotal/10));
+    var c=document.getElementById('labelPagination');
+    if(tp<=1){c.innerHTML='';return;}
+    var maxShow=Math.min(tp,20);
+    var h='<button class="page-btn" onclick="goLabelPage('+(labelPage-1)+')" '+(labelPage<=1?'disabled':'')+'>&#171;</button>';
+    for(var p=1;p<=maxShow;p++){
+        if(maxShow>7&&p>3&&p<maxShow-1&&Math.abs(p-labelPage)>1){if(p===4||p===maxShow-2)h+='<span style="color:var(--text-3);padding:0 4px">...</span>';continue;}
+        h+='<button class="page-btn'+(p===labelPage?' active':'')+'" onclick="goLabelPage('+p+')">'+p+'</button>';
+    }
+    h+='<button class="page-btn" onclick="goLabelPage('+(labelPage+1)+')" '+(labelPage>=maxShow?'disabled':'')+'>&#187;</button>';
+    c.innerHTML=h;
+}
+function goLabelPage(p){var tp=Math.max(1,Math.ceil(labelTotal/10));if(p<1||p>tp)return;labelPage=p;doLabelSearch();document.getElementById('address-labels').scrollIntoView({behavior:'smooth',block:'start'});}
+document.getElementById('labelSearchInput').addEventListener('input',searchLabels);
+document.addEventListener('DOMContentLoaded',function(){loadLabelStats();doLabelSearch();});
+
 // ===== i18n =====
 var I18N = {
   en: {
@@ -443,7 +590,12 @@ var I18N = {
     'tag.allEvents':'All Events','tag.freeze':'Asset Freeze','tag.sanctions':'Sanctions','tag.hack':'Hack','tag.stateActor':'State Actor','tag.highRisk':'High-Risk VASP',
     'table.title':'Recent Frozen Addresses',
     'th.address':'Address','th.chain':'Chain','th.asset':'Asset','th.source':'Source','th.risk':'Risk Level','th.balance':'Freeze Balance','th.time':'Freeze Time',
-    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
+    'labels.title':'Address Intelligence Labels',
+    'ls.total':'Total Labels','ls.addresses':'Unique Addresses','ls.chains':'Chains','ls.entities':'Entities','ls.sources':'Sources',
+    'ls.searchPh':'Search entity, address, or tag...',
+    'ls.loading':'Loading address labels...',
+    'lth.address':'Address','lth.chain':'Chain','lth.entity':'Entity','lth.tag':'Name Tag','lth.category':'Category','lth.risk':'Risk','lth.source':'Source'
   },
   cn: {
     'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.decoder':'取证解码器','nav.compliance':'合规检测','nav.services':'服务','nav.evidence':'执法机构','nav.contact':'联系我们',
@@ -454,7 +606,12 @@ var I18N = {
     'tag.allEvents':'全部事件','tag.freeze':'资产冻结','tag.sanctions':'制裁','tag.hack':'黑客','tag.stateActor':'国家行为者','tag.highRisk':'高风险 VASP',
     'table.title':'最近冻结地址',
     'th.address':'地址','th.chain':'链','th.asset':'资产','th.source':'来源','th.risk':'风险等级','th.balance':'冻结余额','th.time':'冻结时间',
-    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
+    'labels.title':'地址情报标签',
+    'ls.total':'总标签数','ls.addresses':'唯一地址','ls.chains':'链','ls.entities':'实体','ls.sources':'数据源',
+    'ls.searchPh':'搜索实体、地址或标签...',
+    'ls.loading':'正在加载地址标签...',
+    'lth.address':'地址','lth.chain':'链','lth.entity':'实体','lth.tag':'名称标签','lth.category':'分类','lth.risk':'风险','lth.source':'来源'
   }
 };
 var currentLang = localStorage.getItem('ib_lang') || 'en';
