@@ -507,10 +507,10 @@ async function loadLabelStats(){
         // Render category chips
         if(d.by_category){
             var cg=document.getElementById('catGrid');
-            var h='<div class="cat-chip active" onclick="filterLabelCat(\\'\\',this)"><span>All</span><span class="cat-cnt">'+fk(d.total_labels)+'</span></div>';
+            var h='<div class="cat-chip active" onclick="filterLabelCat(&apos;&apos;,this)"><span>All</span><span class="cat-cnt">'+fk(d.total_labels)+'</span></div>';
             d.by_category.forEach(function(c){
                 var icon=CAT_ICONS[c.category]||'\u{1F4CB}';
-                h+='<div class="cat-chip" onclick="filterLabelCat(\\''+c.category+'\\',this)"><span>'+icon+' '+c.category+'</span><span class="cat-cnt">'+fk(c.cnt)+'</span></div>';
+                h+='<div class="cat-chip" onclick="filterLabelCat(&apos;'+c.category+'&apos;,this)"><span>'+icon+' '+c.category+'</span><span class="cat-cnt">'+fk(c.cnt)+'</span></div>';
             });
             cg.innerHTML=h;
         }
