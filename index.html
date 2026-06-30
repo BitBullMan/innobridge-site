@@ -313,7 +313,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-modal-meta{display:flex;align-items:center;gap:12px;font:400 12px var(--f);color:var(--ink3)}
 .pulse-modal-meta a{color:var(--accent);text-decoration:none}
 .pulse-modal-meta a:hover{text-decoration:underline}
-@media(max-width:768px){#market-pulse{padding:0 16px}.pulse-inner{padding-top:32px}.pulse-layout{flex-direction:column;max-height:none}.pulse-gauge-svg{width:160px;height:96px}.pulse-cat-row-title{display:none}.pulse-modal{margin:16px;padding:24px}}
+@media(max-width:768px){.pulse-modal{margin:16px;padding:24px}}
 
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(12px);transition:opacity .45s ease,transform .45s cubic-bezier(.22,1,.36,1)}
@@ -351,6 +351,63 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .stat-cards{gap:12px}
   .footer-grid{grid-template-columns:1fr}
   .footer-bottom{flex-direction:column;gap:8px;text-align:center}
+}
+
+/* COMPLIANCE INTELLIGENCE PREVIEW */
+.ci-preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:0;position:relative}
+.ci-preview-col{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;overflow:hidden}
+.ci-preview-header{display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid var(--hl);font:600 14px var(--f);color:var(--ink)}
+.ci-preview-header svg{color:var(--ink3)}
+.ci-preview-list{max-height:400px;overflow:hidden}
+.ci-preview-item{padding:16px 20px;border-bottom:1px solid var(--hl);transition:background .15s}
+.ci-preview-item:hover{background:var(--s1)}
+.ci-preview-item:last-child{border-bottom:none}
+.ci-preview-item-title{font:500 14px/1.4 var(--f);color:var(--ink);margin-bottom:4px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ci-preview-item-title .flag{font-size:14px}
+.ci-preview-item-desc{font:400 13px/1.5 var(--f);color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:6px}
+.ci-preview-item-meta{display:flex;align-items:center;gap:8px;font:400 11px var(--f);color:var(--ink3);flex-wrap:wrap}
+.ci-preview-item-meta .severity{font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.ci-preview-item-meta .severity.critical{color:var(--danger)}
+.ci-preview-item-meta .severity.high{color:#ea580c}
+.ci-preview-item-meta .severity.medium{color:var(--warn)}
+.ci-preview-item-meta .severity.enforcement{color:var(--danger);background:var(--danger-bg);padding:1px 6px;border-radius:3px;font-size:10px}
+.ci-preview-item-meta .severity.amendment{color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:3px;font-size:10px}
+.ci-preview-item-meta .severity.new{color:var(--accent-h);background:var(--accent-bg);padding:1px 6px;border-radius:3px;font-size:10px}
+.ci-preview-item-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.ci-preview-item-tags span{font:500 10px var(--f);padding:2px 6px;border-radius:3px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl)}
+.ci-preview-fade{position:relative;margin-top:-80px;height:80px;background:linear-gradient(transparent,var(--s1));pointer-events:none;z-index:2}
+.ci-preview-loading{padding:40px;text-align:center;color:var(--ink3);font:400 13px var(--f)}
+
+/* NEWS + PULSE SIDE BY SIDE */
+.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.np-col{min-width:0}
+.np-scroll-wrap{position:relative}
+.np-news-scroll{max-height:620px;overflow-y:auto}
+.pulse-inner-compact{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
+.pulse-layout-compact{display:flex;gap:0;border-top:1px solid var(--hl);max-height:340px}
+.pulse-left-compact{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--hl);overflow:hidden}
+.pulse-left-compact .pulse-cat-list{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.pulse-left-compact .pulse-cat-row{padding:10px 14px;gap:8px}
+.pulse-left-compact .pulse-cat-row-name{width:70px;font-size:12px}
+.pulse-left-compact .pulse-cat-row-pct{width:40px;font-size:14px}
+.pulse-left-compact .pulse-cat-row-title{font-size:11px}
+.pulse-left-compact .pulse-cat-row-icon{width:24px;height:24px;font-size:11px}
+.pulse-right-compact{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.pulse-right-compact .pulse-whale-list{flex:1;overflow-y:auto;max-height:300px}
+.pulse-right-compact .whale-item{padding:8px 14px}
+.pulse-right-compact .whale-desc{font-size:11px}
+.pulse-right-compact .whale-time{font-size:9px}
+.pulse-right-compact .whale-type{font-size:9px}
+
+@media(max-width:1024px){
+  .np-grid{grid-template-columns:1fr}
+  .ci-preview-grid{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .np-grid{grid-template-columns:1fr}
+  .ci-preview-grid{grid-template-columns:1fr}
+  .pulse-layout-compact{flex-direction:column;max-height:none}
+  .pulse-left-compact{border-right:none;border-bottom:1px solid var(--hl)}
 }
 </style>
 </head>
@@ -390,7 +447,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <span data-i18n="hero.cta1">Explore Data</span>
       </a>
-      <a href="#platform" class="btn-s" data-i18n="hero.cta2">Our Services</a>
+      <a href="#compliance-intel" class="btn-s" data-i18n="hero.cta2">Our Services</a>
     </div>
   </div>
 
@@ -434,6 +491,222 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
   </div>
 </section>
+
+
+<!-- COMPLIANCE INTELLIGENCE -->
+<section id="compliance-intel">
+  <div class="wrap">
+    <div class="ci-intro reveal">
+      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
+      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
+      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.</p>
+    </div>
+    <div class="ci-stats reveal">
+      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
+    </div>
+    <div class="ci-preview-grid reveal">
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
+        </div>
+        <div class="ci-preview-list" id="ci-enforcement-preview">
+          <div class="ci-preview-loading">Loading...</div>
+        </div>
+      </div>
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span data-i18n="ci.f3.title">Regulatory Updates</span>
+        </div>
+        <div class="ci-preview-list" id="ci-regulatory-preview">
+          <div class="ci-preview-loading">Loading...</div>
+        </div>
+      </div>
+    </div>
+    <div class="ci-preview-fade"></div>
+    <div class="ci-cta reveal" style="margin-top:-20px;position:relative;z-index:3">
+      <a href="compliance.html" class="btn-p">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS + MARKET PULSE — side by side -->
+<section id="news-pulse-combined" style="background:var(--canvas);padding-top:72px;padding-bottom:72px">
+  <div class="wrap">
+    <div class="np-grid">
+      <div class="np-col">
+        <div class="news-top reveal">
+          <div class="news-top-left">
+            <div class="news-dot"></div>
+            <div>
+              <div class="sec-label" style="margin-bottom:0" data-i18n="news.label">Live News Feed</div>
+              <div style="font:400 12px var(--f);color:var(--ink3);margin-top:2px" data-i18n="news.sub">Real-time crypto & blockchain intelligence</div>
+            </div>
+          </div>
+        </div>
+        <div class="np-scroll-wrap">
+          <div class="news-scroll np-news-scroll" id="news-grid">
+            <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
+          </div>
+        </div>
+      </div>
+      <div class="np-col">
+        <div class="pulse-inner-compact reveal">
+          <div class="pulse-header" style="padding:14px 20px 0">
+            <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
+          </div>
+          <div class="pulse-gauge-wrap" style="padding:8px 20px 0">
+            <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge" style="width:140px;height:84px">
+              <defs>
+                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" style="stop-color:#ef4444"/>
+                  <stop offset="50%" style="stop-color:#f59e0b"/>
+                  <stop offset="100%" style="stop-color:#10b981"/>
+                </linearGradient>
+              </defs>
+              <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+              <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
+              <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
+              <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
+              <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
+              <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
+              <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
+            </svg>
+            <div class="pulse-gauge-val" id="gauge-val" style="font-size:20px;margin-top:0">--</div>
+            <div class="pulse-gauge-label" data-i18n="pulse.sentiment" style="font-size:10px">Market Sentiment Index</div>
+          </div>
+          <div class="pulse-formula" style="padding:2px 16px 10px">
+            <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula" style="font-size:9px;padding:3px 8px">Loading formula...</div>
+          </div>
+          <div class="pulse-layout-compact">
+            <div class="pulse-left-compact">
+              <div class="pulse-cat-list" id="pulse-cat-list">
+                <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+              </div>
+              <div class="pulse-powered">
+                <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
+              </div>
+            </div>
+            <div class="pulse-right-compact">
+              <div class="pulse-whale-header">
+                <div class="pulse-whale-dot"></div>
+                <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
+              </div>
+              <div class="pulse-whale-list" id="whale-list">
+                <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Pulse Detail Modal (keep as-is) -->
+<div class="pulse-modal-overlay" id="pulse-modal-overlay" onclick="if(event.target===this)closePulseModal()">
+  <div class="pulse-modal">
+    <button class="pulse-modal-close" onclick="closePulseModal()">&times;</button>
+    <div class="pulse-modal-cat" id="pm-cat"></div>
+    <h3 id="pm-title"></h3>
+    <div class="pulse-modal-pct-row">
+      <div><div class="pulse-modal-pct-main" id="pm-pct"></div><div class="pulse-modal-pct-label" id="pm-pct-label"></div></div>
+      <div style="flex:1"><div class="pulse-modal-bar"><div class="pulse-modal-bar-fill" id="pm-bar"></div></div></div>
+    </div>
+    <div style="font:600 12px var(--f);text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);margin-bottom:6px;display:flex;align-items:center;gap:6px" id="pm-analysis-header">🤖 AI Category Overview</div>
+    <div class="pulse-modal-analysis" id="pm-analysis"></div>
+    <div class="pulse-modal-meta" id="pm-meta"></div>
+  </div>
+</div>
+
+
+<!-- BLACKLIST DATA — table with fade + search -->
+<section id="blacklist-section">
+  <div class="wrap">
+    <div class="bl-header reveal">
+      <div>
+        <div class="sec-label" data-i18n="bl.label">Blacklist Database</div>
+        <h2 data-i18n="bl.title">Latest Flagged Addresses</h2>
+        <p class="sec-desc" data-i18n="bl.desc">Live data from our frozen address database. Addresses flagged by Tether, Circle, and OFAC sanctions.</p>
+      </div>
+      <div class="bl-search-row">
+        <input class="bl-search" id="aml-address" type="text" placeholder="Check address (0x... or T...)" data-i18n-ph="aml.placeholder">
+        <select id="aml-chain" style="background:var(--canvas);border:1px solid var(--hl);border-radius:7px;padding:9px 10px;font:400 12px var(--m);color:var(--ink);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;width:110px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%238b909c'%3E%3Cpath d='M2 3l3 4 3-4'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center">
+          <option value="eth">Ethereum</option>
+          <option value="btc">Bitcoin</option>
+          <option value="bsc">BNB Chain</option>
+          <option value="trx">TRON</option>
+          <option value="sol">Solana</option>
+          <option value="polygon">Polygon</option>
+          <option value="arb">Arbitrum</option>
+          <option value="avax">Avalanche</option>
+          <option value="op">Optimism</option>
+          <option value="base">Base</option>
+        </select>
+        <button class="bl-search-btn" onclick="runAMLCheck()" data-i18n="aml.btn">Check</button>
+      </div>
+    </div>
+
+    <!-- AML result inline -->
+    <div class="aml-result" id="aml-result">
+      <div class="result-card">
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.address">Address</span><span class="result-val" id="r-addr">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.chain">Chain</span><span class="result-val" id="r-chain">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.asset">Asset</span><span class="result-val" id="r-asset">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.label">Label</span><span class="result-val" id="r-label">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.risk">Risk Level</span><span class="result-val" id="r-risk">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.frozen">Frozen Amount</span><span class="result-val" id="r-frozen">-</span></div>
+        <div class="result-row"><span class="result-key" data-i18n="aml.r.source">Source</span><span class="result-val" id="r-source">-</span></div>
+      </div>
+      <p class="aml-note" data-i18n="aml.note">* Live data from OFAC SDN, Tether & Circle on-chain blacklists, and our proprietary label database.</p>
+    </div>
+
+    <div class="bl-fade reveal">
+      <div class="bl-table-wrap">
+        <table class="bl-table">
+          <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Frozen Amount</th><th>Freeze Time (UTC+8)</th></tr></thead>
+          <tbody id="blacklist-preview"><tr><td colspan="5" class="bl-loading">Loading blacklist data...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="bl-view-more reveal">
+      <a href="dashboard.html">View Full Dashboard <span style="margin-left:4px">&rarr;</span></a>
+    </div>
+  </div>
+</section>
+
+
+<!-- LAW ENFORCEMENT RESOURCES -->
+<section id="law-enforcement">
+  <div class="wrap">
+    <div class="le-intro reveal">
+      <div class="sec-label" data-i18n="le.label">For Law Enforcement</div>
+      <h2 data-i18n="le.title">Evidence Request Procedures</h2>
+      <p class="sec-desc" data-i18n="le.desc">Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.</p>
+    </div>
+    <div class="le-stats reveal">
+      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c1.val">68</div><div class="le-stat-label" data-i18n="le.c1.label">Exchanges</div></div>
+      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c2.val">10</div><div class="le-stat-label" data-i18n="le.c2.label">Wallets</div></div>
+      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c3.val">4</div><div class="le-stat-label" data-i18n="le.c3.label">Swap Platforms</div></div>
+      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c4.val">3</div><div class="le-stat-label" data-i18n="le.c4.label">Mining Pools</div></div>
+    </div>
+    <div class="le-cta reveal">
+      <a href="evidence-collection.html" class="btn-p">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
+        <span data-i18n="le.cta">View Full Evidence Directory</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 
 <!-- PLATFORM — Blockchain Compliance explained -->
 <section id="platform">
@@ -496,233 +769,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- COMPLIANCE INTELLIGENCE -->
-<section id="compliance-intel">
-  <div class="wrap">
-    <div class="ci-intro reveal">
-      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
-      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
-      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.</p>
-    </div>
-    <div class="ci-stats reveal">
-      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
-    </div>
-    <div class="ci-features reveal">
-      <div class="ci-card">
-        <div class="ci-card-icon" style="background:var(--blue-bg);color:var(--blue)">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
-        </div>
-        <h3 data-i18n="ci.f1.title">Jurisdiction Profiles</h3>
-        <p data-i18n="ci.f1.desc">Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.</p>
-      </div>
-      <div class="ci-card">
-        <div class="ci-card-icon" style="background:var(--danger-bg);color:var(--danger)">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <h3 data-i18n="ci.f2.title">Enforcement Tracker</h3>
-        <p data-i18n="ci.f2.desc">Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.</p>
-      </div>
-      <div class="ci-card">
-        <div class="ci-card-icon" style="background:var(--accent-bg);color:var(--accent-h)">
-          <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-        </div>
-        <h3 data-i18n="ci.f3.title">Regulatory Updates</h3>
-        <p data-i18n="ci.f3.desc">Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.</p>
-      </div>
-    </div>
-    <div class="ci-cta reveal">
-      <a href="compliance.html" class="btn-p">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- BLACKLIST DATA — table with fade + search -->
-<section id="blacklist-section">
-  <div class="wrap">
-    <div class="bl-header reveal">
-      <div>
-        <div class="sec-label" data-i18n="bl.label">Blacklist Database</div>
-        <h2 data-i18n="bl.title">Latest Flagged Addresses</h2>
-        <p class="sec-desc" data-i18n="bl.desc">Live data from our frozen address database. Addresses flagged by Tether, Circle, and OFAC sanctions.</p>
-      </div>
-      <div class="bl-search-row">
-        <input class="bl-search" id="aml-address" type="text" placeholder="Check address (0x... or T...)" data-i18n-ph="aml.placeholder">
-        <select id="aml-chain" style="background:var(--canvas);border:1px solid var(--hl);border-radius:7px;padding:9px 10px;font:400 12px var(--m);color:var(--ink);outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;width:110px;background-image:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%238b909c'%3E%3Cpath d='M2 3l3 4 3-4'/%3E%3C/svg%3E&quot;);background-repeat:no-repeat;background-position:right 8px center">
-          <option value="eth">Ethereum</option>
-          <option value="btc">Bitcoin</option>
-          <option value="bsc">BNB Chain</option>
-          <option value="trx">TRON</option>
-          <option value="sol">Solana</option>
-          <option value="polygon">Polygon</option>
-          <option value="arb">Arbitrum</option>
-          <option value="avax">Avalanche</option>
-          <option value="op">Optimism</option>
-          <option value="base">Base</option>
-        </select>
-        <button class="bl-search-btn" onclick="runAMLCheck()" data-i18n="aml.btn">Check</button>
-      </div>
-    </div>
-
-    <!-- AML result inline -->
-    <div class="aml-result" id="aml-result">
-      <div class="result-card">
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.address">Address</span><span class="result-val" id="r-addr">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.chain">Chain</span><span class="result-val" id="r-chain">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.asset">Asset</span><span class="result-val" id="r-asset">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.label">Label</span><span class="result-val" id="r-label">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.risk">Risk Level</span><span class="result-val" id="r-risk">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.frozen">Frozen Amount</span><span class="result-val" id="r-frozen">-</span></div>
-        <div class="result-row"><span class="result-key" data-i18n="aml.r.source">Source</span><span class="result-val" id="r-source">-</span></div>
-      </div>
-      <p class="aml-note" data-i18n="aml.note">* Live data from OFAC SDN, Tether & Circle on-chain blacklists, and our proprietary label database.</p>
-    </div>
-
-    <div class="bl-fade reveal">
-      <div class="bl-table-wrap">
-        <table class="bl-table">
-          <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Frozen Amount</th><th>Freeze Time (UTC+8)</th></tr></thead>
-          <tbody id="blacklist-preview"><tr><td colspan="5" class="bl-loading">Loading blacklist data...</td></tr></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="bl-view-more reveal">
-      <a href="dashboard.html">View Full Dashboard <span style="margin-left:4px">&rarr;</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- MARKET PULSE + WHALE ALERTS -->
-<div id="market-pulse">
-  <div class="pulse-inner reveal">
-    <div class="pulse-header">
-      <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
-    </div>
-    <!-- Gauge centered above panels -->
-    <div class="pulse-gauge-wrap">
-      <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge">
-        <defs>
-          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:#ef4444"/>
-            <stop offset="50%" style="stop-color:#f59e0b"/>
-            <stop offset="100%" style="stop-color:#10b981"/>
-          </linearGradient>
-        </defs>
-        <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
-        <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
-        <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
-        <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
-        <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
-        <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
-        <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
-      </svg>
-      <div class="pulse-gauge-val" id="gauge-val">--</div>
-      <div class="pulse-gauge-label" data-i18n="pulse.sentiment">Market Sentiment Index</div>
-    </div>
-    <div class="pulse-formula" id="pulse-formula">
-      <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula">Loading formula...</div>
-    </div>
-    <div class="pulse-layout">
-      <!-- Left: Category List -->
-      <div class="pulse-left">
-        <div class="pulse-cat-list" id="pulse-cat-list">
-          <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
-        </div>
-        <div class="pulse-powered">
-          <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
-        </div>
-      </div>
-      <!-- Right: Whale Alerts -->
-      <div class="pulse-right">
-        <div class="pulse-whale-header">
-          <div class="pulse-whale-dot"></div>
-          <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
-        </div>
-        <div class="pulse-whale-list" id="whale-list">
-          <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- Pulse Detail Modal (keep as-is) -->
-<div class="pulse-modal-overlay" id="pulse-modal-overlay" onclick="if(event.target===this)closePulseModal()">
-  <div class="pulse-modal">
-    <button class="pulse-modal-close" onclick="closePulseModal()">&times;</button>
-    <div class="pulse-modal-cat" id="pm-cat"></div>
-    <h3 id="pm-title"></h3>
-    <div class="pulse-modal-pct-row">
-      <div><div class="pulse-modal-pct-main" id="pm-pct"></div><div class="pulse-modal-pct-label" id="pm-pct-label"></div></div>
-      <div style="flex:1"><div class="pulse-modal-bar"><div class="pulse-modal-bar-fill" id="pm-bar"></div></div></div>
-    </div>
-    <div style="font:600 12px var(--f);text-transform:uppercase;letter-spacing:.4px;color:var(--ink3);margin-bottom:6px;display:flex;align-items:center;gap:6px" id="pm-analysis-header">🤖 AI Category Overview</div>
-    <div class="pulse-modal-analysis" id="pm-analysis"></div>
-    <div class="pulse-modal-meta" id="pm-meta"></div>
-  </div>
-</div>
-
-<!-- LAW ENFORCEMENT RESOURCES -->
-<section id="law-enforcement">
-  <div class="wrap">
-    <div class="le-intro reveal">
-      <div class="sec-label" data-i18n="le.label">For Law Enforcement</div>
-      <h2 data-i18n="le.title">Evidence Request Procedures</h2>
-      <p class="sec-desc" data-i18n="le.desc">Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.</p>
-    </div>
-    <div class="le-stats reveal">
-      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c1.val">68</div><div class="le-stat-label" data-i18n="le.c1.label">Exchanges</div></div>
-      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c2.val">10</div><div class="le-stat-label" data-i18n="le.c2.label">Wallets</div></div>
-      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c3.val">4</div><div class="le-stat-label" data-i18n="le.c3.label">Swap Platforms</div></div>
-      <div class="le-stat"><div class="le-stat-val" data-i18n="le.c4.val">3</div><div class="le-stat-label" data-i18n="le.c4.label">Mining Pools</div></div>
-    </div>
-    <div class="le-cta reveal">
-      <a href="evidence-collection.html" class="btn-p">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/></svg>
-        <span data-i18n="le.cta">View Full Evidence Directory</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- NEWS — list with popup -->
-<section id="news">
-  <div class="wrap">
-    <div class="news-top reveal">
-      <div class="news-top-left">
-        <div class="news-dot"></div>
-        <div>
-          <div class="sec-label" style="margin-bottom:0" data-i18n="news.label">Live News Feed</div>
-          <div style="font:400 12px var(--f);color:var(--ink3);margin-top:2px" data-i18n="news.sub">Real-time crypto & blockchain intelligence</div>
-        </div>
-      </div>
-    </div>
-    <div class="news-main">
-      <div class="news-scroll" id="news-grid">
-        <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
-      </div>
-      <div id="news-more" style="display:none">
-        <button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- NEWS MODAL -->
-<div class="news-modal-overlay" id="news-modal-overlay" onclick="if(event.target===this)closeNewsModal()">
-  <div class="news-modal">
-    <button class="news-modal-close" onclick="closeNewsModal()">&times;</button>
-    <div class="news-modal-source" id="modal-source"></div>
-    <h3 id="modal-title"></h3>
-    <div class="news-modal-body" id="modal-body"></div>
-    <div class="news-modal-meta" id="modal-meta"></div>
-  </div>
-</div>
 
 <!-- CONTACT -->
 <section id="contact">
@@ -775,6 +821,17 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
   </div>
 </section>
+
+<!-- NEWS MODAL -->
+<div class="news-modal-overlay" id="news-modal-overlay" onclick="if(event.target===this)closeNewsModal()">
+  <div class="news-modal">
+    <button class="news-modal-close" onclick="closeNewsModal()">&times;</button>
+    <div class="news-modal-source" id="modal-source"></div>
+    <h3 id="modal-title"></h3>
+    <div class="news-modal-body" id="modal-body"></div>
+    <div class="news-modal-meta" id="modal-meta"></div>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -1391,6 +1448,59 @@ applyLang(currentLang);
       container.innerHTML = html;
     })
     .catch(function() {});
+})();
+
+
+// ===== COMPLIANCE INTEL PREVIEW =====
+(function loadCompliancePreview(){
+  var flagMap = {US:'\u{1F1FA}\u{1F1F8}',EU:'\u{1F1EA}\u{1F1FA}',CN:'\u{1F1E8}\u{1F1F3}',HK:'\u{1F1ED}\u{1F1F0}',GB:'\u{1F1EC}\u{1F1E7}',AE:'\u{1F1E6}\u{1F1EA}',KR:'\u{1F1F0}\u{1F1F7}',JP:'\u{1F1EF}\u{1F1F5}',SG:'\u{1F1F8}\u{1F1EC}',CH:'\u{1F1E8}\u{1F1ED}'};
+  fetch(API_BASE + '?action=enforcement_actions&limit=4')
+    .then(function(r){ return r.json(); })
+    .then(function(resp){
+      var items = (resp && resp.success && resp.items) ? resp.items : [];
+      var container = document.getElementById('ci-enforcement-preview');
+      if(!container || items.length === 0) return;
+      var html = '';
+      items.forEach(function(item){
+        var flag = flagMap[item.jurisdiction] || '';
+        var sevClass = (item.severity||'').toLowerCase();
+        var dateStr = item.date ? new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        var tags = (item.tags||[]).slice(0,4);
+        html += '<div class="ci-preview-item">'
+          + '<div class="ci-preview-item-title"><span class="flag">' + flag + '</span>' + escHtml(item.title||'') + '</div>'
+          + '<div class="ci-preview-item-desc">' + escHtml(item.description||'') + '</div>'
+          + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.jurisdiction||'') + '</span>'
+          + '<span class="severity ' + sevClass + '">' + escHtml(item.severity||'') + '</span></div>'
+          + (tags.length ? '<div class="ci-preview-item-tags">' + tags.map(function(t){return '<span>'+escHtml(t)+'</span>'}).join('') + '</div>' : '')
+          + '</div>';
+      });
+      container.innerHTML = html;
+    }).catch(function(){});
+  fetch(API_BASE + '?action=regulatory_updates&limit=4')
+    .then(function(r){ return r.json(); })
+    .then(function(resp){
+      var items = (resp && resp.success && resp.items) ? resp.items : [];
+      var container = document.getElementById('ci-regulatory-preview');
+      if(!container || items.length === 0) return;
+      var html = '';
+      items.forEach(function(item){
+        var flag = flagMap[item.jurisdiction] || '';
+        var typeClass = (item.update_type||'').toLowerCase().replace(/[^a-z]/g,'');
+        var dateStr = item.effective_date ? new Date(item.effective_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+        var tags = (item.tags||[]).slice(0,4);
+        var sourceLink = item.source_url ? ' <a href="'+item.source_url+'" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500">' + escHtml(item.source_name||'Source') + ' \u2197</a>' : '';
+        html += '<div class="ci-preview-item">'
+          + '<div class="ci-preview-item-title"><span class="flag">' + flag + '</span>' + escHtml(item.title||'')
+          + ' <span class="severity ' + typeClass + '">' + escHtml(item.update_type||'') + '</span></div>'
+          + '<div class="ci-preview-item-desc">' + escHtml(item.description||'') + '</div>'
+          + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.jurisdiction||'') + '</span>'
+          + '<span class="severity ' + ((item.impact_level||'').toLowerCase()) + '">' + escHtml(item.impact_level||'') + '</span>'
+          + sourceLink + '</div>'
+          + (tags.length ? '<div class="ci-preview-item-tags">' + tags.map(function(t){return '<span>'+escHtml(t)+'</span>'}).join('') + '</div>' : '')
+          + '</div>';
+      });
+      container.innerHTML = html;
+    }).catch(function(){});
 })();
 
 // ===== MARKET PULSE — 5 Category Cards =====
