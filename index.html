@@ -408,11 +408,14 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 }
 
 /* COMPLIANCE INTELLIGENCE PREVIEW */
-.ci-preview-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:0;position:relative}
+.ci-preview-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-bottom:0;position:relative}
 .ci-preview-col{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;overflow:hidden}
 .ci-preview-header{display:flex;align-items:center;gap:8px;padding:14px 20px;border-bottom:1px solid var(--hl);font:600 14px var(--f);color:var(--ink)}
 .ci-preview-header svg{color:var(--ink3)}
-.ci-preview-list{max-height:400px;overflow:hidden}
+.ci-preview-list{max-height:420px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--s3) transparent}
+.ci-preview-list::-webkit-scrollbar{width:4px}
+.ci-preview-list::-webkit-scrollbar-track{background:transparent}
+.ci-preview-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
 .ci-preview-item{padding:16px 20px;border-bottom:1px solid var(--hl);transition:background .15s}
 .ci-preview-item:hover{background:var(--s1)}
 .ci-preview-item:last-child{border-bottom:none}
@@ -427,6 +430,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .ci-preview-item-meta .severity.enforcement{color:var(--danger);background:var(--danger-bg);padding:1px 6px;border-radius:3px;font-size:10px}
 .ci-preview-item-meta .severity.amendment{color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:3px;font-size:10px}
 .ci-preview-item-meta .severity.new{color:var(--accent-h);background:var(--accent-bg);padding:1px 6px;border-radius:3px;font-size:10px}
+.ci-preview-item-meta .severity.compliance{color:var(--accent-h);background:var(--accent-bg);padding:1px 6px;border-radius:3px;font-size:10px}
+.ci-preview-item-meta .severity.regulatory{color:var(--blue);background:var(--blue-bg);padding:1px 6px;border-radius:3px;font-size:10px}
 .ci-preview-item-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 .ci-preview-item-tags span{font:500 10px var(--f);padding:2px 6px;border-radius:3px;background:var(--s1);color:var(--ink3);border:1px solid var(--hl)}
 .ci-preview-fade{position:relative;margin-top:-80px;height:80px;background:linear-gradient(transparent,var(--s1));pointer-events:none;z-index:2}
@@ -550,6 +555,62 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
+<!-- COMPLIANCE INTELLIGENCE -->
+<section id="compliance-intel">
+  <div class="wrap">
+    <div class="ci-intro reveal">
+      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
+      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
+      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.</p>
+    </div>
+    <div class="ci-stats reveal">
+      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
+    </div>
+    <div class="ci-preview-grid reveal">
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
+        </div>
+        <div class="ci-preview-list" id="ci-enforcement-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇪🇺</span>Unauthorized EU CASPs face MiCA transition pressure</div><div class="ci-preview-item-desc">EU crypto firms without authorization need orderly wind-down, licensing, or customer access controls as transition windows close.</div><div class="ci-preview-item-meta"><span>EU</span><span>MiCA</span><span class="severity enforcement">Enforcement</span></div></div>
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇭🇰</span>Hong Kong VASP supervision remains active</div><div class="ci-preview-item-desc">Retail-facing platforms should monitor licensing, custody, token admission, and customer protection requirements.</div><div class="ci-preview-item-meta"><span>HK</span><span>VASP</span><span class="severity high">High</span></div></div>
+        </div>
+      </div>
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span data-i18n="ci.f3.title">Regulatory Updates</span>
+        </div>
+        <div class="ci-preview-list" id="ci-regulatory-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇺🇸</span>Stablecoin issuer controls stay in focus</div><div class="ci-preview-item-desc">Reserve, licensing, audit, and issuer compliance requirements remain near-term policy catalysts.</div><div class="ci-preview-item-meta"><span>US</span><span>Stablecoin</span><span class="severity new">New</span></div></div>
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🌍</span>FATF Travel Rule and VASP supervision watch</div><div class="ci-preview-item-desc">Supervisors continue to test whether VASPs can operationalize screening, monitoring, and cross-border transfer controls.</div><div class="ci-preview-item-meta"><span>Global</span><span>FATF</span><span class="severity regulatory">Watch</span></div></div>
+        </div>
+      </div>
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          <span data-i18n="ci.news.title">Compliance News Signals</span>
+        </div>
+        <div class="ci-preview-list" id="ci-news-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>Filtering live news for compliance signals</div><div class="ci-preview-item-desc">Relevant regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT items from the news feed will appear here by latest time.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Compliance</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ci-preview-fade"></div>
+    <div class="ci-cta reveal" style="margin-top:-20px;position:relative;z-index:3">
+      <a href="compliance.html" class="btn-p">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- INTELLIGENCE PLATFORM — product architecture -->
 <section id="intelligence-platform">
   <div class="wrap">
@@ -590,53 +651,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 </section>
 
 
-<!-- COMPLIANCE INTELLIGENCE -->
-<section id="compliance-intel">
-  <div class="wrap">
-    <div class="ci-intro reveal">
-      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
-      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
-      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.</p>
-    </div>
-    <div class="ci-stats reveal">
-      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
-    </div>
-    <div class="ci-preview-grid reveal">
-      <div class="ci-preview-col">
-        <div class="ci-preview-header">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
-        </div>
-        <div class="ci-preview-list" id="ci-enforcement-preview">
-          <div class="ci-preview-item"><div class="ci-preview-title"><span>🇪🇺</span> Unauthorized EU CASPs face MiCA transition pressure</div><div class="ci-preview-desc">EU crypto firms without authorization need orderly wind-down, licensing, or customer access controls as transition windows close.</div><div class="ci-preview-meta"><span>EU</span><span>MiCA</span><span>Licensing</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-title"><span>🇭🇰</span> Hong Kong VASP supervision remains active</div><div class="ci-preview-desc">Retail-facing platforms should monitor licensing, custody, token admission, and customer protection requirements.</div><div class="ci-preview-meta"><span>HK</span><span>VASP</span><span>Custody</span></div></div>
-        </div>
-      </div>
-      <div class="ci-preview-col">
-        <div class="ci-preview-header">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          <span data-i18n="ci.f3.title">Regulatory Updates</span>
-        </div>
-        <div class="ci-preview-list" id="ci-regulatory-preview">
-          <div class="ci-preview-item"><div class="ci-preview-title"><span>🇺🇸</span> Stablecoin issuer controls stay in focus</div><div class="ci-preview-desc">Reserve, licensing, audit, and issuer compliance requirements remain near-term policy catalysts.</div><div class="ci-preview-meta"><span>US</span><span>Stablecoin</span><span>Issuer</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-title"><span>🌍</span> FATF Travel Rule and VASP supervision watch</div><div class="ci-preview-desc">Supervisors continue to test whether VASPs can operationalize screening, monitoring, and cross-border transfer controls.</div><div class="ci-preview-meta"><span>Global</span><span>FATF</span><span>AML/CFT</span></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="ci-preview-fade"></div>
-    <div class="ci-cta reveal" style="margin-top:-20px;position:relative;z-index:3">
-      <a href="compliance.html" class="btn-p">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
-      </a>
-    </div>
-  </div>
-</section>
-
 <!-- NEWS + MARKET PULSE — side by side -->
 <section id="news-pulse-combined" style="background:var(--canvas);padding-top:72px;padding-bottom:72px">
   <div class="wrap">
@@ -655,6 +669,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <div class="news-scroll np-news-scroll" id="news-grid">
             <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
           </div>
+          <div id="news-more" style="display:none"><button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button></div>
         </div>
       </div>
       <div class="np-col">
@@ -1087,7 +1102,8 @@ function renderNewsCards(items){
   var grid = document.getElementById('news-grid');
   if(items.length === 0){
     grid.innerHTML = '<div class="news-empty">No news yet. Check back soon!</div>';
-    document.getElementById('news-more').style.display = 'none';
+    var moreEmpty = document.getElementById('news-more');
+    if(moreEmpty) moreEmpty.style.display = 'none';
     return;
   }
   var html = '';
@@ -1143,7 +1159,8 @@ function loadNews(){
       allNews = allNews.concat(data);
       renderNewsCards(allNews);
       newsOffset += data.length;
-      document.getElementById('news-more').style.display = data.length >= NEWS_PAGE ? '' : 'none';
+      var more = document.getElementById('news-more');
+      if(more) more.style.display = data.length >= NEWS_PAGE ? '' : 'none';
     } else {
       if(allNews.length === 0) renderPlaceholderNews();
     }
@@ -1159,6 +1176,7 @@ function reloadNewsForLang(){
   var grid = document.getElementById('news-grid');
   if(grid) grid.innerHTML = '';
   loadNews();
+  loadComplianceNewsSignals();
 }
 
 function loadMoreNews(){
@@ -1175,6 +1193,68 @@ function renderPlaceholderNews(){
   renderNewsCards(placeholders);
 }
 
+function complianceSignalType(item){
+  var text = ((item.title||'') + ' ' + (item.content||'') + ' ' + (item.summary||'') + ' ' + (item.category||'')).toLowerCase();
+  if(/enforcement|lawsuit|sued|charge|charged|fine|penalty|settlement|probe|investigation|indictment|arrest|seizure|freeze order|cease and desist|sec |cftc|doj|ofac|fca|esma|sfc|mas|vara/.test(text)) return 'enforcement';
+  if(/regulation|regulatory|rule|law|bill|act |policy|guidance|consultation|framework|mica|fatf|travel rule|licens|registration|vasp|casp|aml|cft|kyc|stablecoin issuer|reserve|attestation/.test(text)) return 'regulatory';
+  if(/compliance|sanction|blacklist|blacklisted|freeze|frozen|issuer|tether|circle|usdt|usdc|risk control|monitoring|screening|wallet address|address/.test(text)) return 'compliance';
+  return '';
+}
+
+function complianceRegionFlag(item){
+  var text = ((item.title||'') + ' ' + (item.content||'') + ' ' + (item.summary||'')).toLowerCase();
+  if(/\beu\b|europe|european|mica|esma|france|germany|italy|netherlands/.test(text)) return '🇪🇺';
+  if(/\bus\b|united states|america|sec |cftc|doj|ofac|treasury|senate|congress/.test(text)) return '🇺🇸';
+  if(/hong kong|\bhk\b|sfc/.test(text)) return '🇭🇰';
+  if(/singapore|mas\b/.test(text)) return '🇸🇬';
+  if(/korea|korean/.test(text)) return '🇰🇷';
+  if(/japan|japanese/.test(text)) return '🇯🇵';
+  if(/china|chinese/.test(text)) return '🇨🇳';
+  if(/uae|dubai|abu dhabi|vara/.test(text)) return '🇦🇪';
+  if(/uk |britain|fca|united kingdom/.test(text)) return '🇬🇧';
+  return '🌍';
+}
+
+function renderComplianceNewsSignals(items){
+  var container = document.getElementById('ci-news-preview');
+  if(!container) return;
+  var signals = (items||[]).filter(function(item){ return complianceSignalType(item); })
+    .sort(function(a,b){
+      return new Date(b.published_at||b.created_at||0) - new Date(a.published_at||a.created_at||0);
+    })
+    .slice(0,12);
+  if(!signals.length){
+    container.innerHTML = '<div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>No compliance news signals yet</div><div class="ci-preview-item-desc">Regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT news will appear here as soon as matching items are available.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Watching</span></div></div>';
+    return;
+  }
+  var html = '';
+  signals.forEach(function(item){
+    var type = complianceSignalType(item);
+    var dateStr = timeAgo(item.published_at||item.created_at||new Date().toISOString());
+    var title = decodeHtml(item.title||'');
+    var desc = decodeHtml(item.content||item.summary||'');
+    html += '<div class="ci-preview-item">'
+      + '<div class="ci-preview-item-title"><span class="flag">' + complianceRegionFlag(item) + '</span>' + escHtml(title) + '</div>'
+      + '<div class="ci-preview-item-desc">' + escHtml(desc) + '</div>'
+      + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.source||'News') + '</span><span class="severity ' + type + '">' + type + '</span></div>'
+      + '</div>';
+  });
+  container.innerHTML = html;
+}
+
+function loadComplianceNewsSignals(){
+  var lang = getNewsLang();
+  fetch(API_BASE + '?action=news&limit=40&offset=0&lang='+lang)
+  .then(function(r){ return r.json(); })
+  .then(function(resp){
+    var data = (resp && resp.success && resp.items) ? resp.items : [];
+    renderComplianceNewsSignals(data);
+  })
+  .catch(function(){
+    renderComplianceNewsSignals([]);
+  });
+}
+
 function escHtml(s){
   var d=document.createElement('div');d.textContent=s;return d.innerHTML;
 }
@@ -1184,6 +1264,7 @@ function decodeHtml(s){
 }
 
 loadNews();
+loadComplianceNewsSignals();
 
 // ===== WHALE ALERTS SIDEBAR =====
 var _whaleLongShortRatio = 50; // default 50:50
@@ -1421,11 +1502,11 @@ var I18N = {
     'le.label':'For Law Enforcement','le.title':'Evidence Request Procedures','le.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
     'le.c1.val':'68','le.c1.label':'Exchanges','le.c2.val':'10','le.c2.label':'Wallets','le.c3.val':'4','le.c3.label':'Swap Platforms','le.c4.val':'3','le.c4.label':'Mining Pools',
     'le.cta':'View Full Evidence Directory',
-    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Navigate jurisdiction-specific AML requirements, risk rules, and enforcement actions across 10 major financial centers. Real-time regulatory tracking powered by our compliance intelligence engine.',
+    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.',
     'ci.s1':'Jurisdictions','ci.s2':'Regulations','ci.s3':'Enforcement Cases','ci.s4':'Risk Rules','ci.s5':'Regulated Entities',
     'ci.f1.title':'Jurisdiction Profiles','ci.f1.desc':'Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.',
     'ci.f2.title':'Enforcement Tracker','ci.f2.desc':'Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.',
-    'ci.f3.title':'Regulatory Updates','ci.f3.desc':'Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.',
+    'ci.f3.title':'Regulatory Updates','ci.f3.desc':'Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.','ci.news.title':'Compliance News Signals',
     'ci.cta':'Explore Compliance Intelligence',
     'ct.label':'Contact','ct.title':'Join the intelligence waitlist.','ct.desc':'Tell us which stablecoin, sanctions, address, or regulatory signals you want Innobridge to monitor.',
     'ct.email':'info@innobridge.io','ct.response':'Response within 24 hours','ct.web':'innobridge.io',
@@ -1461,11 +1542,11 @@ var I18N = {
     'le.label':'执法支持','le.title':'取证请求流程','le.desc':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
     'le.c1.val':'68','le.c1.label':'交易所','le.c2.val':'10','le.c2.label':'钱包','le.c3.val':'4','le.c3.label':'闪兑平台','le.c4.val':'3','le.c4.label':'矿池',
     'le.cta':'查看完整取证目录',
-    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'覆盖10个主要金融中心的司法管辖区 AML 要求、风险规则和执法行动。由我们的合规情报引擎驱动实时法规追踪。',
+    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'覆盖主要金融中心的 AML 要求、风险规则、执法行动和合规相关新闻。系统会从实时新闻流中筛选合规信号，并按最新发布时间展示。',
     'ci.s1':'司法管辖区','ci.s2':'法规','ci.s3':'执法案例','ci.s4':'风险规则','ci.s5':'持牌实体',
     'ci.f1.title':'司法管辖区档案','ci.f1.desc':'每个管辖区的完整合规档案：法规、风险规则、执法案例、法规动态和持牌实体。',
     'ci.f2.title':'执法追踪','ci.f2.desc':'追踪全球对加密实体的重大监管行动 — 从 SEC 和解到欧盟 MiCA 执法和 VARA 处罚。',
-    'ci.f3.title':'法规动态','ci.f3.desc':'实时更新各管辖区的新立法、修正案和政策指引。可按地区和类型筛选。',
+    'ci.f3.title':'法规动态','ci.f3.desc':'实时更新各管辖区的新立法、修正案和政策指引。可按地区和类型筛选。','ci.news.title':'合规新闻信号',
     'ci.cta':'探索合规情报',
     'ct.label':'联系我们','ct.title':'加入情报产品候补名单。','ct.desc':'告诉我们你希望 Innobridge 监测哪些稳定币、制裁、地址或监管信号。',
     'ct.email':'info@innobridge.io','ct.response':'24 小时内回复','ct.web':'innobridge.io',
