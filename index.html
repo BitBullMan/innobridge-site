@@ -480,9 +480,9 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <ul class="nav-links">
     <li><a href="#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
     <li><a href="#blacklist-section" data-i18n="nav.blacklist">Data</a></li>
-    <li><a href="compliance.html" data-i18n="nav.calendar">Calendar</a></li>
+    <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
     <li><a href="#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
-    <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+    <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <div class="nav-right">
@@ -508,7 +508,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <div class="hero-proof">
       <span class="proof-pill" data-i18n="hero.pill1">Stablecoin Freeze</span>
       <span class="proof-pill" data-i18n="hero.pill2">Sanctions Watchlist</span>
-      <span class="proof-pill" data-i18n="hero.pill3">Compliance Calendar</span>
+      <span class="proof-pill" data-i18n="hero.pill3">Compliance Signals</span>
       <span class="proof-pill" data-i18n="hero.pill4">Daily / Weekly Briefing</span>
     </div>
     <p class="hero-note" data-i18n="hero.note">Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.</p>
@@ -636,7 +636,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       </div>
       <div class="intel-card reveal">
         <div class="intel-num">03</div>
-        <h3 data-i18n="ip.m3.title">Compliance Intelligence Calendar</h3>
+        <h3 data-i18n="ip.m3.title">Regulatory Deadline Intelligence</h3>
         <p data-i18n="ip.m3.desc">Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.</p>
         <span class="intel-tag" data-i18n="ip.m3.tag">Deadline Signal</span>
       </div>
@@ -792,7 +792,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       </div>
     </div>
     <div class="bl-view-more reveal">
-      <a href="dashboard.html">View Full Dashboard <span style="margin-left:4px">&rarr;</span></a>
+      <a href="dashboard.html">View Full Freeze Data <span style="margin-left:4px">&rarr;</span></a>
     </div>
   </div>
 </section>
@@ -853,7 +853,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         </div>
         <h3 data-i18n="svc.3.title">Regulatory Deadline Intelligence</h3>
         <p data-i18n="svc.3.desc">Turn MiCA, FATF, Hong Kong, US, Singapore, Korea, Japan, and other updates into affected-entity guidance and watch items.</p>
-        <span class="svc-tag" data-i18n="svc.3.tag">Calendar</span>
+        <span class="svc-tag" data-i18n="svc.3.tag">Deadline</span>
       </div>
       <div class="service-card reveal">
         <div class="service-card-icon" style="background:var(--danger-bg);color:var(--danger)">
@@ -914,7 +914,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
             <option value="" data-i18n="ct.f.opt0">Select...</option>
             <option data-i18n="ct.f.opt1">Stablecoin Freeze / Blacklist Tracker</option>
             <option data-i18n="ct.f.opt2">Sanctions-related Address Watchlist</option>
-            <option data-i18n="ct.f.opt3">Compliance Intelligence Calendar</option>
+            <option data-i18n="ct.f.opt3">Compliance Deadline Signals</option>
             <option data-i18n="ct.f.opt4">Daily / Weekly Briefing</option>
             <option data-i18n="ct.f.opt6">Pro Watchlist / Alerts</option>
           </select>
@@ -950,10 +950,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
     <div class="footer-col">
       <h4 data-i18n="ft.platform">Platform</h4>
-      <a href="dashboard.html" data-i18n="ft.dashboard">Dashboard</a>
+      <a href="dashboard.html" data-i18n="ft.dashboard">Freeze Data</a>
       <a href="#blacklist-section" data-i18n="ft.blacklist">Blacklist Data</a>
       <a href="evidence-collection.html" data-i18n="ft.evidence">Evidence Directory</a>
-      <a href="compliance.html" data-i18n="ft.compliance">Compliance Calendar</a>
+      <a href="compliance.html" data-i18n="ft.compliance">Compliance Signals</a>
       <a href="#platform" data-i18n="ft.services">Services</a>
     </div>
     <div class="footer-col">
@@ -1479,13 +1479,13 @@ document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.calendar':'Calendar','nav.briefing':'Briefing','nav.dashboard':'Dashboard','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
+    'nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.calendar':'Compliance','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into source-backed compliance intelligence for teams that need to understand what changed and what to watch next.',
-    'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Calendar','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.',
+    'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
-    'ip.m3.title':'Compliance Intelligence Calendar','ip.m3.desc':'Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.','ip.m3.tag':'Deadline Signal',
+    'ip.m3.title':'Regulatory Deadline Intelligence','ip.m3.desc':'Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.','ip.m3.tag':'Deadline Signal',
     'ip.m4.title':'Daily / Weekly Intelligence Briefing','ip.m4.desc':'Publish Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact in a readable format.','ip.m4.tag':'Newsletter',
     'stat.total':'Total Frozen Addresses','stat.funds':'Total Frozen Funds','stat.funds.sub':'Across USDT & USDC','stat.risk':'USDT Addresses',
     'bl.label':'Blacklist Database','bl.title':'Latest Flagged Addresses','bl.desc':'Live data from our frozen address database. Addresses flagged by Tether, Circle, and OFAC sanctions.',
@@ -1496,7 +1496,7 @@ var I18N = {
     'core.label':'Business Niches','plat.title':'Stablecoin Compliance Intelligence, built for practical monitoring.','plat.intro':'Innobridge focuses on a lightweight intelligence layer: stablecoin freeze and blacklist activity, sanctions-related address references, regulatory deadlines, daily briefings, watchlists, and alerts. The goal is not to replace enterprise transaction monitoring, but to help users quickly understand market and compliance changes.',
     'svc.1.title':'Stablecoin Freeze Intelligence','svc.1.desc':'Track USDT and USDC freeze and blacklist activity with source, chain, balance, event time, and confidence context.','svc.1.tag':'Core Dataset',
     'svc.2.title':'Sanctions Signal Briefing','svc.2.desc':'Connect sanctions-related address references, issuer actions, public enforcement events, and affected jurisdictions into short decision signals.','svc.2.tag':'Risk Signal',
-    'svc.3.title':'Regulatory Deadline Intelligence','svc.3.desc':'Turn MiCA, FATF, Hong Kong, US, Singapore, Korea, Japan, and other updates into affected-entity guidance and watch items.','svc.3.tag':'Calendar',
+    'svc.3.title':'Regulatory Deadline Intelligence','svc.3.desc':'Turn MiCA, FATF, Hong Kong, US, Singapore, Korea, Japan, and other updates into affected-entity guidance and watch items.','svc.3.tag':'Deadline',
     'svc.4.title':'Daily / Weekly Intelligence Briefing','svc.4.desc':'Publish repeatable columns: Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact.','svc.4.tag':'Newsletter',
     'svc.5.title':'Watchlist, Alert & CSV Export','svc.5.desc':'A Pro layer for saved addresses, jurisdictions, issuers, regulatory topics, alert emails, and structured exports.','svc.5.tag':'Pro',
     'le.label':'For Law Enforcement','le.title':'Evidence Request Procedures','le.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
@@ -1511,21 +1511,21 @@ var I18N = {
     'ct.label':'Contact','ct.title':'Join the intelligence waitlist.','ct.desc':'Tell us which stablecoin, sanctions, address, or regulatory signals you want Innobridge to monitor.',
     'ct.email':'info@innobridge.io','ct.response':'Response within 24 hours','ct.web':'innobridge.io',
     'ct.f.fname':'First Name','ct.f.lname':'Last Name','ct.f.org':'Organisation','ct.f.email':'Email','ct.f.service':'What do you need?','ct.f.msg':'Brief Description',
-    'ct.f.opt0':'Select...','ct.f.opt1':'Stablecoin Freeze / Blacklist Tracker','ct.f.opt2':'Sanctions-related Address Watchlist','ct.f.opt3':'Compliance Intelligence Calendar','ct.f.opt4':'Daily / Weekly Briefing','ct.f.opt6':'Pro Watchlist / Alerts',
+    'ct.f.opt0':'Select...','ct.f.opt1':'Stablecoin Freeze / Blacklist Tracker','ct.f.opt2':'Sanctions-related Address Watchlist','ct.f.opt3':'Compliance Deadline Signals','ct.f.opt4':'Daily / Weekly Briefing','ct.f.opt6':'Pro Watchlist / Alerts',
     'ct.f.submit':'Submit Interest','ct.f.note':'Informational intelligence only. Not legal advice or a transaction monitoring replacement.',
     'ct.f.ph.fname':'Jane','ct.f.ph.lname':'Smith','ct.f.ph.org':'Exchange, OTC desk, research team, law firm...','ct.f.ph.email':'jane@example.com','ct.f.ph.msg':'Tell us what you want to monitor: addresses, issuers, jurisdictions, deadlines, sanctions topics, or stablecoin events.',
-    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Stablecoin and crypto compliance intelligence. Turning fragmented information into decision-ready intelligence.','ft.platform':'Platform','ft.dashboard':'Dashboard','ft.blacklist':'Freeze / Blacklist Data','ft.evidence':'Evidence Directory','ft.compliance':'Compliance Calendar','ft.services':'Product Modules','ft.resources':'Resources','ft.news':'Briefing','ft.explorer':'Data Explorer','ft.contact':'Join Waitlist','ft.legal':'Legal',
+    'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Stablecoin and crypto compliance intelligence. Turning fragmented information into decision-ready intelligence.','ft.platform':'Platform','ft.dashboard':'Freeze Data','ft.blacklist':'Freeze / Blacklist Data','ft.evidence':'Evidence Directory','ft.compliance':'Compliance','ft.services':'Product Modules','ft.resources':'Resources','ft.news':'Briefing','ft.explorer':'Data Explorer','ft.contact':'Join Waitlist','ft.legal':'Legal',
     'whale.title':'Whale Alerts','whale.loading':'Loading alerts...','whale.empty':'No alerts yet',
     'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview','pulse.sentiment':'Market Sentiment Index','pulse.bullish':'Bullish','pulse.bearish':'Bearish','pulse.formula':'Loading formula...'
   },
   cn: {
-    'nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.calendar':'日历','nav.briefing':'简报','nav.dashboard':'数据面板','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
+    'nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.calendar':'合规','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'Innobridge 将分散的稳定币、制裁、黑名单、监管、新闻和市场信息转化为有来源、有时间线、有判断边界的合规情报，帮助团队理解市场发生了什么，以及下一步应该关注什么。',
-    'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规情报日历','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报。Innobridge 不提供法律意见，不替代交易监控系统，也不声称提供完整链上取证调查能力。',
+    'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报。Innobridge 不提供法律意见，不替代交易监控系统，也不声称提供完整链上取证调查能力。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
-    'ip.m3.title':'合规情报日历','ip.m3.desc':'按受影响主体和时间节点监控 MiCA、FATF、香港、美国、新加坡、韩国、日本等监管里程碑。','ip.m3.tag':'时间信号',
+    'ip.m3.title':'监管时间节点情报','ip.m3.desc':'按受影响主体和时间节点监控 MiCA、FATF、香港、美国、新加坡、韩国、日本等监管里程碑。','ip.m3.tag':'时间信号',
     'ip.m4.title':'每日 / 每周情报简报','ip.m4.desc':'以可读格式发布 Address Watch、Stablecoin Freeze、Sanctions Signal、Compliance Deadline 和 Regulatory Impact。','ip.m4.tag':'Newsletter',
     'stat.total':'冻结地址总数','stat.funds':'冻结资金总额','stat.funds.sub':'USDT 与 USDC','stat.risk':'USDT 地址数',
     'bl.label':'黑名单数据库','bl.title':'最新标记地址','bl.desc':'来自冻结地址数据库的实时数据。包括 Tether、Circle 和 OFAC 制裁标记的地址。',
@@ -1536,7 +1536,7 @@ var I18N = {
     'core.label':'商业切入点','plat.title':'面向实际监测场景的稳定币合规情报。','plat.intro':'Innobridge 聚焦轻量情报层：稳定币冻结与黑名单活动、制裁相关地址参考、监管时间节点、每日简报、观察名单和提醒。目标不是替代企业级交易监控，而是帮助用户快速理解市场和合规变化。',
     'svc.1.title':'稳定币冻结情报','svc.1.desc':'追踪 USDT 和 USDC 冻结及黑名单活动，展示来源、链、余额、事件时间和置信度语境。','svc.1.tag':'核心数据',
     'svc.2.title':'制裁信号简报','svc.2.desc':'将制裁相关地址、发行方动作、公开执法事件和受影响司法辖区连接成简短决策信号。','svc.2.tag':'风险信号',
-    'svc.3.title':'监管时间节点情报','svc.3.desc':'将 MiCA、FATF、香港、美国、新加坡、韩国、日本等更新转化为受影响主体指引和关注事项。','svc.3.tag':'日历',
+    'svc.3.title':'监管时间节点情报','svc.3.desc':'将 MiCA、FATF、香港、美国、新加坡、韩国、日本等更新转化为受影响主体指引和关注事项。','svc.3.tag':'时间节点',
     'svc.4.title':'每日 / 每周情报简报','svc.4.desc':'固定栏目发布：Address Watch、Stablecoin Freeze、Sanctions Signal、Compliance Deadline 和 Regulatory Impact。','svc.4.tag':'Newsletter',
     'svc.5.title':'观察名单、提醒与 CSV 导出','svc.5.desc':'为 Pro 用户提供保存地址、司法辖区、发行方、监管主题、邮件提醒和结构化导出。','svc.5.tag':'Pro',
     'le.label':'执法支持','le.title':'取证请求流程','le.desc':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
@@ -1551,10 +1551,10 @@ var I18N = {
     'ct.label':'联系我们','ct.title':'加入情报产品候补名单。','ct.desc':'告诉我们你希望 Innobridge 监测哪些稳定币、制裁、地址或监管信号。',
     'ct.email':'info@innobridge.io','ct.response':'24 小时内回复','ct.web':'innobridge.io',
     'ct.f.fname':'名','ct.f.lname':'姓','ct.f.org':'所属机构','ct.f.email':'邮箱','ct.f.service':'您需要什么服务？','ct.f.msg':'简要描述',
-    'ct.f.opt0':'请选择...','ct.f.opt1':'稳定币冻结 / 黑名单追踪','ct.f.opt2':'制裁相关地址观察名单','ct.f.opt3':'合规情报日历','ct.f.opt4':'每日 / 每周简报','ct.f.opt6':'Pro 观察名单 / 提醒',
+    'ct.f.opt0':'请选择...','ct.f.opt1':'稳定币冻结 / 黑名单追踪','ct.f.opt2':'制裁相关地址观察名单','ct.f.opt3':'合规时间节点信号','ct.f.opt4':'每日 / 每周简报','ct.f.opt6':'Pro 观察名单 / 提醒',
     'ct.f.submit':'提交兴趣','ct.f.note':'仅提供信息型情报，不构成法律意见，也不替代交易监控系统。',
     'ct.f.ph.fname':'张','ct.f.ph.lname':'三','ct.f.ph.org':'交易所、OTC、研究团队、律所...','ct.f.ph.email':'example@email.com','ct.f.ph.msg':'告诉我们你想监测什么：地址、发行方、司法辖区、时间节点、制裁主题或稳定币事件。',
-    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'稳定币与加密合规情报平台，将分散信息转化为可支持决策的情报。','ft.platform':'平台','ft.dashboard':'数据面板','ft.blacklist':'冻结 / 黑名单数据','ft.evidence':'调证目录','ft.compliance':'合规日历','ft.services':'产品模块','ft.resources':'资源','ft.news':'简报','ft.explorer':'数据浏览器','ft.contact':'加入候补','ft.legal':'法律',
+    'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明','ft.desc':'稳定币与加密合规情报平台，将分散信息转化为可支持决策的情报。','ft.platform':'平台','ft.dashboard':'冻结数据','ft.blacklist':'冻结 / 黑名单数据','ft.evidence':'调证目录','ft.compliance':'合规情报','ft.services':'产品模块','ft.resources':'资源','ft.news':'简报','ft.explorer':'数据浏览器','ft.contact':'加入候补','ft.legal':'法律',
     'whale.title':'鲸鱼警报','whale.loading':'正在加载警报...','whale.empty':'暂无警报',
     'pulse.label':'市场脉搏','pulse.powered':'数据来自 Polymarket','pulse.loading':'加载中...','pulse.vol':'24h 交易量','pulse.nodata':'暂无市场数据','pulse.yes':'是','pulse.noanalysis':'解读生成中...','pulse.aiheader':'AI 分类概览','pulse.sentiment':'市场情绪指数','pulse.bullish':'看涨','pulse.bearish':'看跌','pulse.formula':'加载公式...'
   }

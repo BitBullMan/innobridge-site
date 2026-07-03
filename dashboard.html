@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innobridge Blacklist - Stablecoin Freeze Intelligence</title>
-    <meta name="description" content="Innobridge AML Dashboard — Monitor blacklisted blockchain addresses, frozen assets, and compliance data across TRON and Ethereum networks.">
-    <meta property="og:title" content="AML Dashboard — Innobridge">
+    <meta name="description" content="Innobridge Freeze Intelligence — Monitor blacklisted blockchain addresses, frozen assets, and compliance data across TRON and Ethereum networks.">
+    <meta property="og:title" content="Stablecoin Freeze Intelligence — Innobridge">
     <meta property="og:description" content="Monitor blacklisted blockchain addresses, frozen assets, and compliance data across TRON and Ethereum networks.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.innobridge.io/dashboard.html">
@@ -159,8 +159,9 @@
         .label-stat { background:#fff; border:1px solid var(--border); border-radius:var(--r-sm); padding:14px; text-align:center; }
         .label-stat-val { font-size:22px; font-weight:800; color:var(--text); }
         .label-stat-lbl { font-size:10px; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; font-weight:600; margin-top:2px; }
-        .cat-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(130px,1fr)); gap:6px; margin-bottom:16px; }
-        .cat-chip { display:flex; align-items:center; justify-content:space-between; padding:8px 12px; border-radius:10px; background:#fff; border:1px solid var(--border); cursor:pointer; transition:all .15s; font-size:12px; }
+        .cat-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(168px,1fr)); gap:8px; margin-bottom:16px; }
+        .cat-chip { display:flex; align-items:center; justify-content:space-between; gap:10px; min-height:42px; padding:9px 12px; border-radius:12px; background:#fff; border:1px solid var(--border); cursor:pointer; transition:all .15s; font-size:12px; }
+        .cat-chip span:first-child { min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
         .cat-chip:hover { background:var(--bg-hover); border-color:var(--accent); }
         .cat-chip.active { background:var(--accent); color:#fff; border-color:var(--accent); }
         .cat-chip .cat-cnt { font-weight:700; font-size:11px; }
@@ -169,7 +170,7 @@
         .labels-search input { flex:1; min-width:200px; padding:9px 14px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:13px; font-family:var(--m); outline:none; background:var(--bg-input); transition:border-color .2s; }
         .labels-search input:focus { border-color:var(--accent); }
         .labels-search select { padding:9px 12px; border:1.5px solid var(--border); border-radius:var(--r-sm); font-size:12px; font-weight:600; background:#fff; cursor:pointer; outline:none; color:var(--text); }
-        @media (max-width:768px) { .labels-stats-grid { grid-template-columns:repeat(3,1fr); } .cat-grid { grid-template-columns:repeat(3,1fr); } }
+        @media (max-width:768px) { .labels-stats-grid { grid-template-columns:repeat(3,1fr); } .cat-grid { grid-template-columns:repeat(2,1fr); } }
         @media (max-width:480px) { .labels-stats-grid { grid-template-columns:repeat(2,1fr); } .cat-grid { grid-template-columns:repeat(2,1fr); } }
     </style>
 </head>
@@ -182,12 +183,11 @@
   </a>
   <div style="display:flex;align-items:center;gap:28px">
     <ul class="nav-links">
-      <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
-      <li><a href="index.html#news-pulse-combined" data-i18n="nav.news">News</a></li>
-      <li><a href="dashboard.html" class="active" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
+      <li><a href="index.html#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
+      <li><a href="dashboard.html" class="active" data-i18n="nav.dashboard">Freeze Data</a></li>
       <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
-      <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
-      <li><a href="index.html#law-enforcement" data-i18n="nav.evidence">Law Enforcement</a></li>
+      <li><a href="index.html#news-pulse-combined" data-i18n="nav.news">Briefing</a></li>
       <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <a href="login.html" class="lang-toggle" id="auth-btn" style="margin-right:2px">Sign In</a>
@@ -416,6 +416,23 @@ function renderStats(data){
     if(usdtDailyEl) usdtDailyEl.textContent=s.today_new_usdt>0?'+'+s.today_new_usdt+' today':'';
     if(usdcDailyEl) usdcDailyEl.textContent=s.today_new_usdc>0?'+'+s.today_new_usdc+' today':'';
 }
+function inferFreezeSource(r){
+    var raw = r.sanctions_source || r.source || r.issuer || r.provider || r.source_name || r.label_source || '';
+    var asset = String(r.asset || r.token || '').toUpperCase();
+    var tags = Array.isArray(r.tags) ? r.tags.join(' ') : (r.tags || '');
+    var text = String(raw + ' ' + asset + ' ' + (r.reason || '') + ' ' + (r.category || '') + ' ' + tags).toLowerCase();
+    if(text.indexOf('tether') >= 0 || asset === 'USDT' || text.indexOf('usdt') >= 0) return 'Tether';
+    if(text.indexOf('circle') >= 0 || asset === 'USDC' || text.indexOf('usdc') >= 0) return 'Circle';
+    if(text.indexOf('ofac') >= 0 || text.indexOf('sdn') >= 0 || text.indexOf('sanction') >= 0) return 'OFAC';
+    if(text.indexOf('on-chain') >= 0 || text.indexOf('contract') >= 0 || text.indexOf('event') >= 0) return 'On-Chain';
+    return raw || '--';
+}
+function renderSourceBadge(src){
+    var srcColors={'Tether':'#26a17b','Circle':'#2775ca','OFAC':'#c0392b','On-Chain':'#8e44ad','Government':'#e67e22','Intelligence':'#2c3e50'};
+    if(!src || src === '--') return '--';
+    var srcClr=srcColors[src]||'#8b909c';
+    return '<span style="font-size:11px;font-weight:700;color:'+srcClr+';background:'+srcClr+'14;border:1px solid '+srcClr+'26;padding:3px 9px;border-radius:999px;white-space:nowrap">'+escH(src)+'</span>';
+}
 function renderTable(){
     var tb=document.getElementById('recentTableBody');
     var items=filteredRecent;
@@ -424,11 +441,10 @@ function renderTable(){
     var showStart=(currentPage-1)*PAGE_SIZE+1;
     document.getElementById('tableCount').textContent='Showing '+showStart+'-'+showEnd+' of '+totalServerRows.toLocaleString();
     if(!items.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3);">No addresses found.</td></tr>';document.getElementById('pagination').innerHTML='';return;}
-    var srcColors={'Tether':'#26a17b','Circle':'#2775ca','OFAC':'#c0392b','On-Chain':'#8e44ad','Government':'#e67e22','Intelligence':'#2c3e50'};
     var h='';for(var i=0;i<items.length;i++){var r=items[i],addr=r.address||'',short=addr.length>16?addr.substring(0,8)+'...'+addr.substring(addr.length-6):addr,chain=(r.chain||'').toUpperCase(),asset=(r.asset||'USDT').toUpperCase(),cCls=chain==='TRON'?'tron':'eth',cLbl=chain==='TRON'?'TRC20':'ERC20',rl=(r.risk_level||'HIGH').toUpperCase(),rCls=rl==='HIGH'?'high':rl==='MEDIUM'?'medium':'low';
     var faVal=Number(r.frozen_amount_raw)||Number(r.frozen_amount)||0;var fa='';if(faVal>0)fa=faVal.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});else if(r.frozen_amount_display&&r.frozen_amount_display!=='0.00 USDT'&&r.frozen_amount_display!=='0')fa=r.frozen_amount_display;else fa='0.00';
     var ft=r.firstSeen||r.added_date||r.date_added||'--';
-    var src=r.sanctions_source||'--';var srcClr=srcColors[src]||'#8b909c';var srcBadge=src!=='--'?'<span style="font-size:11px;font-weight:600;color:'+srcClr+';background:'+srcClr+'14;padding:2px 8px;border-radius:6px;white-space:nowrap">'+src+'</span>':'--';
+    var src=inferFreezeSource(r);var srcBadge=renderSourceBadge(src);
     h+='<tr><td><a class="addr-cell" href="detail.html?address='+encodeURIComponent(addr)+'" title="'+addr+'">'+short+'</a></td><td><span class="chain-badge '+cCls+'">'+cLbl+'</span></td><td><span style="font-weight:600">'+asset+'</span></td><td>'+srcBadge+'</td><td><span class="risk-badge '+rCls+'"><span class="risk-dot '+rCls+'"></span> '+rl.charAt(0)+rl.slice(1).toLowerCase()+'</span></td><td class="amount-cell">'+fa+(fa!=='--'?'<span class="currency">'+asset+'</span>':'')+'</td><td class="time-cell">'+formatTime(ft)+'</td></tr>';}
     tb.innerHTML=h;renderPagination(totalPages);
     var fnEl=document.getElementById('footerNoteText');
@@ -502,14 +518,19 @@ async function loadLabelStats(){
         document.getElementById('lsEntities').textContent=fk(d.entities);
         document.getElementById('lsSources').textContent=d.sources||'--';
         document.getElementById('labelTotalBadge').textContent=fk(d.total_labels)+' labels';
-        document.getElementById('labelSourceInfo').textContent='Sources: eth-labels, Etherscan, OFAC SDN, ScamSniffer, Manual';
+        document.getElementById('labelSourceInfo').textContent='Sources: Tether, Circle, OFAC SDN, eth-labels, Etherscan, ScamSniffer, Manual';
         // Render category chips
         if(d.by_category){
             var cg=document.getElementById('catGrid');
             var h='<div class="cat-chip active" onclick="filterLabelCat(&apos;&apos;,this)"><span>All</span><span class="cat-cnt">'+fk(d.total_labels)+'</span></div>';
-            d.by_category.forEach(function(c){
+            var priority=['sanctions','stablecoin','exchange','scam','defi','infrastructure','bridge','mev','staking','social','nft'];
+            d.by_category.slice().sort(function(a,b){
+                var ai=priority.indexOf(a.category), bi=priority.indexOf(b.category);
+                if(ai>=0 || bi>=0) return (ai<0?99:ai)-(bi<0?99:bi);
+                return Number(b.cnt||0)-Number(a.cnt||0);
+            }).forEach(function(c){
                 var icon=CAT_ICONS[c.category]||'\u{1F4CB}';
-                h+='<div class="cat-chip" onclick="filterLabelCat(&apos;'+c.category+'&apos;,this)"><span>'+icon+' '+c.category+'</span><span class="cat-cnt">'+fk(c.cnt)+'</span></div>';
+                h+='<div class="cat-chip" onclick="filterLabelCat(&apos;'+c.category+'&apos;,this)"><span>'+icon+' '+escH(c.category)+'</span><span class="cat-cnt">'+fk(c.cnt)+'</span></div>';
             });
             cg.innerHTML=h;
         }
@@ -581,7 +602,7 @@ document.addEventListener('DOMContentLoaded',function(){loadLabelStats();doLabel
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact',
+    'nav.home':'Home','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.news':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact',
     'hero.title1':'Stablecoin ','hero.title2':'Freeze & Blacklist Monitor','hero.sub':'Real-time USDT / USDC blacklist monitoring across Ethereum & Tron',
     'search.btn':'Search','search.hint':'Supports Ethereum (0x) and Tron (T) addresses','search.ph':'Search by address (0x... or T...)',
     'stats.title':'Frozen Address Statistics','stats.usdt':'USDT (Tether) Addresses','stats.usdc':'USDC (Circle) Addresses','stats.frozen':'Total Frozen Funds',
@@ -597,7 +618,7 @@ var I18N = {
     'lth.address':'Address','lth.chain':'Chain','lth.entity':'Entity','lth.tag':'Name Tag','lth.category':'Category','lth.risk':'Risk','lth.source':'Source'
   },
   cn: {
-    'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.compliance':'合规情报','nav.services':'服务','nav.evidence':'执法机构','nav.contact':'联系我们',
+    'nav.home':'首页','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.news':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规情报','nav.services':'服务','nav.evidence':'执法机构','nav.contact':'联系我们',
     'hero.title1':'稳定币','hero.title2':'冻结与黑名单监控','hero.sub':'以太坊和波场上 USDT / USDC 黑名单实时监控',
     'search.btn':'搜索','search.hint':'支持以太坊 (0x) 和波场 (T) 地址','search.ph':'输入地址搜索 (0x... 或 T...)',
     'stats.title':'冻结地址统计','stats.usdt':'USDT (Tether) 地址','stats.usdc':'USDC (Circle) 地址','stats.frozen':'冻结资金总额',
