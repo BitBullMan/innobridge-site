@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Innobridge — Global Compliance Intelligence</title>
-<meta name="description" content="Crypto compliance toolkit — Sanctions screening, policy templates, regulatory database, and self-assessment tools for VASPs and exchanges.">
-<meta property="og:title" content="Compliance Toolkit — Innobridge">
-<meta property="og:description" content="Sanctions screening, policy templates, regulatory database, and self-assessment tools for crypto businesses.">
+<meta name="description" content="Global crypto compliance intelligence — regulatory updates, enforcement tracker, jurisdiction profiles, and compliance deadlines for VASPs and stablecoin issuers.">
+<meta property="og:title" content="Global Compliance Intelligence — Innobridge">
+<meta property="og:description" content="Regulatory updates, enforcement tracker, jurisdiction profiles, and compliance deadlines for crypto businesses.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://innobridgetech.github.io/compliance.html">
+<meta property="og:url" content="https://www.innobridge.io/compliance.html">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://innobridgetech.github.io/compliance.html">
+<link rel="canonical" href="https://www.innobridge.io/compliance.html">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -630,12 +630,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <ul class="nav-links">
     <li><a href="index.html" data-i18n="nav.home">Home</a></li>
     <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
-    <li><a href="contract-decoder.html" data-i18n="nav.decoder">Forensic Decoder</a></li>
+    <li><a href="intelligence-assistant.html" data-i18n="nav.decoder">Assistant</a></li>
     <li><a href="compliance.html" class="active" data-i18n="nav.compliance">Compliance</a></li>
     <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <div class="nav-right">
-    <a href="index.html#contact" class="nav-btn" data-i18n="nav.cta">Get Started</a>
+    <a href="index.html#contact" class="nav-btn" data-i18n="nav.cta">Join Waitlist</a>
     <a href="login.html" class="lang-toggle" id="auth-btn" style="margin-right:2px">Sign In</a>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
@@ -1029,19 +1029,19 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <div class="logo-icon">IB</div>
         <span class="logo-text">Innobridge</span>
       </div>
-      <p data-i18n="ft.desc">Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.</p>
+      <p data-i18n="ft.desc">Stablecoin and crypto compliance intelligence. Turning fragmented information into decision-ready intelligence.</p>
     </div>
     <div class="footer-col">
       <h4 data-i18n="ft.platform">Platform</h4>
       <a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a>
-      <a href="contract-decoder.html" data-i18n="nav.decoder">Forensic Decoder</a>
+      <a href="intelligence-assistant.html" data-i18n="nav.decoder">Assistant</a>
       <a href="compliance.html" data-i18n="nav.compliance">Compliance</a>
       <a href="evidence-collection.html" data-i18n="ft.evidence">Evidence Directory</a>
       <a href="index.html#platform" data-i18n="ft.services">Services</a>
     </div>
     <div class="footer-col">
       <h4 data-i18n="ft.resources">Resources</h4>
-      <a href="index.html#news" data-i18n="ft.news">News</a>
+      <a href="index.html#news-pulse-combined" data-i18n="ft.news">News</a>
       <a href="dashboard.html" data-i18n="ft.explorer">Data Explorer</a>
       <a href="index.html#contact" data-i18n="ft.sales">Contact Sales</a>
     </div>
@@ -1084,10 +1084,10 @@ var allRiskRules = [];
 // ===== I18N =====
 var I18N = {
   en: {
-    'nav.home':'Home','nav.dashboard':'Dashboard','nav.decoder':'Forensic Decoder',
-    'nav.compliance':'Compliance','nav.contact':'Contact','nav.cta':'Get Started',
+    'nav.home':'Home','nav.dashboard':'Dashboard','nav.decoder':'Assistant',
+    'nav.compliance':'Compliance','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy',
-    'ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Blockchain compliance & security intelligence. Real-time blacklist monitoring, on-chain forensics, and regulatory solutions.',
+    'ft.terms':'Terms','ft.disclaimer':'Disclaimer','ft.desc':'Stablecoin and crypto compliance intelligence. Turning fragmented information into decision-ready intelligence.',
     'ft.platform':'Platform','ft.resources':'Resources','ft.legal':'Legal',
     'ft.evidence':'Evidence Directory','ft.services':'Services','ft.news':'News',
     'ft.explorer':'Data Explorer','ft.sales':'Contact Sales',
@@ -1214,11 +1214,11 @@ var I18N = {
     'cp.license.sub':'Licensing and registration requirements for crypto exchanges and stablecoin issuers across major jurisdictions.'
   },
   cn: {
-    'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'取证解码器',
-    'nav.compliance':'合规检测','nav.contact':'联系我们','nav.cta':'立即咨询',
+    'nav.home':'首页','nav.dashboard':'数据面板','nav.decoder':'情报助手',
+    'nav.compliance':'合规情报','nav.contact':'联系我们','nav.cta':'加入候补',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策',
     'ft.terms':'服务条款','ft.disclaimer':'免责声明',
-    'ft.desc':'区块链合规与安全情报。实时黑名单监控、链上取证和监管解决方案。',
+    'ft.desc':'稳定币与加密合规情报平台，将分散信息转化为可支持决策的情报。',
     'ft.platform':'平台','ft.resources':'资源','ft.legal':'法律',
     'ft.evidence':'调证目录','ft.services':'服务','ft.news':'新闻',
     'ft.explorer':'数据探索','ft.sales':'联系销售',
@@ -1271,7 +1271,7 @@ var I18N = {
     'cp.req.title':'合规要求',
     'cp.check.title':'项目合规自检工具',
     'cp.check.sub':'填写您的项目详情，评估在各司法管辖区的合规状况。仅限注册用户使用。',
-    'cp.check.gate.title':'登录后使用合规检测',
+    'cp.check.gate.title':'登录后使用合规情报',
     'cp.check.gate.desc':'此工具需要注册账户。请登录或注册以评估您项目在多个司法管辖区的合规状况。',
     'cp.check.gate.btn':'登录 / 注册',
     'cp.check.step1':'管辖区域',
