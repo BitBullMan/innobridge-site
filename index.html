@@ -71,7 +71,7 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 #intelligence-platform{background:var(--canvas);border-top:1px solid var(--hl)}
 .intel-head{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-bottom:24px}
 .intel-head-copy{max-width:690px}
-.intel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.intel-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .intel-card{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:20px;min-height:194px;transition:box-shadow .2s,border-color .2s}
 .intel-card:hover{box-shadow:var(--shadow-sm);border-color:var(--hl2)}
 .intel-num{font:600 11px var(--m);color:var(--accent-h);margin-bottom:22px}
@@ -81,6 +81,27 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 .engine-strip{background:var(--s1);color:var(--ink);border:1px solid var(--hl)}
 .engine-strip p{color:var(--ink2)}
 .engine-strip a{background:var(--ink);color:#fff}
+.deadline-watch{margin-top:22px;background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:18px}
+.deadline-watch-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-bottom:14px}
+.deadline-watch-head h3{font:600 17px/1.3 var(--f);color:var(--ink);letter-spacing:-.3px}
+.deadline-watch-head p{font:400 13px/1.55 var(--f);color:var(--ink3);max-width:560px;margin-top:4px}
+.deadline-watch-link{font:600 12px var(--f);color:var(--accent-h);white-space:nowrap}
+.deadline-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.deadline-mini{background:var(--canvas);border:1px solid var(--hl);border-radius:12px;padding:14px;min-height:132px;display:flex;flex-direction:column;justify-content:space-between;transition:box-shadow .2s,border-color .2s}
+.deadline-mini:hover{box-shadow:var(--shadow-sm);border-color:rgba(0,200,150,.22)}
+.deadline-mini-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.deadline-mini-title{font:600 13px/1.35 var(--f);color:var(--ink);display:flex;gap:6px;align-items:flex-start}
+.deadline-mini-reg{font:400 11px/1.4 var(--f);color:var(--ink3);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.deadline-mini-tag{font:700 9px var(--f);letter-spacing:.35px;text-transform:uppercase;border-radius:99px;padding:3px 7px;white-space:nowrap}
+.deadline-mini-tag.critical{background:var(--danger-bg);color:var(--danger)}
+.deadline-mini-tag.upcoming{background:rgba(245,158,11,.08);color:#d97706}
+.deadline-mini-tag.planned{background:var(--blue-bg);color:var(--blue)}
+.deadline-mini-bottom{border-top:1px solid var(--hl);padding-top:10px;margin-top:12px;display:flex;align-items:flex-end;justify-content:space-between;gap:10px}
+.deadline-days{font:700 24px/1 var(--f);letter-spacing:-.6px;color:var(--accent-h)}
+.deadline-days.passed,.deadline-days.urgent{color:var(--danger)}
+.deadline-days.warning{color:#d97706}
+.deadline-label{font:500 11px var(--f);color:var(--ink3);margin-left:4px}
+.deadline-date{font:600 10px var(--m);color:var(--ink3);white-space:nowrap}
 
 /* STAT CARDS — reference screenshot style */
 .stat-cards{max-width:var(--max);margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 40px}
@@ -461,10 +482,13 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 @media(max-width:1024px){
   .np-grid{grid-template-columns:1fr}
   .ci-preview-grid{grid-template-columns:1fr}
+  .deadline-strip{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
   .np-grid{grid-template-columns:1fr}
   .ci-preview-grid{grid-template-columns:1fr}
+  .deadline-watch-head{flex-direction:column;align-items:flex-start}
+  .deadline-strip{grid-template-columns:1fr}
   .pulse-layout-compact{flex-direction:column;max-height:none}
   .pulse-left-compact{border-right:none;border-bottom:1px solid var(--hl)}
 }
@@ -478,11 +502,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <span class="logo-text">Innobridge</span>
   </a>
   <ul class="nav-links">
+    <li><a href="#hero" data-i18n="nav.home">Home</a></li>
     <li><a href="#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
-    <li><a href="#blacklist-section" data-i18n="nav.blacklist">Data</a></li>
+    <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
     <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
     <li><a href="#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
-    <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <div class="nav-right">
@@ -646,6 +670,16 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <p data-i18n="ip.m4.desc">Publish Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact in a readable format.</p>
         <span class="intel-tag" data-i18n="ip.m4.tag">Newsletter</span>
       </div>
+    </div>
+    <div class="deadline-watch reveal" id="deadline-watch">
+      <div class="deadline-watch-head">
+        <div>
+          <h3 data-i18n="dl.title">Regulatory Deadline Watch</h3>
+          <p data-i18n="dl.sub">Near-term compliance milestones that may affect stablecoin issuers, VASPs, exchanges, and risk teams.</p>
+        </div>
+        <a href="compliance.html#deadlineSection" class="deadline-watch-link" data-i18n="dl.link">View full tracker &rarr;</a>
+      </div>
+      <div class="deadline-strip" id="homeDeadlineStrip"></div>
     </div>
   </div>
 </section>
@@ -1479,7 +1513,7 @@ document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.calendar':'Compliance','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
+    'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into source-backed compliance intelligence for teams that need to understand what changed and what to watch next.',
     'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
@@ -1487,6 +1521,7 @@ var I18N = {
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
     'ip.m3.title':'Regulatory Deadline Intelligence','ip.m3.desc':'Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.','ip.m3.tag':'Deadline Signal',
     'ip.m4.title':'Daily / Weekly Intelligence Briefing','ip.m4.desc':'Publish Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact in a readable format.','ip.m4.tag':'Newsletter',
+    'dl.title':'Regulatory Deadline Watch','dl.sub':'Near-term compliance milestones that may affect stablecoin issuers, VASPs, exchanges, and risk teams.','dl.link':'View full tracker →','dl.passed':'Passed','dl.days':'days remaining','dl.day':'day remaining','dl.critical':'Critical','dl.upcoming':'Upcoming','dl.planned':'Planned',
     'stat.total':'Total Frozen Addresses','stat.funds':'Total Frozen Funds','stat.funds.sub':'Across USDT & USDC','stat.risk':'USDT Addresses',
     'bl.label':'Blacklist Database','bl.title':'Latest Flagged Addresses','bl.desc':'Live data from our frozen address database. Addresses flagged by Tether, Circle, and OFAC sanctions.',
     'news.label':'Live News Feed','news.sub':'Real-time crypto & blockchain intelligence','news.loading':'Loading latest news...','news.loadmore':'Load more news',
@@ -1519,7 +1554,7 @@ var I18N = {
     'pulse.label':'Market Pulse','pulse.powered':'Powered by Polymarket','pulse.loading':'Loading...','pulse.vol':'24h Vol','pulse.nodata':'No market data available','pulse.yes':'Yes','pulse.noanalysis':'Analysis pending...','pulse.aiheader':'AI Category Overview','pulse.sentiment':'Market Sentiment Index','pulse.bullish':'Bullish','pulse.bearish':'Bearish','pulse.formula':'Loading formula...'
   },
   cn: {
-    'nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.calendar':'合规','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
+    'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'Innobridge 将分散的稳定币、制裁、黑名单、监管、新闻和市场信息转化为有来源、有时间线、有判断边界的合规情报，帮助团队理解市场发生了什么，以及下一步应该关注什么。',
     'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报。Innobridge 不提供法律意见，不替代交易监控系统，也不声称提供完整链上取证调查能力。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
@@ -1527,6 +1562,7 @@ var I18N = {
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
     'ip.m3.title':'监管时间节点情报','ip.m3.desc':'按受影响主体和时间节点监控 MiCA、FATF、香港、美国、新加坡、韩国、日本等监管里程碑。','ip.m3.tag':'时间信号',
     'ip.m4.title':'每日 / 每周情报简报','ip.m4.desc':'以可读格式发布 Address Watch、Stablecoin Freeze、Sanctions Signal、Compliance Deadline 和 Regulatory Impact。','ip.m4.tag':'Newsletter',
+    'dl.title':'监管时间节点观察','dl.sub':'可能影响稳定币发行方、VASP、交易所和风险团队的近期合规节点。','dl.link':'查看完整追踪 →','dl.passed':'已到期','dl.days':'天后到期','dl.day':'天后到期','dl.critical':'关键','dl.upcoming':'临近','dl.planned':'计划',
     'stat.total':'冻结地址总数','stat.funds':'冻结资金总额','stat.funds.sub':'USDT 与 USDC','stat.risk':'USDT 地址数',
     'bl.label':'黑名单数据库','bl.title':'最新标记地址','bl.desc':'来自冻结地址数据库的实时数据。包括 Tether、Circle 和 OFAC 制裁标记的地址。',
     'news.label':'实时新闻','news.sub':'加密货币与区块链实时情报','news.loading':'正在加载最新新闻...','news.loadmore':'加载更多',
@@ -1590,9 +1626,47 @@ function toggleLang() {
   if(typeof reloadNewsForLang === 'function') reloadNewsForLang();
   if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
   if(typeof reloadMarketPulse === 'function') reloadMarketPulse();
+  if(typeof renderHomeDeadlines === 'function') renderHomeDeadlines();
 }
 
 applyLang(currentLang);
+
+// ===== HOME DEADLINE WATCH =====
+var HOME_DEADLINES = [
+  {flag:'\u{1F1EA}\u{1F1FA}',name:'MiCA Full Enforcement',name_cn:'MiCA 全面执行',reg:'EU Markets in Crypto-Assets Regulation',reg_cn:'欧盟加密资产市场监管条例',date:'2026-07-01',urgency:'critical'},
+  {flag:'\u{1F1FA}\u{1F1F8}',name:'GENIUS Act Finalization',name_cn:'GENIUS 法案最终确定',reg:'US Stablecoin Regulatory Framework',reg_cn:'美国稳定币监管框架',date:'2026-07-18',urgency:'critical'},
+  {flag:'\u{1F1ED}\u{1F1F0}',name:'HK VASP License Deadline',name_cn:'香港 VASP 牌照期限',reg:'Hong Kong SFC VASP Licensing',reg_cn:'香港证监会 VASP 发牌制度',date:'2026-09-01',urgency:'upcoming'},
+  {flag:'\u{1F30D}',name:'FATF Mutual Evaluation',name_cn:'FATF 互评',reg:'FATF 5th Round Reviews',reg_cn:'FATF 第五轮互评',date:'2026-10-01',urgency:'upcoming'},
+  {flag:'\u{1F1F8}\u{1F1EC}',name:'Singapore PSA Amendments',name_cn:'新加坡 PSA 修订',reg:'Payment Services Act Enhanced Requirements',reg_cn:'支付服务法增强要求',date:'2026-12-31',urgency:'planned'},
+  {flag:'\u{1F1F0}\u{1F1F7}',name:'Korea VASP Compliance Review',name_cn:'韩国 VASP 合规审查',reg:'Virtual Asset User Protection Act',reg_cn:'虚拟资产用户保护法',date:'2027-01-01',urgency:'planned'}
+];
+
+function renderHomeDeadlines(){
+  var el = document.getElementById('homeDeadlineStrip');
+  if(!el) return;
+  var dict = I18N[currentLang] || I18N.en;
+  var today = new Date();
+  var items = HOME_DEADLINES.slice().sort(function(a,b){ return new Date(a.date) - new Date(b.date); }).slice(0,4);
+  var html = '';
+  items.forEach(function(d){
+    var target = new Date(d.date + 'T00:00:00');
+    var diff = Math.ceil((target - today) / (1000*60*60*24));
+    var dayClass = diff <= 0 ? 'passed' : diff <= 14 ? 'urgent' : diff <= 60 ? 'warning' : '';
+    var daysText = diff <= 0 ? dict['dl.passed'] : String(diff);
+    var label = diff <= 0 ? '' : (diff === 1 ? dict['dl.day'] : dict['dl.days']);
+    var name = currentLang === 'cn' ? (d.name_cn || d.name) : d.name;
+    var reg = currentLang === 'cn' ? (d.reg_cn || d.reg) : d.reg;
+    var dateStr = target.toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US',{month:'short',day:'numeric',year:'numeric'});
+    var tagText = dict['dl.' + d.urgency] || d.urgency;
+    html += '<div class="deadline-mini">'
+      + '<div><div class="deadline-mini-top"><div><div class="deadline-mini-title"><span>'+d.flag+'</span><span>'+escHtml(name)+'</span></div><div class="deadline-mini-reg">'+escHtml(reg)+'</div></div>'
+      + '<span class="deadline-mini-tag '+d.urgency+'">'+escHtml(tagText)+'</span></div></div>'
+      + '<div class="deadline-mini-bottom"><div><span class="deadline-days '+dayClass+'">'+escHtml(daysText)+'</span>'+(label?'<span class="deadline-label">'+escHtml(label)+'</span>':'')+'</div><span class="deadline-date">'+dateStr+'</span></div>'
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+renderHomeDeadlines();
 
 // ===== BLACKLIST PREVIEW TABLE =====
 (function loadBlacklistPreview() {

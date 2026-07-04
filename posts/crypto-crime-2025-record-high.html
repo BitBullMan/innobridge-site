@@ -24,6 +24,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .logo{display:flex;align-items:center;gap:10px;text-decoration:none}
 .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--accent2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
 .logo-text{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--text);letter-spacing:0.02em}
+.nav-links{display:flex;gap:22px;align-items:center;list-style:none}
+.nav-links a{font-size:13px;font-weight:600;color:var(--text2);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
 
 .article-wrapper{max-width:760px;margin:0 auto;padding:120px 24px 80px}
 .article-back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--accent);text-decoration:none;margin-bottom:32px;transition:gap .2s}
@@ -61,6 +64,7 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
 
 @media(max-width:960px){
   nav{padding:14px 20px}
+  .nav-links{display:none}
   .article-wrapper{padding:100px 20px 60px}
   .stat-highlight{grid-template-columns:1fr}
   footer{flex-direction:column;gap:12px;text-align:center;padding:20px}
@@ -70,10 +74,18 @@ footer{padding:24px 48px;display:flex;align-items:center;justify-content:space-b
 <body>
 
 <nav>
-  <a href="../news" class="logo">
-    <div class="logo-icon">&#x2B21;</div>
+  <a href="../index.html" class="logo">
+    <div class="logo-icon">IB</div>
     <span class="logo-text">Innobridge</span>
   </a>
+  <ul class="nav-links">
+    <li><a href="../index.html">Home</a></li>
+    <li><a href="../index.html#intelligence-platform">Intelligence</a></li>
+    <li><a href="../dashboard.html">Freeze Data</a></li>
+    <li><a href="../compliance.html">Compliance</a></li>
+    <li><a href="../index.html#news-pulse-combined">Briefing</a></li>
+    <li><a href="../index.html#contact">Contact</a></li>
+  </ul>
 </nav>
 
 <div class="article-wrapper">
