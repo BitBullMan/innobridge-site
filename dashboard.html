@@ -51,6 +51,7 @@
         .nav-links{display:flex;gap:24px;list-style:none}
         .nav-links a{font-size:14px;font-weight:600;color:var(--text-2);transition:color .2s;text-decoration:none}
         .nav-links a:hover,.nav-links a.active{color:var(--accent)}
+        .nav-right{display:flex;align-items:center;gap:10px}
         .mobile-toggle{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--text)}
         .lang-toggle{font-size:12px;font-weight:700;color:var(--accent);background:rgba(0,200,150,0.08);border:1.5px solid rgba(0,200,150,0.18);padding:6px 14px;border-radius:20px;cursor:pointer;transition:all .2s;white-space:nowrap}
         .lang-toggle:hover{background:var(--accent);color:#fff}
@@ -181,7 +182,7 @@
     <div class="logo-icon">IB</div>
     <span class="logo-text">Innobridge</span>
   </a>
-  <div style="display:flex;align-items:center;gap:28px">
+  <div class="nav-right">
     <ul class="nav-links">
       <li><a href="index.html" data-i18n="nav.home">Home</a></li>
       <li><a href="index.html#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
