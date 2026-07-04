@@ -1250,6 +1250,7 @@ document.querySelectorAll('.reveal').forEach(function(el){
 // ===== NEWS FEED =====
 var currentLang = localStorage.getItem('ib_lang') || 'en';
 var allNews = [];
+var homePulseItems = [];
 var newsOffset = 0;
 var NEWS_PAGE = 9;
 
@@ -1266,11 +1267,12 @@ function timeAgo(dateStr){
   var d = new Date(dateStr);
   var now = new Date();
   var diff = Math.floor((now - d)/1000);
-  if(diff < 60) return 'just now';
-  if(diff < 3600) return Math.floor(diff/60) + 'm ago';
-  if(diff < 86400) return Math.floor(diff/3600) + 'h ago';
-  if(diff < 604800) return Math.floor(diff/86400) + 'd ago';
-  return d.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  var isCn = currentLang === 'cn';
+  if(diff < 60) return isCn ? '刚刚' : 'just now';
+  if(diff < 3600) return Math.floor(diff/60) + (isCn ? '分钟前' : 'm ago');
+  if(diff < 86400) return Math.floor(diff/3600) + (isCn ? '小时前' : 'h ago');
+  if(diff < 604800) return Math.floor(diff/86400) + (isCn ? '天前' : 'd ago');
+  return d.toLocaleDateString(isCn ? 'zh-CN' : 'en-US',{month:'short',day:'numeric'});
 }
 
 function renderNewsCards(items){
@@ -1460,6 +1462,27 @@ function pulseTagClass(tag){
   return '';
 }
 
+function pulseTagLabel(tag){
+  if(currentLang !== 'cn') return tag;
+  var map = {
+    Enforcement:'执法',
+    Regulatory:'监管',
+    Sanctions:'制裁',
+    Stablecoin:'稳定币',
+    Market:'市场',
+    Compliance:'合规'
+  };
+  return map[tag] || tag;
+}
+
+function localizedNewsField(item, field){
+  if(!item) return '';
+  if(currentLang === 'cn'){
+    return item[field + '_cn'] || item[field + '_zh'] || item[field + 'Cn'] || item[field + 'ZH'] || item[field] || '';
+  }
+  return item[field] || item[field + '_en'] || item[field + 'En'] || '';
+}
+
 function pulseSoWhat(tags){
   var isCn = currentLang === 'cn';
   if(tags.indexOf('Enforcement') >= 0) return isCn ? '决策信号：执法正在从调查叙事进入资产控制、平台义务和发行方配合阶段。' : 'Decision signal: enforcement is moving from investigation into asset control, platform obligations, and issuer-side response.';
@@ -1533,11 +1556,10 @@ function renderHomeIntelligencePulse(items){
 
   var html = '';
   top.forEach(function(item){
-    var title = decodeHtml(item.title || '');
-    var desc = decodeHtml(item.summary || item.content || '');
+    var title = decodeHtml(localizedNewsField(item, 'title'));
     var tags = pulseTags(item);
     var flag = complianceRegionFlag(item);
-    var tagHtml = tags.map(function(tag){ return '<span class="hip-tag ' + pulseTagClass(tag) + '">' + escHtml(tag) + '</span>'; }).join('');
+    var tagHtml = tags.map(function(tag){ return '<span class="hip-tag ' + pulseTagClass(tag) + '">' + escHtml(pulseTagLabel(tag)) + '</span>'; }).join('');
     html += '<div class="hip-signal">'
       + '<div class="hip-signal-title">' + flag + ' ' + escHtml(title) + '</div>'
       + '<div class="hip-signal-desc">' + escHtml(pulseSoWhat(tags)) + '</div>'
@@ -1559,7 +1581,7 @@ function renderHomeIntelligencePulse(items){
     return {
       window: pulseWindowLabel(r.s, r.e),
       count: bucket.length,
-      title: lead ? decodeHtml(lead.title || '') : pulseDict('hip.no.signal'),
+      title: lead ? decodeHtml(localizedNewsField(lead, 'title')) : pulseDict('hip.no.signal'),
       context: lead ? pulseSoWhat(tags) : pulseDict('hip.no.signal.desc'),
       tags: tags
     };
@@ -1593,16 +1615,27 @@ function renderHomeIntelligencePulse(items){
 }
 
 function loadHomeIntelligencePulse(){
-  var lang = getNewsLang();
-  fetch(API_BASE + '?action=news&limit=48&offset=0&lang='+lang)
+  if(homePulseItems.length){
+    renderHomeIntelligencePulse(homePulseItems);
+    return;
+  }
+  fetch(API_BASE + '?action=news&limit=48&offset=0&lang=en')
     .then(function(r){ return r.json(); })
     .then(function(resp){
       var data = (resp && resp.success && resp.items) ? resp.items : [];
-      if(data.length) renderHomeIntelligencePulse(data);
-      else if(window.allNews && window.allNews.length) renderHomeIntelligencePulse(window.allNews);
+      if(data.length){
+        homePulseItems = data;
+        renderHomeIntelligencePulse(homePulseItems);
+      } else if(window.allNews && window.allNews.length) {
+        homePulseItems = window.allNews.slice();
+        renderHomeIntelligencePulse(homePulseItems);
+      }
     })
     .catch(function(){
-      if(window.allNews && window.allNews.length) renderHomeIntelligencePulse(window.allNews);
+      if(window.allNews && window.allNews.length) {
+        homePulseItems = window.allNews.slice();
+        renderHomeIntelligencePulse(homePulseItems);
+      }
     });
 }
 
