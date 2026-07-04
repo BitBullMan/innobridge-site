@@ -94,7 +94,7 @@ footer{padding:24px 40px;display:flex;align-items:center;justify-content:space-b
     <ul class="nav-links">
       <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
       <li><a href="index.html#news-pulse-combined" data-i18n="nav.news">News</a></li>
-      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
       <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
       <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
       <li><a href="index.html#law-enforcement" data-i18n="nav.law">Law Enforcement</a></li>
@@ -340,10 +340,10 @@ function applyLang(lang) {
   if (cn) cn.style.display = lang === 'cn' ? 'block' : 'none';
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var dict = {
-      en: {'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.compliance':'Compliance','nav.services':'Services','nav.law':'Law Enforcement','nav.contact':'Contact',
+      en: {'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.law':'Law Enforcement','nav.contact':'Contact',
            'page.title':'Privacy Policy','page.updated':'Last updated: May 26, 2026',
            'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'},
-      cn: {'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.compliance':'合规情报','nav.services':'服务','nav.law':'执法协助','nav.contact':'联系我们',
+      cn: {'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'冻结数据','nav.compliance':'合规情报','nav.services':'服务','nav.law':'执法协助','nav.contact':'联系我们',
            'page.title':'隐私政策','page.updated':'最后更新：2026年5月26日',
            'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'}
     };

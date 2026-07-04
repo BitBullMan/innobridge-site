@@ -161,7 +161,7 @@
     <ul class="nav-links">
       <li><a href="index.html#blacklist-section" data-i18n="nav.blacklist">Blacklist Data</a></li>
       <li><a href="index.html#news-pulse-combined" data-i18n="nav.news">News</a></li>
-      <li><a href="dashboard.html" data-i18n="nav.dashboard">Dashboard</a></li>
+      <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
       <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
       <li><a href="index.html#platform" data-i18n="nav.services">Services</a></li>
       <li><a href="index.html#law-enforcement" data-i18n="nav.law">Law Enforcement</a></li>
@@ -304,7 +304,7 @@ function renderRateLimited(retryAfter) {
     html += '<h2>Too Many Requests</h2>';
     html += '<p>Please wait ' + (retryAfter || 60) + ' seconds before trying again.</p>';
     html += '<div style="margin-top:20px;">';
-    html += '<a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Dashboard</a>';
+    html += '<a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Freeze Data</a>';
     html += '</div></div>';
     document.getElementById('content').innerHTML = html;
 }
@@ -420,7 +420,7 @@ function renderNotFound(address, data) {
     html += '<h2>Not Found in Blacklist Database</h2>';
     html += '<p style="font-family:monospace; color:var(--blue); margin:12px auto; word-break:break-all; font-size:13px;">' + address + '</p>';
     html += '<p>This address is not currently flagged in our stablecoin blacklist database. This does not guarantee the address is safe.</p>';
-    html += '<div style="margin-top:20px;"><a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;">Back to Dashboard</a></div>';
+    html += '<div style="margin-top:20px;"><a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;">Back to Freeze Data</a></div>';
     html += '</div>';
     document.getElementById('content').innerHTML = html;
 }
@@ -477,12 +477,12 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== i18n =====
 var I18N = {
   en: {
-    'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Dashboard','nav.compliance':'Compliance','nav.services':'Services','nav.law':'Law Enforcement','nav.contact':'Contact',
+    'nav.blacklist':'Blacklist Data','nav.news':'News','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.law':'Law Enforcement','nav.contact':'Contact',
     'search.btn':'Search','search.ph':'Search by address (0x... or T...)',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer'
   },
   cn: {
-    'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'数据面板','nav.compliance':'合规情报','nav.services':'服务','nav.law':'执法协助','nav.contact':'联系我们',
+    'nav.blacklist':'黑名单数据','nav.news':'新闻','nav.dashboard':'冻结数据','nav.compliance':'合规情报','nav.services':'服务','nav.law':'执法协助','nav.contact':'联系我们',
     'search.btn':'搜索','search.ph':'输入地址搜索 (0x... 或 T...)',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明'
   }
