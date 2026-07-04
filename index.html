@@ -103,6 +103,45 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 .deadline-label{font:500 11px var(--f);color:var(--ink3);margin-left:4px}
 .deadline-date{font:600 10px var(--m);color:var(--ink3);white-space:nowrap}
 
+/* 24H INTELLIGENCE PULSE */
+#home-intelligence-pulse{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);padding-top:72px;padding-bottom:72px}
+.hip-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px}
+.hip-head-copy{max-width:690px}
+.hip-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.hip-pill{font:600 11px var(--f);color:var(--ink2);background:var(--canvas);border:1px solid var(--hl);border-radius:999px;padding:7px 11px;white-space:nowrap}
+.hip-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:18px;align-items:stretch}
+.hip-main,.hip-side{background:var(--canvas);border:1px solid var(--hl);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.hip-main-top{padding:20px 22px;border-bottom:1px solid var(--hl);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.hip-kicker{font:700 10px var(--f);letter-spacing:.45px;text-transform:uppercase;color:var(--accent-h);margin-bottom:5px}
+.hip-title{font:600 19px/1.28 var(--f);letter-spacing:-.35px;color:var(--ink)}
+.hip-window{font:600 11px var(--m);color:var(--ink3);white-space:nowrap;margin-top:2px}
+.hip-signal-list{display:flex;flex-direction:column}
+.hip-signal{padding:18px 22px;border-bottom:1px solid var(--hl);transition:background .16s}
+.hip-signal:hover{background:#fbfcfd}
+.hip-signal:last-child{border-bottom:none}
+.hip-signal-title{font:600 15px/1.45 var(--f);color:var(--ink);letter-spacing:-.1px;margin-bottom:8px}
+.hip-signal-desc{font:400 13px/1.62 var(--f);color:var(--ink2);margin-bottom:10px}
+.hip-signal-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font:500 11px var(--f);color:var(--ink3)}
+.hip-tag{font:700 10px var(--f);letter-spacing:.25px;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--s1);border:1px solid var(--hl);color:var(--ink2)}
+.hip-tag.compliance,.hip-tag.stablecoin{background:var(--accent-bg);color:var(--accent-h);border-color:rgba(0,200,150,.16)}
+.hip-tag.enforcement,.hip-tag.sanctions{background:var(--danger-bg);color:var(--danger);border-color:rgba(239,68,68,.14)}
+.hip-tag.market{background:var(--blue-bg);color:var(--blue);border-color:rgba(79,110,247,.16)}
+.hip-tag.regulatory{background:rgba(245,158,11,.08);color:#b45309;border-color:rgba(245,158,11,.18)}
+.hip-side{display:flex;flex-direction:column}
+.hip-side-head{padding:18px 18px 12px;border-bottom:1px solid var(--hl)}
+.hip-side-head h3{font:600 15px/1.35 var(--f);color:var(--ink);letter-spacing:-.2px;margin-bottom:4px}
+.hip-side-head p{font:400 12px/1.55 var(--f);color:var(--ink3)}
+.hip-window-list{display:flex;flex-direction:column}
+.hip-window-card{padding:15px 18px;border-bottom:1px solid var(--hl)}
+.hip-window-card:last-child{border-bottom:none}
+.hip-window-time{font:700 11px var(--m);color:var(--accent-h);margin-bottom:8px}
+.hip-window-line{font:500 13px/1.45 var(--f);color:var(--ink);margin-bottom:7px}
+.hip-window-context{font:400 12px/1.55 var(--f);color:var(--ink2)}
+.hip-footer{padding:13px 18px;background:#fbfcfd;border-top:1px solid var(--hl);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.hip-api{font:600 10px var(--m);letter-spacing:.3px;text-transform:uppercase;color:var(--ink3)}
+.hip-link{font:700 12px var(--f);color:var(--accent-h)}
+.hip-empty{padding:22px;color:var(--ink3);font:400 13px/1.6 var(--f)}
+
 /* STAT CARDS — reference screenshot style */
 .stat-cards{max-width:var(--max);margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 40px}
 .stat-card{background:var(--s1);border:1px solid var(--hl);border-radius:14px;padding:28px;position:relative}
@@ -403,6 +442,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .ci-stats{flex-direction:column}
   .ci-stat{min-width:auto}
   .intel-grid{grid-template-columns:1fr}
+  .hip-head{flex-direction:column;align-items:flex-start}
+  .hip-meta{justify-content:flex-start}
+  .hip-grid{grid-template-columns:1fr;max-width:340px}
+  .hip-main-top{flex-direction:column}
+  .hip-window{white-space:normal}
+  .hip-signal,.hip-main-top{padding-left:16px;padding-right:16px}
   .intel-head,.intel-grid,.service-grid,.contact-grid,.ci-preview-grid,.np-grid{max-width:340px}
   .bl-table-wrap{overflow-x:auto;max-width:100%}
   .bl-table{min-width:680px}
@@ -506,7 +551,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <li><a href="#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
     <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
     <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
-    <li><a href="#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
+    <li><a href="#home-intelligence-pulse" data-i18n="nav.briefing">Briefing</a></li>
     <li><a href="#contact" data-i18n="nav.contact">Contact</a></li>
   </ul>
   <div class="nav-right">
@@ -575,6 +620,50 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="stat-label" data-i18n="stat.risk">USDT Addresses</div>
       <div class="stat-breakdown" id="sc-risk-pct">USDC: --</div>
       <div class="stat-delta" id="sc-risk-delta">--</div>
+    </div>
+  </div>
+</section>
+
+<!-- 24H INTELLIGENCE PULSE -->
+<section id="home-intelligence-pulse">
+  <div class="wrap">
+    <div class="hip-head reveal">
+      <div class="hip-head-copy">
+        <div class="sec-label" data-i18n="hip.label">24h Intelligence Pulse</div>
+        <h2 data-i18n="hip.title">What changed, why it matters, and what to watch next.</h2>
+        <p class="sec-desc" data-i18n="hip.desc">A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.</p>
+      </div>
+      <div class="hip-meta">
+        <span class="hip-pill" data-i18n="hip.cadence">8h cadence</span>
+        <span class="hip-pill" id="hip-last-updated">UTC+8</span>
+      </div>
+    </div>
+    <div class="hip-grid reveal">
+      <div class="hip-main">
+        <div class="hip-main-top">
+          <div>
+            <div class="hip-kicker" data-i18n="hip.current">Current public briefing</div>
+            <div class="hip-title" id="hip-main-title">Loading intelligence signals...</div>
+          </div>
+          <div class="hip-window" id="hip-window-label">Last 24h</div>
+        </div>
+        <div class="hip-signal-list" id="hip-signal-list">
+          <div class="hip-empty" data-i18n="hip.loading">Loading latest 24h signals...</div>
+        </div>
+      </div>
+      <div class="hip-side">
+        <div class="hip-side-head">
+          <h3 data-i18n="hip.windows">8-hour signal windows</h3>
+          <p data-i18n="hip.windows.desc">The same structure can later feed X, newsletters, video scripts, and short-form posts.</p>
+        </div>
+        <div class="hip-window-list" id="hip-window-list">
+          <div class="hip-empty" data-i18n="hip.loading">Loading latest 24h signals...</div>
+        </div>
+        <div class="hip-footer">
+          <span class="hip-api" data-i18n="hip.api">API-ready content pack</span>
+          <a class="hip-link" href="#news-pulse-combined" data-i18n="hip.link">View live feed &rarr;</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1289,6 +1378,183 @@ function loadComplianceNewsSignals(){
   });
 }
 
+function pulseDict(key){
+  var dict = (typeof I18N === 'object' && I18N[currentLang]) ? I18N[currentLang] : {};
+  var en = (typeof I18N === 'object' && I18N.en) ? I18N.en : {};
+  return dict[key] || en[key] || key;
+}
+
+function pulseTags(item){
+  var text = ((item.title||'') + ' ' + (item.content||'') + ' ' + (item.summary||'') + ' ' + (item.category||'')).toLowerCase();
+  var tags = [];
+  if(/enforcement|lawsuit|charge|charged|fine|penalty|settlement|probe|investigation|seizure|arrest|doj|sec |cftc|sfc|mas|vara|fca/.test(text)) tags.push('Enforcement');
+  if(/regulat|policy|law|bill|act |framework|mica|fatf|travel rule|licens|vasp|casp|aml|cft|kyc|reserve|audit|attestation/.test(text)) tags.push('Regulatory');
+  if(/sanction|ofac|sdn|blacklist|screening/.test(text)) tags.push('Sanctions');
+  if(/stablecoin|usdt|usdc|tether|circle|issuer|freeze|frozen|mint|redeem|reserve/.test(text)) tags.push('Stablecoin');
+  if(/btc|bitcoin|eth|ethereum|market|price|liquidity|volume|whale|derivative|futures|risk asset|fed|rate/.test(text)) tags.push('Market');
+  if(/compliance|monitoring|sar|str|transaction monitoring|wallet|address/.test(text)) tags.push('Compliance');
+  if(!tags.length) tags.push('Market');
+  return tags.slice(0,3);
+}
+
+function pulseTagClass(tag){
+  tag = String(tag || '').toLowerCase();
+  if(tag === 'compliance') return 'compliance';
+  if(tag === 'stablecoin') return 'stablecoin';
+  if(tag === 'enforcement') return 'enforcement';
+  if(tag === 'sanctions') return 'sanctions';
+  if(tag === 'regulatory') return 'regulatory';
+  if(tag === 'market') return 'market';
+  return '';
+}
+
+function pulseSoWhat(tags){
+  var isCn = currentLang === 'cn';
+  if(tags.indexOf('Enforcement') >= 0) return isCn ? '决策信号：执法正在从调查叙事进入资产控制、平台义务和发行方配合阶段。' : 'Decision signal: enforcement is moving from investigation into asset control, platform obligations, and issuer-side response.';
+  if(tags.indexOf('Stablecoin') >= 0) return isCn ? '决策信号：稳定币发行方动作会直接影响地址筛查、赎回路径和交易对手风险。' : 'Decision signal: issuer-side stablecoin actions can affect address screening, redemption paths, and counterparty risk.';
+  if(tags.indexOf('Sanctions') >= 0) return isCn ? '决策信号：制裁相关信号应转化为观察名单、筛查规则和客户准入复核。' : 'Decision signal: sanctions signals should become watchlist updates, screening rules, and customer access reviews.';
+  if(tags.indexOf('Regulatory') >= 0) return isCn ? '决策信号：监管变化需要映射到受影响主体、时间节点、许可证和运营要求。' : 'Decision signal: regulatory changes need to be mapped to affected entities, deadlines, licensing, and operating requirements.';
+  if(tags.indexOf('Market') >= 0) return isCn ? '决策信号：市场与链上变化应作为流动性、风险偏好和合规压力的早期提示。' : 'Decision signal: market and on-chain movement should be treated as early context for liquidity, risk appetite, and compliance pressure.';
+  return isCn ? '决策信号：将碎片信息转化为下一步需要监测的对象、时间点和风险。' : 'Decision signal: convert fragmented information into the entities, dates, and risks that need monitoring next.';
+}
+
+function pulseScore(item){
+  var tags = pulseTags(item);
+  var score = 0;
+  if(tags.indexOf('Enforcement') >= 0) score += 35;
+  if(tags.indexOf('Stablecoin') >= 0) score += 30;
+  if(tags.indexOf('Sanctions') >= 0) score += 28;
+  if(tags.indexOf('Regulatory') >= 0) score += 24;
+  if(tags.indexOf('Compliance') >= 0) score += 18;
+  if(tags.indexOf('Market') >= 0) score += 8;
+  var d = new Date(item.published_at || item.created_at || new Date().toISOString());
+  var ageHours = Math.max(0, (Date.now() - d.getTime()) / 36e5);
+  score += Math.max(0, 24 - ageHours);
+  return score;
+}
+
+function pulseTime(date){
+  return new Date(date).toLocaleString(currentLang === 'cn' ? 'zh-CN' : 'en-US', {
+    timeZone:'Asia/Shanghai',
+    month:'short',
+    day:'numeric',
+    hour:'2-digit',
+    minute:'2-digit'
+  });
+}
+
+function pulseWindowLabel(startHours, endHours){
+  var now = new Date();
+  var end = new Date(now.getTime() - startHours * 36e5);
+  var start = new Date(now.getTime() - endHours * 36e5);
+  var opts = { timeZone:'Asia/Shanghai', hour:'2-digit', minute:'2-digit' };
+  return start.toLocaleTimeString(currentLang === 'cn' ? 'zh-CN' : 'en-US', opts) + ' - ' + end.toLocaleTimeString(currentLang === 'cn' ? 'zh-CN' : 'en-US', opts) + ' UTC+8';
+}
+
+function renderHomeIntelligencePulse(items){
+  var listEl = document.getElementById('hip-signal-list');
+  var winEl = document.getElementById('hip-window-list');
+  var titleEl = document.getElementById('hip-main-title');
+  var windowEl = document.getElementById('hip-window-label');
+  var updatedEl = document.getElementById('hip-last-updated');
+  if(!listEl || !winEl) return;
+
+  var now = Date.now();
+  var sourceItems = (items || []).filter(function(item){
+    var d = new Date(item.published_at || item.created_at || now);
+    return Number.isFinite(d.getTime()) && now - d.getTime() <= 24 * 36e5;
+  });
+  if(!sourceItems.length) sourceItems = (items || []).slice(0,12);
+
+  var ranked = sourceItems.slice().sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
+  var top = ranked.slice(0,4);
+  if(!top.length){
+    titleEl.textContent = pulseDict('hip.empty.title');
+    listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
+    winEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
+    return;
+  }
+
+  titleEl.textContent = currentLang === 'cn' ? '过去24小时关键合规与市场信号' : 'Key compliance and market signals from the past 24 hours';
+  if(windowEl) windowEl.textContent = pulseDict('hip.range') + ' · UTC+8';
+  if(updatedEl) updatedEl.textContent = pulseDict('hip.updated') + ': ' + pulseTime(now);
+
+  var html = '';
+  top.forEach(function(item){
+    var title = decodeHtml(item.title || '');
+    var desc = decodeHtml(item.summary || item.content || '');
+    var tags = pulseTags(item);
+    var flag = complianceRegionFlag(item);
+    var tagHtml = tags.map(function(tag){ return '<span class="hip-tag ' + pulseTagClass(tag) + '">' + escHtml(tag) + '</span>'; }).join('');
+    html += '<div class="hip-signal">'
+      + '<div class="hip-signal-title">' + flag + ' ' + escHtml(title) + '</div>'
+      + '<div class="hip-signal-desc">' + escHtml(pulseSoWhat(tags)) + '</div>'
+      + '<div class="hip-signal-meta">' + tagHtml + '<span>' + escHtml(item.source || 'News') + '</span><span>' + timeAgo(item.published_at || item.created_at || new Date().toISOString()) + '</span></div>'
+      + '</div>';
+  });
+  listEl.innerHTML = html;
+
+  var ranges = [{s:0,e:8},{s:8,e:16},{s:16,e:24}];
+  var winHtml = '';
+  var windows = ranges.map(function(r){
+    var bucket = sourceItems.filter(function(item){
+      var d = new Date(item.published_at || item.created_at || now);
+      var age = (now - d.getTime()) / 36e5;
+      return age >= r.s && age < r.e;
+    }).sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
+    var lead = bucket[0] || ranked[0];
+    var tags = lead ? pulseTags(lead) : [];
+    return {
+      window: pulseWindowLabel(r.s, r.e),
+      count: bucket.length,
+      title: lead ? decodeHtml(lead.title || '') : pulseDict('hip.no.signal'),
+      context: lead ? pulseSoWhat(tags) : pulseDict('hip.no.signal.desc'),
+      tags: tags
+    };
+  });
+  windows.forEach(function(w){
+    winHtml += '<div class="hip-window-card">'
+      + '<div class="hip-window-time">' + escHtml(w.window) + '</div>'
+      + '<div class="hip-window-line">' + escHtml(w.title) + '</div>'
+      + '<div class="hip-window-context">' + escHtml(w.context) + '</div>'
+      + '</div>';
+  });
+  winEl.innerHTML = winHtml;
+
+  window.INNOBRIDGE_PUBLIC_PULSE = {
+    generated_at: new Date().toISOString(),
+    timezone: 'Asia/Shanghai',
+    cadence_hours: 8,
+    source: 'Innobridge news feed',
+    signals: top.map(function(item){
+      var tags = pulseTags(item);
+      return {
+        title: decodeHtml(item.title || ''),
+        source: item.source || 'News',
+        published_at: item.published_at || item.created_at || '',
+        tags: tags,
+        decision_signal: pulseSoWhat(tags)
+      };
+    }),
+    windows: windows
+  };
+}
+
+function loadHomeIntelligencePulse(){
+  var lang = getNewsLang();
+  var listEl = document.getElementById('hip-signal-list');
+  if(listEl) listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.loading')) + '</div>';
+  fetch(API_BASE + '?action=news&limit=48&offset=0&lang='+lang)
+    .then(function(r){ return r.json(); })
+    .then(function(resp){
+      var data = (resp && resp.success && resp.items) ? resp.items : [];
+      renderHomeIntelligencePulse(data);
+    })
+    .catch(function(){
+      renderHomeIntelligencePulse(allNews || []);
+    });
+}
+
 function escHtml(s){
   var d=document.createElement('div');d.textContent=s;return d.innerHTML;
 }
@@ -1516,6 +1782,7 @@ var I18N = {
     'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into source-backed compliance intelligence for teams that need to understand what changed and what to watch next.',
     'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.',
+    'hip.label':'24h Intelligence Pulse','hip.title':'What changed, why it matters, and what to watch next.','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.cadence':'8h cadence','hip.current':'Current public briefing','hip.windows':'8-hour signal windows','hip.windows.desc':'The same structure can later feed X, newsletters, video scripts, and short-form posts.','hip.api':'API-ready content pack','hip.link':'View live feed →','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
@@ -1557,6 +1824,7 @@ var I18N = {
     'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'Innobridge 将分散的稳定币、制裁、黑名单、监管、新闻和市场信息转化为有来源、有时间线、有判断边界的合规情报，帮助团队理解市场发生了什么，以及下一步应该关注什么。',
     'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报。Innobridge 不提供法律意见，不替代交易监控系统，也不声称提供完整链上取证调查能力。',
+    'hip.label':'24小时情报脉搏','hip.title':'发生了什么，为什么重要，下一步看什么。','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.cadence':'8小时节奏','hip.current':'当前公开简报','hip.windows':'8小时时间窗口','hip.windows.desc':'同一结构后续可同步到 X、Newsletter、视频脚本和短内容平台。','hip.api':'API-ready 内容包','hip.link':'查看实时新闻 →','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
@@ -1627,9 +1895,11 @@ function toggleLang() {
   if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
   if(typeof reloadMarketPulse === 'function') reloadMarketPulse();
   if(typeof renderHomeDeadlines === 'function') renderHomeDeadlines();
+  if(typeof loadHomeIntelligencePulse === 'function') loadHomeIntelligencePulse();
 }
 
 applyLang(currentLang);
+loadHomeIntelligencePulse();
 
 // ===== HOME DEADLINE WATCH =====
 var HOME_DEADLINES = [
