@@ -52,7 +52,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
 
 /* HERO */
-#hero{padding:130px 40px 72px;position:relative;background:var(--canvas)}
+#hero{padding:122px 40px 56px;position:relative;background:var(--canvas)}
 .hero-inner{max-width:var(--max);margin:0 auto;text-align:center}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);border-radius:99px;padding:5px 14px;font:500 11px var(--f);color:var(--accent-h);letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
@@ -104,12 +104,27 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 .deadline-date{font:600 10px var(--m);color:var(--ink3);white-space:nowrap}
 
 /* 24H INTELLIGENCE PULSE */
-#home-intelligence-pulse{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);padding-top:72px;padding-bottom:72px}
-.hip-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:22px}
+#home-intelligence-pulse{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);padding-top:54px;padding-bottom:54px}
+.hip-board{background:var(--canvas);border:1px solid var(--hl);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-md)}
+.hip-head{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:0;padding:18px 22px;border-bottom:1px solid var(--hl);background:#fbfcfd}
 .hip-head-copy{max-width:690px}
+.hip-head h2{font-size:23px;margin-bottom:0}
+.hip-head .sec-label{margin-bottom:4px}
 .hip-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .hip-pill{font:600 11px var(--f);color:var(--ink2);background:var(--canvas);border:1px solid var(--hl);border-radius:999px;padding:7px 11px;white-space:nowrap}
+.hip-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-bottom:1px solid var(--hl);background:var(--canvas)}
+.hip-metric{padding:15px 18px;border-right:1px solid var(--hl);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;min-width:0}
+.hip-metric:last-child{border-right:none}
+.hip-metric-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.hip-metric-icon.shield{background:var(--blue-bg);color:var(--blue)}
+.hip-metric-icon.dollar{background:var(--accent-bg);color:var(--accent)}
+.hip-metric-icon.alert{background:var(--danger-bg);color:var(--danger)}
+.hip-metric-label{font:700 10px var(--f);letter-spacing:.35px;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.hip-metric-val{font:700 22px/1.1 var(--f);letter-spacing:-.4px;color:var(--ink)}
+.hip-metric-sub{font:500 11px/1.4 var(--f);color:var(--ink3);margin-top:3px;overflow-wrap:anywhere}
+.hip-metric-sub strong{color:var(--accent-h)}
 .hip-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:18px;align-items:stretch}
+.hip-board .hip-grid{padding:18px;background:var(--s1)}
 .hip-main,.hip-side{background:var(--canvas);border:1px solid var(--hl);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
 .hip-main-top{padding:20px 22px;border-bottom:1px solid var(--hl);display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
 .hip-kicker{font:700 10px var(--f);letter-spacing:.45px;text-transform:uppercase;color:var(--accent-h);margin-bottom:5px}
@@ -445,6 +460,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .hip-head{flex-direction:column;align-items:flex-start}
   .hip-meta{justify-content:flex-start}
   .hip-grid{grid-template-columns:1fr;max-width:340px}
+  .hip-board .hip-grid{padding:12px}
+  .hip-metrics{grid-template-columns:1fr}
+  .hip-metric{border-right:none;border-bottom:1px solid var(--hl);padding:14px 16px}
+  .hip-metric:last-child{border-bottom:none}
   .hip-main-top{flex-direction:column}
   .hip-window{white-space:normal}
   .hip-signal,.hip-main-top{padding-left:16px;padding-right:16px}
@@ -567,7 +586,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   <div class="hero-inner reveal">
     <div class="hero-badge"><span class="dot"></span> <span data-i18n="hero.badge">Stablecoin & Crypto Compliance Intelligence</span></div>
     <h1><span data-i18n="hero.title1">Turning information into</span><br><span data-i18n="hero.title2">decision-ready intelligence.</span></h1>
-    <p class="hero-sub" data-i18n="hero.sub">Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into source-backed compliance intelligence for teams that need to understand what changed and what to watch next.</p>
+    <p class="hero-sub" data-i18n="hero.sub">Stablecoin freeze, sanctions, regulatory, and market signals translated into decision-ready intelligence.</p>
     <div class="hero-ctas">
       <a href="#blacklist-section" class="btn-p">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -580,90 +599,110 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <span class="proof-pill" data-i18n="hero.pill3">Compliance Signals</span>
       <span class="proof-pill" data-i18n="hero.pill4">Daily / Weekly Briefing</span>
     </div>
-    <p class="hero-note" data-i18n="hero.note">Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.</p>
+    <p class="hero-note" data-i18n="hero.note">Informational intelligence only. Not legal advice or transaction monitoring replacement.</p>
   </div>
 
-  <!-- STAT CARDS — screenshot reference style -->
-  <div class="stat-cards">
-    <div class="stat-card reveal">
-      <div class="stat-card-top">
-        <div class="stat-card-icon shield">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        </div>
-        <div class="stat-change up" id="sc-total-change">&#8593; --</div>
-      </div>
-      <div class="stat-val" id="sc-total">--</div>
-      <div class="stat-label" data-i18n="stat.total">Total Frozen Addresses</div>
-      <div class="stat-breakdown" id="sc-breakdown">ETH: -- &middot; TRON: --</div>
-      <div class="stat-delta" id="sc-total-delta">-- today</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-top">
-        <div class="stat-card-icon dollar">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-        </div>
-        <div class="stat-change up" id="sc-funds-change">&#8593; --</div>
-      </div>
-      <div class="stat-val" id="sc-funds">--</div>
-      <div class="stat-label" data-i18n="stat.funds">Total Frozen Funds</div>
-      <div class="stat-breakdown" data-i18n="stat.funds.sub">Across USDT & USDC</div>
-      <div class="stat-delta" id="sc-funds-delta">-- today</div>
-    </div>
-    <div class="stat-card reveal">
-      <div class="stat-card-top">
-        <div class="stat-card-icon alert">
-          <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <div class="stat-change alert-up" id="sc-risk-change">&#8593; --</div>
-      </div>
-      <div class="stat-val" id="sc-risk">--</div>
-      <div class="stat-label" data-i18n="stat.risk">USDT Addresses</div>
-      <div class="stat-breakdown" id="sc-risk-pct">USDC: --</div>
-      <div class="stat-delta" id="sc-risk-delta">--</div>
-    </div>
-  </div>
 </section>
 
 <!-- 24H INTELLIGENCE PULSE -->
 <section id="home-intelligence-pulse">
   <div class="wrap">
-    <div class="hip-head reveal">
-      <div class="hip-head-copy">
-        <div class="sec-label" data-i18n="hip.label">24h Intelligence Pulse</div>
-        <h2 data-i18n="hip.title">What changed, why it matters, and what to watch next.</h2>
-        <p class="sec-desc" data-i18n="hip.desc">A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.</p>
+    <div class="hip-board reveal">
+      <div class="hip-head">
+        <div class="hip-head-copy">
+          <div class="sec-label" data-i18n="hip.label">Live Intelligence Briefing</div>
+          <h2 data-i18n="hip.title">24h Intelligence Pulse</h2>
+        </div>
+        <div class="hip-meta">
+          <span class="hip-pill" data-i18n="hip.cadence">8h cadence</span>
+          <span class="hip-pill" id="hip-last-updated">Live · UTC+8</span>
+        </div>
       </div>
-      <div class="hip-meta">
-        <span class="hip-pill" data-i18n="hip.cadence">8h cadence</span>
-        <span class="hip-pill" id="hip-last-updated">UTC+8</span>
-      </div>
-    </div>
-    <div class="hip-grid reveal">
-      <div class="hip-main">
-        <div class="hip-main-top">
-          <div>
-            <div class="hip-kicker" data-i18n="hip.current">Current public briefing</div>
-            <div class="hip-title" id="hip-main-title">Loading intelligence signals...</div>
+      <div class="hip-metrics">
+        <div class="hip-metric">
+          <div class="hip-metric-icon shield">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           </div>
-          <div class="hip-window" id="hip-window-label">Last 24h</div>
+          <div>
+            <div class="hip-metric-label" data-i18n="stat.total">Total Frozen Addresses</div>
+            <div class="hip-metric-val" id="sc-total">--</div>
+            <div class="hip-metric-sub"><span id="sc-breakdown">ETH: -- &middot; TRON: --</span> <strong id="sc-total-delta">-- today</strong></div>
+            <span id="sc-total-change" style="display:none"></span>
+          </div>
         </div>
-        <div class="hip-signal-list" id="hip-signal-list">
-          <div class="hip-empty" data-i18n="hip.loading">Loading latest 24h signals...</div>
+        <div class="hip-metric">
+          <div class="hip-metric-icon dollar">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div>
+            <div class="hip-metric-label" data-i18n="stat.funds">Total Frozen Funds</div>
+            <div class="hip-metric-val" id="sc-funds">--</div>
+            <div class="hip-metric-sub"><span data-i18n="stat.funds.sub">Across USDT & USDC</span> <strong id="sc-funds-delta">-- today</strong></div>
+            <span id="sc-funds-change" style="display:none"></span>
+          </div>
+        </div>
+        <div class="hip-metric">
+          <div class="hip-metric-icon alert">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <div class="hip-metric-label" data-i18n="stat.risk">USDT Addresses</div>
+            <div class="hip-metric-val" id="sc-risk">--</div>
+            <div class="hip-metric-sub"><span id="sc-risk-pct">USDC: --</span> <strong id="sc-risk-delta">--</strong></div>
+            <span id="sc-risk-change" style="display:none"></span>
+          </div>
         </div>
       </div>
-      <div class="hip-side">
-        <div class="hip-side-head">
-          <h3 data-i18n="hip.windows">8-hour signal windows</h3>
-          <p data-i18n="hip.windows.desc">The same structure can later feed X, newsletters, video scripts, and short-form posts.</p>
+      <div class="hip-grid">
+        <div class="hip-main">
+          <div class="hip-main-top">
+            <div>
+              <div class="hip-kicker" data-i18n="hip.current">Current public briefing</div>
+              <div class="hip-title" id="hip-main-title">Monitoring live compliance and market signals</div>
+            </div>
+            <div class="hip-window" id="hip-window-label">Last 24h</div>
+          </div>
+          <div class="hip-signal-list" id="hip-signal-list">
+            <div class="hip-signal">
+              <div class="hip-signal-title">💵 Stablecoin freeze and issuer-control signals are monitored in real time</div>
+              <div class="hip-signal-desc">Decision signal: issuer-side stablecoin actions can affect address screening, redemption paths, and counterparty risk.</div>
+              <div class="hip-signal-meta"><span class="hip-tag stablecoin">Stablecoin</span><span class="hip-tag compliance">Compliance</span><span>Live feed</span></div>
+            </div>
+            <div class="hip-signal">
+              <div class="hip-signal-title">🛡️ Sanctions and enforcement updates are grouped into decision signals</div>
+              <div class="hip-signal-desc">Decision signal: sanctions signals should become watchlist updates, screening rules, and customer access reviews.</div>
+              <div class="hip-signal-meta"><span class="hip-tag sanctions">Sanctions</span><span class="hip-tag enforcement">Enforcement</span><span>Live feed</span></div>
+            </div>
+          </div>
         </div>
-        <div class="hip-window-list" id="hip-window-list">
-          <div class="hip-empty" data-i18n="hip.loading">Loading latest 24h signals...</div>
+        <div class="hip-side">
+          <div class="hip-side-head">
+            <h3 data-i18n="hip.windows">8-hour signal windows</h3>
+            <p data-i18n="hip.windows.desc">Structured for newsletter, X, video scripts, and short-form posts.</p>
+          </div>
+          <div class="hip-window-list" id="hip-window-list">
+            <div class="hip-window-card">
+              <div class="hip-window-time">00:00 - 08:00 UTC+8</div>
+              <div class="hip-window-line">Stablecoin, sanctions, and enforcement signals</div>
+              <div class="hip-window-context">Live feed items are grouped here once the latest news API responds.</div>
+            </div>
+            <div class="hip-window-card">
+              <div class="hip-window-time">08:00 - 16:00 UTC+8</div>
+              <div class="hip-window-line">Regulatory updates and market structure changes</div>
+              <div class="hip-window-context">Each window is structured for briefing, newsletter, and social distribution.</div>
+            </div>
+            <div class="hip-window-card">
+              <div class="hip-window-time">16:00 - 24:00 UTC+8</div>
+              <div class="hip-window-line">Decision-ready watch items</div>
+              <div class="hip-window-context">Signals refresh automatically when live data is available.</div>
+            </div>
+          </div>
+          <div class="hip-footer">
+            <span class="hip-api" data-i18n="hip.api">API-ready content pack</span>
+            <a class="hip-link" href="#news-pulse-combined" data-i18n="hip.link">View live feed &rarr;</a>
+          </div>
         </div>
-        <div class="hip-footer">
-          <span class="hip-api" data-i18n="hip.api">API-ready content pack</span>
-          <a class="hip-link" href="#news-pulse-combined" data-i18n="hip.link">View live feed &rarr;</a>
-        </div>
-      </div>
+      </div>    
     </div>
   </div>
 </section>
@@ -1780,9 +1819,9 @@ document.querySelectorAll('nav a[href^="#"]').forEach(function(a){
 var I18N = {
   en: {
     'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
-    'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into source-backed compliance intelligence for teams that need to understand what changed and what to watch next.',
-    'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Innobridge is not a legal-advice provider, transaction monitoring replacement, or full forensic investigation platform.',
-    'hip.label':'24h Intelligence Pulse','hip.title':'What changed, why it matters, and what to watch next.','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.cadence':'8h cadence','hip.current':'Current public briefing','hip.windows':'8-hour signal windows','hip.windows.desc':'The same structure can later feed X, newsletters, video scripts, and short-form posts.','hip.api':'API-ready content pack','hip.link':'View live feed →','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
+    'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Stablecoin freeze, sanctions, regulatory, and market signals translated into decision-ready intelligence.',
+    'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Not legal advice or transaction monitoring replacement.',
+    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.cadence':'8h cadence','hip.current':'Current public briefing','hip.windows':'8-hour windows','hip.windows.desc':'Structured for newsletter, X, video scripts, and short-form posts.','hip.api':'API-ready content pack','hip.link':'View live feed →','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
@@ -1822,9 +1861,9 @@ var I18N = {
   },
   cn: {
     'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
-    'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'Innobridge 将分散的稳定币、制裁、黑名单、监管、新闻和市场信息转化为有来源、有时间线、有判断边界的合规情报，帮助团队理解市场发生了什么，以及下一步应该关注什么。',
-    'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报。Innobridge 不提供法律意见，不替代交易监控系统，也不声称提供完整链上取证调查能力。',
-    'hip.label':'24小时情报脉搏','hip.title':'发生了什么，为什么重要，下一步看什么。','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.cadence':'8小时节奏','hip.current':'当前公开简报','hip.windows':'8小时时间窗口','hip.windows.desc':'同一结构后续可同步到 X、Newsletter、视频脚本和短内容平台。','hip.api':'API-ready 内容包','hip.link':'查看实时新闻 →','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
+    'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'将稳定币冻结、制裁、监管和市场信号转化为可支持决策的情报。',
+    'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报，不构成法律意见，也不替代交易监控。',
+    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.cadence':'8小时节奏','hip.current':'当前公开简报','hip.windows':'8小时时间窗','hip.windows.desc':'结构可同步到 Newsletter、X、视频脚本和短内容平台。','hip.api':'API-ready 内容包','hip.link':'查看实时新闻 →','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
