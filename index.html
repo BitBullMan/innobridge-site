@@ -52,20 +52,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .mobile-toggle{display:none;background:none;border:none;font-size:22px;cursor:pointer;color:var(--ink)}
 
 /* HERO */
-#hero{padding:122px 40px 56px;position:relative;background:var(--canvas)}
+#hero{padding:88px 40px 36px;position:relative;background:var(--canvas)}
 .hero-inner{max-width:var(--max);margin:0 auto;text-align:center}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);border-radius:99px;padding:5px 14px;font:500 11px var(--f);color:var(--accent-h);letter-spacing:.5px;text-transform:uppercase;margin-bottom:24px}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--accent-bg);border:1px solid rgba(0,200,150,0.15);border-radius:99px;padding:5px 14px;font:500 11px var(--f);color:var(--accent-h);letter-spacing:.5px;text-transform:uppercase;margin-bottom:18px}
 .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--accent)}
-h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(--ink);margin-bottom:20px}
-.hero-sub{font:400 16px/1.7 var(--f);color:var(--ink2);max-width:640px;margin:0 auto 32px}
+h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var(--ink);margin-bottom:14px}
+.hero-sub{font:400 15px/1.7 var(--f);color:var(--ink2);max-width:620px;margin:0 auto 24px}
 .hero-ctas{display:flex;gap:10px;justify-content:center}
 .btn-p{font:500 14px var(--f);color:#fff;background:var(--accent);padding:10px 22px;border-radius:7px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:background .2s;box-shadow:0 1px 3px rgba(0,200,150,0.2)}
 .btn-p:hover{background:var(--accent-h)}
 .btn-s{font:500 14px var(--f);color:var(--ink);background:var(--canvas);padding:10px 22px;border-radius:7px;border:1px solid var(--hl2);transition:border-color .2s}
 .btn-s:hover{border-color:var(--ink3)}
-.hero-proof{max-width:760px;margin:22px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hero-proof{max-width:760px;margin:16px auto 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
 .proof-pill{font:500 12px var(--f);color:var(--ink2);background:var(--s1);border:1px solid var(--hl);border-radius:99px;padding:7px 11px}
-.hero-note{font:400 12px/1.6 var(--f);color:var(--ink3);max-width:680px;margin:16px auto 0}
+.hero-note{font:400 12px/1.6 var(--f);color:var(--ink3);max-width:680px;margin:12px auto 0}
 
 /* INTELLIGENCE PLATFORM */
 #intelligence-platform{background:var(--canvas);border-top:1px solid var(--hl)}
@@ -104,11 +104,11 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 .deadline-date{font:600 10px var(--m);color:var(--ink3);white-space:nowrap}
 
 /* 24H INTELLIGENCE PULSE */
-#home-intelligence-pulse{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);padding-top:54px;padding-bottom:54px}
+#home-intelligence-pulse{background:var(--s1);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);padding-top:44px;padding-bottom:44px}
 .hip-board{background:var(--canvas);border:1px solid var(--hl);border-radius:16px;overflow:hidden;box-shadow:var(--shadow-md)}
 .hip-head{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:0;padding:18px 22px;border-bottom:1px solid var(--hl);background:#fbfcfd}
 .hip-head-copy{max-width:690px}
-.hip-head h2{font-size:23px;margin-bottom:0}
+.hip-head h2{font-size:21px;margin-bottom:0}
 .hip-head .sec-label{margin-bottom:4px}
 .hip-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 .hip-pill{font:600 11px var(--f);color:var(--ink2);background:var(--canvas);border:1px solid var(--hl);border-radius:999px;padding:7px 11px;white-space:nowrap}
@@ -123,6 +123,17 @@ h1{font:600 clamp(36px,4.5vw,54px)/1.08 var(--f);letter-spacing:-2px;color:var(-
 .hip-metric-val{font:700 22px/1.1 var(--f);letter-spacing:-.4px;color:var(--ink)}
 .hip-metric-sub{font:500 11px/1.4 var(--f);color:var(--ink3);margin-top:3px;overflow-wrap:anywhere}
 .hip-metric-sub strong{color:var(--accent-h)}
+.freeze-snapshot{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--hl);border-radius:14px;overflow:hidden;background:var(--canvas);margin:20px 0 18px;box-shadow:var(--shadow-sm)}
+.freeze-metric{padding:16px 18px;border-right:1px solid var(--hl);display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;min-width:0}
+.freeze-metric:last-child{border-right:none}
+.freeze-metric-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.freeze-metric-icon.shield{background:var(--blue-bg);color:var(--blue)}
+.freeze-metric-icon.dollar{background:var(--accent-bg);color:var(--accent)}
+.freeze-metric-icon.alert{background:var(--danger-bg);color:var(--danger)}
+.freeze-metric-label{font:700 10px var(--f);letter-spacing:.35px;text-transform:uppercase;color:var(--ink3);margin-bottom:2px}
+.freeze-metric-val{font:700 22px/1.1 var(--f);letter-spacing:-.4px;color:var(--ink)}
+.freeze-metric-sub{font:500 11px/1.4 var(--f);color:var(--ink3);margin-top:3px;overflow-wrap:anywhere}
+.freeze-metric-sub strong{color:var(--accent-h)}
 .hip-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:18px;align-items:stretch}
 .hip-board .hip-grid{padding:18px;background:var(--s1)}
 .hip-main,.hip-side{background:var(--canvas);border:1px solid var(--hl);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
@@ -461,9 +472,9 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .hip-meta{justify-content:flex-start}
   .hip-grid{grid-template-columns:1fr;max-width:340px}
   .hip-board .hip-grid{padding:12px}
-  .hip-metrics{grid-template-columns:1fr}
-  .hip-metric{border-right:none;border-bottom:1px solid var(--hl);padding:14px 16px}
-  .hip-metric:last-child{border-bottom:none}
+  .hip-metrics,.freeze-snapshot{grid-template-columns:1fr}
+  .hip-metric,.freeze-metric{border-right:none;border-bottom:1px solid var(--hl);padding:14px 16px}
+  .hip-metric:last-child,.freeze-metric:last-child{border-bottom:none}
   .hip-main-top{flex-direction:column}
   .hip-window{white-space:normal}
   .hip-signal,.hip-main-top{padding-left:16px;padding-right:16px}
@@ -523,12 +534,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .ci-preview-loading{padding:40px;text-align:center;color:var(--ink3);font:400 13px var(--f)}
 
 /* NEWS + PULSE SIDE BY SIDE */
-.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
 .np-col{min-width:0}
 .np-scroll-wrap{position:relative}
-.np-news-scroll{max-height:620px;overflow-y:auto}
+.np-news-scroll{max-height:430px;overflow-y:auto}
 .pulse-inner-compact{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
-.pulse-layout-compact{display:flex;gap:0;border-top:1px solid var(--hl);max-height:340px}
+.pulse-layout-compact{display:flex;gap:0;border-top:1px solid var(--hl);max-height:300px}
 .pulse-left-compact{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--hl);overflow:hidden}
 .pulse-left-compact .pulse-cat-list{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .pulse-left-compact .pulse-cat-row{padding:10px 14px;gap:8px}
@@ -537,7 +548,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-left-compact .pulse-cat-row-title{font-size:11px}
 .pulse-left-compact .pulse-cat-row-icon{width:24px;height:24px;font-size:11px}
 .pulse-right-compact{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.pulse-right-compact .pulse-whale-list{flex:1;overflow-y:auto;max-height:300px}
+.pulse-right-compact .pulse-whale-list{flex:1;overflow-y:auto;max-height:260px}
 .pulse-right-compact .whale-item{padding:8px 14px}
 .pulse-right-compact .whale-desc{font-size:11px}
 .pulse-right-compact .whale-time{font-size:9px}
@@ -618,41 +629,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <span class="hip-pill" id="hip-last-updated">Live · UTC+8</span>
         </div>
       </div>
-      <div class="hip-metrics">
-        <div class="hip-metric">
-          <div class="hip-metric-icon shield">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          </div>
-          <div>
-            <div class="hip-metric-label" data-i18n="stat.total">Total Frozen Addresses</div>
-            <div class="hip-metric-val" id="sc-total">--</div>
-            <div class="hip-metric-sub"><span id="sc-breakdown">ETH: -- &middot; TRON: --</span> <strong id="sc-total-delta">-- today</strong></div>
-            <span id="sc-total-change" style="display:none"></span>
-          </div>
-        </div>
-        <div class="hip-metric">
-          <div class="hip-metric-icon dollar">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
-          </div>
-          <div>
-            <div class="hip-metric-label" data-i18n="stat.funds">Total Frozen Funds</div>
-            <div class="hip-metric-val" id="sc-funds">--</div>
-            <div class="hip-metric-sub"><span data-i18n="stat.funds.sub">Across USDT & USDC</span> <strong id="sc-funds-delta">-- today</strong></div>
-            <span id="sc-funds-change" style="display:none"></span>
-          </div>
-        </div>
-        <div class="hip-metric">
-          <div class="hip-metric-icon alert">
-            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          </div>
-          <div>
-            <div class="hip-metric-label" data-i18n="stat.risk">USDT Addresses</div>
-            <div class="hip-metric-val" id="sc-risk">--</div>
-            <div class="hip-metric-sub"><span id="sc-risk-pct">USDC: --</span> <strong id="sc-risk-delta">--</strong></div>
-            <span id="sc-risk-change" style="display:none"></span>
-          </div>
-        </div>
-      </div>
       <div class="hip-grid">
         <div class="hip-main">
           <div class="hip-main-top">
@@ -707,114 +683,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
-<!-- COMPLIANCE INTELLIGENCE -->
-<section id="compliance-intel">
-  <div class="wrap">
-    <div class="ci-intro reveal">
-      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
-      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
-      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.</p>
-    </div>
-    <div class="ci-stats reveal">
-      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
-    </div>
-    <div class="ci-preview-grid reveal">
-      <div class="ci-preview-col">
-        <div class="ci-preview-header">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
-        </div>
-        <div class="ci-preview-list" id="ci-enforcement-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇪🇺</span>Unauthorized EU CASPs face MiCA transition pressure</div><div class="ci-preview-item-desc">EU crypto firms without authorization need orderly wind-down, licensing, or customer access controls as transition windows close.</div><div class="ci-preview-item-meta"><span>EU</span><span>MiCA</span><span class="severity enforcement">Enforcement</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇭🇰</span>Hong Kong VASP supervision remains active</div><div class="ci-preview-item-desc">Retail-facing platforms should monitor licensing, custody, token admission, and customer protection requirements.</div><div class="ci-preview-item-meta"><span>HK</span><span>VASP</span><span class="severity high">High</span></div></div>
-        </div>
-      </div>
-      <div class="ci-preview-col">
-        <div class="ci-preview-header">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          <span data-i18n="ci.f3.title">Regulatory Updates</span>
-        </div>
-        <div class="ci-preview-list" id="ci-regulatory-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇺🇸</span>Stablecoin issuer controls stay in focus</div><div class="ci-preview-item-desc">Reserve, licensing, audit, and issuer compliance requirements remain near-term policy catalysts.</div><div class="ci-preview-item-meta"><span>US</span><span>Stablecoin</span><span class="severity new">New</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🌍</span>FATF Travel Rule and VASP supervision watch</div><div class="ci-preview-item-desc">Supervisors continue to test whether VASPs can operationalize screening, monitoring, and cross-border transfer controls.</div><div class="ci-preview-item-meta"><span>Global</span><span>FATF</span><span class="severity regulatory">Watch</span></div></div>
-        </div>
-      </div>
-      <div class="ci-preview-col">
-        <div class="ci-preview-header">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
-          <span data-i18n="ci.news.title">Compliance News Signals</span>
-        </div>
-        <div class="ci-preview-list" id="ci-news-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>Filtering live news for compliance signals</div><div class="ci-preview-item-desc">Relevant regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT items from the news feed will appear here by latest time.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Compliance</span></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="ci-preview-fade"></div>
-    <div class="ci-cta reveal" style="margin-top:-20px;position:relative;z-index:3">
-      <a href="compliance.html" class="btn-p">
-        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- INTELLIGENCE PLATFORM — product architecture -->
-<section id="intelligence-platform">
-  <div class="wrap">
-    <div class="intel-head reveal">
-      <div class="intel-head-copy">
-        <div class="sec-label" data-i18n="ip.label">Product Architecture</div>
-        <h2 data-i18n="ip.title">Four modules that turn market movement into compliance intelligence.</h2>
-        <p class="sec-desc" data-i18n="ip.desc">Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.</p>
-      </div>
-    </div>
-    <div class="intel-grid">
-      <div class="intel-card reveal">
-        <div class="intel-num">01</div>
-        <h3 data-i18n="ip.m1.title">Stablecoin Freeze / Blacklist Tracker</h3>
-        <p data-i18n="ip.m1.desc">Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.</p>
-        <span class="intel-tag" data-i18n="ip.m1.tag">Live Data</span>
-      </div>
-      <div class="intel-card reveal">
-        <div class="intel-num">02</div>
-        <h3 data-i18n="ip.m2.title">Sanctions-Related Address Watchlist</h3>
-        <p data-i18n="ip.m2.desc">Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.</p>
-        <span class="intel-tag" data-i18n="ip.m2.tag">Reference Layer</span>
-      </div>
-      <div class="intel-card reveal">
-        <div class="intel-num">03</div>
-        <h3 data-i18n="ip.m3.title">Regulatory Deadline Intelligence</h3>
-        <p data-i18n="ip.m3.desc">Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.</p>
-        <span class="intel-tag" data-i18n="ip.m3.tag">Deadline Signal</span>
-      </div>
-      <div class="intel-card reveal">
-        <div class="intel-num">04</div>
-        <h3 data-i18n="ip.m4.title">Daily / Weekly Intelligence Briefing</h3>
-        <p data-i18n="ip.m4.desc">Publish Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact in a readable format.</p>
-        <span class="intel-tag" data-i18n="ip.m4.tag">Newsletter</span>
-      </div>
-    </div>
-    <div class="deadline-watch reveal" id="deadline-watch">
-      <div class="deadline-watch-head">
-        <div>
-          <h3 data-i18n="dl.title">Regulatory Deadline Watch</h3>
-          <p data-i18n="dl.sub">Near-term compliance milestones that may affect stablecoin issuers, VASPs, exchanges, and risk teams.</p>
-        </div>
-        <a href="compliance.html#deadlineSection" class="deadline-watch-link" data-i18n="dl.link">View full tracker &rarr;</a>
-      </div>
-      <div class="deadline-strip" id="homeDeadlineStrip"></div>
-    </div>
-  </div>
-</section>
-
-
 <!-- NEWS + MARKET PULSE — side by side -->
-<section id="news-pulse-combined" style="background:var(--canvas);padding-top:72px;padding-bottom:72px">
+<section id="news-pulse-combined" style="background:var(--canvas);padding-top:44px;padding-bottom:48px">
   <div class="wrap">
     <div class="np-grid">
       <div class="np-col">
@@ -904,6 +774,72 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 </div>
 
 
+<!-- COMPLIANCE INTELLIGENCE -->
+<section id="compliance-intel">
+  <div class="wrap">
+    <div class="ci-intro reveal">
+      <div class="sec-label" data-i18n="ci.label">Compliance Intelligence</div>
+      <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
+      <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.</p>
+    </div>
+    <div class="ci-stats reveal">
+      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
+      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
+    </div>
+    <div class="deadline-watch reveal" id="deadline-watch">
+      <div class="deadline-watch-head">
+        <div>
+          <h3 data-i18n="dl.title">Regulatory Deadline Watch</h3>
+          <p data-i18n="dl.sub">Near-term compliance milestones that may affect stablecoin issuers, VASPs, exchanges, and risk teams.</p>
+        </div>
+        <a href="compliance.html#deadlineSection" class="deadline-watch-link" data-i18n="dl.link">View full tracker &rarr;</a>
+      </div>
+      <div class="deadline-strip" id="homeDeadlineStrip"></div>
+    </div>
+    <div class="ci-preview-grid reveal">
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
+        </div>
+        <div class="ci-preview-list" id="ci-enforcement-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇪🇺</span>Unauthorized EU CASPs face MiCA transition pressure</div><div class="ci-preview-item-desc">EU crypto firms without authorization need orderly wind-down, licensing, or customer access controls as transition windows close.</div><div class="ci-preview-item-meta"><span>EU</span><span>MiCA</span><span class="severity enforcement">Enforcement</span></div></div>
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇭🇰</span>Hong Kong VASP supervision remains active</div><div class="ci-preview-item-desc">Retail-facing platforms should monitor licensing, custody, token admission, and customer protection requirements.</div><div class="ci-preview-item-meta"><span>HK</span><span>VASP</span><span class="severity high">High</span></div></div>
+        </div>
+      </div>
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span data-i18n="ci.f3.title">Regulatory Updates</span>
+        </div>
+        <div class="ci-preview-list" id="ci-regulatory-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇺🇸</span>Stablecoin issuer controls stay in focus</div><div class="ci-preview-item-desc">Reserve, licensing, audit, and issuer compliance requirements remain near-term policy catalysts.</div><div class="ci-preview-item-meta"><span>US</span><span>Stablecoin</span><span class="severity new">New</span></div></div>
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🌍</span>FATF Travel Rule and VASP supervision watch</div><div class="ci-preview-item-desc">Supervisors continue to test whether VASPs can operationalize screening, monitoring, and cross-border transfer controls.</div><div class="ci-preview-item-meta"><span>Global</span><span>FATF</span><span class="severity regulatory">Watch</span></div></div>
+        </div>
+      </div>
+      <div class="ci-preview-col">
+        <div class="ci-preview-header">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+          <span data-i18n="ci.news.title">Compliance News Signals</span>
+        </div>
+        <div class="ci-preview-list" id="ci-news-preview">
+          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>Filtering live news for compliance signals</div><div class="ci-preview-item-desc">Relevant regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT items from the news feed will appear here by latest time.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Compliance</span></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="ci-preview-fade"></div>
+    <div class="ci-cta reveal" style="margin-top:-20px;position:relative;z-index:3">
+      <a href="compliance.html" class="btn-p">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span data-i18n="ci.cta">Explore Compliance Intelligence</span>
+      </a>
+    </div>
+  </div>
+</section>
+
 <!-- BLACKLIST DATA — table with fade + search -->
 <section id="blacklist-section">
   <div class="wrap">
@@ -930,6 +866,42 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <button class="bl-search-btn" onclick="runAMLCheck()" data-i18n="aml.btn">Check</button>
       </div>
     </div>
+      <div class="freeze-snapshot">
+        <div class="freeze-metric">
+          <div class="freeze-metric-icon shield">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div>
+            <div class="freeze-metric-label" data-i18n="stat.total">Total Frozen Addresses</div>
+            <div class="freeze-metric-val" id="sc-total">--</div>
+            <div class="freeze-metric-sub"><span id="sc-breakdown">ETH: -- &middot; TRON: --</span> <strong id="sc-total-delta">-- today</strong></div>
+            <span id="sc-total-change" style="display:none"></span>
+          </div>
+        </div>
+        <div class="freeze-metric">
+          <div class="freeze-metric-icon dollar">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+          </div>
+          <div>
+            <div class="freeze-metric-label" data-i18n="stat.funds">Total Frozen Funds</div>
+            <div class="freeze-metric-val" id="sc-funds">--</div>
+            <div class="freeze-metric-sub"><span data-i18n="stat.funds.sub">Across USDT & USDC</span> <strong id="sc-funds-delta">-- today</strong></div>
+            <span id="sc-funds-change" style="display:none"></span>
+          </div>
+        </div>
+        <div class="freeze-metric">
+          <div class="freeze-metric-icon alert">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          </div>
+          <div>
+            <div class="freeze-metric-label" data-i18n="stat.risk">USDT Addresses</div>
+            <div class="freeze-metric-val" id="sc-risk">--</div>
+            <div class="freeze-metric-sub"><span id="sc-risk-pct">USDC: --</span> <strong id="sc-risk-delta">--</strong></div>
+            <span id="sc-risk-change" style="display:none"></span>
+          </div>
+        </div>
+      </div>
+
 
     <!-- AML result inline -->
     <div class="aml-result" id="aml-result">
@@ -949,13 +921,54 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="bl-table-wrap">
         <table class="bl-table">
           <thead><tr><th>Address</th><th>Chain</th><th>Asset</th><th>Risk Level</th><th>Frozen Amount</th><th>Freeze Time (UTC+8)</th></tr></thead>
-          <tbody id="blacklist-preview"><tr><td colspan="5" class="bl-loading">Loading blacklist data...</td></tr></tbody>
+          <tbody id="blacklist-preview"><tr><td colspan="6" class="bl-loading">Loading blacklist data...</td></tr></tbody>
         </table>
       </div>
     </div>
     <div class="bl-view-more reveal">
       <a href="dashboard.html">View Full Freeze Data <span style="margin-left:4px">&rarr;</span></a>
     </div>
+  </div>
+</section>
+
+
+<!-- INTELLIGENCE PLATFORM — product architecture -->
+<section id="intelligence-platform">
+  <div class="wrap">
+    <div class="intel-head reveal">
+      <div class="intel-head-copy">
+        <div class="sec-label" data-i18n="ip.label">Product Architecture</div>
+        <h2 data-i18n="ip.title">Four modules that turn market movement into compliance intelligence.</h2>
+        <p class="sec-desc" data-i18n="ip.desc">Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.</p>
+      </div>
+    </div>
+    <div class="intel-grid">
+      <div class="intel-card reveal">
+        <div class="intel-num">01</div>
+        <h3 data-i18n="ip.m1.title">Stablecoin Freeze / Blacklist Tracker</h3>
+        <p data-i18n="ip.m1.desc">Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.</p>
+        <span class="intel-tag" data-i18n="ip.m1.tag">Live Data</span>
+      </div>
+      <div class="intel-card reveal">
+        <div class="intel-num">02</div>
+        <h3 data-i18n="ip.m2.title">Sanctions-Related Address Watchlist</h3>
+        <p data-i18n="ip.m2.desc">Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.</p>
+        <span class="intel-tag" data-i18n="ip.m2.tag">Reference Layer</span>
+      </div>
+      <div class="intel-card reveal">
+        <div class="intel-num">03</div>
+        <h3 data-i18n="ip.m3.title">Regulatory Deadline Intelligence</h3>
+        <p data-i18n="ip.m3.desc">Monitor MiCA, FATF, HK, US, Singapore, Korea, Japan, and other regulatory milestones by affected entity and deadline.</p>
+        <span class="intel-tag" data-i18n="ip.m3.tag">Deadline Signal</span>
+      </div>
+      <div class="intel-card reveal">
+        <div class="intel-num">04</div>
+        <h3 data-i18n="ip.m4.title">Daily / Weekly Intelligence Briefing</h3>
+        <p data-i18n="ip.m4.desc">Publish Address Watch, Stablecoin Freeze, Sanctions Signal, Compliance Deadline, and Regulatory Impact in a readable format.</p>
+        <span class="intel-tag" data-i18n="ip.m4.tag">Newsletter</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1581,16 +1594,15 @@ function renderHomeIntelligencePulse(items){
 
 function loadHomeIntelligencePulse(){
   var lang = getNewsLang();
-  var listEl = document.getElementById('hip-signal-list');
-  if(listEl) listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.loading')) + '</div>';
   fetch(API_BASE + '?action=news&limit=48&offset=0&lang='+lang)
     .then(function(r){ return r.json(); })
     .then(function(resp){
       var data = (resp && resp.success && resp.items) ? resp.items : [];
-      renderHomeIntelligencePulse(data);
+      if(data.length) renderHomeIntelligencePulse(data);
+      else if(window.allNews && window.allNews.length) renderHomeIntelligencePulse(window.allNews);
     })
     .catch(function(){
-      renderHomeIntelligencePulse(allNews || []);
+      if(window.allNews && window.allNews.length) renderHomeIntelligencePulse(window.allNews);
     });
 }
 
