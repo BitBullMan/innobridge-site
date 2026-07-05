@@ -1492,38 +1492,61 @@ function localizedNewsField(item, field){
   return item[field] || item[field + '_en'] || item[field + 'En'] || '';
 }
 
+function localizedInsightField(item){
+  if(!item) return '';
+  if(currentLang === 'cn'){
+    return item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || item.prompt_zh || item.insight_zh || '';
+  }
+  return item.prompt_en || item.insight_en || item.logic_en || item.summary_en || item.prompt || item.insight || '';
+}
+
+function pulseSubject(item){
+  var title = decodeHtml(localizedNewsField(item, 'title') || item.title || '');
+  title = String(title || '').replace(/^(analysis|breaking|update)\s*[:：]\s*/i, '').replace(/\s+/g, ' ').trim();
+  if(!title) return currentLang === 'cn' ? '该事件' : 'this item';
+  var parts = title.split(/[;；,，:：。.!?？]/).filter(Boolean);
+  var subject = (parts[0] || title).trim();
+  return subject.length > 80 ? subject.slice(0, 79) + '…' : subject;
+}
+
 function pulseInsight(item, tags){
   var isCn = currentLang === 'cn';
+  var stored = localizedInsightField(item);
+  if(stored) return stored;
+  var subject = pulseSubject(item);
+  var date = item && (item.published_at || item.created_at) ? pulseTime(item.published_at || item.created_at) : '';
+  var timePartCn = date ? '时间点是' + date + '；' : '';
+  var timePartEn = date ? 'The timing is ' + date + '; ' : '';
   var text = ((item && item.title) || '') + ' ' + ((item && item.summary) || '') + ' ' + ((item && item.content) || '');
   text = text.toLowerCase();
   if(/tax|revenue service|audit|irs|hmrc/.test(text)){
-    return isCn ? '提示：税务指引会影响申报、审计和交易记录要求；需关注涉及主体、执行时间、数据留存、用户识别和报送义务，对交易所与税务合规成本有投资参考价值。' : 'Insight: tax guidance can affect reporting, audit, and transaction-record requirements; watch affected entities, timing, data retention, user identification, and filing obligations as inputs for exchange and compliance-cost assessment.';
+    return isCn ? '提示：' + subject + '的核心事实是税务/审计要求正在明确；' + timePartCn + '需关注被覆盖用户、交易记录留存、身份识别和报送义务，对交易所合规成本、用户迁移和税务风险定价有参考价值。' : 'Insight: ' + subject + ' points to clearer tax or audit requirements. ' + timePartEn + 'watch covered users, record retention, identity checks, and filing obligations as inputs for exchange compliance cost, user migration, and tax-risk pricing.';
   }
   if(/fca|uk |britain|united kingdom|regulatory framework|implementation approval/.test(text)){
-    return isCn ? '提示：监管框架获批不等于落地完成；需看授权标准、过渡安排、执行细则、受影响机构和合规成本，评估牌照门槛对行业竞争格局与上市公司估值的影响。' : 'Insight: framework approval is not implementation; track authorization standards, transition rules, enforcement detail, affected firms, and compliance cost when assessing competitive structure and valuation impact.';
+    return isCn ? '提示：' + subject + '的事实重点是监管框架与落地审批仍有距离；' + timePartCn + '需拆解授权标准、过渡安排、执行细则和受影响机构，判断牌照门槛对竞争格局、上市公司估值和合规预算的影响。' : 'Insight: ' + subject + ' is about the gap between framework approval and implementation. ' + timePartEn + 'track authorization standards, transition rules, enforcement detail, and affected firms when assessing competitive structure, valuation impact, and compliance budgets.';
   }
   if(/mining|illegal mining|police raid|raid|seized mining/.test(text)){
-    return isCn ? '提示：非法挖矿执法说明风险不只来自链上地址，也来自能源使用、场地许可和本地经营主体；需关注电力成本、监管执法强度和矿企运营连续性。' : 'Insight: illegal-mining enforcement shows risk can sit outside wallet flows, including energy use, site permits, and local operating entities; monitor power cost, enforcement intensity, and miner operating continuity.';
+    return isCn ? '提示：' + subject + '反映执法对象从链上地址延伸到能源使用、场地许可和本地经营主体；' + timePartCn + '影响范围包括矿场运营连续性、电力成本、地方执法强度和矿企风险溢价。' : 'Insight: ' + subject + ' shows enforcement can extend beyond wallet flows into energy use, site permits, and local operators. ' + timePartEn + 'the impact range includes miner continuity, power cost, local enforcement intensity, and mining-sector risk premiums.';
   }
   if(/stablecoin|open usd|usdt|usdc|tether|circle|issuer|reserve|redeem|redemption/.test(text)){
-    return isCn ? '提示：稳定币事件需看发行方、合作方、储备与赎回安排、冻结能力和影响地址范围；这些因素会影响流动性、交易对手风险和相关支付/交易平台的投资判断。' : 'Insight: stablecoin events should be read through issuers, partners, reserve and redemption design, freeze capability, and affected address scope; these factors shape liquidity, counterparty risk, and platform/payment exposure.';
+    return isCn ? '提示：' + subject + '应先确认发行方、合作方、储备/赎回安排和冻结能力；' + timePartCn + '重点看影响地址或客户范围，以及对稳定币流动性、交易对手风险和支付/交易平台敞口的传导。' : 'Insight: ' + subject + ' should be read through the issuer, partners, reserve/redemption design, and freeze capability. ' + timePartEn + 'focus on affected addresses or customers and transmission into stablecoin liquidity, counterparty risk, and platform/payment exposure.';
   }
   if(/sanction|ofac|froze|frozen|asset freeze|blacklist|sdn/.test(text)){
-    return isCn ? '提示：制裁或冻结事件需确认名单来源、司法辖区、发行方执行能力和可识别地址范围；影响范围可能延伸到交易所风控、稳定币流通和相关地区资金流。' : 'Insight: sanctions or freeze events turn on list source, jurisdiction, issuer execution capability, and identifiable address scope; impact can extend to exchange risk controls, stablecoin circulation, and regional flows.';
+    return isCn ? '提示：' + subject + '的事实核查应围绕名单来源、司法辖区、执行主体和可识别地址范围；' + timePartCn + '影响可能扩散到交易所风控、稳定币流通、区域资金流和相关资产风险溢价。' : 'Insight: ' + subject + ' should be checked through list source, jurisdiction, executing party, and identifiable address scope. ' + timePartEn + 'impact can extend to exchange risk controls, stablecoin circulation, regional flows, and related-asset risk premiums.';
   }
   if(/russia|ukraine|putin|trump|war|battlefield|iran|geopolitical|conflict/.test(text)){
-    return isCn ? '提示：地缘政治新闻会通过制裁预期、风险偏好、能源价格和跨境资金审查影响加密市场；需关注时间节点、涉事国家和对流动性/避险资产的传导。' : 'Insight: geopolitical news affects crypto through sanctions expectations, risk appetite, energy prices, and cross-border flow scrutiny; watch timing, countries involved, and transmission into liquidity or risk assets.';
+    return isCn ? '提示：' + subject + '涉及的主体和国家会影响制裁预期、风险偏好、能源价格和跨境资金审查；' + timePartCn + '投资参考在于观察流动性、避险资产、能源链和相关地区风险资产的传导。' : 'Insight: ' + subject + ' involves actors and countries that can affect sanctions expectations, risk appetite, energy prices, and cross-border scrutiny. ' + timePartEn + 'investment reference comes from transmission into liquidity, safe-haven assets, energy chains, and regional risk assets.';
   }
   if(tags.indexOf('Regulatory') >= 0){
-    return isCn ? '提示：监管新闻需拆解适用主体、生效时间、牌照门槛、运营限制和处罚方式；投资参考在于判断合规成本、退出风险和市场份额迁移。' : 'Insight: regulatory news should be read through affected entities, effective dates, licensing thresholds, operating limits, and penalties; investment value lies in compliance cost, exit risk, and market-share migration.';
+    return isCn ? '提示：' + subject + '需要先梳理适用主体、生效时间、牌照门槛、运营限制和处罚方式；' + timePartCn + '投资参考在于判断合规成本、退出风险、市场份额迁移和受监管公司估值压力。' : 'Insight: ' + subject + ' should be broken down by affected entities, effective date, licensing threshold, operating limits, and penalties. ' + timePartEn + 'investment value lies in compliance cost, exit risk, market-share migration, and valuation pressure on regulated firms.';
   }
   if(tags.indexOf('Enforcement') >= 0){
-    return isCn ? '提示：执法新闻需看被执行主体、指控类型、金额或资产控制措施、监管机关和后续程序；这会影响同类平台风险溢价、合规整改和市场信心。' : 'Insight: enforcement news depends on the target entity, allegation type, amount or asset-control measure, authority, and follow-on process; it can affect peer risk premiums, remediation cost, and market confidence.';
+    return isCn ? '提示：' + subject + '应先确认被执行主体、指控类型、金额或资产控制措施、监管机关和后续程序；' + timePartCn + '影响范围包括同类平台风险溢价、合规整改成本和市场信心。' : 'Insight: ' + subject + ' depends on the target entity, allegation type, amount or asset-control measure, authority, and follow-on process. ' + timePartEn + 'impact can include peer risk premiums, remediation cost, and market confidence.';
   }
   if(tags.indexOf('Market') >= 0){
-    return isCn ? '提示：市场新闻要看流动性、杠杆、资金流向、宏观时间点和风险偏好是否发生方向性变化；这些变量可作为短期投资情绪和仓位风险参考。' : 'Insight: market news matters when liquidity, leverage, capital flows, macro timing, or risk appetite show a directional change; use these as inputs for short-term sentiment and positioning risk.';
+    return isCn ? '提示：' + subject + '的投资参考应围绕流动性、杠杆、资金流向、宏观时间点和风险偏好是否出现方向变化；' + timePartCn + '重点判断其对短期情绪、仓位风险和相关板块敞口的影响。' : 'Insight: ' + subject + ' should be assessed through liquidity, leverage, capital flows, macro timing, and directional changes in risk appetite. ' + timePartEn + 'focus on short-term sentiment, positioning risk, and related-sector exposure.';
   }
-  return isCn ? '提示：需先识别相关主体、背景、时间点、地址或资产范围，再判断影响因素、影响范围以及是否会触发后续监管、流动性或投资情绪变化。' : 'Insight: identify the entities, background, timing, address or asset scope first, then assess impact factors, impact range, and possible follow-on regulatory, liquidity, or investor-sentiment effects.';
+  return isCn ? '提示：' + subject + '需要先客观梳理主体、背景、时间点、地址或资产范围；' + timePartCn + '再判断影响因素、影响范围，以及是否会触发后续监管、流动性或投资情绪变化。' : 'Insight: ' + subject + ' should first be framed by entities, background, timing, and address or asset scope. ' + timePartEn + 'then assess impact factors, impact range, and possible follow-on regulatory, liquidity, or investor-sentiment effects.';
 }
 
 function pulseScore(item){
