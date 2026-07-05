@@ -3810,11 +3810,18 @@ function renderStoredComplianceList(containerId, items, tagClass, emptyText){
   }).join('');
 }
 
+function hasStoredComplianceItems(row){
+  if(!row) return false;
+  return ['enforcement_items','regulatory_items','compliance_news_items'].some(function(key){
+    return Array.isArray(row[key]) && row[key].length > 0;
+  });
+}
+
 function loadStoredComplianceIntelligence(){
   return supabaseSelect('compliance_intelligence_runs?select=generated_at,summary,enforcement_items,regulatory_items,compliance_news_items,deadline_items&status=eq.published&order=briefing_date.desc&limit=1')
     .then(function(rows){
       var row = rows && rows[0];
-      if(!row) return false;
+      if(!hasStoredComplianceItems(row)) return false;
       storedComplianceOverviewLoaded = true;
       renderStoredComplianceList('overviewEnforcement', row.enforcement_items, 'enforcement', currentLang === 'cn' ? '暂无最新执法情报。' : 'No fresh enforcement intelligence yet.');
       renderStoredComplianceList('overviewRegUpdates', row.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
