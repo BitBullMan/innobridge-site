@@ -134,7 +134,7 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .freeze-metric-val{font:700 22px/1.1 var(--f);letter-spacing:-.4px;color:var(--ink)}
 .freeze-metric-sub{font:500 11px/1.4 var(--f);color:var(--ink3);margin-top:3px;overflow-wrap:anywhere}
 .freeze-metric-sub strong{color:var(--accent-h)}
-.hip-grid{display:grid;grid-template-columns:minmax(0,1.18fr) minmax(320px,.82fr);gap:18px;align-items:stretch}
+.hip-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:18px;align-items:stretch}
 .hip-board .hip-grid{padding:18px;background:var(--s1)}
 .hip-main,.hip-side{background:var(--canvas);border:1px solid var(--hl);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm);height:560px}
 .hip-main{display:flex;flex-direction:column}
@@ -168,6 +168,15 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .hip-window-line{font:500 13px/1.45 var(--f);color:var(--ink);margin-bottom:7px}
 .hip-window-context{font:400 12px/1.55 var(--f);color:var(--ink2)}
 .hip-empty{padding:22px;color:var(--ink3);font:400 13px/1.6 var(--f)}
+.hip-monitor-rail{display:grid;grid-template-rows:260px 286px;gap:14px;height:560px;min-width:0}
+.hip-monitor-rail .news-top{margin:0;padding:14px 18px;border-bottom:1px solid var(--hl)}
+.hip-monitor-rail .np-scroll-wrap{height:260px}
+.hip-monitor-rail .np-news-scroll{max-height:207px}
+.hip-monitor-rail .pulse-inner-compact{height:286px;box-shadow:var(--shadow-sm)}
+.hip-monitor-rail .pulse-gauge-wrap{display:none}
+.hip-monitor-rail .pulse-formula{display:none}
+.hip-monitor-rail .pulse-layout-compact{max-height:236px}
+.hip-monitor-rail .pulse-right-compact .pulse-whale-list{max-height:200px}
 
 /* STAT CARDS — reference screenshot style */
 .stat-cards{max-width:var(--max);margin:48px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding:0 40px}
@@ -474,6 +483,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .hip-grid{grid-template-columns:1fr;max-width:340px}
   .hip-board .hip-grid{padding:12px}
   .hip-main,.hip-side{height:520px}
+  .hip-monitor-rail{height:auto;grid-template-rows:auto auto}
+  .hip-monitor-rail .np-scroll-wrap{height:auto}
+  .hip-monitor-rail .np-news-scroll{max-height:320px}
+  .hip-monitor-rail .pulse-inner-compact{height:auto}
+  .hip-monitor-rail .pulse-layout-compact{max-height:none}
   .hip-metrics,.freeze-snapshot{grid-template-columns:1fr}
   .hip-metric,.freeze-metric{border-right:none;border-bottom:1px solid var(--hl);padding:14px 16px}
   .hip-metric:last-child,.freeze-metric:last-child{border-bottom:none}
@@ -536,12 +550,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .ci-preview-loading{padding:40px;text-align:center;color:var(--ink3);font:400 13px var(--f)}
 
 /* NEWS + PULSE SIDE BY SIDE */
-.np-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.np-grid{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:18px;align-items:start}
 .np-col{min-width:0}
-.np-scroll-wrap{position:relative}
-.np-news-scroll{max-height:430px;overflow-y:auto}
+.np-scroll-wrap{position:relative;background:var(--canvas);border:1px solid var(--hl);border-radius:14px;overflow:hidden;box-shadow:var(--shadow-sm)}
+.np-news-scroll{max-height:360px;overflow-y:auto;padding:0}
 .pulse-inner-compact{background:var(--s1);border:1px solid var(--hl);border-radius:14px;overflow:hidden}
-.pulse-layout-compact{display:flex;gap:0;border-top:1px solid var(--hl);max-height:300px}
+.pulse-layout-compact{display:flex;gap:0;border-top:1px solid var(--hl);max-height:250px}
 .pulse-left-compact{flex:1;display:flex;flex-direction:column;border-right:1px solid var(--hl);overflow:hidden}
 .pulse-left-compact .pulse-cat-list{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 .pulse-left-compact .pulse-cat-row{padding:10px 14px;gap:8px}
@@ -550,7 +564,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .pulse-left-compact .pulse-cat-row-title{font-size:11px}
 .pulse-left-compact .pulse-cat-row-icon{width:24px;height:24px;font-size:11px}
 .pulse-right-compact{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.pulse-right-compact .pulse-whale-list{flex:1;overflow-y:auto;max-height:260px}
+.pulse-right-compact .pulse-whale-list{flex:1;overflow-y:auto;max-height:220px}
 .pulse-right-compact .whale-item{padding:8px 14px}
 .pulse-right-compact .whale-desc{font-size:11px}
 .pulse-right-compact .whale-time{font-size:9px}
@@ -568,6 +582,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .deadline-strip{grid-template-columns:1fr}
   .pulse-layout-compact{flex-direction:column;max-height:none}
   .pulse-left-compact{border-right:none;border-bottom:1px solid var(--hl)}
+  .hip-monitor-rail .pulse-gauge-wrap,.hip-monitor-rail .pulse-formula{display:block}
 }
 </style>
 </head>
@@ -652,99 +667,70 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
             </div>
           </div>
         </div>
-        <div class="hip-side">
-          <div class="hip-side-head">
-            <h3 data-i18n="hip.windows">8-hour signal windows</h3>
-            <p data-i18n="hip.windows.desc">Structured for newsletter, X, video scripts, and short-form posts.</p>
-          </div>
-          <div class="hip-window-list" id="hip-window-list">
-            <div class="hip-window-card">
-              <div class="hip-window-time">00:00 - 08:00 UTC+8</div>
-              <div class="hip-window-line">Stablecoin, sanctions, and enforcement signals</div>
-              <div class="hip-window-context">Live feed items are grouped here once the latest news API responds.</div>
-            </div>
-            <div class="hip-window-card">
-              <div class="hip-window-time">08:00 - 16:00 UTC+8</div>
-              <div class="hip-window-line">Regulatory updates and market structure changes</div>
-              <div class="hip-window-context">Each window is structured for briefing, newsletter, and social distribution.</div>
-            </div>
-            <div class="hip-window-card">
-              <div class="hip-window-time">16:00 - 24:00 UTC+8</div>
-              <div class="hip-window-line">Decision-ready watch items</div>
-              <div class="hip-window-context">Signals refresh automatically when live data is available.</div>
-            </div>
-          </div>
-        </div>
-      </div>    
-    </div>
-  </div>
-</section>
-
-<!-- NEWS + MARKET PULSE — side by side -->
-<section id="news-pulse-combined" style="background:var(--canvas);padding-top:44px;padding-bottom:48px">
-  <div class="wrap">
-    <div class="np-grid">
-      <div class="np-col">
-        <div class="news-top reveal">
-          <div class="news-top-left">
-            <div class="news-dot"></div>
-            <div>
-              <div class="sec-label" style="margin-bottom:0" data-i18n="news.label">Live News Feed</div>
-              <div style="font:400 12px var(--f);color:var(--ink3);margin-top:2px" data-i18n="news.sub">Real-time crypto & blockchain intelligence</div>
-            </div>
-          </div>
-        </div>
-        <div class="np-scroll-wrap">
-          <div class="news-scroll np-news-scroll" id="news-grid">
-            <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
-          </div>
-          <div id="news-more" style="display:none"><button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button></div>
-        </div>
-      </div>
-      <div class="np-col">
-        <div class="pulse-inner-compact reveal">
-          <div class="pulse-header" style="padding:14px 20px 0">
-            <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
-          </div>
-          <div class="pulse-gauge-wrap" style="padding:8px 20px 0">
-            <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge" style="width:140px;height:84px">
-              <defs>
-                <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#ef4444"/>
-                  <stop offset="50%" style="stop-color:#f59e0b"/>
-                  <stop offset="100%" style="stop-color:#10b981"/>
-                </linearGradient>
-              </defs>
-              <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
-              <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
-              <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
-              <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
-              <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
-              <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
-              <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
-            </svg>
-            <div class="pulse-gauge-val" id="gauge-val" style="font-size:20px;margin-top:0">--</div>
-            <div class="pulse-gauge-label" data-i18n="pulse.sentiment" style="font-size:10px">Market Sentiment Index</div>
-          </div>
-          <div class="pulse-formula" style="padding:2px 16px 10px">
-            <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula" style="font-size:9px;padding:3px 8px">Loading formula...</div>
-          </div>
-          <div class="pulse-layout-compact">
-            <div class="pulse-left-compact">
-              <div class="pulse-cat-list" id="pulse-cat-list">
-                <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+        <div class="hip-monitor-rail">
+          <div class="np-col">
+            <div class="np-scroll-wrap">
+              <div class="news-top reveal">
+                <div class="news-top-left">
+                  <div class="news-dot"></div>
+                  <div>
+                    <div class="sec-label" style="margin-bottom:0" data-i18n="news.label">Live News Feed</div>
+                    <div style="font:400 12px var(--f);color:var(--ink3);margin-top:2px" data-i18n="news.sub">Real-time crypto & blockchain intelligence</div>
+                  </div>
+                </div>
               </div>
-              <div class="pulse-powered">
-                <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
+              <div class="news-scroll np-news-scroll" id="news-grid">
+                <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
               </div>
+              <div id="news-more" style="display:none"><button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button></div>
             </div>
-            <div class="pulse-right-compact">
-              <div class="pulse-whale-header">
-                <div class="pulse-whale-dot"></div>
-                <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
+          </div>
+          <div class="np-col">
+            <div class="pulse-inner-compact reveal">
+              <div class="pulse-header" style="padding:14px 20px 0">
+                <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
               </div>
-              <div class="pulse-whale-list" id="whale-list">
-                <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
+              <div class="pulse-gauge-wrap" style="padding:8px 20px 0">
+                <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge" style="width:140px;height:84px">
+                  <defs>
+                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" style="stop-color:#ef4444"/>
+                      <stop offset="50%" style="stop-color:#f59e0b"/>
+                      <stop offset="100%" style="stop-color:#10b981"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
+                  <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
+                  <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
+                  <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
+                  <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
+                  <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
+                </svg>
+                <div class="pulse-gauge-val" id="gauge-val" style="font-size:20px;margin-top:0">--</div>
+                <div class="pulse-gauge-label" data-i18n="pulse.sentiment" style="font-size:10px">Market Sentiment Index</div>
+              </div>
+              <div class="pulse-formula" style="padding:2px 16px 10px">
+                <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula" style="font-size:9px;padding:3px 8px">Loading formula...</div>
+              </div>
+              <div class="pulse-layout-compact">
+                <div class="pulse-left-compact">
+                  <div class="pulse-cat-list" id="pulse-cat-list">
+                    <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
+                  </div>
+                  <div class="pulse-powered">
+                    <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
+                  </div>
+                </div>
+                <div class="pulse-right-compact">
+                  <div class="pulse-whale-header">
+                    <div class="pulse-whale-dot"></div>
+                    <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
+                  </div>
+                  <div class="pulse-whale-list" id="whale-list">
+                    <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -1130,7 +1116,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
     <div class="footer-col">
       <h4 data-i18n="ft.resources">Resources</h4>
-      <a href="#news-pulse-combined" data-i18n="ft.news">Briefing</a>
+      <a href="#home-intelligence-pulse" data-i18n="ft.news">Briefing</a>
       <a href="dashboard.html" data-i18n="ft.explorer">Data Explorer</a>
       <a href="#contact" data-i18n="ft.contact">Join Waitlist</a>
     </div>
@@ -1589,7 +1575,7 @@ function renderHomeIntelligencePulse(items){
   var titleEl = document.getElementById('hip-main-title');
   var windowEl = document.getElementById('hip-window-label');
   var updatedEl = document.getElementById('hip-last-updated');
-  if(!listEl || !winEl) return;
+  if(!listEl) return;
 
   var now = Date.now();
   var sourceItems = (items || []).filter(function(item){
@@ -1603,7 +1589,7 @@ function renderHomeIntelligencePulse(items){
   if(!top.length){
     titleEl.textContent = pulseDict('hip.empty.title');
     listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
-    winEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
+    if(winEl) winEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
     return;
   }
 
@@ -1625,9 +1611,7 @@ function renderHomeIntelligencePulse(items){
   });
   listEl.innerHTML = html;
 
-  var ranges = [{s:0,e:8},{s:8,e:16},{s:16,e:24}];
-  var winHtml = '';
-  var windows = ranges.map(function(r){
+  var windows = [{s:0,e:8},{s:8,e:16},{s:16,e:24}].map(function(r){
     var bucket = sourceItems.filter(function(item){
       var d = new Date(item.published_at || item.created_at || now);
       var age = (now - d.getTime()) / 36e5;
@@ -1643,14 +1627,15 @@ function renderHomeIntelligencePulse(items){
       tags: tags
     };
   });
-  windows.forEach(function(w){
-    winHtml += '<div class="hip-window-card">'
-      + '<div class="hip-window-time">' + escHtml(w.window) + ' · ' + w.count + (currentLang === 'cn' ? '条' : ' items') + '</div>'
-      + '<div class="hip-window-line">' + escHtml(w.title) + '</div>'
-      + '<div class="hip-window-context">' + escHtml(w.context) + '</div>'
-      + '</div>';
-  });
-  winEl.innerHTML = winHtml;
+  if(winEl){
+    winEl.innerHTML = windows.map(function(w){
+      return '<div class="hip-window-card">'
+        + '<div class="hip-window-time">' + escHtml(w.window) + ' · ' + w.count + (currentLang === 'cn' ? '条' : ' items') + '</div>'
+        + '<div class="hip-window-line">' + escHtml(w.title) + '</div>'
+        + '<div class="hip-window-context">' + escHtml(w.context) + '</div>'
+        + '</div>';
+    }).join('');
+  }
 
   window.INNOBRIDGE_PUBLIC_PULSE = {
     generated_at: new Date().toISOString(),
@@ -1985,7 +1970,7 @@ var I18N = {
     'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Stablecoin freeze, sanctions, regulatory, and market signals translated into decision-ready intelligence.',
     'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Not legal advice or transaction monitoring replacement.',
-    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.current':'Current public briefing','hip.windows':'8-Hour Windows','hip.windows.desc':'Structured for newsletter, X, video scripts, and short-form posts.','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
+    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals.','hip.current':'Current public briefing','hip.windows':'Signal Monitor','hip.windows.desc':'Live source feed and market pulse for context.','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring active','hip.no.signal.desc':'No high-confidence public signal yet.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
@@ -2027,7 +2012,7 @@ var I18N = {
     'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'将稳定币冻结、制裁、监管和市场信号转化为可支持决策的情报。',
     'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报，不构成法律意见，也不替代交易监控。',
-    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.current':'当前公开简报','hip.windows':'8小时时间窗','hip.windows.desc':'结构可同步到 Newsletter、X、视频脚本和短内容平台。','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
+    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要。','hip.current':'当前公开简报','hip.windows':'信号监控','hip.windows.desc':'用实时新闻流与市场脉搏补充上下文。','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测运行中','hip.no.signal.desc':'暂未出现高置信度公开信号。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
