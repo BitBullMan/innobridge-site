@@ -163,9 +163,6 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .hip-window-time{font:700 11px var(--m);color:var(--accent-h);margin-bottom:8px}
 .hip-window-line{font:500 13px/1.45 var(--f);color:var(--ink);margin-bottom:7px}
 .hip-window-context{font:400 12px/1.55 var(--f);color:var(--ink2)}
-.hip-footer{padding:13px 18px;background:#fbfcfd;border-top:1px solid var(--hl);display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.hip-api{font:600 10px var(--m);letter-spacing:.3px;text-transform:uppercase;color:var(--ink3)}
-.hip-link{font:700 12px var(--f);color:var(--accent-h)}
 .hip-empty{padding:22px;color:var(--ink3);font:400 13px/1.6 var(--f)}
 
 /* STAT CARDS — reference screenshot style */
@@ -640,12 +637,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <div class="hip-signal-list" id="hip-signal-list">
             <div class="hip-signal">
               <div class="hip-signal-title">💵 Stablecoin freeze and issuer-control signals are monitored in real time</div>
-              <div class="hip-signal-desc">Decision signal: issuer-side stablecoin actions can affect address screening, redemption paths, and counterparty risk.</div>
+              <div class="hip-signal-desc">Logic: issuer-side stablecoin actions matter when they change freeze capability, redemption access, or counterparty risk.</div>
               <div class="hip-signal-meta"><span class="hip-tag stablecoin">Stablecoin</span><span class="hip-tag compliance">Compliance</span><span>Live feed</span></div>
             </div>
             <div class="hip-signal">
               <div class="hip-signal-title">🛡️ Sanctions and enforcement updates are grouped into decision signals</div>
-              <div class="hip-signal-desc">Decision signal: sanctions signals should become watchlist updates, screening rules, and customer access reviews.</div>
+              <div class="hip-signal-desc">Logic: sanctions and enforcement updates are assessed by source, jurisdiction, affected entity, and identifiable address scope.</div>
               <div class="hip-signal-meta"><span class="hip-tag sanctions">Sanctions</span><span class="hip-tag enforcement">Enforcement</span><span>Live feed</span></div>
             </div>
           </div>
@@ -1478,14 +1475,38 @@ function localizedNewsField(item, field){
   return item[field] || item[field + '_en'] || item[field + 'En'] || '';
 }
 
-function pulseSoWhat(tags){
+function pulseInsight(item, tags){
   var isCn = currentLang === 'cn';
-  if(tags.indexOf('Enforcement') >= 0) return isCn ? '决策信号：执法正在从调查叙事进入资产控制、平台义务和发行方配合阶段。' : 'Decision signal: enforcement is moving from investigation into asset control, platform obligations, and issuer-side response.';
-  if(tags.indexOf('Stablecoin') >= 0) return isCn ? '决策信号：稳定币发行方动作会直接影响地址筛查、赎回路径和交易对手风险。' : 'Decision signal: issuer-side stablecoin actions can affect address screening, redemption paths, and counterparty risk.';
-  if(tags.indexOf('Sanctions') >= 0) return isCn ? '决策信号：制裁相关信号应转化为观察名单、筛查规则和客户准入复核。' : 'Decision signal: sanctions signals should become watchlist updates, screening rules, and customer access reviews.';
-  if(tags.indexOf('Regulatory') >= 0) return isCn ? '决策信号：监管变化需要映射到受影响主体、时间节点、许可证和运营要求。' : 'Decision signal: regulatory changes need to be mapped to affected entities, deadlines, licensing, and operating requirements.';
-  if(tags.indexOf('Market') >= 0) return isCn ? '决策信号：市场与链上变化应作为流动性、风险偏好和合规压力的早期提示。' : 'Decision signal: market and on-chain movement should be treated as early context for liquidity, risk appetite, and compliance pressure.';
-  return isCn ? '决策信号：将碎片信息转化为下一步需要监测的对象、时间点和风险。' : 'Decision signal: convert fragmented information into the entities, dates, and risks that need monitoring next.';
+  var text = ((item && item.title) || '') + ' ' + ((item && item.summary) || '') + ' ' + ((item && item.content) || '');
+  text = text.toLowerCase();
+  if(/tax|revenue service|audit|irs|hmrc/.test(text)){
+    return isCn ? '逻辑：税务机关发布指引通常意味着申报、审计和交易记录要求更清晰，决定性因素是数据留存、用户识别和报送义务。' : 'Logic: tax guidance usually clarifies reporting, audit, and transaction-record expectations; key factors are data retention, user identification, and filing obligations.';
+  }
+  if(/fca|uk |britain|united kingdom|regulatory framework|implementation approval/.test(text)){
+    return isCn ? '逻辑：监管框架获批不等于落地完成，决定性因素是授权标准、过渡安排、执行细则和企业合规成本。' : 'Logic: framework approval is not the same as implementation; key factors are authorization standards, transition rules, enforcement detail, and compliance cost.';
+  }
+  if(/mining|illegal mining|police raid|raid|seized mining/.test(text)){
+    return isCn ? '逻辑：非法挖矿执法说明风险不只来自链上地址，也来自能源使用、场地许可和本地经营主体。' : 'Logic: illegal-mining enforcement shows risk can sit outside wallet flows, including energy use, site permits, and local operating entities.';
+  }
+  if(/stablecoin|open usd|usdt|usdc|tether|circle|issuer|reserve|redeem|redemption/.test(text)){
+    return isCn ? '逻辑：稳定币事件的关键变量是发行方责任、储备与赎回安排、合作方尽调和可执行的冻结能力。' : 'Logic: stablecoin risk depends on issuer responsibility, reserve and redemption design, partner due diligence, and enforceable freeze capability.';
+  }
+  if(/sanction|ofac|froze|frozen|asset freeze|blacklist|sdn/.test(text)){
+    return isCn ? '逻辑：制裁或冻结事件的决定性因素是名单来源、司法辖区、发行方执行能力和可识别地址范围。' : 'Logic: sanctions or freeze events turn on list source, jurisdiction, issuer execution capability, and the scope of identifiable addresses.';
+  }
+  if(/russia|ukraine|putin|trump|war|battlefield|iran|geopolitical|conflict/.test(text)){
+    return isCn ? '逻辑：地缘政治新闻通过制裁预期、风险偏好和跨境资金审查强度影响加密市场与合规环境。' : 'Logic: geopolitical news affects crypto and compliance through sanctions expectations, risk appetite, and cross-border flow scrutiny.';
+  }
+  if(tags.indexOf('Regulatory') >= 0){
+    return isCn ? '逻辑：监管新闻的关键变量是适用主体、生效时间、牌照门槛、运营限制和处罚方式。' : 'Logic: regulatory news should be read through affected entities, effective dates, licensing thresholds, operating limits, and penalties.';
+  }
+  if(tags.indexOf('Enforcement') >= 0){
+    return isCn ? '逻辑：执法新闻的关键变量是被执行主体、指控类型、金额或资产控制措施，以及监管机关的后续动作。' : 'Logic: enforcement news depends on the target entity, allegation type, amount or asset-control measure, and follow-on regulator action.';
+  }
+  if(tags.indexOf('Market') >= 0){
+    return isCn ? '逻辑：市场新闻的决定性因素是流动性、杠杆、资金流向和风险偏好是否发生方向性变化。' : 'Logic: market news matters when liquidity, leverage, capital flows, or risk appetite show a directional change.';
+  }
+  return isCn ? '逻辑：这类信息需要看清相关主体、时间节点、地址或资产范围，以及是否会触发后续监管或市场反应。' : 'Logic: read this item through the relevant entities, dates, address or asset scope, and whether it can trigger follow-on regulatory or market reaction.';
 }
 
 function pulseScore(item){
@@ -1538,7 +1559,7 @@ function renderHomeIntelligencePulse(items){
   if(!sourceItems.length) sourceItems = (items || []).slice(0,12);
 
   var ranked = sourceItems.slice().sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
-  var top = ranked.slice(0,4);
+  var top = ranked.slice(0, Math.min(10, ranked.length));
   if(!top.length){
     titleEl.textContent = pulseDict('hip.empty.title');
     listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
@@ -1547,7 +1568,7 @@ function renderHomeIntelligencePulse(items){
   }
 
   titleEl.textContent = currentLang === 'cn' ? '过去24小时关键合规与市场信号' : 'Key compliance and market signals from the past 24 hours';
-  if(windowEl) windowEl.textContent = pulseDict('hip.range') + ' · UTC+8';
+  if(windowEl) windowEl.textContent = pulseDict('hip.range') + ' · ' + sourceItems.length + (currentLang === 'cn' ? '条' : ' items') + ' · UTC+8';
   if(updatedEl) updatedEl.textContent = pulseDict('hip.updated') + ': ' + pulseTime(now);
 
   var html = '';
@@ -1558,7 +1579,7 @@ function renderHomeIntelligencePulse(items){
     var tagHtml = tags.map(function(tag){ return '<span class="hip-tag ' + pulseTagClass(tag) + '">' + escHtml(pulseTagLabel(tag)) + '</span>'; }).join('');
     html += '<div class="hip-signal">'
       + '<div class="hip-signal-title">' + flag + ' ' + escHtml(title) + '</div>'
-      + '<div class="hip-signal-desc">' + escHtml(pulseSoWhat(tags)) + '</div>'
+      + '<div class="hip-signal-desc">' + escHtml(pulseInsight(item, tags)) + '</div>'
       + '<div class="hip-signal-meta">' + tagHtml + '<span>' + escHtml(item.source || 'News') + '</span><span>' + timeAgo(item.published_at || item.created_at || new Date().toISOString()) + '</span></div>'
       + '</div>';
   });
@@ -1578,13 +1599,13 @@ function renderHomeIntelligencePulse(items){
       window: pulseWindowLabel(r.s, r.e),
       count: bucket.length,
       title: lead ? decodeHtml(localizedNewsField(lead, 'title')) : pulseDict('hip.no.signal'),
-      context: lead ? pulseSoWhat(tags) : pulseDict('hip.no.signal.desc'),
+      context: lead ? pulseInsight(lead, tags) : pulseDict('hip.no.signal.desc'),
       tags: tags
     };
   });
   windows.forEach(function(w){
     winHtml += '<div class="hip-window-card">'
-      + '<div class="hip-window-time">' + escHtml(w.window) + '</div>'
+      + '<div class="hip-window-time">' + escHtml(w.window) + ' · ' + w.count + (currentLang === 'cn' ? '条' : ' items') + '</div>'
       + '<div class="hip-window-line">' + escHtml(w.title) + '</div>'
       + '<div class="hip-window-context">' + escHtml(w.context) + '</div>'
       + '</div>';
@@ -1603,7 +1624,7 @@ function renderHomeIntelligencePulse(items){
         source: item.source || 'News',
         published_at: item.published_at || item.created_at || '',
         tags: tags,
-        decision_signal: pulseSoWhat(tags)
+        decision_signal: pulseInsight(item, tags)
       };
     }),
     windows: windows
@@ -1862,7 +1883,7 @@ var I18N = {
     'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Stablecoin freeze, sanctions, regulatory, and market signals translated into decision-ready intelligence.',
     'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Not legal advice or transaction monitoring replacement.',
-    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.cadence':'8h cadence','hip.current':'Current public briefing','hip.windows':'8-Hour Windows','hip.windows.desc':'Structured for newsletter, X, video scripts, and short-form posts.','hip.api':'API-ready content pack','hip.link':'View live feed →','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
+    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals. Built for an 8-hour publishing cadence.','hip.current':'Current public briefing','hip.windows':'8-Hour Windows','hip.windows.desc':'Structured for newsletter, X, video scripts, and short-form posts.','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring window active','hip.no.signal.desc':'No high-confidence public signal in this window yet.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
@@ -1904,7 +1925,7 @@ var I18N = {
     'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'将稳定币冻结、制裁、监管和市场信号转化为可支持决策的情报。',
     'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报，不构成法律意见，也不替代交易监控。',
-    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.cadence':'8小时节奏','hip.current':'当前公开简报','hip.windows':'8小时时间窗','hip.windows.desc':'结构可同步到 Newsletter、X、视频脚本和短内容平台。','hip.api':'API-ready 内容包','hip.link':'查看实时新闻 →','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
+    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要，适配每8小时一次的发布节奏。','hip.current':'当前公开简报','hip.windows':'8小时时间窗','hip.windows.desc':'结构可同步到 Newsletter、X、视频脚本和短内容平台。','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测窗口运行中','hip.no.signal.desc':'该窗口暂未出现高置信度公开信号。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
@@ -1919,7 +1940,7 @@ var I18N = {
     'aml.note':'* 数据来自 OFAC SDN、Tether 和 Circle 链上黑名单，以及我们的专属标签数据库。',
     'core.label':'商业切入点','plat.title':'面向实际监测场景的稳定币合规情报。','plat.intro':'Innobridge 聚焦轻量情报层：稳定币冻结与黑名单活动、制裁相关地址参考、监管时间节点、每日简报、观察名单和提醒。目标不是替代企业级交易监控，而是帮助用户快速理解市场和合规变化。',
     'svc.1.title':'稳定币冻结情报','svc.1.desc':'追踪 USDT 和 USDC 冻结及黑名单活动，展示来源、链、余额、事件时间和置信度语境。','svc.1.tag':'核心数据',
-    'svc.2.title':'制裁信号简报','svc.2.desc':'将制裁相关地址、发行方动作、公开执法事件和受影响司法辖区连接成简短决策信号。','svc.2.tag':'风险信号',
+    'svc.2.title':'制裁信号简报','svc.2.desc':'将制裁相关地址、发行方动作、公开执法事件和受影响司法辖区连接成可执行的风险线索。','svc.2.tag':'风险信号',
     'svc.3.title':'监管时间节点情报','svc.3.desc':'将 MiCA、FATF、香港、美国、新加坡、韩国、日本等更新转化为受影响主体指引和关注事项。','svc.3.tag':'时间节点',
     'svc.4.title':'每日 / 每周情报简报','svc.4.desc':'固定栏目发布：Address Watch、Stablecoin Freeze、Sanctions Signal、Compliance Deadline 和 Regulatory Impact。','svc.4.tag':'Newsletter',
     'svc.5.title':'观察名单、提醒与 CSV 导出','svc.5.desc':'为 Pro 用户提供保存地址、司法辖区、发行方、监管主题、邮件提醒和结构化导出。','svc.5.tag':'Pro',
