@@ -3514,7 +3514,7 @@ function loadGlobalEnforcement() {
       document.getElementById('statEnforce').textContent = data.total || data.items.length;
       buildEnforcementFilters();
       renderGlobalEnforcement();
-      if (!storedComplianceOverviewLoaded) renderOverviewEnforcement();
+      if (!storedComplianceOverviewLoaded.enforcement) renderOverviewEnforcement();
     }
   }).catch(function(err) {
     console.error('Failed to load enforcement actions:', err);
@@ -3607,7 +3607,7 @@ function loadGlobalRegUpdates() {
       globalRegUpdates = data.items;
       buildRegUpdatesFilters();
       renderGlobalRegUpdates();
-      if (!storedComplianceOverviewLoaded) renderOverviewRegUpdates();
+      if (!storedComplianceOverviewLoaded.regulatory) renderOverviewRegUpdates();
     }
   }).catch(function(err) {
     console.error('Failed to load regulation updates:', err);
@@ -3749,9 +3749,9 @@ function relativeTime(dateStr) {
 
 function complianceSignalType(item) {
   var text = ((item.title || '') + ' ' + (item.content || '') + ' ' + (item.summary || '') + ' ' + (item.category || '')).toLowerCase();
-  if (/enforcement|lawsuit|sued|charge|charged|fine|penalty|settlement|probe|investigation|indictment|arrest|seizure|freeze order|cease and desist|sec |cftc|doj|ofac|fca|esma|sfc|mas|vara/.test(text)) return 'enforcement';
-  if (/regulation|regulatory|rule|law|bill|act |policy|guidance|consultation|framework|mica|fatf|travel rule|licens|registration|vasp|casp|aml|cft|kyc|stablecoin issuer|reserve|attestation/.test(text)) return 'regulatory';
-  if (/compliance|sanction|blacklist|blacklisted|freeze|frozen|issuer|tether|circle|usdt|usdc|risk control|monitoring|screening|wallet address|address/.test(text)) return 'compliance';
+  if (/enforcement|lawsuit|sued|charge|charged|fine|penalty|settlement|probe|investigation|indictment|arrest|seizure|freeze order|cease and desist|sec |cftc|doj|ofac|fca|esma|sfc|mas|vara|执法|起诉|诉讼|罚款|处罚|调查|逮捕|查封|没收|冻结资产|司法部|证监会|监管机构/.test(text)) return 'enforcement';
+  if (/regulation|regulatory|rule|law|bill|act |policy|guidance|consultation|framework|mica|fatf|travel rule|licens|registration|vasp|casp|aml|cft|kyc|stablecoin issuer|reserve|attestation|tax|audit|delist|delisted|监管|法规|法案|政策|框架|指引|指南|牌照|许可|注册|税|税收|审计|下架|退市|终止上线|反洗钱|旅行规则/.test(text)) return 'regulatory';
+  if (/compliance|sanction|blacklist|blacklisted|freeze|frozen|issuer|tether|circle|usdt|usdc|risk control|monitoring|screening|wallet address|address|vulnerability|stolen|hack|合规|制裁|黑名单|冻结|发行方|稳定币|风控|监测|筛查|钱包|地址|漏洞|被盗|黑客|交易所|高风险/.test(text)) return 'compliance';
   return '';
 }
 
@@ -3770,7 +3770,11 @@ function complianceRegionFlag(item) {
 }
 
 var complianceNewsSignals = [];
-var storedComplianceOverviewLoaded = false;
+var storedComplianceOverviewLoaded = {
+  enforcement: false,
+  regulatory: false,
+  news: false
+};
 
 function storedComplianceText(item, key){
   if(!item) return '';
@@ -3822,11 +3826,19 @@ function loadStoredComplianceIntelligence(){
     .then(function(rows){
       var row = rows && rows[0];
       if(!hasStoredComplianceItems(row)) return false;
-      storedComplianceOverviewLoaded = true;
-      renderStoredComplianceList('overviewEnforcement', row.enforcement_items, 'enforcement', currentLang === 'cn' ? '暂无最新执法情报。' : 'No fresh enforcement intelligence yet.');
-      renderStoredComplianceList('overviewRegUpdates', row.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
-      renderStoredComplianceList('overviewNewsSignals', row.compliance_news_items, 'compliance', t('cp.news.empty'));
-      return true;
+      if(Array.isArray(row.enforcement_items) && row.enforcement_items.length){
+        storedComplianceOverviewLoaded.enforcement = true;
+        renderStoredComplianceList('overviewEnforcement', row.enforcement_items, 'enforcement', currentLang === 'cn' ? '暂无最新执法情报。' : 'No fresh enforcement intelligence yet.');
+      }
+      if(Array.isArray(row.regulatory_items) && row.regulatory_items.length){
+        storedComplianceOverviewLoaded.regulatory = true;
+        renderStoredComplianceList('overviewRegUpdates', row.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
+      }
+      if(Array.isArray(row.compliance_news_items) && row.compliance_news_items.length){
+        storedComplianceOverviewLoaded.news = true;
+        renderStoredComplianceList('overviewNewsSignals', row.compliance_news_items, 'compliance', t('cp.news.empty'));
+      }
+      return storedComplianceOverviewLoaded.enforcement || storedComplianceOverviewLoaded.regulatory || storedComplianceOverviewLoaded.news;
     })
     .catch(function(){ return false; });
 }
@@ -3834,15 +3846,35 @@ function loadStoredComplianceIntelligence(){
 function renderOverviewNewsSignals(items) {
   var container = document.getElementById('overviewNewsSignals');
   if (!container) return;
-  var signals = (items || []).filter(function(item) { return complianceSignalType(item); })
-    .sort(function(a, b) { return new Date(b.published_at || b.created_at || 0) - new Date(a.published_at || a.created_at || 0); })
-    .slice(0, 6);
+  var sorted = (items || []).slice()
+    .sort(function(a, b) { return new Date(b.published_at || b.created_at || 0) - new Date(a.published_at || a.created_at || 0); });
+  var seen = {};
+  var signals = [];
+  sorted.forEach(function(item) {
+    if (!complianceSignalType(item)) return;
+    var key = String(item.title || '').replace(/\s+/g, ' ').toLowerCase().slice(0, 96);
+    if (seen[key]) return;
+    seen[key] = true;
+    signals.push(item);
+  });
+  if (signals.length < 4) {
+    sorted.forEach(function(item) {
+      if (signals.length >= 6) return;
+      var title = String(item.title || '').replace(/\s+/g, ' ').trim();
+      if (!title) return;
+      var key = title.toLowerCase().slice(0, 96);
+      if (seen[key]) return;
+      seen[key] = true;
+      signals.push(item);
+    });
+  }
+  signals = signals.slice(0, 6);
   if (!signals.length) {
     container.innerHTML = '<div class="empty-state"><p>' + t('cp.news.empty') + '</p></div>';
     return;
   }
   container.innerHTML = signals.map(function(item) {
-    var type = complianceSignalType(item);
+    var type = complianceSignalType(item) || 'market';
     var title = decodeHtmlText(item.title || '');
     var desc = decodeHtmlText(item.content || item.summary || '');
     return '<div class="overview-item">'
@@ -3856,8 +3888,8 @@ function renderOverviewNewsSignals(items) {
 }
 
 function loadComplianceNewsSignals() {
-  if (storedComplianceOverviewLoaded) return;
-  apiFetch({ action: 'news', limit: 40, offset: 0, lang: currentLang === 'cn' ? 'cn' : 'en' }).then(function(data) {
+  if (storedComplianceOverviewLoaded.news) return;
+  apiFetch({ action: 'news', limit: 120, offset: 0, lang: currentLang === 'cn' ? 'cn' : 'en' }).then(function(data) {
     complianceNewsSignals = data && data.success && data.items ? data.items : [];
     renderOverviewNewsSignals(complianceNewsSignals);
   }).catch(function() {
