@@ -642,12 +642,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <div class="hip-signal-list" id="hip-signal-list">
             <div class="hip-signal">
               <div class="hip-signal-title">💵 Stablecoin freeze and issuer-control signals are monitored in real time</div>
-              <div class="hip-signal-desc">Logic: issuer-side stablecoin actions matter when they change freeze capability, redemption access, or counterparty risk.</div>
+              <div class="hip-signal-desc">Insight: issuer-side stablecoin actions matter when they change freeze capability, redemption access, or counterparty risk.</div>
               <div class="hip-signal-meta"><span class="hip-tag stablecoin">Stablecoin</span><span class="hip-tag compliance">Compliance</span><span>Live feed</span></div>
             </div>
             <div class="hip-signal">
               <div class="hip-signal-title">🛡️ Sanctions and enforcement updates are grouped into decision signals</div>
-              <div class="hip-signal-desc">Logic: sanctions and enforcement updates are assessed by source, jurisdiction, affected entity, and identifiable address scope.</div>
+              <div class="hip-signal-desc">Insight: sanctions and enforcement updates are assessed by source, jurisdiction, affected entity, and identifiable address scope.</div>
               <div class="hip-signal-meta"><span class="hip-tag sanctions">Sanctions</span><span class="hip-tag enforcement">Enforcement</span><span>Live feed</span></div>
             </div>
           </div>
@@ -1497,33 +1497,33 @@ function pulseInsight(item, tags){
   var text = ((item && item.title) || '') + ' ' + ((item && item.summary) || '') + ' ' + ((item && item.content) || '');
   text = text.toLowerCase();
   if(/tax|revenue service|audit|irs|hmrc/.test(text)){
-    return isCn ? '逻辑：税务机关发布指引通常意味着申报、审计和交易记录要求更清晰，决定性因素是数据留存、用户识别和报送义务。' : 'Logic: tax guidance usually clarifies reporting, audit, and transaction-record expectations; key factors are data retention, user identification, and filing obligations.';
+    return isCn ? '提示：税务指引会影响申报、审计和交易记录要求；需关注涉及主体、执行时间、数据留存、用户识别和报送义务，对交易所与税务合规成本有投资参考价值。' : 'Insight: tax guidance can affect reporting, audit, and transaction-record requirements; watch affected entities, timing, data retention, user identification, and filing obligations as inputs for exchange and compliance-cost assessment.';
   }
   if(/fca|uk |britain|united kingdom|regulatory framework|implementation approval/.test(text)){
-    return isCn ? '逻辑：监管框架获批不等于落地完成，决定性因素是授权标准、过渡安排、执行细则和企业合规成本。' : 'Logic: framework approval is not the same as implementation; key factors are authorization standards, transition rules, enforcement detail, and compliance cost.';
+    return isCn ? '提示：监管框架获批不等于落地完成；需看授权标准、过渡安排、执行细则、受影响机构和合规成本，评估牌照门槛对行业竞争格局与上市公司估值的影响。' : 'Insight: framework approval is not implementation; track authorization standards, transition rules, enforcement detail, affected firms, and compliance cost when assessing competitive structure and valuation impact.';
   }
   if(/mining|illegal mining|police raid|raid|seized mining/.test(text)){
-    return isCn ? '逻辑：非法挖矿执法说明风险不只来自链上地址，也来自能源使用、场地许可和本地经营主体。' : 'Logic: illegal-mining enforcement shows risk can sit outside wallet flows, including energy use, site permits, and local operating entities.';
+    return isCn ? '提示：非法挖矿执法说明风险不只来自链上地址，也来自能源使用、场地许可和本地经营主体；需关注电力成本、监管执法强度和矿企运营连续性。' : 'Insight: illegal-mining enforcement shows risk can sit outside wallet flows, including energy use, site permits, and local operating entities; monitor power cost, enforcement intensity, and miner operating continuity.';
   }
   if(/stablecoin|open usd|usdt|usdc|tether|circle|issuer|reserve|redeem|redemption/.test(text)){
-    return isCn ? '逻辑：稳定币事件的关键变量是发行方责任、储备与赎回安排、合作方尽调和可执行的冻结能力。' : 'Logic: stablecoin risk depends on issuer responsibility, reserve and redemption design, partner due diligence, and enforceable freeze capability.';
+    return isCn ? '提示：稳定币事件需看发行方、合作方、储备与赎回安排、冻结能力和影响地址范围；这些因素会影响流动性、交易对手风险和相关支付/交易平台的投资判断。' : 'Insight: stablecoin events should be read through issuers, partners, reserve and redemption design, freeze capability, and affected address scope; these factors shape liquidity, counterparty risk, and platform/payment exposure.';
   }
   if(/sanction|ofac|froze|frozen|asset freeze|blacklist|sdn/.test(text)){
-    return isCn ? '逻辑：制裁或冻结事件的决定性因素是名单来源、司法辖区、发行方执行能力和可识别地址范围。' : 'Logic: sanctions or freeze events turn on list source, jurisdiction, issuer execution capability, and the scope of identifiable addresses.';
+    return isCn ? '提示：制裁或冻结事件需确认名单来源、司法辖区、发行方执行能力和可识别地址范围；影响范围可能延伸到交易所风控、稳定币流通和相关地区资金流。' : 'Insight: sanctions or freeze events turn on list source, jurisdiction, issuer execution capability, and identifiable address scope; impact can extend to exchange risk controls, stablecoin circulation, and regional flows.';
   }
   if(/russia|ukraine|putin|trump|war|battlefield|iran|geopolitical|conflict/.test(text)){
-    return isCn ? '逻辑：地缘政治新闻通过制裁预期、风险偏好和跨境资金审查强度影响加密市场与合规环境。' : 'Logic: geopolitical news affects crypto and compliance through sanctions expectations, risk appetite, and cross-border flow scrutiny.';
+    return isCn ? '提示：地缘政治新闻会通过制裁预期、风险偏好、能源价格和跨境资金审查影响加密市场；需关注时间节点、涉事国家和对流动性/避险资产的传导。' : 'Insight: geopolitical news affects crypto through sanctions expectations, risk appetite, energy prices, and cross-border flow scrutiny; watch timing, countries involved, and transmission into liquidity or risk assets.';
   }
   if(tags.indexOf('Regulatory') >= 0){
-    return isCn ? '逻辑：监管新闻的关键变量是适用主体、生效时间、牌照门槛、运营限制和处罚方式。' : 'Logic: regulatory news should be read through affected entities, effective dates, licensing thresholds, operating limits, and penalties.';
+    return isCn ? '提示：监管新闻需拆解适用主体、生效时间、牌照门槛、运营限制和处罚方式；投资参考在于判断合规成本、退出风险和市场份额迁移。' : 'Insight: regulatory news should be read through affected entities, effective dates, licensing thresholds, operating limits, and penalties; investment value lies in compliance cost, exit risk, and market-share migration.';
   }
   if(tags.indexOf('Enforcement') >= 0){
-    return isCn ? '逻辑：执法新闻的关键变量是被执行主体、指控类型、金额或资产控制措施，以及监管机关的后续动作。' : 'Logic: enforcement news depends on the target entity, allegation type, amount or asset-control measure, and follow-on regulator action.';
+    return isCn ? '提示：执法新闻需看被执行主体、指控类型、金额或资产控制措施、监管机关和后续程序；这会影响同类平台风险溢价、合规整改和市场信心。' : 'Insight: enforcement news depends on the target entity, allegation type, amount or asset-control measure, authority, and follow-on process; it can affect peer risk premiums, remediation cost, and market confidence.';
   }
   if(tags.indexOf('Market') >= 0){
-    return isCn ? '逻辑：市场新闻的决定性因素是流动性、杠杆、资金流向和风险偏好是否发生方向性变化。' : 'Logic: market news matters when liquidity, leverage, capital flows, or risk appetite show a directional change.';
+    return isCn ? '提示：市场新闻要看流动性、杠杆、资金流向、宏观时间点和风险偏好是否发生方向性变化；这些变量可作为短期投资情绪和仓位风险参考。' : 'Insight: market news matters when liquidity, leverage, capital flows, macro timing, or risk appetite show a directional change; use these as inputs for short-term sentiment and positioning risk.';
   }
-  return isCn ? '逻辑：这类信息需要看清相关主体、时间节点、地址或资产范围，以及是否会触发后续监管或市场反应。' : 'Logic: read this item through the relevant entities, dates, address or asset scope, and whether it can trigger follow-on regulatory or market reaction.';
+  return isCn ? '提示：需先识别相关主体、背景、时间点、地址或资产范围，再判断影响因素、影响范围以及是否会触发后续监管、流动性或投资情绪变化。' : 'Insight: identify the entities, background, timing, address or asset scope first, then assess impact factors, impact range, and possible follow-on regulatory, liquidity, or investor-sentiment effects.';
 }
 
 function pulseScore(item){
@@ -1652,9 +1652,9 @@ function itemFromStoredPulse(item){
   return {
     title: item.title_en || item.title || '',
     title_cn: item.title_cn || '',
-    summary: item.logic_en || item.summary_en || '',
-    summary_cn: item.logic_cn || item.summary_cn || '',
-    content: item.logic_en || item.summary_en || '',
+    summary: item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
+    summary_cn: item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || '',
+    content: item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
     category: item.category || (Array.isArray(item.tags) ? item.tags.join(' ') : ''),
     source: item.source || 'Innobridge Intelligence',
     published_at: item.published_at || item.created_at || new Date().toISOString(),
@@ -1690,7 +1690,7 @@ function renderStoredHomePulse(row){
     winEl.innerHTML = pulse.windows.slice(0,3).map(function(w){
       var label = currentLang === 'cn' ? (w.label_cn || w.label_en || '') : (w.label_en || w.label_cn || '');
       var title = currentLang === 'cn' ? (w.lead_title_cn || w.lead_title_en || pulseDict('hip.no.signal')) : (w.lead_title_en || w.lead_title_cn || pulseDict('hip.no.signal'));
-      var logic = currentLang === 'cn' ? (w.logic_cn || w.logic_en || pulseDict('hip.no.signal.desc')) : (w.logic_en || w.logic_cn || pulseDict('hip.no.signal.desc'));
+      var logic = currentLang === 'cn' ? (w.prompt_cn || w.insight_cn || w.logic_cn || w.prompt_en || w.insight_en || w.logic_en || pulseDict('hip.no.signal.desc')) : (w.prompt_en || w.insight_en || w.logic_en || w.prompt_cn || w.insight_cn || w.logic_cn || pulseDict('hip.no.signal.desc'));
       return '<div class="hip-window-card">'
         + '<div class="hip-window-time">' + escHtml(label) + ' · ' + (w.item_count || 0) + (currentLang === 'cn' ? '条' : ' items') + '</div>'
         + '<div class="hip-window-line">' + escHtml(title) + '</div>'
