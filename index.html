@@ -1151,6 +1151,18 @@ var SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
 var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
 var API_BASE = SUPABASE_URL + '/functions/v1/aml-api';
 
+function supabaseSelect(path){
+  return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers:{
+      apikey: SUPABASE_ANON,
+      Authorization: 'Bearer ' + SUPABASE_ANON
+    }
+  }).then(function(r){
+    if(!r.ok) throw new Error('Supabase REST ' + r.status);
+    return r.json();
+  });
+}
+
 // ===== SCROLL REVEAL =====
 var io = new IntersectionObserver(function(entries){
   entries.forEach(function(e){
@@ -1631,14 +1643,76 @@ function renderHomeIntelligencePulse(items){
   };
 }
 
+function itemFromStoredPulse(item){
+  return {
+    title: item.title_en || item.title || '',
+    title_cn: item.title_cn || '',
+    summary: item.logic_en || item.summary_en || '',
+    summary_cn: item.logic_cn || item.summary_cn || '',
+    content: item.logic_en || item.summary_en || '',
+    category: item.category || (Array.isArray(item.tags) ? item.tags.join(' ') : ''),
+    source: item.source || 'Innobridge Intelligence',
+    published_at: item.published_at || item.created_at || new Date().toISOString(),
+    region: item.region || '',
+    tags: item.tags || []
+  };
+}
+
+function renderStoredHomePulse(row){
+  var pulse = row && row.pulse;
+  var items = pulse && Array.isArray(pulse.items) ? pulse.items.map(itemFromStoredPulse) : [];
+  if(!items.length) return false;
+  renderHomeIntelligencePulse(items);
+
+  var titleEl = document.getElementById('hip-main-title');
+  var windowEl = document.getElementById('hip-window-label');
+  var updatedEl = document.getElementById('hip-last-updated');
+  var winEl = document.getElementById('hip-window-list');
+  if(titleEl){
+    titleEl.textContent = currentLang === 'cn'
+      ? (pulse.headline_cn || '过去24小时关键合规与市场信号')
+      : (pulse.headline_en || 'Key compliance and market signals from the past 24 hours');
+  }
+  if(windowEl){
+    windowEl.textContent = pulseDict('hip.range') + ' · ' + items.length + (currentLang === 'cn' ? '条' : ' items') + ' · UTC+8';
+  }
+  if(updatedEl){
+    updatedEl.textContent = currentLang === 'cn'
+      ? (pulse.updated_label_cn || (pulseDict('hip.updated') + ': ' + pulseTime(row.generated_at || pulse.generated_at || new Date())))
+      : (pulse.updated_label_en || (pulseDict('hip.updated') + ': ' + pulseTime(row.generated_at || pulse.generated_at || new Date())));
+  }
+  if(winEl && Array.isArray(pulse.windows) && pulse.windows.length){
+    winEl.innerHTML = pulse.windows.slice(0,3).map(function(w){
+      var label = currentLang === 'cn' ? (w.label_cn || w.label_en || '') : (w.label_en || w.label_cn || '');
+      var title = currentLang === 'cn' ? (w.lead_title_cn || w.lead_title_en || pulseDict('hip.no.signal')) : (w.lead_title_en || w.lead_title_cn || pulseDict('hip.no.signal'));
+      var logic = currentLang === 'cn' ? (w.logic_cn || w.logic_en || pulseDict('hip.no.signal.desc')) : (w.logic_en || w.logic_cn || pulseDict('hip.no.signal.desc'));
+      return '<div class="hip-window-card">'
+        + '<div class="hip-window-time">' + escHtml(label) + ' · ' + (w.item_count || 0) + (currentLang === 'cn' ? '条' : ' items') + '</div>'
+        + '<div class="hip-window-line">' + escHtml(title) + '</div>'
+        + '<div class="hip-window-context">' + escHtml(logic) + '</div>'
+        + '</div>';
+    }).join('');
+  }
+  window.INNOBRIDGE_PUBLIC_PULSE = pulse;
+  return true;
+}
+
 function loadHomeIntelligencePulse(){
   if(homePulseItems.length){
     renderHomeIntelligencePulse(homePulseItems);
     return;
   }
-  fetch(API_BASE + '?action=news&limit=48&offset=0&lang=en')
-    .then(function(r){ return r.json(); })
+  supabaseSelect('intelligence_pulse_runs?select=generated_at,pulse,source_summary,window_end&status=eq.published&order=window_end.desc&limit=1')
+    .then(function(rows){
+      if(rows && rows[0] && renderStoredHomePulse(rows[0])) return null;
+      throw new Error('No stored pulse');
+    })
+    .catch(function(){
+      return fetch(API_BASE + '?action=news&limit=48&offset=0&lang=en')
+        .then(function(r){ return r.json(); });
+    })
     .then(function(resp){
+      if(!resp) return;
       var data = (resp && resp.success && resp.items) ? resp.items : [];
       if(data.length){
         homePulseItems = data;

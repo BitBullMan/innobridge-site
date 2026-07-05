@@ -1135,7 +1135,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 
 <script>
 // ===== CONFIG =====
-var API_BASE = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
+var SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
+var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
+var API_BASE = SUPABASE_URL + '/functions/v1/aml-api';
+
+function supabaseSelect(path){
+  return fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    headers:{
+      apikey: SUPABASE_ANON,
+      Authorization: 'Bearer ' + SUPABASE_ANON
+    }
+  }).then(function(r){
+    if(!r.ok) throw new Error('Supabase REST ' + r.status);
+    return r.json();
+  });
+}
 
 var FLAG_MAP = {
   US: '\u{1F1FA}\u{1F1F8}', EU: '\u{1F1EA}\u{1F1FA}', CN: '\u{1F1E8}\u{1F1F3}',
@@ -3500,7 +3514,7 @@ function loadGlobalEnforcement() {
       document.getElementById('statEnforce').textContent = data.total || data.items.length;
       buildEnforcementFilters();
       renderGlobalEnforcement();
-      renderOverviewEnforcement();
+      if (!storedComplianceOverviewLoaded) renderOverviewEnforcement();
     }
   }).catch(function(err) {
     console.error('Failed to load enforcement actions:', err);
@@ -3593,7 +3607,7 @@ function loadGlobalRegUpdates() {
       globalRegUpdates = data.items;
       buildRegUpdatesFilters();
       renderGlobalRegUpdates();
-      renderOverviewRegUpdates();
+      if (!storedComplianceOverviewLoaded) renderOverviewRegUpdates();
     }
   }).catch(function(err) {
     console.error('Failed to load regulation updates:', err);
@@ -3756,6 +3770,60 @@ function complianceRegionFlag(item) {
 }
 
 var complianceNewsSignals = [];
+var storedComplianceOverviewLoaded = false;
+
+function storedComplianceText(item, key){
+  if(!item) return '';
+  if(currentLang === 'cn') return item[key + '_cn'] || item[key + '_zh'] || item[key] || '';
+  return item[key + '_en'] || item[key] || '';
+}
+
+function storedComplianceFlag(item){
+  var code = item.jurisdiction || item.jurisdiction_code || item.region || '';
+  if(code && code.length <= 6) return getFlag(String(code).toUpperCase());
+  return complianceRegionFlag({ title: code + ' ' + (item.title_en || item.title_cn || item.summary_en || '') });
+}
+
+function renderStoredComplianceList(containerId, items, tagClass, emptyText){
+  var container = document.getElementById(containerId);
+  if(!container) return;
+  var list = Array.isArray(items) ? items.slice(0, 6) : [];
+  if(!list.length){
+    container.innerHTML = '<div class="empty-state"><p>' + escHtml(emptyText) + '</p></div>';
+    return;
+  }
+  container.innerHTML = list.map(function(item){
+    var title = storedComplianceText(item, 'title') || storedComplianceText(item, 'name') || 'Compliance signal';
+    var desc = storedComplianceText(item, 'summary') || storedComplianceText(item, 'logic');
+    var date = item.date || item.published_at || item.generated_at || '';
+    var meta = item.authority || item.source || item.jurisdiction || item.region || '';
+    var label = item.severity || item.type || item.category || tagClass;
+    return '<div class="overview-item">'
+      + '<div class="overview-item-title"><span class="flag">' + storedComplianceFlag(item) + '</span><span>' + escHtml(title) + '</span></div>'
+      + (desc ? '<div class="overview-item-desc">' + escHtml(desc) + '</div>' : '')
+      + '<div class="overview-item-meta">'
+      + (date ? '<span>' + escHtml(formatDate(date)) + '</span>' : '')
+      + (meta ? '<span>' + escHtml(meta) + '</span>' : '')
+      + '<span class="overview-tag ' + escHtml(tagClass) + '">' + escHtml(label) + '</span>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+}
+
+function loadStoredComplianceIntelligence(){
+  return supabaseSelect('compliance_intelligence_runs?select=generated_at,summary,enforcement_items,regulatory_items,compliance_news_items,deadline_items&status=eq.published&order=briefing_date.desc&limit=1')
+    .then(function(rows){
+      var row = rows && rows[0];
+      if(!row) return false;
+      storedComplianceOverviewLoaded = true;
+      renderStoredComplianceList('overviewEnforcement', row.enforcement_items, 'enforcement', currentLang === 'cn' ? '暂无最新执法情报。' : 'No fresh enforcement intelligence yet.');
+      renderStoredComplianceList('overviewRegUpdates', row.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
+      renderStoredComplianceList('overviewNewsSignals', row.compliance_news_items, 'compliance', t('cp.news.empty'));
+      return true;
+    })
+    .catch(function(){ return false; });
+}
+
 function renderOverviewNewsSignals(items) {
   var container = document.getElementById('overviewNewsSignals');
   if (!container) return;
@@ -3781,6 +3849,7 @@ function renderOverviewNewsSignals(items) {
 }
 
 function loadComplianceNewsSignals() {
+  if (storedComplianceOverviewLoaded) return;
   apiFetch({ action: 'news', limit: 40, offset: 0, lang: currentLang === 'cn' ? 'cn' : 'en' }).then(function(data) {
     complianceNewsSignals = data && data.success && data.items ? data.items : [];
     renderOverviewNewsSignals(complianceNewsSignals);
@@ -3791,6 +3860,7 @@ function loadComplianceNewsSignals() {
 
 // ===== INIT =====
 applyLang();
+loadStoredComplianceIntelligence();
 loadJurisdictions();
 loadRiskRules();
 loadGlobalEnforcement();
