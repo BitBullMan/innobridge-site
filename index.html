@@ -1501,38 +1501,38 @@ function pulseInsight(item, tags){
   if(stored) return stored;
   var subject = pulseSubject(item);
   var date = item && (item.published_at || item.created_at) ? pulseTime(item.published_at || item.created_at) : '';
-  var timePartCn = date ? '时间点是' + date + '；' : '';
-  var timePartEn = date ? 'The timing is ' + date + '; ' : '';
+  var timePartCn = date ? '时间点为' + date + '。' : '';
+  var timePartEn = date ? 'The relevant time point is ' + date + '. ' : '';
   var text = ((item && item.title) || '') + ' ' + ((item && item.summary) || '') + ' ' + ((item && item.content) || '');
   text = text.toLowerCase();
   if(/tax|revenue service|audit|irs|hmrc/.test(text)){
-    return isCn ? '提示：' + subject + '的核心事实是税务/审计要求正在明确；' + timePartCn + '需关注被覆盖用户、交易记录留存、身份识别和报送义务，对交易所合规成本、用户迁移和税务风险定价有参考价值。' : 'Insight: ' + subject + ' points to clearer tax or audit requirements. ' + timePartEn + 'watch covered users, record retention, identity checks, and filing obligations as inputs for exchange compliance cost, user migration, and tax-risk pricing.';
+    return isCn ? subject + '的核心在于税务或审计口径进一步明确。' + timePartCn + '关键变量是覆盖用户范围、交易记录留存、身份识别和申报义务；这会影响交易所合规成本、用户迁移压力和税务风险定价。' : subject + ' points to a clearer tax or audit perimeter. ' + timePartEn + 'The useful variables are covered users, record retention, identity checks, and filing obligations; these feed into exchange compliance costs, user migration risk, and tax-risk pricing.';
   }
   if(/fca|uk |britain|united kingdom|regulatory framework|implementation approval/.test(text)){
-    return isCn ? '提示：' + subject + '的事实重点是监管框架与落地审批仍有距离；' + timePartCn + '需拆解授权标准、过渡安排、执行细则和受影响机构，判断牌照门槛对竞争格局、上市公司估值和合规预算的影响。' : 'Insight: ' + subject + ' is about the gap between framework approval and implementation. ' + timePartEn + 'track authorization standards, transition rules, enforcement detail, and affected firms when assessing competitive structure, valuation impact, and compliance budgets.';
+    return isCn ? subject + '反映英国加密监管从框架设计走向执行落地时仍存在审批与实施落差。' + timePartCn + '后续应看授权标准、过渡安排、执行细则和受影响机构名单，因为这些因素会改变牌照门槛、竞争格局和合规预算。' : subject + ' reflects the gap between UK crypto framework approval and practical implementation. ' + timePartEn + 'Authorization standards, transition rules, enforcement detail, and affected firms matter because they shape licensing barriers, competitive structure, and compliance budgets.';
   }
   if(/mining|illegal mining|police raid|raid|seized mining/.test(text)){
-    return isCn ? '提示：' + subject + '反映执法对象从链上地址延伸到能源使用、场地许可和本地经营主体；' + timePartCn + '影响范围包括矿场运营连续性、电力成本、地方执法强度和矿企风险溢价。' : 'Insight: ' + subject + ' shows enforcement can extend beyond wallet flows into energy use, site permits, and local operators. ' + timePartEn + 'the impact range includes miner continuity, power cost, local enforcement intensity, and mining-sector risk premiums.';
+    return isCn ? subject + '说明加密执法并不只发生在链上地址层面，也会落到能源使用、场地许可和本地经营主体。' + timePartCn + '影响范围主要是矿场运营连续性、电力成本、地方执法强度，以及矿企或算力相关资产的风险溢价。' : subject + ' shows crypto enforcement can move beyond wallet flows into energy use, site permits, and local operators. ' + timePartEn + 'The impact range is miner continuity, power cost, local enforcement intensity, and risk premiums on mining or hash-rate exposed assets.';
   }
   if(/stablecoin|open usd|usdt|usdc|tether|circle|issuer|reserve|redeem|redemption/.test(text)){
-    return isCn ? '提示：' + subject + '应先确认发行方、合作方、储备/赎回安排和冻结能力；' + timePartCn + '重点看影响地址或客户范围，以及对稳定币流动性、交易对手风险和支付/交易平台敞口的传导。' : 'Insight: ' + subject + ' should be read through the issuer, partners, reserve/redemption design, and freeze capability. ' + timePartEn + 'focus on affected addresses or customers and transmission into stablecoin liquidity, counterparty risk, and platform/payment exposure.';
+    return isCn ? subject + '需要放在发行方、合作方、储备/赎回安排和冻结能力框架下理解。' + timePartCn + '真正重要的是受影响地址或客户范围，以及事件是否传导到稳定币流动性、交易对手风险、支付通道和交易平台敞口。' : subject + ' is best read through issuer structure, partners, reserve/redemption design, and freeze capability. ' + timePartEn + 'The key is affected addresses or customers, and whether the event transmits into stablecoin liquidity, counterparty risk, payment rails, or exchange exposure.';
   }
   if(/sanction|ofac|froze|frozen|asset freeze|blacklist|sdn/.test(text)){
-    return isCn ? '提示：' + subject + '的事实核查应围绕名单来源、司法辖区、执行主体和可识别地址范围；' + timePartCn + '影响可能扩散到交易所风控、稳定币流通、区域资金流和相关资产风险溢价。' : 'Insight: ' + subject + ' should be checked through list source, jurisdiction, executing party, and identifiable address scope. ' + timePartEn + 'impact can extend to exchange risk controls, stablecoin circulation, regional flows, and related-asset risk premiums.';
+    return isCn ? subject + '的判断重点是名单来源、司法辖区、执行主体和可识别地址范围。' + timePartCn + '若涉及发行方或执法机关配合，影响可能延伸到交易所风控、稳定币流通、区域资金流和相关资产风险溢价。' : subject + ' turns on the list source, jurisdiction, executing party, and identifiable address scope. ' + timePartEn + 'If issuer or law-enforcement coordination is involved, the effect can extend to exchange controls, stablecoin circulation, regional flows, and related-asset risk premiums.';
   }
   if(/russia|ukraine|putin|trump|war|battlefield|iran|geopolitical|conflict/.test(text)){
-    return isCn ? '提示：' + subject + '涉及的主体和国家会影响制裁预期、风险偏好、能源价格和跨境资金审查；' + timePartCn + '投资参考在于观察流动性、避险资产、能源链和相关地区风险资产的传导。' : 'Insight: ' + subject + ' involves actors and countries that can affect sanctions expectations, risk appetite, energy prices, and cross-border scrutiny. ' + timePartEn + 'investment reference comes from transmission into liquidity, safe-haven assets, energy chains, and regional risk assets.';
+    return isCn ? subject + '属于会影响制裁预期、风险偏好、能源价格和跨境资金审查的地缘政治变量。' + timePartCn + '对加密市场的参考价值不在事件本身，而在流动性、避险资产、能源链和相关地区风险资产的传导。' : subject + ' is a geopolitical variable for sanctions expectations, risk appetite, energy prices, and cross-border fund scrutiny. ' + timePartEn + 'For crypto, the reference value is transmission into liquidity, safe-haven demand, energy chains, and regional risk assets rather than the headline alone.';
   }
   if(tags.indexOf('Regulatory') >= 0){
-    return isCn ? '提示：' + subject + '需要先梳理适用主体、生效时间、牌照门槛、运营限制和处罚方式；' + timePartCn + '投资参考在于判断合规成本、退出风险、市场份额迁移和受监管公司估值压力。' : 'Insight: ' + subject + ' should be broken down by affected entities, effective date, licensing threshold, operating limits, and penalties. ' + timePartEn + 'investment value lies in compliance cost, exit risk, market-share migration, and valuation pressure on regulated firms.';
+    return isCn ? subject + '的核心变量是适用主体、生效时间、牌照门槛、运营限制和处罚方式。' + timePartCn + '这些因素会直接影响合规成本、退出风险、市场份额迁移，以及已上市或受监管公司估值压力。' : subject + ' should be read through affected entities, effective date, licensing threshold, operating limits, and penalties. ' + timePartEn + 'Those variables drive compliance cost, exit risk, market-share migration, and valuation pressure on listed or regulated firms.';
   }
   if(tags.indexOf('Enforcement') >= 0){
-    return isCn ? '提示：' + subject + '应先确认被执行主体、指控类型、金额或资产控制措施、监管机关和后续程序；' + timePartCn + '影响范围包括同类平台风险溢价、合规整改成本和市场信心。' : 'Insight: ' + subject + ' depends on the target entity, allegation type, amount or asset-control measure, authority, and follow-on process. ' + timePartEn + 'impact can include peer risk premiums, remediation cost, and market confidence.';
+    return isCn ? subject + '应从被执行主体、指控类型、金额或资产控制措施、监管机关和后续程序来判断严重性。' + timePartCn + '影响通常体现在同类平台风险溢价、合规整改成本、客户信任和市场信心。' : subject + ' should be assessed by target entity, allegation type, amount or asset-control measure, authority, and follow-on process. ' + timePartEn + 'The usual transmission is peer risk premium, remediation cost, customer trust, and market confidence.';
   }
   if(tags.indexOf('Market') >= 0){
-    return isCn ? '提示：' + subject + '的投资参考应围绕流动性、杠杆、资金流向、宏观时间点和风险偏好是否出现方向变化；' + timePartCn + '重点判断其对短期情绪、仓位风险和相关板块敞口的影响。' : 'Insight: ' + subject + ' should be assessed through liquidity, leverage, capital flows, macro timing, and directional changes in risk appetite. ' + timePartEn + 'focus on short-term sentiment, positioning risk, and related-sector exposure.';
+    return isCn ? subject + '更适合作为流动性和风险偏好的观察信号。' + timePartCn + '需要看杠杆、资金流向、宏观时间点和相关板块敞口是否发生方向变化，而不是把单条新闻直接解读为交易结论。' : subject + ' is better treated as a liquidity and risk-appetite signal. ' + timePartEn + 'Watch leverage, capital flows, macro timing, and related-sector exposure before turning the headline into a market view.';
   }
-  return isCn ? '提示：' + subject + '需要先客观梳理主体、背景、时间点、地址或资产范围；' + timePartCn + '再判断影响因素、影响范围，以及是否会触发后续监管、流动性或投资情绪变化。' : 'Insight: ' + subject + ' should first be framed by entities, background, timing, and address or asset scope. ' + timePartEn + 'then assess impact factors, impact range, and possible follow-on regulatory, liquidity, or investor-sentiment effects.';
+  return isCn ? subject + '的分析应先落在具体主体、背景、时间点和资产或地址范围上。' + timePartCn + '若后续出现监管表态、发行方动作、资金流变化或市场情绪转向，才会形成更明确的合规或投资参考信号。' : subject + ' should be framed around concrete entities, background, timing, and asset or address scope. ' + timePartEn + 'A stronger compliance or investment signal would require follow-on regulatory comments, issuer action, fund-flow changes, or a shift in market sentiment.';
 }
 
 function pulseScore(item){
