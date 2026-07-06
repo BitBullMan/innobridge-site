@@ -1481,9 +1481,9 @@ function localizedNewsField(item, field){
 function localizedInsightField(item){
   if(!item) return '';
   if(currentLang === 'cn'){
-    return item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || item.prompt_zh || item.insight_zh || '';
+    return item.interpretation_cn || item.take_cn || item.analysis_cn || item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || item.prompt_zh || item.insight_zh || '';
   }
-  return item.prompt_en || item.insight_en || item.logic_en || item.summary_en || item.prompt || item.insight || '';
+  return item.interpretation_en || item.take_en || item.analysis_en || item.prompt_en || item.insight_en || item.logic_en || item.summary_en || item.prompt || item.insight || '';
 }
 
 function pulseSubject(item){
@@ -1585,7 +1585,7 @@ function renderHomeIntelligencePulse(items){
   if(!sourceItems.length) sourceItems = (items || []).slice(0,12);
 
   var ranked = sourceItems.slice().sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
-  var top = ranked.slice(0, Math.min(10, ranked.length));
+  var top = ranked.slice(0, Math.min(14, ranked.length));
   if(!top.length){
     titleEl.textContent = pulseDict('hip.empty.title');
     listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
@@ -1660,9 +1660,11 @@ function itemFromStoredPulse(item){
   return {
     title: item.title_en || item.title || '',
     title_cn: item.title_cn || '',
-    summary: item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
-    summary_cn: item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || '',
-    content: item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
+    interpretation_en: item.interpretation_en || item.take_en || item.analysis_en || '',
+    interpretation_cn: item.interpretation_cn || item.take_cn || item.analysis_cn || '',
+    summary: item.interpretation_en || item.take_en || item.analysis_en || item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
+    summary_cn: item.interpretation_cn || item.take_cn || item.analysis_cn || item.prompt_cn || item.insight_cn || item.logic_cn || item.summary_cn || '',
+    content: item.interpretation_en || item.take_en || item.analysis_en || item.prompt_en || item.insight_en || item.logic_en || item.summary_en || '',
     category: item.category || (Array.isArray(item.tags) ? item.tags.join(' ') : ''),
     source: item.source || 'Innobridge Intelligence',
     published_at: item.published_at || item.created_at || new Date().toISOString(),
