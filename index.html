@@ -168,10 +168,10 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .hip-window-line{font:500 13px/1.45 var(--f);color:var(--ink);margin-bottom:7px}
 .hip-window-context{font:400 12px/1.55 var(--f);color:var(--ink2)}
 .hip-empty{padding:22px;color:var(--ink3);font:400 13px/1.6 var(--f)}
-.hip-monitor-rail{display:grid;grid-template-rows:260px 286px;gap:14px;height:560px;min-width:0}
+.hip-monitor-rail{display:grid;grid-template-rows:560px;gap:0;height:560px;min-width:0}
 .hip-monitor-rail .news-top{margin:0;padding:14px 18px;border-bottom:1px solid var(--hl)}
-.hip-monitor-rail .np-scroll-wrap{height:260px}
-.hip-monitor-rail .np-news-scroll{max-height:207px}
+.hip-monitor-rail .np-scroll-wrap{height:560px;display:flex;flex-direction:column}
+.hip-monitor-rail .np-news-scroll{max-height:none;flex:1}
 .hip-monitor-rail .pulse-inner-compact{height:286px;box-shadow:var(--shadow-sm)}
 .hip-monitor-rail .pulse-gauge-wrap{display:none}
 .hip-monitor-rail .pulse-formula{display:none}
@@ -274,6 +274,8 @@ h2{font:600 clamp(24px,3vw,36px)/1.15 var(--f);letter-spacing:-.8px;color:var(--
 #news-more{text-align:center;padding:12px 0}
 .news-more-btn{font:500 13px var(--f);color:var(--accent-h);background:transparent;border:1px solid var(--hl);padding:8px 24px;border-radius:7px;cursor:pointer;transition:all .2s}
 .news-more-btn:hover{border-color:var(--accent);color:var(--accent)}
+.news-more-inline{text-align:center;padding:16px 12px 20px;border-top:1px solid var(--hl);background:var(--canvas)}
+.news-more-inline .news-more-btn{min-width:150px}
 
 /* NEWS LAYOUT */
 .news-main{width:100%}
@@ -681,56 +683,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
               </div>
               <div class="news-scroll np-news-scroll" id="news-grid">
                 <div class="news-empty reveal" data-i18n="news.loading">Loading latest news...</div>
-              </div>
-              <div id="news-more" style="display:none"><button class="news-more-btn" onclick="loadMoreNews()" data-i18n="news.loadmore">Load more news</button></div>
-            </div>
-          </div>
-          <div class="np-col">
-            <div class="pulse-inner-compact reveal">
-              <div class="pulse-header" style="padding:14px 20px 0">
-                <div class="sec-label" data-i18n="pulse.label">Market Pulse</div>
-              </div>
-              <div class="pulse-gauge-wrap" style="padding:8px 20px 0">
-                <svg class="pulse-gauge-svg" viewBox="0 0 220 130" id="pulse-gauge" style="width:140px;height:84px">
-                  <defs>
-                    <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                      <stop offset="0%" style="stop-color:#ef4444"/>
-                      <stop offset="50%" style="stop-color:#f59e0b"/>
-                      <stop offset="100%" style="stop-color:#10b981"/>
-                    </linearGradient>
-                  </defs>
-                  <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="#e5e7eb" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="url(#gaugeGrad)" stroke-width="12" stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="283" id="gauge-arc"/>
-                  <line x1="110" y1="115" x2="110" y2="35" stroke="var(--ink)" stroke-width="2.5" stroke-linecap="round" id="gauge-needle" transform="rotate(-90,110,115)"/>
-                  <circle cx="110" cy="115" r="6" fill="var(--ink)"/>
-                  <text x="15" y="128" font-size="10" fill="#9ca3af">0</text>
-                  <text x="105" y="18" font-size="10" fill="#9ca3af" text-anchor="middle">50</text>
-                  <text x="200" y="128" font-size="10" fill="#9ca3af" text-anchor="end">100</text>
-                </svg>
-                <div class="pulse-gauge-val" id="gauge-val" style="font-size:20px;margin-top:0">--</div>
-                <div class="pulse-gauge-label" data-i18n="pulse.sentiment" style="font-size:10px">Market Sentiment Index</div>
-              </div>
-              <div class="pulse-formula" style="padding:2px 16px 10px">
-                <div class="pulse-formula-text" id="gauge-formula-text" data-i18n="pulse.formula" style="font-size:9px;padding:3px 8px">Loading formula...</div>
-              </div>
-              <div class="pulse-layout-compact">
-                <div class="pulse-left-compact">
-                  <div class="pulse-cat-list" id="pulse-cat-list">
-                    <div class="pulse-loading" data-i18n="pulse.loading">Loading...</div>
-                  </div>
-                  <div class="pulse-powered">
-                    <span class="pulse-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> <span data-i18n="pulse.powered">Powered by Polymarket</span></span>
-                  </div>
-                </div>
-                <div class="pulse-right-compact">
-                  <div class="pulse-whale-header">
-                    <div class="pulse-whale-dot"></div>
-                    <div class="pulse-whale-title" data-i18n="whale.title">Whale Alerts</div>
-                  </div>
-                  <div class="pulse-whale-list" id="whale-list">
-                    <div class="whale-empty" data-i18n="whale.loading">Loading alerts...</div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -1248,6 +1200,7 @@ var allNews = [];
 var homePulseItems = [];
 var newsOffset = 0;
 var NEWS_PAGE = 9;
+var hasMoreNews = true;
 
 function classifyNews(text){
   text = (text||'').toLowerCase();
@@ -1274,8 +1227,6 @@ function renderNewsCards(items){
   var grid = document.getElementById('news-grid');
   if(items.length === 0){
     grid.innerHTML = '<div class="news-empty">No news yet. Check back soon!</div>';
-    var moreEmpty = document.getElementById('news-more');
-    if(moreEmpty) moreEmpty.style.display = 'none';
     return;
   }
   var html = '';
@@ -1288,6 +1239,9 @@ function renderNewsCards(items){
       +'<div class="news-meta"><span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(item.published_at||item.created_at||new Date().toISOString())+'</span></div>'
       +'</div>';
   });
+  if(hasMoreNews){
+    html += '<div class="news-more-inline" id="news-more"><button class="news-more-btn" onclick="event.stopPropagation();loadMoreNews()" data-i18n="news.loadmore">'+(currentLang === 'cn' ? '查看更多新闻' : 'View more news')+'</button></div>';
+  }
   grid.innerHTML = html;
   grid.querySelectorAll('.reveal').forEach(function(el,i){
     el.style.transitionDelay=(i*50)+'ms';
@@ -1327,14 +1281,15 @@ function loadNews(){
   .then(function(r){ return r.json(); })
   .then(function(resp){
     var data = (resp && resp.success && resp.items) ? resp.items : [];
+    hasMoreNews = data.length >= NEWS_PAGE;
     if(data.length > 0){
       allNews = allNews.concat(data);
-      renderNewsCards(allNews);
       newsOffset += data.length;
-      var more = document.getElementById('news-more');
-      if(more) more.style.display = data.length >= NEWS_PAGE ? '' : 'none';
+      renderNewsCards(allNews);
     } else {
+      hasMoreNews = false;
       if(allNews.length === 0) renderPlaceholderNews();
+      else renderNewsCards(allNews);
     }
   })
   .catch(function(){
@@ -1345,6 +1300,7 @@ function loadNews(){
 function reloadNewsForLang(){
   allNews = [];
   newsOffset = 0;
+  hasMoreNews = true;
   var grid = document.getElementById('news-grid');
   if(grid) grid.innerHTML = '';
   loadNews();
@@ -1585,7 +1541,7 @@ function renderHomeIntelligencePulse(items){
   if(!sourceItems.length) sourceItems = (items || []).slice(0,12);
 
   var ranked = sourceItems.slice().sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
-  var top = ranked.slice(0, Math.min(14, ranked.length));
+  var top = ranked.slice(0, Math.min(30, ranked.length));
   if(!top.length){
     titleEl.textContent = pulseDict('hip.empty.title');
     listEl.innerHTML = '<div class="hip-empty">' + escHtml(pulseDict('hip.empty.desc')) + '</div>';
@@ -1717,10 +1673,42 @@ function loadHomeIntelligencePulse(){
     renderHomeIntelligencePulse(homePulseItems);
     return;
   }
-  supabaseSelect('intelligence_pulse_runs?select=generated_at,pulse,source_summary,window_end&status=eq.published&order=window_end.desc&limit=1')
+  supabaseSelect('intelligence_pulse_runs?select=generated_at,pulse,source_summary,window_end&status=eq.published&order=window_end.desc&limit=4')
     .then(function(rows){
-      if(rows && rows[0] && renderStoredHomePulse(rows[0])) return null;
-      throw new Error('No stored pulse');
+      if(!rows || !rows.length) throw new Error('No stored pulse');
+
+      var cutoff = Date.now() - 24 * 36e5;
+      var recentRows = rows.filter(function(row){
+        var t = new Date(row.window_end || row.generated_at || 0).getTime();
+        return Number.isFinite(t) && t >= cutoff;
+      });
+      if(!recentRows.length) recentRows = rows.slice(0,3);
+
+      var mergedItems = [];
+      var seen = {};
+      recentRows.slice().reverse().forEach(function(row){
+        var items = row && row.pulse && Array.isArray(row.pulse.items) ? row.pulse.items : [];
+        items.forEach(function(item){
+          var key = String(item.title_en || item.title_cn || item.title || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g,' ').trim();
+          if(!key || seen[key]) return;
+          seen[key] = true;
+          mergedItems.push(item);
+        });
+      });
+      if(!mergedItems.length) throw new Error('No stored pulse items');
+
+      var latest = recentRows[0];
+      var mergedPulse = Object.assign({}, latest.pulse || {}, {
+        items: mergedItems,
+        headline_en: 'Cumulative key signals added across the past 24 hours',
+        headline_cn: '过去24小时分批累积的重点情报',
+        cadence_hours: 8,
+        cumulative_window_hours: 24,
+        run_count: recentRows.length
+      });
+      var mergedRow = Object.assign({}, latest, { pulse: mergedPulse });
+      if(renderStoredHomePulse(mergedRow)) return null;
+      throw new Error('Stored pulse render failed');
     })
     .catch(function(){
       return fetch(API_BASE + '?action=news&limit=48&offset=0&lang=en')
@@ -1818,8 +1806,8 @@ function formatUsd(n){
   return '$'+Math.round(n).toLocaleString();
 }
 
-loadWhaleAlerts();
-setInterval(loadWhaleAlerts, 120000);
+// Whale alerts are intentionally hidden from the public homepage.
+// loadWhaleAlerts();
 
 // ===== AML CHECK (inline in blacklist section) =====
 async function runAMLCheck(){
@@ -1972,7 +1960,7 @@ var I18N = {
     'nav.home':'Home','nav.news':'News','nav.intelligence':'Intelligence','nav.blacklist':'Data','nav.briefing':'Briefing','nav.dashboard':'Freeze Data','nav.compliance':'Compliance','nav.services':'Services','nav.evidence':'Law Enforcement','nav.contact':'Contact','nav.cta':'Join Waitlist',
     'hero.badge':'Stablecoin & Crypto Compliance Intelligence','hero.title1':'Turning information into','hero.title2':'decision-ready intelligence.','hero.sub':'Stablecoin freeze, sanctions, regulatory, and market signals translated into decision-ready intelligence.',
     'hero.cta1':'Explore Live Data','hero.pill1':'Stablecoin Freeze','hero.pill2':'Sanctions Watchlist','hero.pill3':'Compliance Signals','hero.pill4':'Daily / Weekly Briefing','hero.note':'Informational intelligence only. Not legal advice or transaction monitoring replacement.',
-    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals.','hip.current':'Current public briefing','hip.windows':'Signal Monitor','hip.windows.desc':'Live source feed and market pulse for context.','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring active','hip.no.signal.desc':'No high-confidence public signal yet.',
+    'hip.label':'Live Intelligence Briefing','hip.title':'24h Intelligence Pulse','hip.desc':'A public decision-ready summary generated from the latest compliance, enforcement, stablecoin, sanctions, and market signals.','hip.current':'24h cumulative briefing','hip.windows':'Signal Monitor','hip.windows.desc':'Live source feed and market pulse for context.','hip.loading':'Loading latest 24h signals...','hip.updated':'Updated','hip.range':'Last 24h','hip.empty.title':'No fresh signal yet','hip.empty.desc':'Latest compliance and market signals will appear here once the news feed updates.','hip.no.signal':'Monitoring active','hip.no.signal.desc':'No high-confidence public signal yet.',
     'ip.label':'Product Architecture','ip.title':'Four modules that turn market movement into compliance intelligence.','ip.desc':'Detection is the starting point. Innobridge connects address data, issuer freeze activity, sanctions references, regulatory deadlines, and briefings into a practical intelligence layer for decision-making.',
     'ip.m1.title':'Stablecoin Freeze / Blacklist Tracker','ip.m1.desc':'Track USDT and USDC frozen or blacklisted addresses, issuer actions, balances, chains, sources, and update times.','ip.m1.tag':'Live Data',
     'ip.m2.title':'Sanctions-Related Address Watchlist','ip.m2.desc':'Organize OFAC-linked, issuer-listed, hack/scam-associated, darknet, and high-risk VASP-related address references.','ip.m2.tag':'Reference Layer',
@@ -2014,7 +2002,7 @@ var I18N = {
     'nav.home':'首页','nav.news':'新闻','nav.intelligence':'情报架构','nav.blacklist':'数据','nav.briefing':'简报','nav.dashboard':'冻结数据','nav.compliance':'合规','nav.services':'服务','nav.evidence':'执法支持','nav.contact':'联系我们','nav.cta':'加入候补',
     'hero.badge':'稳定币与加密合规情报平台','hero.title1':'将信息转化为','hero.title2':'可支持决策的情报。','hero.sub':'将稳定币冻结、制裁、监管和市场信号转化为可支持决策的情报。',
     'hero.cta1':'探索实时数据','hero.pill1':'稳定币冻结','hero.pill2':'制裁观察名单','hero.pill3':'合规信号','hero.pill4':'每日 / 每周简报','hero.note':'仅提供信息型情报，不构成法律意见，也不替代交易监控。',
-    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要。','hip.current':'当前公开简报','hip.windows':'信号监控','hip.windows.desc':'用实时新闻流与市场脉搏补充上下文。','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测运行中','hip.no.signal.desc':'暂未出现高置信度公开信号。',
+    'hip.label':'实时情报简报','hip.title':'24小时情报脉搏','hip.desc':'基于最新合规、执法、稳定币、制裁和市场信号生成的公开版决策摘要。','hip.current':'24小时累积重点简报','hip.windows':'信号监控','hip.windows.desc':'用实时新闻流与市场脉搏补充上下文。','hip.loading':'正在加载过去24小时信号...','hip.updated':'更新','hip.range':'过去24小时','hip.empty.title':'暂无新信号','hip.empty.desc':'新闻源更新后，最新合规与市场信号会显示在这里。','hip.no.signal':'监测运行中','hip.no.signal.desc':'暂未出现高置信度公开信号。',
     'ip.label':'产品架构','ip.title':'四个模块，把市场变化转化为合规情报。','ip.desc':'检测只是起点。Innobridge 将地址数据、发行方冻结动作、制裁参考、监管时间节点和情报简报连接起来，形成可支持决策的轻量情报层。',
     'ip.m1.title':'稳定币冻结 / 黑名单追踪','ip.m1.desc':'追踪 USDT 和 USDC 冻结或黑名单地址、发行方动作、余额、链、来源和更新时间。','ip.m1.tag':'实时数据',
     'ip.m2.title':'制裁相关地址观察名单','ip.m2.desc':'整理 OFAC 关联、发行方列名、黑客/诈骗、暗网和高风险 VASP 相关地址参考。','ip.m2.tag':'参考层',
