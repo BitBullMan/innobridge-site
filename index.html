@@ -150,7 +150,7 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .hip-signal:hover{background:#fbfcfd}
 .hip-signal:last-child{border-bottom:none}
 .hip-signal-title{font:600 15px/1.45 var(--f);color:var(--ink);letter-spacing:-.1px;margin-bottom:8px}
-.hip-signal-desc{font:400 13px/1.62 var(--f);color:var(--ink2);margin-bottom:10px}
+.hip-signal-desc{font:400 13px/1.68 var(--f);color:var(--ink2);margin-bottom:10px;white-space:pre-line}
 .hip-signal-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font:500 11px var(--f);color:var(--ink3)}
 .hip-tag{font:700 10px var(--f);letter-spacing:.25px;text-transform:uppercase;padding:3px 7px;border-radius:999px;background:var(--s1);border:1px solid var(--hl);color:var(--ink2)}
 .hip-tag.compliance,.hip-tag.stablecoin{background:var(--accent-bg);color:var(--accent-h);border-color:rgba(0,200,150,.16)}
@@ -1451,10 +1451,32 @@ function pulseSubject(item){
   return subject.length > 80 ? subject.slice(0, 79) + '…' : subject;
 }
 
+function formatPulseDisplayText(value){
+  var s = String(value || '')
+    .replace(/\r\n/g, '\n')
+    .replace(/\r/g, '\n')
+    .trim();
+
+  if(currentLang === 'cn'){
+    s = s
+      .replace(/\s*按监管权重看[：:]\s*/g, '\n\n按监管权重看：\n')
+      .replace(/\s*值得单独标记的是[：:]\s*/g, '\n\n值得单独标记的是：\n')
+      .replace(/\s*实际影响是[：:]\s*/g, '\n\n实际影响是：\n');
+  } else {
+    s = s
+      .replace(/\s*Why this matters(?:, in order of regulatory weight)?[：:]\s*/gi, '\n\nWhy this matters:\n')
+      .replace(/\s*Worth flagging separately[：:]\s*/gi, '\n\nWorth flagging separately:\n')
+      .replace(/\s*Practical read-through[：:]\s*/gi, '\n\nPractical read-through:\n');
+  }
+
+  s = s.replace(/\s*([1-9])\.\s+/g, '\n$1. ');
+  return s.replace(/\n{3,}/g, '\n\n').trim();
+}
+
 function pulseInsight(item, tags){
   var isCn = currentLang === 'cn';
   var stored = localizedInsightField(item);
-  if(stored) return stored;
+  if(stored) return formatPulseDisplayText(stored);
   var subject = pulseSubject(item);
   var date = item && (item.published_at || item.created_at) ? pulseTime(item.published_at || item.created_at) : '';
   var timePartCn = date ? '时间点为' + date + '。' : '';
@@ -1540,7 +1562,12 @@ function renderHomeIntelligencePulse(items){
   });
   if(!sourceItems.length) sourceItems = (items || []).slice(0,12);
 
-  var ranked = sourceItems.slice().sort(function(a,b){ return pulseScore(b) - pulseScore(a); });
+  var ranked = sourceItems.slice().sort(function(a,b){
+    var bt = new Date(b.published_at || b.created_at || 0).getTime();
+    var at = new Date(a.published_at || a.created_at || 0).getTime();
+    if(Number.isFinite(bt) && Number.isFinite(at) && bt !== at) return bt - at;
+    return pulseScore(b) - pulseScore(a);
+  });
   var top = ranked.slice(0, Math.min(30, ranked.length));
   if(!top.length){
     titleEl.textContent = pulseDict('hip.empty.title');
@@ -1686,7 +1713,7 @@ function loadHomeIntelligencePulse(){
 
       var mergedItems = [];
       var seen = {};
-      recentRows.slice().reverse().forEach(function(row){
+      recentRows.forEach(function(row){
         var items = row && row.pulse && Array.isArray(row.pulse.items) ? row.pulse.items : [];
         items.forEach(function(item){
           var key = String(item.title_en || item.title_cn || item.title || '').toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g,' ').trim();
@@ -1696,6 +1723,13 @@ function loadHomeIntelligencePulse(){
         });
       });
       if(!mergedItems.length) throw new Error('No stored pulse items');
+
+      mergedItems.sort(function(a,b){
+        var bt = new Date(b.published_at || b.created_at || 0).getTime();
+        var at = new Date(a.published_at || a.created_at || 0).getTime();
+        if(Number.isFinite(bt) && Number.isFinite(at) && bt !== at) return bt - at;
+        return 0;
+      });
 
       var latest = recentRows[0];
       var mergedPulse = Object.assign({}, latest.pulse || {}, {
