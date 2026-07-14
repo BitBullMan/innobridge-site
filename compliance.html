@@ -855,8 +855,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 <section class="mica-mvp-section" id="micaSelfCheck">
   <div class="mica-mvp-inner">
     <div class="mica-mvp-head">
-      <div><h2>EU MiCA Token &amp; Issuance Self-Check</h2><p>Lightweight indicative screening for token classification, authorisation, white-paper, reserve, redemption, marketing and environmental-disclosure readiness.</p></div>
-      <span class="mica-badge">MVP · Rules v1</span>
+      <div><h2 id="micaTitle">EU MiCA Token &amp; Issuance Self-Check</h2><p id="micaSubtitle">Lightweight indicative screening for token classification, authorisation, white-paper, reserve, redemption, marketing and environmental-disclosure readiness.</p></div>
+      <span class="mica-badge" id="micaBadge">MVP · Rules v1</span>
     </div>
     <div class="mica-box">
       <div class="mica-grid" id="micaQuestions">
@@ -873,7 +873,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
         <div class="mica-q"><label>11. EU marketing materials reviewed?</label><select data-k="marketing_ready"><option value="">Select</option><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option><option value="not_applicable">Not applicable</option></select></div>
         <div class="mica-q"><label>12. Consensus-mechanism environmental data available?</label><select data-k="esg_ready"><option value="">Select</option><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option><option value="not_applicable">Not applicable</option></select></div>
       </div>
-      <div class="mica-actions"><button class="wiz-btn" type="button" onclick="resetMicaMvp()">Reset</button><button class="wiz-btn primary" type="button" onclick="runMicaMvp()">Generate indicative result</button></div>
+      <div class="mica-actions"><button class="wiz-btn" id="micaResetBtn" type="button" onclick="resetMicaMvp()">Reset</button><button class="wiz-btn primary" id="micaRunBtn" type="button" onclick="runMicaMvp()">Generate indicative result</button></div>
       <div class="mica-result" id="micaResult"></div>
     </div>
   </div>
@@ -1498,6 +1498,7 @@ function applyLang() {
   });
   var btn = document.getElementById('lang-btn');
   if (btn) btn.textContent = currentLang === 'en' ? 'EN | 中' : '中 | EN';
+  if (typeof renderMicaLanguage === 'function') renderMicaLanguage();
 }
 
 function toggleLang() {
@@ -4005,30 +4006,139 @@ document.getElementById('checkLoginGate').style.display='none';document.getEleme
 </script>
 
 <script>
+var micaLastAnswers = null;
+var MICA_I18N = {
+  en: {
+    title:'EU MiCA Token & Issuance Self-Check',
+    subtitle:'Lightweight indicative screening for token classification, authorisation, white-paper, reserve, redemption, marketing and environmental-disclosure readiness.',
+    badge:'MVP · Rules v1', reset:'Reset', run:'Generate indicative result', select:'Select',
+    questions:[
+      '1. EU issuer or EU-facing offer?',
+      '2. Shares, debt, profit, dividend or investment-like rights?',
+      '3. Stable value by reference to one official currency?',
+      '4. Reference to a basket, commodity, crypto-asset, right or other value?',
+      '5. Contractual redemption right?',
+      '6. Reserve assets maintained?',
+      '7. Public offer in the EU?',
+      '8. Admission to trading in the EU?',
+      '9. MiCA-aligned white paper prepared?',
+      '10. Relevant EU authorisation held?',
+      '11. EU marketing materials reviewed?',
+      '12. Consensus-mechanism environmental data available?'
+    ],
+    options:{yes:'Yes',no:'No',uncertain:'Uncertain',planned:'Planned',partial:'Partial',pending:'Pending',not_applicable:'Not applicable'},
+    required:'Please answer all 12 questions.',
+    classification:'Indicative classification', readiness:'Readiness', professionalReview:'Professional review',
+    criticalFindings:'Critical findings', nextActions:'Next actions', requiredReview:'Required', recommendedReview:'Recommended',
+    legalBasis:'Legal basis:', officialSource:'Official EUR-Lex source ↗', rulesVersion:'Rules version: EU_MICA_TOKEN_MVP v1 · This result is informational and is not legal advice.',
+    other:'Other crypto-asset / further analysis', medium:'Medium', low:'Low',
+    financial:'Possible financial instrument', emt:'Possible e-money token (EMT)', art:'Possible asset-referenced token (ART)',
+    messages:{
+      financialCritical:'MiCA may not be the primary regime; EU securities-law analysis is required.',
+      financialAction:'Obtain a formal financial-instrument perimeter analysis before relying on MiCA.',
+      emtCritical:'Confirm whether the issuer is an authorised credit institution or electronic money institution.',
+      artCritical:'Confirm ART authorisation or a specific exemption.',
+      territorial:'Map EU territorial nexus, target users and distribution channels.',
+      whitepaperCritical:'White-paper readiness is incomplete.',
+      whitepaperAction:'Prepare the applicable MiCA white paper, notification evidence and publication record.',
+      reserveCritical:'Reserve and safeguarding arrangements are incomplete or uncertain.',
+      reserveAction:'Document reserve composition, custody, reconciliation and liquidity procedures.',
+      redemptionCritical:'Holder redemption rights are absent or unclear.',
+      redemptionAction:'Define contractual redemption rights, operational timelines and funding arrangements.',
+      marketingAction:'Review EU-facing marketing for clarity, fairness, non-misleading presentation and white-paper consistency.',
+      esgAction:'Collect consensus-mechanism environmental data for applicable disclosures.',
+      noCritical:'No critical issue was triggered by the supplied answers; legal perimeter review is still required.'
+    },
+    obligations:{
+      emt:['EMT issuer authorisation review','White paper and notification pathway','Redemption-at-par arrangements','Safeguarding and reserve controls'],
+      art:['ART authorisation review','White paper approval/notification pathway','Reserve, custody and liquidity controls','Redemption and recovery planning'],
+      other:['MiCA scope and exclusion analysis','White paper assessment if publicly offered or admitted to trading','Marketing communication review']
+    },
+    basis:'Regulation (EU) 2023/1114, including Articles 2–3, 16, 48 and the category-specific white-paper, reserve, redemption and marketing provisions.'
+  },
+  cn: {
+    title:'欧盟 MiCA 代币与发行合规自查',
+    subtitle:'用于初步判断代币分类、发行人授权、白皮书、储备、赎回、营销及环境披露准备情况。',
+    badge:'MVP · 规则 v1', reset:'重置', run:'生成初步评估结果', select:'请选择',
+    questions:[
+      '1. 发行人是否在欧盟设立，或计划面向欧盟发行？',
+      '2. 代币是否赋予股份、债权、利润、分红或类似投资权利？',
+      '3. 代币是否通过参考一种官方货币维持稳定价值？',
+      '4. 代币是否参考一篮子货币、商品、加密资产、权利或其他价值？',
+      '5. 持有人是否拥有合同约定的赎回权？',
+      '6. 是否维持储备资产？',
+      '7. 是否计划在欧盟面向公众发行？',
+      '8. 是否计划申请在欧盟交易平台交易？',
+      '9. 是否已准备符合 MiCA 要求的白皮书？',
+      '10. 发行人是否持有相关欧盟授权？',
+      '11. 面向欧盟的营销材料是否已经过审查？',
+      '12. 是否已具备共识机制环境影响数据？'
+    ],
+    options:{yes:'是',no:'否',uncertain:'不确定',planned:'计划中',partial:'部分完成',pending:'申请中',not_applicable:'不适用'},
+    required:'请完成全部 12 个问题后再生成结果。',
+    classification:'初步分类', readiness:'准备度', professionalReview:'专业审核',
+    criticalFindings:'关键发现', nextActions:'后续行动', requiredReview:'需要', recommendedReview:'建议',
+    legalBasis:'法律依据：', officialSource:'EUR-Lex 官方来源 ↗', rulesVersion:'规则版本：EU_MICA_TOKEN_MVP v1 · 本结果仅供信息参考，不构成法律意见。',
+    other:'其他加密资产 / 需要进一步分析', medium:'中等', low:'低',
+    financial:'可能属于金融工具', emt:'可能属于电子货币代币（EMT）', art:'可能属于资产参考代币（ART）',
+    messages:{
+      financialCritical:'MiCA 可能并非主要适用制度，需要进一步进行欧盟证券法分析。',
+      financialAction:'在依赖 MiCA 判断前，先取得正式的金融工具监管边界分析。',
+      emtCritical:'确认发行人是否为获授权的信贷机构或电子货币机构。',
+      artCritical:'确认发行人是否已获得 ART 授权，或是否适用特定豁免。',
+      territorial:'梳理与欧盟的地域连接、目标用户及分销渠道。',
+      whitepaperCritical:'白皮书准备尚不完整。',
+      whitepaperAction:'准备适用的 MiCA 白皮书、通知凭证及发布记录。',
+      reserveCritical:'储备及资产保护安排不完整或仍不明确。',
+      reserveAction:'记录储备构成、托管、对账及流动性管理程序。',
+      redemptionCritical:'持有人赎回权缺失或表述不清。',
+      redemptionAction:'明确合同赎回权、操作时限及资金保障安排。',
+      marketingAction:'审查面向欧盟的营销材料，确保清晰、公平、不具误导性并与白皮书一致。',
+      esgAction:'收集共识机制环境影响数据，以满足适用的披露要求。',
+      noCritical:'根据当前回答未触发关键问题，但仍应进行正式的法律监管边界审核。'
+    },
+    obligations:{
+      emt:['审查 EMT 发行人授权','准备白皮书及通知路径','建立按面值赎回安排','建立资产保护及储备控制'],
+      art:['审查 ART 发行人授权','准备白皮书审批或通知路径','建立储备、托管及流动性控制','建立赎回及恢复计划'],
+      other:['开展 MiCA 适用范围及排除项分析','如公开发行或申请交易准入，评估白皮书义务','审查营销材料']
+    },
+    basis:'《欧盟第 2023/1114 号加密资产市场条例》，包括第 2–3 条、第 16 条、第 48 条，以及适用于各类代币的白皮书、储备、赎回和营销规定。'
+  }
+};
+function micaLang(){return MICA_I18N[currentLang === 'cn' ? 'cn' : 'en'];}
 function micaEsc(v){return String(v||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
-function resetMicaMvp(){document.querySelectorAll('#micaQuestions select').forEach(function(x){x.value=''});var r=document.getElementById('micaResult');r.className='mica-result';r.innerHTML=''}
-function runMicaMvp(){
-  var a={};document.querySelectorAll('#micaQuestions select').forEach(function(x){a[x.dataset.k]=x.value});
-  var missing=Object.keys(a).filter(function(k){return !a[k]});if(missing.length){alert('Please answer all 12 questions.');return}
-  var cls='Other crypto-asset / further analysis';var confidence='Medium';var critical=[];var obligations=[];var actions=[];
-  if(a.financial_instrument_risk==='yes'){cls='Possible financial instrument';confidence='Low';critical.push('MiCA may not be the primary regime; EU securities-law analysis is required.');actions.push('Obtain a formal financial-instrument perimeter analysis before relying on MiCA.')}
-  else if(a.single_currency_reference==='yes'){cls='Possible e-money token (EMT)';critical.push('Confirm whether the issuer is an authorised credit institution or electronic money institution.');obligations.push('EMT issuer authorisation review','White paper and notification pathway','Redemption-at-par arrangements','Safeguarding and reserve controls')}
-  else if(a.basket_reference==='yes'){cls='Possible asset-referenced token (ART)';critical.push('Confirm ART authorisation or a specific exemption.');obligations.push('ART authorisation review','White paper approval/notification pathway','Reserve, custody and liquidity controls','Redemption and recovery planning')}
-  else {obligations.push('MiCA scope and exclusion analysis','White paper assessment if publicly offered or admitted to trading','Marketing communication review')}
-  if(a.issuer_in_eu!=='yes') actions.push('Map EU territorial nexus, target users and distribution channels.');
-  if((a.public_offer==='yes'||a.admission_to_trading==='yes')&&a.whitepaper_ready!=='yes'){critical.push('White-paper readiness is incomplete.');actions.push('Prepare the applicable MiCA white paper, notification evidence and publication record.')}
-  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.reserve_assets!=='yes'){critical.push('Reserve and safeguarding arrangements are incomplete or uncertain.');actions.push('Document reserve composition, custody, reconciliation and liquidity procedures.')}
-  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.redemption_right!=='yes'){critical.push('Holder redemption rights are absent or unclear.');actions.push('Define contractual redemption rights, operational timelines and funding arrangements.')}
-  if(a.marketing_ready==='no'||a.marketing_ready==='partial')actions.push('Review EU-facing marketing for clarity, fairness, non-misleading presentation and white-paper consistency.');
-  if(a.esg_ready==='no'||a.esg_ready==='partial')actions.push('Collect consensus-mechanism environmental data for applicable disclosures.');
-  if(!critical.length)critical.push('No critical issue was triggered by the supplied answers; legal perimeter review is still required.');
-  var readiness=100;['whitepaper_ready','marketing_ready','esg_ready'].forEach(function(k){if(a[k]==='no')readiness-=20;else if(a[k]==='partial')readiness-=10});if(a.authorisation_status==='no')readiness-=25;else if(a.authorisation_status==='pending'||a.authorisation_status==='uncertain')readiness-=12;if(a.reserve_assets==='no')readiness-=15;if(a.redemption_right==='no')readiness-=15;readiness=Math.max(0,readiness);
-  var review=(cls!=='Other crypto-asset / further analysis'||critical.length>0)?'Required':'Recommended';
-  var html='<div class="mica-result-grid"><div class="mica-metric"><span>Indicative classification</span><b>'+micaEsc(cls)+'</b></div><div class="mica-metric"><span>Readiness</span><b>'+readiness+'%</b></div><div class="mica-metric"><span>Professional review</span><b>'+review+'</b></div></div>';
-  html+='<div class="mica-findings"><div class="mica-panel"><h4>Critical findings</h4><ul>'+critical.map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div><div class="mica-panel"><h4>Next actions</h4><ul>'+actions.concat(obligations).map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div></div>';
-  html+='<div class="mica-cite"><strong>Legal basis:</strong> Regulation (EU) 2023/1114, including Articles 2–3, 16, 48 and the category-specific white-paper, reserve, redemption and marketing provisions. <a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj/eng" target="_blank" rel="noopener">Official EUR-Lex source ↗</a><br>Rules version: EU_MICA_TOKEN_MVP v1 · This result is informational and is not legal advice.</div>';
-  var r=document.getElementById('micaResult');r.innerHTML=html;r.className='mica-result show';r.scrollIntoView({behavior:'smooth',block:'start'});
+function renderMicaLanguage(){
+  var d=micaLang();
+  var byId={micaTitle:d.title,micaSubtitle:d.subtitle,micaBadge:d.badge,micaResetBtn:d.reset,micaRunBtn:d.run};
+  Object.keys(byId).forEach(function(id){var el=document.getElementById(id);if(el)el.textContent=byId[id]});
+  document.querySelectorAll('#micaQuestions .mica-q').forEach(function(row,i){var label=row.querySelector('label');if(label&&d.questions[i])label.textContent=d.questions[i];var sel=row.querySelector('select');if(sel){Array.from(sel.options).forEach(function(opt){opt.textContent=opt.value ? (d.options[opt.value]||opt.value) : d.select;});}});
+  if(micaLastAnswers) runMicaMvp(true);
 }
+function resetMicaMvp(){micaLastAnswers=null;document.querySelectorAll('#micaQuestions select').forEach(function(x){x.value=''});var r=document.getElementById('micaResult');r.className='mica-result';r.innerHTML=''}
+function runMicaMvp(silent){
+  var d=micaLang();var a={};document.querySelectorAll('#micaQuestions select').forEach(function(x){a[x.dataset.k]=x.value});
+  var missing=Object.keys(a).filter(function(k){return !a[k]});if(missing.length){if(!silent) alert(d.required);return}
+  micaLastAnswers=a;
+  var cls=d.other;var confidence=d.medium;var critical=[];var obligations=[];var actions=[];
+  if(a.financial_instrument_risk==='yes'){cls=d.financial;confidence=d.low;critical.push(d.messages.financialCritical);actions.push(d.messages.financialAction)}
+  else if(a.single_currency_reference==='yes'){cls=d.emt;critical.push(d.messages.emtCritical);obligations=obligations.concat(d.obligations.emt)}
+  else if(a.basket_reference==='yes'){cls=d.art;critical.push(d.messages.artCritical);obligations=obligations.concat(d.obligations.art)}
+  else {obligations=obligations.concat(d.obligations.other)}
+  if(a.issuer_in_eu!=='yes') actions.push(d.messages.territorial);
+  if((a.public_offer==='yes'||a.admission_to_trading==='yes')&&a.whitepaper_ready!=='yes'){critical.push(d.messages.whitepaperCritical);actions.push(d.messages.whitepaperAction)}
+  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.reserve_assets!=='yes'){critical.push(d.messages.reserveCritical);actions.push(d.messages.reserveAction)}
+  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.redemption_right!=='yes'){critical.push(d.messages.redemptionCritical);actions.push(d.messages.redemptionAction)}
+  if(a.marketing_ready==='no'||a.marketing_ready==='partial')actions.push(d.messages.marketingAction);
+  if(a.esg_ready==='no'||a.esg_ready==='partial')actions.push(d.messages.esgAction);
+  if(!critical.length)critical.push(d.messages.noCritical);
+  var readiness=100;['whitepaper_ready','marketing_ready','esg_ready'].forEach(function(k){if(a[k]==='no')readiness-=20;else if(a[k]==='partial')readiness-=10});if(a.authorisation_status==='no')readiness-=25;else if(a.authorisation_status==='pending'||a.authorisation_status==='uncertain')readiness-=12;if(a.reserve_assets==='no')readiness-=15;if(a.redemption_right==='no')readiness-=15;readiness=Math.max(0,readiness);
+  var review=(cls!==d.other||critical.length>0)?d.requiredReview:d.recommendedReview;
+  var html='<div class="mica-result-grid"><div class="mica-metric"><span>'+micaEsc(d.classification)+'</span><b>'+micaEsc(cls)+'</b></div><div class="mica-metric"><span>'+micaEsc(d.readiness)+'</span><b>'+readiness+'%</b></div><div class="mica-metric"><span>'+micaEsc(d.professionalReview)+'</span><b>'+micaEsc(review)+'</b></div></div>';
+  html+='<div class="mica-findings"><div class="mica-panel"><h4>'+micaEsc(d.criticalFindings)+'</h4><ul>'+critical.map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div><div class="mica-panel"><h4>'+micaEsc(d.nextActions)+'</h4><ul>'+actions.concat(obligations).map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div></div>';
+  html+='<div class="mica-cite"><strong>'+micaEsc(d.legalBasis)+'</strong> '+micaEsc(d.basis)+' <a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj/eng" target="_blank" rel="noopener">'+micaEsc(d.officialSource)+'</a><br>'+micaEsc(d.rulesVersion)+'</div>';
+  var r=document.getElementById('micaResult');r.innerHTML=html;r.className='mica-result show';if(!silent)r.scrollIntoView({behavior:'smooth',block:'start'});
+}
+renderMicaLanguage();
 </script>
 
 </body>
