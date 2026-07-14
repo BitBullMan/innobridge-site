@@ -643,6 +643,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .hero-stats{flex-direction:column;gap:12px}
   .detail-stats{grid-template-columns:1fr}
 }
+
+/* MICA LIGHT MVP */
+.mica-mvp-section{padding:0 40px 64px}.mica-mvp-inner{max-width:var(--max);margin:0 auto}.mica-mvp-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:20px}.mica-mvp-head h2{font:600 22px var(--f);letter-spacing:-.5px}.mica-mvp-head p{font:400 14px/1.6 var(--f);color:var(--ink3);max-width:680px}.mica-badge{font:600 10px var(--f);padding:5px 10px;border-radius:99px;background:var(--blue-bg);color:var(--blue);white-space:nowrap}.mica-box{border:1.5px solid var(--hl);border-radius:14px;background:var(--canvas);padding:24px}.mica-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.mica-q{background:var(--s1);border:1px solid var(--hl);border-radius:10px;padding:14px}.mica-q label{font:600 12.5px/1.45 var(--f);display:block;margin-bottom:8px}.mica-q select{width:100%;padding:9px 10px;border:1px solid var(--hl2);border-radius:8px;background:#fff;color:var(--ink)}.mica-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:18px}.mica-result{display:none;margin-top:18px}.mica-result.show{display:block}.mica-result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:14px}.mica-metric{border:1px solid var(--hl);border-radius:10px;padding:14px;background:#fff}.mica-metric b{display:block;font:700 16px var(--f);margin-top:4px}.mica-metric span{font:500 10px var(--f);color:var(--ink3);text-transform:uppercase;letter-spacing:.35px}.mica-findings{display:grid;grid-template-columns:1fr 1fr;gap:12px}.mica-panel{border:1px solid var(--hl);border-radius:10px;padding:16px}.mica-panel h4{font:600 13px var(--f);margin-bottom:10px}.mica-panel li{font:400 12.5px/1.55 var(--f);color:var(--ink2);margin:6px 0 6px 18px}.mica-cite{margin-top:14px;padding-top:12px;border-top:1px solid var(--hl);font:400 11px/1.5 var(--f);color:var(--ink3)}.mica-cite a{color:var(--blue)}
+@media(max-width:760px){.mica-grid,.mica-findings,.mica-result-grid{grid-template-columns:1fr}.mica-mvp-section{padding-left:18px;padding-right:18px}.mica-mvp-head{align-items:flex-start;flex-direction:column}}
+
 </style>
 </head>
 <body>
@@ -841,6 +846,35 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.loading.updates">Loading...</span></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- EU MICA TOKEN SELF-CHECK MVP -->
+<section class="mica-mvp-section" id="micaSelfCheck">
+  <div class="mica-mvp-inner">
+    <div class="mica-mvp-head">
+      <div><h2>EU MiCA Token &amp; Issuance Self-Check</h2><p>Lightweight indicative screening for token classification, authorisation, white-paper, reserve, redemption, marketing and environmental-disclosure readiness.</p></div>
+      <span class="mica-badge">MVP · Rules v1</span>
+    </div>
+    <div class="mica-box">
+      <div class="mica-grid" id="micaQuestions">
+        <div class="mica-q"><label>1. EU issuer or EU-facing offer?</label><select data-k="issuer_in_eu"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>2. Shares, debt, profit, dividend or investment-like rights?</label><select data-k="financial_instrument_risk"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>3. Stable value by reference to one official currency?</label><select data-k="single_currency_reference"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>4. Reference to a basket, commodity, crypto-asset, right or other value?</label><select data-k="basket_reference"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>5. Contractual redemption right?</label><select data-k="redemption_right"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>6. Reserve assets maintained?</label><select data-k="reserve_assets"><option value="">Select</option><option value="yes">Yes</option><option value="planned">Planned</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>7. Public offer in the EU?</label><select data-k="public_offer"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>8. Admission to trading in the EU?</label><select data-k="admission_to_trading"><option value="">Select</option><option value="yes">Yes</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>9. MiCA-aligned white paper prepared?</label><select data-k="whitepaper_ready"><option value="">Select</option><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option></select></div>
+        <div class="mica-q"><label>10. Relevant EU authorisation held?</label><select data-k="authorisation_status"><option value="">Select</option><option value="yes">Yes</option><option value="pending">Pending</option><option value="no">No</option><option value="uncertain">Uncertain</option></select></div>
+        <div class="mica-q"><label>11. EU marketing materials reviewed?</label><select data-k="marketing_ready"><option value="">Select</option><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option><option value="not_applicable">Not applicable</option></select></div>
+        <div class="mica-q"><label>12. Consensus-mechanism environmental data available?</label><select data-k="esg_ready"><option value="">Select</option><option value="yes">Yes</option><option value="partial">Partial</option><option value="no">No</option><option value="not_applicable">Not applicable</option></select></div>
+      </div>
+      <div class="mica-actions"><button class="wiz-btn" type="button" onclick="resetMicaMvp()">Reset</button><button class="wiz-btn primary" type="button" onclick="runMicaMvp()">Generate indicative result</button></div>
+      <div class="mica-result" id="micaResult"></div>
     </div>
   </div>
 </section>
@@ -3969,5 +4003,33 @@ initPolicies();
 // Show compliance check tool for logged-in users
 document.getElementById('checkLoginGate').style.display='none';document.getElementById('checkContainer').style.display='block';populateJurisSelect();}}catch(e){}})();
 </script>
+
+<script>
+function micaEsc(v){return String(v||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function resetMicaMvp(){document.querySelectorAll('#micaQuestions select').forEach(function(x){x.value=''});var r=document.getElementById('micaResult');r.className='mica-result';r.innerHTML=''}
+function runMicaMvp(){
+  var a={};document.querySelectorAll('#micaQuestions select').forEach(function(x){a[x.dataset.k]=x.value});
+  var missing=Object.keys(a).filter(function(k){return !a[k]});if(missing.length){alert('Please answer all 12 questions.');return}
+  var cls='Other crypto-asset / further analysis';var confidence='Medium';var critical=[];var obligations=[];var actions=[];
+  if(a.financial_instrument_risk==='yes'){cls='Possible financial instrument';confidence='Low';critical.push('MiCA may not be the primary regime; EU securities-law analysis is required.');actions.push('Obtain a formal financial-instrument perimeter analysis before relying on MiCA.')}
+  else if(a.single_currency_reference==='yes'){cls='Possible e-money token (EMT)';critical.push('Confirm whether the issuer is an authorised credit institution or electronic money institution.');obligations.push('EMT issuer authorisation review','White paper and notification pathway','Redemption-at-par arrangements','Safeguarding and reserve controls')}
+  else if(a.basket_reference==='yes'){cls='Possible asset-referenced token (ART)';critical.push('Confirm ART authorisation or a specific exemption.');obligations.push('ART authorisation review','White paper approval/notification pathway','Reserve, custody and liquidity controls','Redemption and recovery planning')}
+  else {obligations.push('MiCA scope and exclusion analysis','White paper assessment if publicly offered or admitted to trading','Marketing communication review')}
+  if(a.issuer_in_eu!=='yes') actions.push('Map EU territorial nexus, target users and distribution channels.');
+  if((a.public_offer==='yes'||a.admission_to_trading==='yes')&&a.whitepaper_ready!=='yes'){critical.push('White-paper readiness is incomplete.');actions.push('Prepare the applicable MiCA white paper, notification evidence and publication record.')}
+  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.reserve_assets!=='yes'){critical.push('Reserve and safeguarding arrangements are incomplete or uncertain.');actions.push('Document reserve composition, custody, reconciliation and liquidity procedures.')}
+  if((a.single_currency_reference==='yes'||a.basket_reference==='yes')&&a.redemption_right!=='yes'){critical.push('Holder redemption rights are absent or unclear.');actions.push('Define contractual redemption rights, operational timelines and funding arrangements.')}
+  if(a.marketing_ready==='no'||a.marketing_ready==='partial')actions.push('Review EU-facing marketing for clarity, fairness, non-misleading presentation and white-paper consistency.');
+  if(a.esg_ready==='no'||a.esg_ready==='partial')actions.push('Collect consensus-mechanism environmental data for applicable disclosures.');
+  if(!critical.length)critical.push('No critical issue was triggered by the supplied answers; legal perimeter review is still required.');
+  var readiness=100;['whitepaper_ready','marketing_ready','esg_ready'].forEach(function(k){if(a[k]==='no')readiness-=20;else if(a[k]==='partial')readiness-=10});if(a.authorisation_status==='no')readiness-=25;else if(a.authorisation_status==='pending'||a.authorisation_status==='uncertain')readiness-=12;if(a.reserve_assets==='no')readiness-=15;if(a.redemption_right==='no')readiness-=15;readiness=Math.max(0,readiness);
+  var review=(cls!=='Other crypto-asset / further analysis'||critical.length>0)?'Required':'Recommended';
+  var html='<div class="mica-result-grid"><div class="mica-metric"><span>Indicative classification</span><b>'+micaEsc(cls)+'</b></div><div class="mica-metric"><span>Readiness</span><b>'+readiness+'%</b></div><div class="mica-metric"><span>Professional review</span><b>'+review+'</b></div></div>';
+  html+='<div class="mica-findings"><div class="mica-panel"><h4>Critical findings</h4><ul>'+critical.map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div><div class="mica-panel"><h4>Next actions</h4><ul>'+actions.concat(obligations).map(function(x){return '<li>'+micaEsc(x)+'</li>'}).join('')+'</ul></div></div>';
+  html+='<div class="mica-cite"><strong>Legal basis:</strong> Regulation (EU) 2023/1114, including Articles 2–3, 16, 48 and the category-specific white-paper, reserve, redemption and marketing provisions. <a href="https://eur-lex.europa.eu/eli/reg/2023/1114/oj/eng" target="_blank" rel="noopener">Official EUR-Lex source ↗</a><br>Rules version: EU_MICA_TOKEN_MVP v1 · This result is informational and is not legal advice.</div>';
+  var r=document.getElementById('micaResult');r.innerHTML=html;r.className='mica-result show';r.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
+
 </body>
 </html>
