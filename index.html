@@ -146,8 +146,9 @@ h1{font:600 clamp(32px,3.8vw,44px)/1.08 var(--f);letter-spacing:-1.4px;color:var
 .hip-signal-list::-webkit-scrollbar,.hip-window-list::-webkit-scrollbar{width:5px}
 .hip-signal-list::-webkit-scrollbar-track,.hip-window-list::-webkit-scrollbar-track{background:transparent}
 .hip-signal-list::-webkit-scrollbar-thumb,.hip-window-list::-webkit-scrollbar-thumb{background:var(--s3);border-radius:99px}
-.hip-signal{padding:18px 22px;border-bottom:1px solid var(--hl);transition:background .16s}
+.hip-signal{padding:18px 22px;border-bottom:1px solid var(--hl);transition:background .16s;cursor:pointer}
 .hip-signal:hover{background:#fbfcfd}
+.hip-signal:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 .hip-signal:last-child{border-bottom:none}
 .hip-signal-title{font:600 15px/1.45 var(--f);color:var(--ink);letter-spacing:-.1px;margin-bottom:8px}
 .hip-signal-desc{font:400 13px/1.68 var(--f);color:var(--ink2);margin-bottom:10px;white-space:pre-line}
@@ -1249,17 +1250,44 @@ function renderNewsCards(items){
   });
 }
 
-// News modal
-function openNewsModal(idx){
-  var item = allNews[idx];
+// Shared detail modal for live news and the 24h cumulative briefing
+function showIntelligenceModal(item, options){
   if(!item) return;
-  document.getElementById('modal-source').textContent = item.source || 'Innobridge';
-  document.getElementById('modal-title').textContent = decodeHtml(item.title || '');
-  document.getElementById('modal-body').textContent = decodeHtml(item.content || item.summary || 'No additional details available.');
-  var cat = item.category || classifyNews(item.title + ' ' + (item.content||''));
-  document.getElementById('modal-meta').innerHTML = '<span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(item.published_at||item.created_at||new Date().toISOString())+'</span>';
+  options = options || {};
+  var title = options.title || decodeHtml(item.title || '');
+  var body = options.body || decodeHtml(item.content || item.summary || 'No additional details available.');
+  var source = options.source || item.source || 'Innobridge';
+  var cat = options.category || item.category || classifyNews((item.title || '') + ' ' + (item.content || ''));
+  var publishedAt = item.published_at || item.created_at || new Date().toISOString();
+
+  document.getElementById('modal-source').textContent = source;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal-meta').innerHTML = '<span class="news-tag '+cat+'">'+cat+'</span><span>'+timeAgo(publishedAt)+'</span>';
   document.getElementById('news-modal-overlay').classList.add('show');
   document.body.style.overflow = 'hidden';
+}
+
+function openNewsModal(idx){
+  showIntelligenceModal(allNews[idx]);
+}
+
+var homePulseModalItems = [];
+function openHomePulseModal(idx){
+  var entry = homePulseModalItems[idx];
+  if(!entry) return;
+  var item = entry.item;
+  var tags = entry.tags || pulseTags(item);
+  var rawContent = decodeHtml(localizedNewsField(item, 'content') || localizedNewsField(item, 'summary') || '');
+  var insight = pulseInsight(item, tags);
+  var body = rawContent ? rawContent + '\n\nWhy this matters:\n' + insight : insight;
+  var primaryCat = tags.length ? pulseTagClass(tags[0]) : classifyNews((item.title || '') + ' ' + (item.content || ''));
+  showIntelligenceModal(item, {
+    source: (currentLang === 'cn' ? '24小时累计简报 · ' : '24H CUMULATIVE BRIEFING · ') + (item.source || 'Innobridge Intelligence'),
+    title: decodeHtml(localizedNewsField(item, 'title')),
+    body: body,
+    category: primaryCat
+  });
 }
 
 function closeNewsModal(){
@@ -1581,12 +1609,14 @@ function renderHomeIntelligencePulse(items){
   if(updatedEl) updatedEl.textContent = pulseDict('hip.updated') + ': ' + pulseTime(now);
 
   var html = '';
-  top.forEach(function(item){
+  homePulseModalItems = [];
+  top.forEach(function(item, idx){
     var title = decodeHtml(localizedNewsField(item, 'title'));
     var tags = pulseTags(item);
     var flag = complianceRegionFlag(item);
     var tagHtml = tags.map(function(tag){ return '<span class="hip-tag ' + pulseTagClass(tag) + '">' + escHtml(pulseTagLabel(tag)) + '</span>'; }).join('');
-    html += '<div class="hip-signal">'
+    homePulseModalItems.push({item:item,tags:tags});
+    html += '<div class="hip-signal" role="button" tabindex="0" aria-label="Open briefing detail" onclick="openHomePulseModal(' + idx + ')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();openHomePulseModal(' + idx + ')}">'
       + '<div class="hip-signal-title">' + flag + ' ' + escHtml(title) + '</div>'
       + '<div class="hip-signal-desc">' + escHtml(pulseInsight(item, tags)) + '</div>'
       + '<div class="hip-signal-meta">' + tagHtml + '<span>' + escHtml(item.source || 'News') + '</span><span>' + timeAgo(item.published_at || item.created_at || new Date().toISOString()) + '</span></div>'
