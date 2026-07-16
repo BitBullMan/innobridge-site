@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="innobridge-build" content="index-compliance-sync-2.1">
 <title>Innobridge — Stablecoin & Crypto Compliance Intelligence</title>
 <meta name="description" content="Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into decision-ready compliance intelligence.">
 <meta property="og:title" content="Innobridge — Stablecoin & Crypto Compliance Intelligence">
@@ -748,29 +749,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span data-i18n="ci.f2.title">Enforcement Tracker</span>
         </div>
-        <div class="ci-preview-list" id="ci-enforcement-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇪🇺</span>Unauthorized EU CASPs face MiCA transition pressure</div><div class="ci-preview-item-desc">EU crypto firms without authorization need orderly wind-down, licensing, or customer access controls as transition windows close.</div><div class="ci-preview-item-meta"><span>EU</span><span>MiCA</span><span class="severity enforcement">Enforcement</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇭🇰</span>Hong Kong VASP supervision remains active</div><div class="ci-preview-item-desc">Retail-facing platforms should monitor licensing, custody, token admission, and customer protection requirements.</div><div class="ci-preview-item-meta"><span>HK</span><span>VASP</span><span class="severity high">High</span></div></div>
-        </div>
+        <div class="ci-preview-list" id="ci-enforcement-preview"><div class="ci-preview-loading">Loading enforcement intelligence...</div></div>
       </div>
       <div class="ci-preview-col">
         <div class="ci-preview-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
           <span data-i18n="ci.f3.title">Regulatory Updates</span>
         </div>
-        <div class="ci-preview-list" id="ci-regulatory-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🇺🇸</span>Stablecoin issuer controls stay in focus</div><div class="ci-preview-item-desc">Reserve, licensing, audit, and issuer compliance requirements remain near-term policy catalysts.</div><div class="ci-preview-item-meta"><span>US</span><span>Stablecoin</span><span class="severity new">New</span></div></div>
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">🌍</span>FATF Travel Rule and VASP supervision watch</div><div class="ci-preview-item-desc">Supervisors continue to test whether VASPs can operationalize screening, monitoring, and cross-border transfer controls.</div><div class="ci-preview-item-meta"><span>Global</span><span>FATF</span><span class="severity regulatory">Watch</span></div></div>
-        </div>
+        <div class="ci-preview-list" id="ci-regulatory-preview"><div class="ci-preview-loading">Loading regulatory intelligence...</div></div>
       </div>
       <div class="ci-preview-col">
         <div class="ci-preview-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
           <span data-i18n="ci.news.title">Compliance News Signals</span>
         </div>
-        <div class="ci-preview-list" id="ci-news-preview">
-          <div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>Filtering live news for compliance signals</div><div class="ci-preview-item-desc">Relevant regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT items from the news feed will appear here by latest time.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Compliance</span></div></div>
-        </div>
+        <div class="ci-preview-list" id="ci-news-preview"><div class="ci-preview-loading">Loading compliance news signals...</div></div>
       </div>
     </div>
     <div class="ci-preview-fade"></div>
@@ -1378,40 +1371,63 @@ function complianceRegionFlag(item){
   return '🌍';
 }
 
+function inferComplianceSignalLabel(item){
+  var raw = String(item.category || item.type || '').toLowerCase();
+  if(raw && raw !== 'other' && raw !== 'compliance') return raw;
+
+  var text = ((item.title || '') + ' ' + (item.content || '') + ' ' + (item.summary || '')).toLowerCase();
+  if(/enforcement|law enforcement|prosecut|indict|charged|arrest|fine|penalt|cease and desist|revok|suspend|ban|sanction|blacklist|freeze|frozen|seiz/.test(text)) return 'enforcement';
+  if(/regulat|regulation|bill|act\b|amendment|rule|rulemaking|guidance|consultation|framework|license|licence|approval|supervision|authority|senate|congress|parliament|legislature|tax rate|etf ban/.test(text)) return 'regulatory';
+  if(/aml|cft|money laundering|travel rule|kyc|transaction monitoring|suspicious transaction/.test(text)) return 'AML/CFT';
+  if(/stablecoin|issuer|reserve|redemption|usdt|usdc|tether|circle/.test(text)) return 'stablecoin';
+  if(/market manipulation|insider trading|market conduct/.test(text)) return 'market conduct';
+  return 'compliance';
+}
+
 function renderComplianceNewsSignals(items){
   var container = document.getElementById('ci-news-preview');
   if(!container) return;
-  var signals = (items||[]).filter(function(item){ return complianceSignalType(item); })
-    .sort(function(a,b){
-      return new Date(b.published_at||b.created_at||0) - new Date(a.published_at||a.created_at||0);
-    })
-    .slice(0,12);
+
+  var signals = Array.isArray(items) ? items.slice(0,12) : [];
   if(!signals.length){
-    container.innerHTML = '<div class="ci-preview-item"><div class="ci-preview-item-title"><span class="flag">📰</span>No compliance news signals yet</div><div class="ci-preview-item-desc">Regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT news will appear here as soon as matching items are available.</div><div class="ci-preview-item-meta"><span>Live Feed</span><span class="severity compliance">Watching</span></div></div>';
+    container.innerHTML = '<div class="ci-preview-loading">' +
+      (currentLang === 'cn' ? '暂无累积合规新闻信号' : 'No accumulated compliance news signals yet') +
+      '</div>';
     return;
   }
-  var html = '';
-  signals.forEach(function(item){
-    var type = complianceSignalType(item);
-    var dateStr = timeAgo(item.published_at||item.created_at||new Date().toISOString());
-    var title = decodeHtml(item.title||'');
-    var desc = decodeHtml(item.content||item.summary||'');
-    html += '<div class="ci-preview-item">'
+
+  container.innerHTML = signals.map(function(item){
+    var type = inferComplianceSignalLabel(item);
+    var dateStr = timeAgo(item.published_at || item.last_seen_at || new Date().toISOString());
+    var title = decodeHtml(item.title || '');
+    var desc = decodeHtml(item.content || item.summary || '');
+    var publisher = String(item.source_name || '').trim();
+
+    return '<div class="ci-preview-item">'
       + '<div class="ci-preview-item-title"><span class="flag">' + complianceRegionFlag(item) + '</span>' + escHtml(title) + '</div>'
       + '<div class="ci-preview-item-desc">' + escHtml(desc) + '</div>'
-      + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.source||'News') + '</span><span class="severity ' + type + '">' + type + '</span></div>'
+      + '<div class="ci-preview-item-meta"><span>' + escHtml(dateStr) + '</span>'
+      + (publisher ? '<span>' + escHtml(publisher) + '</span>' : '')
+      + '<span class="severity ' + String(type).toLowerCase().replace(/[^a-z]/g,'') + '">' + escHtml(type) + '</span></div>'
       + '</div>';
-  });
-  container.innerHTML = html;
+  }).join('');
 }
 
 function loadComplianceNewsSignals(){
-  var lang = getNewsLang();
-  fetch(API_BASE + '?action=news&limit=40&offset=0&lang='+lang)
-  .then(function(r){ return r.json(); })
-  .then(function(resp){
-    var data = (resp && resp.success && resp.items) ? resp.items : [];
-    renderComplianceNewsSignals(data);
+  supabaseSelect('compliance_news_signals?select=title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,first_seen_at,seen_count&status=eq.published&order=published_at.desc&limit=40')
+  .then(function(items){
+    var normalized = (Array.isArray(items) ? items : []).map(function(item){
+      return {
+        title: currentLang === 'cn' ? (item.title_cn || item.title_en) : (item.title_en || item.title_cn),
+        content: currentLang === 'cn' ? (item.summary_cn || item.summary_en || item.logic_cn || item.logic_en) : (item.summary_en || item.summary_cn || item.logic_en || item.logic_cn),
+        summary: currentLang === 'cn' ? (item.summary_cn || item.summary_en) : (item.summary_en || item.summary_cn),
+        region: item.region || 'Global',
+        category: item.category || 'compliance',
+        source: item.source_name || item.source || 'News',
+        published_at: item.published_at || item.last_seen_at
+      };
+    });
+    renderComplianceNewsSignals(normalized);
   })
   .catch(function(){
     renderComplianceNewsSignals([]);
@@ -1813,7 +1829,6 @@ function decodeHtml(s){
 }
 
 loadNews();
-loadComplianceNewsSignals();
 
 // ===== WHALE ALERTS SIDEBAR =====
 var _whaleLongShortRatio = 50; // default 50:50
@@ -2144,48 +2159,83 @@ function toggleLang() {
   if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
   if(typeof reloadMarketPulse === 'function') reloadMarketPulse();
   if(typeof renderHomeDeadlines === 'function') renderHomeDeadlines();
+  if(typeof renderHomeUnifiedCompliance === 'function') renderHomeUnifiedCompliance();
   if(typeof loadHomeIntelligencePulse === 'function') loadHomeIntelligencePulse();
 }
 
 applyLang(currentLang);
 loadHomeIntelligencePulse();
 
-// ===== HOME DEADLINE WATCH =====
-var HOME_DEADLINES = [
-  {flag:'\u{1F1EA}\u{1F1FA}',name:'MiCA Full Enforcement',name_cn:'MiCA 全面执行',reg:'EU Markets in Crypto-Assets Regulation',reg_cn:'欧盟加密资产市场监管条例',date:'2026-07-01',urgency:'critical'},
-  {flag:'\u{1F1FA}\u{1F1F8}',name:'GENIUS Act Finalization',name_cn:'GENIUS 法案最终确定',reg:'US Stablecoin Regulatory Framework',reg_cn:'美国稳定币监管框架',date:'2026-07-18',urgency:'critical'},
-  {flag:'\u{1F1ED}\u{1F1F0}',name:'HK VASP License Deadline',name_cn:'香港 VASP 牌照期限',reg:'Hong Kong SFC VASP Licensing',reg_cn:'香港证监会 VASP 发牌制度',date:'2026-09-01',urgency:'upcoming'},
-  {flag:'\u{1F30D}',name:'FATF Mutual Evaluation',name_cn:'FATF 互评',reg:'FATF 5th Round Reviews',reg_cn:'FATF 第五轮互评',date:'2026-10-01',urgency:'upcoming'},
-  {flag:'\u{1F1F8}\u{1F1EC}',name:'Singapore PSA Amendments',name_cn:'新加坡 PSA 修订',reg:'Payment Services Act Enhanced Requirements',reg_cn:'支付服务法增强要求',date:'2026-12-31',urgency:'planned'},
-  {flag:'\u{1F1F0}\u{1F1F7}',name:'Korea VASP Compliance Review',name_cn:'韩国 VASP 合规审查',reg:'Virtual Asset User Protection Act',reg_cn:'虚拟资产用户保护法',date:'2027-01-01',urgency:'planned'}
-];
+// ===== HOME DEADLINE WATCH — unified with Compliance database =====
+var HOME_DEADLINES = [];
+
+function deadlineFlag(code){
+  var flags = {EU:'🇪🇺',US:'🇺🇸',HK:'🇭🇰',SG:'🇸🇬',GB:'🇬🇧',AE:'🇦🇪',KR:'🇰🇷',JP:'🇯🇵',CN:'🇨🇳',CH:'🇨🇭'};
+  return flags[code] || '🌍';
+}
 
 function renderHomeDeadlines(){
   var el = document.getElementById('homeDeadlineStrip');
   if(!el) return;
   var dict = I18N[currentLang] || I18N.en;
   var today = new Date();
-  var items = HOME_DEADLINES.slice().sort(function(a,b){ return new Date(a.date) - new Date(b.date); }).slice(0,4);
+  var items = HOME_DEADLINES.slice().sort(function(a,b){
+    if(!a.deadline_date && b.deadline_date) return 1;
+    if(a.deadline_date && !b.deadline_date) return -1;
+    return new Date(a.deadline_date || '2999-12-31') - new Date(b.deadline_date || '2999-12-31');
+  }).slice(0,4);
+
+  if(!items.length){
+    el.innerHTML = '<div class="deadline-mini"><div class="deadline-mini-title">' +
+      (currentLang === 'cn' ? '监管期限数据加载中' : 'Loading regulatory deadlines') +
+      '</div></div>';
+    return;
+  }
+
   var html = '';
   items.forEach(function(d){
-    var target = new Date(d.date + 'T00:00:00');
-    var diff = Math.ceil((target - today) / (1000*60*60*24));
-    var dayClass = diff <= 0 ? 'passed' : diff <= 14 ? 'urgent' : diff <= 60 ? 'warning' : '';
-    var daysText = diff <= 0 ? dict['dl.passed'] : String(diff);
-    var label = diff <= 0 ? '' : (diff === 1 ? dict['dl.day'] : dict['dl.days']);
-    var name = currentLang === 'cn' ? (d.name_cn || d.name) : d.name;
-    var reg = currentLang === 'cn' ? (d.reg_cn || d.reg) : d.reg;
-    var dateStr = target.toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US',{month:'short',day:'numeric',year:'numeric'});
-    var tagText = dict['dl.' + d.urgency] || d.urgency;
+    var hasDate = !!d.deadline_date;
+    var target = hasDate ? new Date(d.deadline_date + 'T00:00:00') : null;
+    var diff = hasDate ? Math.ceil((target - today) / 86400000) : null;
+    var status = d.status || 'planned';
+    var urgency = status === 'critical' ? 'critical' : (status === 'upcoming' || status === 'needs_review' ? 'upcoming' : 'planned');
+    var dayClass = diff === null ? 'warning' : diff <= 0 ? 'passed' : diff <= 14 ? 'urgent' : diff <= 60 ? 'warning' : '';
+    var daysText = diff === null
+      ? (currentLang === 'cn' ? '核验中' : 'Review')
+      : diff <= 0 ? dict['dl.passed'] : String(diff);
+    var label = diff === null || diff <= 0 ? '' : (diff === 1 ? dict['dl.day'] : dict['dl.days']);
+    var name = currentLang === 'cn' ? (d.name_cn || d.name_en) : (d.name_en || d.name_cn);
+    var reg = currentLang === 'cn'
+      ? (d.source_note_cn || d.authority || '')
+      : (d.source_note_en || d.authority || '');
+    var dateStr = hasDate
+      ? target.toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US',{month:'short',day:'numeric',year:'numeric'})
+      : (currentLang === 'cn' ? '日期核验中' : 'Date under review');
+    var tagText = d.verification_status === 'needs_review'
+      ? (currentLang === 'cn' ? '待核验' : 'Review')
+      : (dict['dl.' + urgency] || urgency);
+
     html += '<div class="deadline-mini">'
-      + '<div><div class="deadline-mini-top"><div><div class="deadline-mini-title"><span>'+d.flag+'</span><span>'+escHtml(name)+'</span></div><div class="deadline-mini-reg">'+escHtml(reg)+'</div></div>'
-      + '<span class="deadline-mini-tag '+d.urgency+'">'+escHtml(tagText)+'</span></div></div>'
-      + '<div class="deadline-mini-bottom"><div><span class="deadline-days '+dayClass+'">'+escHtml(daysText)+'</span>'+(label?'<span class="deadline-label">'+escHtml(label)+'</span>':'')+'</div><span class="deadline-date">'+dateStr+'</span></div>'
+      + '<div><div class="deadline-mini-top"><div><div class="deadline-mini-title"><span>'+deadlineFlag(d.jurisdiction_code)+'</span><span>'+escHtml(name||'')+'</span></div><div class="deadline-mini-reg">'+escHtml(reg||'')+'</div></div>'
+      + '<span class="deadline-mini-tag '+urgency+'">'+escHtml(tagText)+'</span></div></div>'
+      + '<div class="deadline-mini-bottom"><div><span class="deadline-days '+dayClass+'">'+escHtml(daysText)+'</span>'+(label?'<span class="deadline-label">'+escHtml(label)+'</span>':'')+'</div><span class="deadline-date">'+escHtml(dateStr)+'</span></div>'
       + '</div>';
   });
   el.innerHTML = html;
 }
-renderHomeDeadlines();
+
+function loadHomeDeadlines(){
+  return supabaseSelect('ck_regulatory_deadlines?select=name_en,name_cn,jurisdiction_code,authority,deadline_date,status,source_note_en,source_note_cn,verification_status,last_verified_at&verification_status=in.(verified,needs_review)&order=deadline_date.asc.nullslast&limit=8')
+    .then(function(rows){
+      HOME_DEADLINES = Array.isArray(rows) ? rows : [];
+      renderHomeDeadlines();
+    })
+    .catch(function(){
+      HOME_DEADLINES = [];
+      renderHomeDeadlines();
+    });
+}
+loadHomeDeadlines();
 
 // ===== BLACKLIST PREVIEW TABLE =====
 (function loadBlacklistPreview() {
@@ -2222,57 +2272,74 @@ renderHomeDeadlines();
 })();
 
 
-// ===== COMPLIANCE INTEL PREVIEW =====
-(function loadCompliancePreview(){
-  var flagMap = {US:'\u{1F1FA}\u{1F1F8}',EU:'\u{1F1EA}\u{1F1FA}',CN:'\u{1F1E8}\u{1F1F3}',HK:'\u{1F1ED}\u{1F1F0}',GB:'\u{1F1EC}\u{1F1E7}',AE:'\u{1F1E6}\u{1F1EA}',KR:'\u{1F1F0}\u{1F1F7}',JP:'\u{1F1EF}\u{1F1F5}',SG:'\u{1F1F8}\u{1F1EC}',CH:'\u{1F1E8}\u{1F1ED}'};
-  fetch(API_BASE + '?action=enforcement_actions&limit=4')
-    .then(function(r){ return r.json(); })
-    .then(function(resp){
-      var items = (resp && resp.success && resp.items) ? resp.items : [];
-      var container = document.getElementById('ci-enforcement-preview');
-      if(!container || items.length === 0) return;
-      var html = '';
-      items.forEach(function(item){
-        var flag = flagMap[item.jurisdiction] || '';
-        var sevClass = (item.severity||'').toLowerCase();
-        var dateStr = item.date ? new Date(item.date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-        var tags = (item.tags||[]).slice(0,4);
-        html += '<div class="ci-preview-item">'
-          + '<div class="ci-preview-item-title"><span class="flag">' + flag + '</span>' + escHtml(item.title||'') + '</div>'
-          + '<div class="ci-preview-item-desc">' + escHtml(item.description||'') + '</div>'
-          + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.jurisdiction||'') + '</span>'
-          + '<span class="severity ' + sevClass + '">' + escHtml(item.severity||'') + '</span></div>'
-          + (tags.length ? '<div class="ci-preview-item-tags">' + tags.map(function(t){return '<span>'+escHtml(t)+'</span>'}).join('') + '</div>' : '')
-          + '</div>';
-      });
-      container.innerHTML = html;
-    }).catch(function(){});
-  fetch(API_BASE + '?action=regulatory_updates&limit=4')
-    .then(function(r){ return r.json(); })
-    .then(function(resp){
-      var items = (resp && resp.success && resp.items) ? resp.items : [];
-      var container = document.getElementById('ci-regulatory-preview');
-      if(!container || items.length === 0) return;
-      var html = '';
-      items.forEach(function(item){
-        var flag = flagMap[item.jurisdiction] || '';
-        var typeClass = (item.update_type||'').toLowerCase().replace(/[^a-z]/g,'');
-        var dateStr = item.effective_date ? new Date(item.effective_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
-        var tags = (item.tags||[]).slice(0,4);
-        var sourceLink = item.source_url ? ' <a href="'+item.source_url+'" target="_blank" rel="noopener" style="color:var(--accent);font-weight:500">' + escHtml(item.source_name||'Source') + ' \u2197</a>' : '';
-        html += '<div class="ci-preview-item">'
-          + '<div class="ci-preview-item-title"><span class="flag">' + flag + '</span>' + escHtml(item.title||'')
-          + ' <span class="severity ' + typeClass + '">' + escHtml(item.update_type||'') + '</span></div>'
-          + '<div class="ci-preview-item-desc">' + escHtml(item.description||'') + '</div>'
-          + '<div class="ci-preview-item-meta"><span>' + dateStr + '</span><span>' + escHtml(item.jurisdiction||'') + '</span>'
-          + '<span class="severity ' + ((item.impact_level||'').toLowerCase()) + '">' + escHtml(item.impact_level||'') + '</span>'
-          + sourceLink + '</div>'
-          + (tags.length ? '<div class="ci-preview-item-tags">' + tags.map(function(t){return '<span>'+escHtml(t)+'</span>'}).join('') + '</div>' : '')
-          + '</div>';
-      });
-      container.innerHTML = html;
-    }).catch(function(){});
-})();
+// ===== COMPLIANCE INTEL PREVIEW — unified with Compliance page =====
+var HOME_COMPLIANCE_RUN = null;
+
+function homeStoredText(item, field){
+  if(!item) return '';
+  var suffix = currentLang === 'cn' ? '_cn' : '_en';
+  return item[field + suffix] || item[field] || item[field + (currentLang === 'cn' ? '_en' : '_cn')] || '';
+}
+
+function homeRegionFlag(item){
+  var code = item.region || item.jurisdiction || '';
+  var flags = {US:'🇺🇸',EU:'🇪🇺',CN:'🇨🇳',HK:'🇭🇰',GB:'🇬🇧',AE:'🇦🇪',KR:'🇰🇷',JP:'🇯🇵',SG:'🇸🇬',CH:'🇨🇭'};
+  if(flags[code]) return flags[code];
+  var text = (homeStoredText(item,'title') + ' ' + homeStoredText(item,'summary')).toLowerCase();
+  if(/europe|european|mica|esma/.test(text)) return '🇪🇺';
+  if(/united states|u\.s\.|senate|congress|ofac|sec/.test(text)) return '🇺🇸';
+  if(/hong kong|sfc/.test(text)) return '🇭🇰';
+  if(/singapore|mas/.test(text)) return '🇸🇬';
+  if(/uae|dubai|vara/.test(text)) return '🇦🇪';
+  return '🌍';
+}
+
+function renderHomeComplianceList(containerId, items, type){
+  var container = document.getElementById(containerId);
+  if(!container) return;
+  var rows = Array.isArray(items) ? items.slice(0,4) : [];
+  if(!rows.length){
+    container.innerHTML = '<div class="ci-preview-loading">' +
+      (currentLang === 'cn' ? '暂无最新数据' : 'No current data') +
+      '</div>';
+    return;
+  }
+  container.innerHTML = rows.map(function(item){
+    var title = homeStoredText(item,'title') || 'Compliance intelligence';
+    var desc = homeStoredText(item,'summary') || homeStoredText(item,'description') || homeStoredText(item,'logic');
+    var dateValue = item.published_at || item.date || item.effective_date || item.last_seen_at;
+    var dateStr = dateValue ? new Date(dateValue).toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US',{month:'short',day:'numeric',year:'numeric'}) : '';
+    var label = item.severity || item.update_type || item.category || type;
+    var cls = String(label || type).toLowerCase().replace(/[^a-z]/g,'') || type;
+    var source = item.source_name || item.authority || item.jurisdiction || item.region || '';
+    return '<div class="ci-preview-item">'
+      + '<div class="ci-preview-item-title"><span class="flag">'+homeRegionFlag(item)+'</span>'+escHtml(title)+'</div>'
+      + '<div class="ci-preview-item-desc">'+escHtml(desc||'')+'</div>'
+      + '<div class="ci-preview-item-meta"><span>'+escHtml(dateStr)+'</span><span>'+escHtml(source)+'</span><span class="severity '+cls+'">'+escHtml(String(label||type))+'</span></div>'
+      + '</div>';
+  }).join('');
+}
+
+function renderHomeUnifiedCompliance(){
+  if(HOME_COMPLIANCE_RUN){
+    renderHomeComplianceList('ci-enforcement-preview', HOME_COMPLIANCE_RUN.enforcement_items, 'enforcement');
+    renderHomeComplianceList('ci-regulatory-preview', HOME_COMPLIANCE_RUN.regulatory_items, 'regulatory');
+  }
+  loadComplianceNewsSignals();
+}
+
+function loadHomeUnifiedCompliance(){
+  return supabaseSelect('compliance_intelligence_runs?select=generated_at,enforcement_items,regulatory_items&status=eq.published&order=generated_at.desc&limit=1')
+    .then(function(rows){
+      HOME_COMPLIANCE_RUN = Array.isArray(rows) && rows.length ? rows[0] : null;
+      renderHomeUnifiedCompliance();
+    })
+    .catch(function(){
+      HOME_COMPLIANCE_RUN = null;
+      renderHomeUnifiedCompliance();
+    });
+}
+loadHomeUnifiedCompliance();
 
 // ===== MARKET PULSE — 5 Category Cards =====
 var _pulseData = [];
