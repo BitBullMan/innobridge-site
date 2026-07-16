@@ -1518,7 +1518,15 @@ function toggleLang() {
   if (globalRegUpdates.length) { buildRegUpdatesFilters(); renderGlobalRegUpdates(); }
   renderOverviewEnforcement();
   renderOverviewRegUpdates();
-  if (complianceNewsSignals.length) renderOverviewNewsSignals(complianceNewsSignals);
+  if (storedComplianceRun) {
+    if (Array.isArray(storedComplianceRun.enforcement_items)) {
+      renderStoredComplianceList('overviewEnforcement', storedComplianceRun.enforcement_items, 'enforcement', currentLang === 'cn' ? '暂无最新执法情报。' : 'No fresh enforcement intelligence yet.');
+    }
+    if (Array.isArray(storedComplianceRun.regulatory_items)) {
+      renderStoredComplianceList('overviewRegUpdates', storedComplianceRun.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
+    }
+  }
+  if (complianceNewsSignals.length) renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
 }
 
 // ===== HELPERS =====
@@ -3805,6 +3813,7 @@ function complianceRegionFlag(item) {
 }
 
 var complianceNewsSignals = [];
+var storedComplianceRun = null;
 var storedComplianceOverviewLoaded = {
   enforcement: false,
   regulatory: false,
@@ -3831,18 +3840,59 @@ function renderStoredComplianceList(containerId, items, tagClass, emptyText){
     container.innerHTML = '<div class="empty-state"><p>' + escHtml(emptyText) + '</p></div>';
     return;
   }
+
+  function safePublisher(item){
+    var value = item.source_name || item.authority || item.jurisdiction || item.region || '';
+    value = String(value || '').trim();
+    // Never expose raw URLs, query strings, or internal source paths in cards.
+    if(!value || /^https?:\/\//i.test(value) || /[?&](from|utm_|ref)=/i.test(value)) return '';
+    return value;
+  }
+
+  function cleanCardText(value){
+    var text = String(value || '');
+    // Strip raw URLs that may have been copied into summaries by a prior fallback.
+    text = text.replace(/https?:\/\/\S+/gi, '').replace(/\s{2,}/g, ' ').trim();
+    return text;
+  }
+
   container.innerHTML = list.map(function(item){
-    var title = storedComplianceText(item, 'title') || storedComplianceText(item, 'name') || 'Compliance signal';
-    var desc = storedComplianceText(item, 'summary') || storedComplianceText(item, 'logic');
-    var date = item.date || item.published_at || item.generated_at || '';
-    var meta = item.authority || item.source || item.jurisdiction || item.region || '';
-    var label = item.severity || item.type || item.category || tagClass;
+    var title = cleanCardText(storedComplianceText(item, 'title') || storedComplianceText(item, 'name') || 'Compliance signal');
+    var desc = cleanCardText(storedComplianceText(item, 'summary') || storedComplianceText(item, 'logic'));
+    var date = item.published_at || item.date || item.generated_at || item.last_seen_at || '';
+    var publisher = safePublisher(item);
+    function inferSignalLabel(item){
+      var raw = String(item.severity || item.update_type || item.type || item.category || '').toLowerCase();
+      if(raw && raw !== 'other' && raw !== 'compliance') return raw;
+
+      var text = (title + ' ' + desc).toLowerCase();
+
+      if(/enforcement|law enforcement|prosecut|indict|charged|arrest|fine|penalt|cease and desist|revok|suspend|ban|sanction|blacklist|freeze|frozen|seiz/.test(text)){
+        return 'enforcement';
+      }
+      if(/regulat|regulation|bill|act\b|amendment|rule|rulemaking|guidance|consultation|framework|license|licence|approval|supervision|authority|senate|congress|parliament|legislature|tax rate|etf ban/.test(text)){
+        return 'regulatory';
+      }
+      if(/aml|cft|money laundering|travel rule|kyc|transaction monitoring|suspicious transaction/.test(text)){
+        return 'AML/CFT';
+      }
+      if(/stablecoin|issuer|reserve|redemption|usdt|usdc|tether|circle/.test(text)){
+        return 'stablecoin';
+      }
+      if(/market manipulation|insider trading|market conduct/.test(text)){
+        return 'market conduct';
+      }
+      return 'compliance';
+    }
+
+    var label = inferSignalLabel(item);
+
     return '<div class="overview-item">'
       + '<div class="overview-item-title"><span class="flag">' + storedComplianceFlag(item) + '</span><span>' + escHtml(title) + '</span></div>'
       + (desc ? '<div class="overview-item-desc">' + escHtml(desc) + '</div>' : '')
       + '<div class="overview-item-meta">'
       + (date ? '<span>' + escHtml(formatDate(date)) + '</span>' : '')
-      + (meta ? '<span>' + escHtml(meta) + '</span>' : '')
+      + (publisher ? '<span>' + escHtml(publisher) + '</span>' : '')
       + '<span class="overview-tag ' + escHtml(tagClass) + '">' + escHtml(label) + '</span>'
       + '</div>'
       + '</div>';
@@ -3860,6 +3910,7 @@ function loadStoredComplianceIntelligence(){
   return supabaseSelect('compliance_intelligence_runs?select=generated_at,summary,enforcement_items,regulatory_items,compliance_news_items,deadline_items&status=eq.published&order=briefing_date.desc&limit=1')
     .then(function(rows){
       var row = rows && rows[0];
+      storedComplianceRun = row || null;
       if(!hasStoredComplianceItems(row)) return false;
       if(Array.isArray(row.enforcement_items) && row.enforcement_items.length){
         storedComplianceOverviewLoaded.enforcement = true;
@@ -3869,13 +3920,25 @@ function loadStoredComplianceIntelligence(){
         storedComplianceOverviewLoaded.regulatory = true;
         renderStoredComplianceList('overviewRegUpdates', row.regulatory_items, 'regulatory', currentLang === 'cn' ? '暂无最新监管更新。' : 'No fresh regulatory updates yet.');
       }
-      if(Array.isArray(row.compliance_news_items) && row.compliance_news_items.length){
-        storedComplianceOverviewLoaded.news = true;
-        renderStoredComplianceList('overviewNewsSignals', row.compliance_news_items, 'compliance', t('cp.news.empty'));
-      }
+      // Compliance News Signals are loaded separately from the cumulative archive table.
       return storedComplianceOverviewLoaded.enforcement || storedComplianceOverviewLoaded.regulatory || storedComplianceOverviewLoaded.news;
     })
     .catch(function(){ return false; });
+}
+
+
+function loadCumulativeComplianceSignals() {
+  return supabaseSelect('compliance_news_signals?select=title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,seen_count&status=eq.published&order=published_at.desc&limit=60')
+    .then(function(rows) {
+      complianceNewsSignals = Array.isArray(rows) ? rows : [];
+      storedComplianceOverviewLoaded.news = complianceNewsSignals.length > 0;
+      renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
+      return storedComplianceOverviewLoaded.news;
+    })
+    .catch(function() {
+      complianceNewsSignals = [];
+      return false;
+    });
 }
 
 function renderOverviewNewsSignals(items) {
@@ -3922,14 +3985,8 @@ function renderOverviewNewsSignals(items) {
   }).join('');
 }
 
-function loadComplianceNewsSignals() {
-  if (storedComplianceOverviewLoaded.news) return;
-  apiFetch({ action: 'news', limit: 120, offset: 0, lang: currentLang === 'cn' ? 'cn' : 'en' }).then(function(data) {
-    complianceNewsSignals = data && data.success && data.items ? data.items : [];
-    renderOverviewNewsSignals(complianceNewsSignals);
-  }).catch(function() {
-    renderOverviewNewsSignals([]);
-  });
+function loadComplianceNewsSignals(){
+  return loadCumulativeComplianceSignals();
 }
 
 // ===== INIT =====
@@ -4139,6 +4196,8 @@ function runMicaMvp(silent){
   var r=document.getElementById('micaResult');r.innerHTML=html;r.className='mica-result show';if(!silent)r.scrollIntoView({behavior:'smooth',block:'start'});
 }
 renderMicaLanguage();
+
+loadCumulativeComplianceSignals();
 </script>
 
 </body>
