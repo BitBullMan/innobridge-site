@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="innobridge-build" content="index-compliance-sync-2.2">
+<meta name="innobridge-build" content="index-compliance-sync-2.3">
 <title>Innobridge — Stablecoin & Crypto Compliance Intelligence</title>
 <meta name="description" content="Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into decision-ready compliance intelligence.">
 <meta property="og:title" content="Innobridge — Stablecoin & Crypto Compliance Intelligence">
@@ -2359,8 +2359,8 @@ function normalizeRegulatoryRow(item){
 }
 
 function loadHomeUnifiedCompliance(){
-  var enforcementQuery = 'enforcement_actions?select=entity_name,entity_name_cn,summary,summary_cn,penalty_description,penalty_description_cn,action_date,severity,action_type,enforcing_agency,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=eq.published&order=action_date.desc.nullslast&limit=6';
-  var regulatoryQuery = 'aml_regulation_updates?select=title,title_cn,summary,summary_cn,published_date,severity,update_type,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=eq.published&order=published_date.desc.nullslast&limit=6';
+  var enforcementQuery = 'enforcement_actions?select=entity_name,entity_name_cn,summary,summary_cn,penalty_description,penalty_description_cn,action_date,severity,action_type,enforcing_agency,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=in.(ongoing,resolved,settled,appealed)&order=action_date.desc.nullslast&limit=6';
+  var regulatoryQuery = 'aml_regulation_updates?select=title,title_cn,summary,summary_cn,published_date,severity,update_type,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=in.(reviewed,published)&order=published_date.desc.nullslast&limit=6';
 
   return Promise.all([
     supabaseSelect(enforcementQuery),
