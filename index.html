@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="innobridge-build" content="index-compliance-sync-2.1">
+<meta name="innobridge-build" content="index-compliance-sync-2.2">
 <title>Innobridge — Stablecoin & Crypto Compliance Intelligence</title>
 <meta name="description" content="Innobridge turns fragmented stablecoin, sanctions, blacklist, regulatory, news, and market information into decision-ready compliance intelligence.">
 <meta property="og:title" content="Innobridge — Stablecoin & Crypto Compliance Intelligence">
@@ -2328,16 +2328,67 @@ function renderHomeUnifiedCompliance(){
   loadComplianceNewsSignals();
 }
 
+function normalizeEnforcementRow(item){
+  return {
+    title_en: item.entity_name || 'Enforcement action',
+    title_cn: item.entity_name_cn || item.entity_name || '执法行动',
+    summary_en: item.summary || item.penalty_description || '',
+    summary_cn: item.summary_cn || item.penalty_description_cn || item.summary || '',
+    published_at: item.action_date || item.created_at || '',
+    severity: item.severity || item.action_type || 'enforcement',
+    source_name: item.source_name || item.enforcing_agency || '',
+    authority: item.enforcing_agency || '',
+    jurisdiction: item.jurisdiction_code || '',
+    region: item.jurisdiction_code || ''
+  };
+}
+
+function normalizeRegulatoryRow(item){
+  return {
+    title_en: item.title || 'Regulatory update',
+    title_cn: item.title_cn || item.title || '监管更新',
+    summary_en: item.summary || '',
+    summary_cn: item.summary_cn || item.summary || '',
+    published_at: item.published_date || item.created_at || '',
+    severity: item.severity || item.update_type || 'regulatory',
+    update_type: item.update_type || 'regulatory',
+    source_name: item.source_name || '',
+    jurisdiction: item.jurisdiction_code || '',
+    region: item.jurisdiction_code || ''
+  };
+}
+
 function loadHomeUnifiedCompliance(){
-  return supabaseSelect('compliance_intelligence_runs?select=generated_at,enforcement_items,regulatory_items&status=eq.published&order=generated_at.desc&limit=1')
-    .then(function(rows){
-      HOME_COMPLIANCE_RUN = Array.isArray(rows) && rows.length ? rows[0] : null;
-      renderHomeUnifiedCompliance();
-    })
-    .catch(function(){
-      HOME_COMPLIANCE_RUN = null;
-      renderHomeUnifiedCompliance();
-    });
+  var enforcementQuery = 'enforcement_actions?select=entity_name,entity_name_cn,summary,summary_cn,penalty_description,penalty_description_cn,action_date,severity,action_type,enforcing_agency,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=eq.published&order=action_date.desc.nullslast&limit=6';
+  var regulatoryQuery = 'aml_regulation_updates?select=title,title_cn,summary,summary_cn,published_date,severity,update_type,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=eq.published&order=published_date.desc.nullslast&limit=6';
+
+  return Promise.all([
+    supabaseSelect(enforcementQuery),
+    supabaseSelect(regulatoryQuery)
+  ]).then(function(results){
+    var enforcementRows = Array.isArray(results[0]) ? results[0].map(function(item){
+      item.jurisdiction_code = item.jurisdiction && item.jurisdiction.code ? item.jurisdiction.code : '';
+      return normalizeEnforcementRow(item);
+    }) : [];
+
+    var regulatoryRows = Array.isArray(results[1]) ? results[1].map(function(item){
+      item.jurisdiction_code = item.jurisdiction && item.jurisdiction.code ? item.jurisdiction.code : '';
+      return normalizeRegulatoryRow(item);
+    }) : [];
+
+    HOME_COMPLIANCE_RUN = {
+      enforcement_items: enforcementRows,
+      regulatory_items: regulatoryRows
+    };
+
+    renderHomeUnifiedCompliance();
+  }).catch(function(){
+    HOME_COMPLIANCE_RUN = {
+      enforcement_items: [],
+      regulatory_items: []
+    };
+    renderHomeUnifiedCompliance();
+  });
 }
 loadHomeUnifiedCompliance();
 
