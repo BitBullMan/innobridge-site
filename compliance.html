@@ -175,6 +175,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:56px;display:flex;ali
 .overview-tag.enforcement{background:var(--danger-bg);color:var(--danger)}
 .overview-tag.regulatory{background:var(--blue-bg);color:var(--blue)}
 .overview-tag.compliance{background:var(--accent-bg);color:var(--accent-h)}
+.overview-search{padding:12px 14px;border-bottom:1px solid var(--hl);display:flex;gap:8px;align-items:center;background:var(--s1)}.overview-search input{flex:1;min-width:0;padding:8px 10px;border:1px solid var(--hl2);border-radius:8px;background:#fff;color:var(--ink);font:400 12px var(--f);outline:none}.overview-search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,200,150,.1)}.overview-search button{padding:8px 11px;border:1px solid var(--hl);border-radius:8px;background:#fff;color:var(--ink2);font:600 11px var(--f);cursor:pointer}.overview-search button:hover{border-color:var(--accent);color:var(--accent-h)}.overview-search-count{font:500 10px var(--f);color:var(--ink3);white-space:nowrap}
 
 /* DETAIL PANEL */
 .detail-section{padding:0 40px 64px;display:none}
@@ -747,6 +748,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
           <div class="overview-card-title"><span>&#128240;</span><span data-i18n="cp.news.title">Compliance News Signals</span></div>
           <span class="overview-card-kicker" data-i18n="cp.live.kicker">Latest</span>
         </div>
+        <div class="overview-search">
+          <input id="complianceSignalSearch" type="search" placeholder="Search title, summary, source, category..." aria-label="Search compliance news signals" />
+          <button id="complianceSignalSearchBtn" type="button">Search</button>
+          <button id="complianceSignalClearBtn" type="button" style="display:none">Clear</button>
+          <span class="overview-search-count" id="complianceSignalCount"></span>
+        </div>
         <div class="overview-list" id="overviewNewsSignals">
           <div class="loading-block"><div class="spinner"></div><span data-i18n="cp.news.loading">Scanning news...</span></div>
         </div>
@@ -1253,6 +1260,7 @@ var I18N = {
     'cp.news.title':'Compliance News Signals',
     'cp.news.loading':'Scanning news...',
     'cp.news.empty':'No compliance news signals yet. Regulatory, enforcement, sanctions, licensing, stablecoin, and AML/CFT items will appear here.',
+    'cp.news.search':'Search title, summary, source, category...','cp.news.searchBtn':'Search','cp.news.clearBtn':'Clear','cp.news.results':'results',
     'cp.card.regs':'regulations','cp.card.view':'View details',
     'cp.card.fatf':'FATF Member',
     'cp.overview.region':'Region','cp.overview.risk':'Risk Level',
@@ -1390,6 +1398,7 @@ var I18N = {
     'cp.news.title':'合规新闻信号',
     'cp.news.loading':'正在扫描新闻...',
     'cp.news.empty':'暂无合规新闻信号。监管、执法、制裁、牌照、稳定币和 AML/CFT 相关内容会在这里显示。',
+    'cp.news.search':'搜索标题、摘要、来源或分类…','cp.news.searchBtn':'搜索','cp.news.clearBtn':'清除','cp.news.results':'条结果',
     'cp.card.regs':'项法规','cp.card.view':'查看详情',
     'cp.card.fatf':'FATF 成员',
     'cp.overview.region':'地区','cp.overview.risk':'风险等级',
@@ -1527,6 +1536,7 @@ function toggleLang() {
     }
   }
   if (complianceNewsSignals.length) renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
+  updateComplianceSignalSearchUi(complianceNewsSignals.length, !!(document.getElementById('complianceSignalSearch') || {}).value);
 }
 
 // ===== HELPERS =====
@@ -3835,7 +3845,7 @@ function storedComplianceFlag(item){
 function renderStoredComplianceList(containerId, items, tagClass, emptyText){
   var container = document.getElementById(containerId);
   if(!container) return;
-  var list = Array.isArray(items) ? items.slice(0, 6) : [];
+  var list = Array.isArray(items) ? items : [];
   if(!list.length){
     container.innerHTML = '<div class="empty-state"><p>' + escHtml(emptyText) + '</p></div>';
     return;
@@ -3927,18 +3937,70 @@ function loadStoredComplianceIntelligence(){
 }
 
 
-function loadCumulativeComplianceSignals() {
-  return supabaseSelect('compliance_news_signals?select=title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,seen_count&status=eq.published&order=published_at.desc&limit=60')
+function updateComplianceSignalSearchUi(count, searching){
+  var input = document.getElementById('complianceSignalSearch');
+  var searchBtn = document.getElementById('complianceSignalSearchBtn');
+  var clearBtn = document.getElementById('complianceSignalClearBtn');
+  var countEl = document.getElementById('complianceSignalCount');
+  if(input) input.placeholder = t('cp.news.search');
+  if(searchBtn) searchBtn.textContent = t('cp.news.searchBtn');
+  if(clearBtn){ clearBtn.textContent = t('cp.news.clearBtn'); clearBtn.style.display = searching ? '' : 'none'; }
+  if(countEl) countEl.textContent = count ? (count + ' ' + t('cp.news.results')) : '';
+}
+
+function buildComplianceSignalPath(keyword){
+  var select = 'title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,seen_count';
+  var path = 'compliance_news_signals?select=' + select + '&status=eq.published';
+  var q = String(keyword || '').trim();
+  if(q){
+    var safe = q.replace(/[(),]/g, ' ').trim();
+    var term = encodeURIComponent('*' + safe + '*');
+    path += '&or=(' + [
+      'title_en.ilike.' + term,
+      'title_cn.ilike.' + term,
+      'summary_en.ilike.' + term,
+      'summary_cn.ilike.' + term,
+      'logic_en.ilike.' + term,
+      'logic_cn.ilike.' + term,
+      'source_name.ilike.' + term,
+      'category.ilike.' + term,
+      'region.ilike.' + term
+    ].join(',') + ')';
+  }
+  // The table is cumulative. We retrieve the newest 100 matching records rather than applying a 24-hour cutoff.
+  return path + '&order=published_at.desc&limit=100';
+}
+
+function loadCumulativeComplianceSignals(keyword) {
+  var q = String(keyword || '').trim();
+  var container = document.getElementById('overviewNewsSignals');
+  if(container) container.innerHTML = '<div class="loading-block"><div class="spinner"></div><span>' + escHtml(t('cp.news.loading')) + '</span></div>';
+  return supabaseSelect(buildComplianceSignalPath(q))
     .then(function(rows) {
       complianceNewsSignals = Array.isArray(rows) ? rows : [];
       storedComplianceOverviewLoaded.news = complianceNewsSignals.length > 0;
       renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
+      updateComplianceSignalSearchUi(complianceNewsSignals.length, !!q);
       return storedComplianceOverviewLoaded.news;
     })
     .catch(function() {
       complianceNewsSignals = [];
+      renderStoredComplianceList('overviewNewsSignals', [], 'compliance', t('cp.news.empty'));
+      updateComplianceSignalSearchUi(0, !!q);
       return false;
     });
+}
+
+function initComplianceSignalSearch(){
+  var input = document.getElementById('complianceSignalSearch');
+  var searchBtn = document.getElementById('complianceSignalSearchBtn');
+  var clearBtn = document.getElementById('complianceSignalClearBtn');
+  if(!input || !searchBtn || !clearBtn) return;
+  function run(){ loadCumulativeComplianceSignals(input.value); }
+  searchBtn.addEventListener('click', run);
+  input.addEventListener('keydown', function(e){ if(e.key === 'Enter') run(); });
+  clearBtn.addEventListener('click', function(){ input.value=''; loadCumulativeComplianceSignals(''); input.focus(); });
+  updateComplianceSignalSearchUi(complianceNewsSignals.length, false);
 }
 
 function renderOverviewNewsSignals(items) {
@@ -3996,6 +4058,7 @@ loadJurisdictions();
 loadRiskRules();
 loadGlobalEnforcement();
 loadGlobalRegUpdates();
+initComplianceSignalSearch();
 loadComplianceNewsSignals();
 initPolicies();
 
