@@ -932,10 +932,16 @@ tbody td { padding:11px 14px; font-size:13px; }
             <div class="page-title">Platform Users</div>
             <div class="page-sub">All registered users on the platform</div>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="loadPlatformUsers()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-primary btn-sm" onclick="openPlatformInviteModal()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              Invite User
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="loadPlatformUsers()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
               Refresh
-          </button>
+            </button>
+          </div>
         </div>
         <div id="platformUsersArea">
           <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
@@ -1075,6 +1081,36 @@ tbody td { padding:11px 14px; font-size:13px; }
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeInviteModal()">Cancel</button>
       <button class="btn btn-primary" onclick="doInviteUser()">Add User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ PLATFORM INVITE MODAL ════ -->
+<div class="modal-overlay" id="platformInviteModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Invite to Innobridge</div>
+        <div class="modal-sub">Send a personal invitation from your own email</div>
+      </div>
+      <button class="modal-close" onclick="closePlatformInviteModal()">&#215;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Recipient email</label>
+      <input type="email" class="form-input" id="pinviteEmail" placeholder="person@company.com" oninput="refreshPlatformInvitePreview()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Recipient name (optional)</label>
+      <input type="text" class="form-input" id="pinviteName" placeholder="First name" oninput="refreshPlatformInvitePreview()">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Message preview</label>
+      <textarea class="form-input" id="pinvitePreview" rows="9" style="font-size:12px;line-height:1.5;resize:vertical;" readonly></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closePlatformInviteModal()">Cancel</button>
+      <button class="btn btn-outline" onclick="copyPlatformInvite()">Copy message</button>
+      <button class="btn btn-primary" onclick="mailPlatformInvite()">Open in Mail app</button>
     </div>
   </div>
 </div>
@@ -2047,6 +2083,55 @@ async function doInviteUser() {
   } catch (err) {
     errBox.textContent = 'Failed to record invite: ' + err.message;
     errBox.classList.add('show');
+  }
+}
+
+// ── Platform Users invite (works without SMTP: sends from YOUR mail app) ──
+const PINVITE_SUBJECT = "You're invited to Innobridge — decision-ready compliance intelligence";
+
+function buildPlatformInviteMessage() {
+  const name = document.getElementById('pinviteName').value.trim();
+  return 'Hello' + (name ? ' ' + name : '') + ',\n\n'
+    + 'I would like to invite you to Innobridge — a platform that turns fragmented stablecoin, sanctions and regulatory information into decision-ready compliance intelligence.\n\n'
+    + 'With a free account you can:\n'
+    + '  • Track live USDT / USDC freezes and blacklisted addresses across Ethereum and TRON\n'
+    + '  • Screen addresses against the sanctions watchlist\n'
+    + '  • Follow regulatory deadlines and enforcement actions worldwide\n'
+    + '  • Read the 24h intelligence briefing — what changed, why it matters, what to watch next\n\n'
+    + 'Create your account here: https://www.innobridge.io/login.html\n\n'
+    + 'Quick start: after signing in, open your account page to subscribe to our daily and weekly intelligence newsletters and set your alert preferences.\n\n'
+    + 'Best regards,\n'
+    + (currentAdminUser?.display_name || 'The Innobridge Team') + '\n'
+    + 'www.innobridge.io — Turning information into decision-ready intelligence';
+}
+
+function refreshPlatformInvitePreview() {
+  document.getElementById('pinvitePreview').value = buildPlatformInviteMessage();
+}
+
+function openPlatformInviteModal() {
+  refreshPlatformInvitePreview();
+  document.getElementById('platformInviteModal').classList.add('show');
+}
+
+function closePlatformInviteModal() {
+  document.getElementById('platformInviteModal').classList.remove('show');
+}
+
+function mailPlatformInvite() {
+  const email = document.getElementById('pinviteEmail').value.trim();
+  if (!email) { showToast('Enter the recipient email first.', 'error'); return; }
+  window.location.href = 'mailto:' + encodeURIComponent(email)
+    + '?subject=' + encodeURIComponent(PINVITE_SUBJECT)
+    + '&body=' + encodeURIComponent(buildPlatformInviteMessage());
+}
+
+async function copyPlatformInvite() {
+  try {
+    await navigator.clipboard.writeText(PINVITE_SUBJECT + '\n\n' + buildPlatformInviteMessage());
+    showToast('Invitation copied — paste it into any email or chat.', 'success');
+  } catch (e) {
+    showToast('Copy failed: ' + e.message, 'error');
   }
 }
 
