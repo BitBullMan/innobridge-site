@@ -8,9 +8,9 @@
 <meta property="og:title" content="Admin Panel — Innobridge">
 <meta property="og:description" content="Manage blacklist data, user accounts, and system configuration.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://www.innobridge.io/admin.html">
+<meta property="og:url" content="https://innobridgetech.github.io/admin.html">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://www.innobridge.io/admin.html">
+<link rel="canonical" href="https://innobridgetech.github.io/admin.html">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -2024,26 +2024,28 @@ async function doInviteUser() {
   if (!email) { errBox.textContent = 'Email is required.'; errBox.classList.add('show'); return; }
 
   try {
-    // Check if already exists
+    // Already registered? (every registered user is auto-added to aml_admin_users)
     const { data: existing } = await sb.from('aml_admin_users').select('id').eq('email', email).single();
-    if (existing) { errBox.textContent = 'A user with this email already exists.'; errBox.classList.add('show'); return; }
+    if (existing) { errBox.textContent = 'This person is already registered — change their role directly in the list below.'; errBox.classList.add('show'); return; }
 
-    const { error } = await sb.from('aml_admin_users').insert({
+    // Not registered yet: rows in aml_admin_users require an auth account (id),
+    // so record a pending invite instead. The apply_admin_invite DB trigger
+    // grants the chosen role automatically the moment they register.
+    const { error } = await sb.from('aml_admin_invites').upsert({
       email,
       display_name: displayName || email.split('@')[0],
       role,
-      is_active: true,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
+      invited_by: currentAdminUser?.email || null,
+      created_at: new Date().toISOString()
     });
     if (error) throw error;
 
-    await logAudit('INSERT', 'aml_admin_users', email, null, { email, role });
-    showToast('User added successfully.', 'success');
+    await logAudit('INSERT', 'aml_admin_invites', email, null, { email, role });
+    showToast('Invite recorded. ' + email + ' will receive the "' + role + '" role automatically after registering at www.innobridge.io/login.html — share that link with them.', 'success');
     closeInviteModal();
     loadUsers();
   } catch (err) {
-    errBox.textContent = 'Failed to add user: ' + err.message;
+    errBox.textContent = 'Failed to record invite: ' + err.message;
     errBox.classList.add('show');
   }
 }
