@@ -1110,7 +1110,8 @@ tbody td { padding:11px 14px; font-size:13px; }
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closePlatformInviteModal()">Cancel</button>
       <button class="btn btn-outline" onclick="copyPlatformInvite()">Copy message</button>
-      <button class="btn btn-primary" onclick="mailPlatformInvite()">Open in Mail app</button>
+      <button class="btn btn-outline" onclick="mailPlatformInvite()">Open in Mail app</button>
+      <button class="btn btn-primary" id="pinviteSendBtn" onclick="sendPlatformInvite()">Send invitation</button>
     </div>
   </div>
 </div>
@@ -2132,6 +2133,45 @@ async function copyPlatformInvite() {
     showToast('Invitation copied — paste it into any email or chat.', 'success');
   } catch (e) {
     showToast('Copy failed: ' + e.message, 'error');
+  }
+}
+
+// Automatic sending from info@innobridge.io via the n8n invite workflow.
+// n8n verifies the caller's Supabase login is an active admin before sending.
+const N8N_INVITE_WEBHOOK = 'https://innobridge.app.n8n.cloud/webhook/innobridge-invite';
+
+async function sendPlatformInvite() {
+  const email = document.getElementById('pinviteEmail').value.trim();
+  const name = document.getElementById('pinviteName').value.trim();
+  const btn = document.getElementById('pinviteSendBtn');
+  if (!email) { showToast('Enter the recipient email first.', 'error'); return; }
+
+  btn.disabled = true;
+  const oldLabel = btn.textContent;
+  btn.textContent = 'Sending...';
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) throw new Error('Not signed in.');
+
+    const res = await fetch(N8N_INVITE_WEBHOOK, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + session.access_token
+      },
+      body: JSON.stringify({ email, name })
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok || !out.ok) throw new Error(out.error || ('HTTP ' + res.status));
+
+    await logAudit('INVITE_EMAIL', 'platform_invite', email, null, { email, name });
+    showToast('Invitation sent to ' + email + ' from info@innobridge.io.', 'success');
+    closePlatformInviteModal();
+  } catch (err) {
+    showToast('Send failed: ' + err.message + ' — you can still use "Open in Mail app".', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldLabel;
   }
 }
 
