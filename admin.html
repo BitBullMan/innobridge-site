@@ -1091,7 +1091,7 @@ tbody td { padding:11px 14px; font-size:13px; }
     <div class="modal-header">
       <div>
         <div class="modal-title">Invite to Innobridge</div>
-        <div class="modal-sub">Send a personal invitation from your own email</div>
+        <div class="modal-sub">Invite someone to access Innobridge Intelligence &middot; sent from info@innobridge.io</div>
       </div>
       <button class="modal-close" onclick="closePlatformInviteModal()">&#215;</button>
     </div>
@@ -1104,7 +1104,7 @@ tbody td { padding:11px 14px; font-size:13px; }
       <input type="text" class="form-input" id="pinviteName" placeholder="First name" oninput="refreshPlatformInvitePreview()">
     </div>
     <div class="form-group">
-      <label class="form-label">Message preview</label>
+      <label class="form-label">Invitation preview</label>
       <textarea class="form-input" id="pinvitePreview" rows="9" style="font-size:12px;line-height:1.5;resize:vertical;" readonly></textarea>
     </div>
     <div class="modal-footer">
@@ -2088,22 +2088,25 @@ async function doInviteUser() {
 }
 
 // ── Platform Users invite (works without SMTP: sends from YOUR mail app) ──
-const PINVITE_SUBJECT = "You're invited to Innobridge — decision-ready compliance intelligence";
+const PINVITE_SUBJECT = "You're invited to Innobridge \u2014 decision-ready intelligence";
 
 function buildPlatformInviteMessage() {
   const name = document.getElementById('pinviteName').value.trim();
   return 'Hello' + (name ? ' ' + name : '') + ',\n\n'
-    + 'I would like to invite you to Innobridge — a platform that turns fragmented stablecoin, sanctions and regulatory information into decision-ready compliance intelligence.\n\n'
-    + 'With a free account you can:\n'
-    + '  • Track live USDT / USDC freezes and blacklisted addresses across Ethereum and TRON\n'
-    + '  • Screen addresses against the sanctions watchlist\n'
-    + '  • Follow regulatory deadlines and enforcement actions worldwide\n'
-    + '  • Read the 24h intelligence briefing — what changed, why it matters, what to watch next\n\n'
-    + 'Create your account here: https://www.innobridge.io/login.html\n\n'
-    + 'Quick start: after signing in, open your account page to subscribe to our daily and weekly intelligence newsletters and set your alert preferences.\n\n'
+    + 'I would like to invite you to Innobridge \u2014 a decision intelligence platform built to help you understand not just what happened, but what it means.\n\n'
+    + 'We transform fragmented regulatory, enforcement, market and risk information into structured intelligence that helps you identify what changed, why it matters, and what to watch next.\n\n'
+    + 'With a free account, you can:\n'
+    + '  \u2022 Follow real-time intelligence signals across regulation, enforcement, sanctions and global markets\n'
+    + '  \u2022 Track USDT / USDC freezes and blacklisted addresses across Ethereum and TRON\n'
+    + '  \u2022 Screen addresses against sanctions and risk watchlists\n'
+    + '  \u2022 Monitor regulatory developments, deadlines and enforcement actions worldwide\n'
+    + '  \u2022 Access our intelligence briefings for context, impact analysis and key signals to watch\n\n'
+    + 'Create your account here:\n'
+    + 'https://www.innobridge.io/login\n\n'
+    + 'After signing in, visit your account page to subscribe to intelligence briefings and configure your alert preferences.\n\n'
     + 'Best regards,\n'
-    + (currentAdminUser?.display_name || 'The Innobridge Team') + '\n'
-    + 'www.innobridge.io — Turning information into decision-ready intelligence';
+    + 'Innobridge\n\n'
+    + 'Turning information into decision-ready intelligence.';
 }
 
 function refreshPlatformInvitePreview() {
