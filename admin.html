@@ -549,6 +549,47 @@ tbody td { padding:11px 14px; font-size:13px; }
 .user-email { font-size:12px; color:var(--text-2); }
 .user-actions { display:flex; gap:8px; align-items:center; }
 
+/* ── Briefing Operations ── */
+.ops-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:18px; }
+.ops-panel {
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:16px;
+}
+.ops-label { font-size:11px; font-weight:700; color:var(--text-3); text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px; }
+.ops-value { font-size:22px; font-weight:800; color:#1a1a1a; }
+.ops-copy { font-size:12px; color:var(--text-2); margin-top:4px; }
+.ops-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; }
+.status-pill {
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:3px 9px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.status-active { background:#dcfce7; color:#15803d; }
+.status-inactive { background:#f1f5f9; color:#64748b; }
+.status-paused { background:#fff8e6; color:#ea580c; }
+.status-suppressed { background:#fee2e2; color:#dc2626; }
+.status-test { background:#dbeafe; color:#1d4ed8; }
+.status-disabled { background:#eef2ff; color:#4338ca; }
+.tiny-muted { font-size:11px; color:var(--text-3); }
+.interest-tags { display:flex; gap:4px; flex-wrap:wrap; max-width:260px; }
+.interest-tag { background:var(--bg); color:var(--text-2); border:1px solid var(--border); border-radius:6px; padding:2px 6px; font-size:10px; font-weight:600; }
+.ops-warning {
+  background:#fff8e6;
+  border:1px solid #fed7aa;
+  color:#9a3412;
+  border-radius:10px;
+  padding:10px 12px;
+  font-size:12px;
+  margin-bottom:14px;
+}
+
 /* ── Confirm Dialog ── */
 .confirm-overlay {
   display:none;
@@ -662,7 +703,7 @@ tbody td { padding:11px 14px; font-size:13px; }
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
         <span>Admin Users</span>
       </button>
-      <div class="sidebar-section-label" id="le-section-label" style="display:none;">User Management</div>
+      <div class="sidebar-section-label" id="le-section-label" style="display:none;">User Operations</div>
       <button class="nav-item" onclick="showTab('le-requests')" id="nav-le-requests" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         <span>LE Requests</span>
@@ -671,6 +712,10 @@ tbody td { padding:11px 14px; font-size:13px; }
       <button class="nav-item" onclick="showTab('platform-users')" id="nav-platform-users" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
         <span>Platform Users</span>
+      </button>
+      <button class="nav-item" onclick="showTab('briefing-ops')" id="nav-briefing-ops" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v14H7l-3 3V4z"/><path d="M8 9h8M8 13h5"/></svg>
+        <span>Briefing Ops</span>
       </button>
     </nav>
 
@@ -930,9 +975,12 @@ tbody td { padding:11px 14px; font-size:13px; }
         <div class="page-header">
           <div>
             <div class="page-title">Platform Users</div>
-            <div class="page-sub">All registered users on the platform</div>
+            <div class="page-sub">Registered user directory, LE access, and per-user briefing controls</div>
           </div>
           <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="showTab('briefing-ops')">
+              Briefing Ops
+            </button>
             <button class="btn btn-primary btn-sm" onclick="openPlatformInviteModal()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               Invite User
@@ -944,6 +992,23 @@ tbody td { padding:11px 14px; font-size:13px; }
           </div>
         </div>
         <div id="platformUsersArea">
+          <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
+        </div>
+      </div>
+
+      <!-- ── Briefing Operations Tab ── -->
+      <div class="tab-panel" id="tab-briefing-ops">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Briefing Operations</div>
+            <div class="page-sub">Control Daily Briefing delivery, testing audiences, and user intelligence profiles</div>
+          </div>
+          <button class="btn btn-outline btn-sm" onclick="loadBriefingOps()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
+            Refresh
+          </button>
+        </div>
+        <div id="briefingOpsArea">
           <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
         </div>
       </div>
@@ -1050,6 +1115,59 @@ tbody td { padding:11px 14px; font-size:13px; }
   </div>
 </div>
 
+<!-- ════ USER INTEREST PROFILE MODAL ════ -->
+<div class="modal-overlay" id="interestProfileModal">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="interestProfileTitle">User Intelligence Profile</div>
+        <div class="modal-sub" id="interestProfileSub">Configure what this user should receive in future briefing outputs</div>
+      </div>
+      <button class="modal-close" onclick="closeInterestProfileModal()">&#215;</button>
+    </div>
+    <div id="interestProfileError" class="error-box"></div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Target markets</label>
+        <input type="text" class="form-input" id="interestCountries" placeholder="US, EU, UK, Hong Kong">
+        <div class="form-hint">Comma separated country or market names.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Sectors</label>
+        <input type="text" class="form-input" id="interestSectors" placeholder="stablecoin, fintech, banking">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Regulatory themes</label>
+        <input type="text" class="form-input" id="interestThemes" placeholder="AML, sanctions, licensing, stablecoin">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Activities</label>
+        <input type="text" class="form-input" id="interestActivities" placeholder="market entry, compliance, enforcement">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Tracked entities</label>
+        <input type="text" class="form-input" id="interestEntities" placeholder="Company, regulator, project">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Output preferences</label>
+        <input type="text" class="form-input" id="interestOutputPrefs" placeholder="daily_brief, executive_summary, evidence_chain">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Admin notes</label>
+      <textarea class="form-textarea" id="interestAdminNotes" placeholder="Internal notes for future customisation"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeInterestProfileModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInterestProfile()">Save Profile</button>
+    </div>
+  </div>
+</div>
+
 <!-- ════ INVITE USER MODAL ════ -->
 <div class="modal-overlay" id="inviteModal">
   <div class="modal">
@@ -1140,6 +1258,7 @@ const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
 const API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
 const PAGE_SIZE = 25;
+const DAILY_BRIEFING_KEY = 'daily_market_access';
 
 // ════════════════════════════════════════════════
 // SUPABASE INIT
@@ -1160,6 +1279,11 @@ let auditTotalCount = 0;
 let searchDebounceTimer = null;
 let csvParsedData = [];
 let confirmCallback = null;
+let platformUsersCache = [];
+let briefingSubsByUser = {};
+let interestProfilesByUser = {};
+let briefingControlCache = null;
+let editingInterestUserId = null;
 
 // ════════════════════════════════════════════════
 // AUTH
@@ -1286,6 +1410,7 @@ function initApp() {
     document.getElementById('le-section-label').style.display = 'block';
     document.getElementById('nav-le-requests').style.display = 'flex';
     document.getElementById('nav-platform-users').style.display = 'flex';
+    document.getElementById('nav-briefing-ops').style.display = 'flex';
     loadLEPendingCount();
   }
 
@@ -1313,6 +1438,7 @@ function showTab(name) {
   if (name === 'dashboard') loadDashboard();
   if (name === 'le-requests') loadLERequests();
   if (name === 'platform-users') loadPlatformUsers();
+  if (name === 'briefing-ops') loadBriefingOps();
 }
 
 // ════════════════════════════════════════════════
@@ -2421,40 +2547,391 @@ async function loadPlatformUsers() {
     return;
   }
 
+  platformUsersCache = data;
+  const opsWarning = await loadBriefingUserOps(data.map(u => u.id));
+
   let html = '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
-  html += '<th>Email</th><th>Name</th><th>Role</th><th>LE Status</th><th>Briefing</th><th>Logins</th><th>Last Login</th><th>Registered</th><th>Active</th><th>Actions</th>';
+  html += '<th>Email</th><th>Name</th><th>Role</th><th>LE Status</th><th>Briefing</th><th>Test</th><th>Language</th><th>Interests</th><th>Last Sent</th><th>Active</th><th>Actions</th>';
   html += '</tr></thead><tbody>';
 
   data.forEach(u => {
     const roleCls = u.role === 'admin' ? 'admin' : u.role === 'law_enforcement' ? 'editor' : 'viewer';
-    const lastLogin = u.last_login_at ? new Date(u.last_login_at).toLocaleDateString() : '—';
-    const created = new Date(u.created_at).toLocaleDateString();
+    const sub = getUserBriefingSub(u);
+    const interest = interestProfilesByUser[u.id] || {};
+    const lastSent = sub.last_sent_at ? new Date(sub.last_sent_at).toLocaleDateString() : '—';
 
     html += '<tr>';
     html += `<td style="font-family:var(--m,monospace);font-size:12px;">${esc(u.email)}</td>`;
     html += `<td>${esc(u.full_name || '—')}</td>`;
     html += `<td><span class="role-badge ${roleCls}">${u.role}</span></td>`;
     html += `<td>${u.le_status !== 'none' ? u.le_status : '—'}</td>`;
-    html += `<td>${u.subscribe_daily_briefing ? '✓' : '—'}</td>`;
-    html += `<td>${u.login_count || 0}</td>`;
-    html += `<td style="font-size:12px;color:var(--text-3);">${lastLogin}</td>`;
-    html += `<td style="font-size:12px;color:var(--text-3);">${created}</td>`;
+    html += `<td>${briefingStatusBadge(sub.status, sub.legacy)}</td>`;
+    html += `<td>${sub.include_in_tests ? '<span class="status-pill status-test">Test group</span>' : '<span class="tiny-muted">—</span>'}</td>`;
+    html += `<td>${esc(sub.language_preference || u.language_preference || 'en')}</td>`;
+    html += `<td>${renderInterestTags(interest)}</td>`;
+    html += `<td style="font-size:12px;color:var(--text-3);">${lastSent}</td>`;
     html += `<td>${u.is_active ? '<span style="color:var(--green);">Active</span>' : '<span style="color:var(--red);">Disabled</span>'}</td>`;
-    html += '<td style="white-space:nowrap;">';
-    if (u.role === 'public') {
-      html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;" onclick="grantDirectLEAccess('${u.id}','${esc(u.email)}')">Grant LE</button>`;
-    } else if (u.role === 'law_enforcement') {
-      html += `<button class="btn btn-sm btn-ghost" onclick="revokeDirectLEAccess('${u.id}','${esc(u.email)}')">Revoke LE</button>`;
+    html += '<td><div class="ops-actions" style="min-width:360px;">';
+    if (sub.status === 'active') {
+      html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','paused')">Pause briefing</button>`;
     } else {
-      html += '<span style="font-size:11px;color:var(--text-3);">—</span>';
+      html += `<button class="btn btn-xs" style="background:var(--green);color:#fff;" onclick="setUserBriefingStatus('${u.id}','active')">Activate briefing</button>`;
     }
-    html += '</td>';
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','suppressed')">Suppress</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="toggleUserBriefingTest('${u.id}', ${sub.include_in_tests ? 'false' : 'true'})">${sub.include_in_tests ? 'Remove test' : 'Add test'}</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="openInterestProfileModal('${u.id}')">Profile</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="togglePlatformUserProfileActive('${u.id}', ${u.is_active})">${u.is_active ? 'Disable user' : 'Enable user'}</button>`;
+    if (u.role === 'public') {
+      html += `<button class="btn btn-xs" style="background:var(--green);color:#fff;" onclick="grantDirectLEAccess('${u.id}','${esc(u.email)}')">Grant LE</button>`;
+    } else if (u.role === 'law_enforcement') {
+      html += `<button class="btn btn-xs btn-ghost" onclick="revokeDirectLEAccess('${u.id}','${esc(u.email)}')">Revoke LE</button>`;
+    }
+    html += '</div></td>';
     html += '</tr>';
   });
 
   html += '</tbody></table></div></div>';
-  html += `<div style="margin-top:12px;font-size:12px;color:var(--text-3);">Total: ${data.length} users</div>`;
+  const fallbackNote = opsWarning ? `<div class="ops-warning">${esc(opsWarning)}</div>` : '';
+  html = fallbackNote + html;
+  html += `<div style="margin-top:12px;font-size:12px;color:var(--text-3);">Total: ${data.length} platform users. Admin Users is a separate staff-access list.</div>`;
   area.innerHTML = html;
+}
+
+async function loadBriefingUserOps(userIds) {
+  briefingSubsByUser = {};
+  interestProfilesByUser = {};
+  if (!userIds.length) return '';
+
+  let warning = '';
+  try {
+    const { data, error } = await sb.from('user_briefing_subscriptions')
+      .select('*')
+      .eq('briefing_key', DAILY_BRIEFING_KEY)
+      .eq('delivery_channel', 'email')
+      .in('user_id', userIds);
+    if (error) throw error;
+    (data || []).forEach(row => { briefingSubsByUser[row.user_id] = row; });
+  } catch (err) {
+    warning = 'Advanced briefing subscription controls are not fully available yet. Showing legacy subscribe_daily_briefing values as fallback.';
+    console.warn('Briefing subscription load failed:', err);
+  }
+
+  try {
+    const { data, error } = await sb.from('user_interest_profiles')
+      .select('*')
+      .in('user_id', userIds);
+    if (error) throw error;
+    (data || []).forEach(row => { interestProfilesByUser[row.user_id] = row; });
+  } catch (err) {
+    if (!warning) warning = 'User interest profile controls are not fully available yet.';
+    console.warn('Interest profile load failed:', err);
+  }
+  return warning;
+}
+
+function getUserBriefingSub(user) {
+  const existing = briefingSubsByUser[user.id];
+  if (existing) return existing;
+  return {
+    user_id: user.id,
+    status: user.subscribe_daily_briefing ? 'active' : 'inactive',
+    language_preference: normalizeBriefingLanguage(user.language_preference),
+    include_in_tests: false,
+    legacy: true
+  };
+}
+
+function briefingStatusBadge(status, legacy) {
+  const map = {
+    active: ['status-active', 'Active'],
+    inactive: ['status-inactive', 'Inactive'],
+    paused: ['status-paused', 'Paused'],
+    suppressed: ['status-suppressed', 'Suppressed'],
+    test_only: ['status-test', 'Test only'],
+    unsubscribed: ['status-inactive', 'Unsubscribed'],
+    disabled: ['status-disabled', 'Disabled'],
+    enabled: ['status-active', 'Enabled']
+  };
+  const [cls, label] = map[status] || ['status-inactive', status || 'Unknown'];
+  return `<span class="status-pill ${cls}">${label}${legacy ? ' · legacy' : ''}</span>`;
+}
+
+function renderInterestTags(profile) {
+  const tags = [
+    ...(profile.countries || []),
+    ...(profile.sectors || []),
+    ...(profile.regulatory_themes || []),
+    ...(profile.activities || [])
+  ].filter(Boolean).slice(0, 4);
+  if (!tags.length) return '<span class="tiny-muted">Not set</span>';
+  return `<div class="interest-tags">${tags.map(t => `<span class="interest-tag">${esc(t)}</span>`).join('')}</div>`;
+}
+
+function normalizeBriefingLanguage(value) {
+  const lang = String(value || 'en').toLowerCase();
+  if (lang === 'zh' || lang === 'zh-cn' || lang === 'cn') return 'cn';
+  if (lang === 'bilingual') return 'bilingual';
+  return 'en';
+}
+
+function splitList(value) {
+  return String(value || '')
+    .split(',')
+    .map(v => v.trim())
+    .filter(Boolean);
+}
+
+function joinList(value) {
+  return Array.isArray(value) ? value.join(', ') : '';
+}
+
+async function upsertBriefingSubscription(userId, changes) {
+  const user = platformUsersCache.find(u => u.id === userId) || {};
+  const existing = getUserBriefingSub(user);
+  const payload = {
+    user_id: userId,
+    briefing_key: DAILY_BRIEFING_KEY,
+    delivery_channel: 'email',
+    frequency: existing.frequency || 'daily',
+    language_preference: normalizeBriefingLanguage(existing.language_preference || user.language_preference),
+    status: existing.status || (user.subscribe_daily_briefing ? 'active' : 'inactive'),
+    include_in_tests: !!existing.include_in_tests,
+    updated_by: currentUser?.id || null,
+    ...changes
+  };
+
+  const { error } = await sb.from('user_briefing_subscriptions')
+    .upsert(payload, { onConflict: 'user_id,briefing_key,delivery_channel' });
+  if (error) throw error;
+  briefingSubsByUser[userId] = { ...existing, ...payload, legacy: false };
+  return payload;
+}
+
+async function setUserBriefingStatus(userId, status) {
+  const user = platformUsersCache.find(u => u.id === userId);
+  if (status === 'suppressed' && !confirm(`Suppress Daily Briefing for ${user?.email || 'this user'}?`)) return;
+
+  try {
+    const payload = await upsertBriefingSubscription(userId, {
+      status,
+      admin_paused: status === 'paused' || status === 'suppressed',
+      paused_reason: status === 'paused' ? 'Paused from admin panel' : status === 'suppressed' ? 'Suppressed from admin panel' : null
+    });
+    await sb.from('aml_user_profiles').update({
+      subscribe_daily_briefing: ['active', 'paused', 'test_only'].includes(status),
+      updated_at: new Date().toISOString()
+    }).eq('id', userId);
+    await logUserAdminEvent(userId, 'briefing_status_changed', null, payload);
+    await logAudit('UPDATE', 'user_briefing_subscriptions', userId, null, payload);
+    showToast('Briefing status updated', 'success');
+    await loadPlatformUsers();
+    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+  } catch (err) {
+    showToast('Could not update briefing status: ' + err.message, 'error');
+  }
+}
+
+async function toggleUserBriefingTest(userId, includeInTests) {
+  try {
+    const payload = await upsertBriefingSubscription(userId, { include_in_tests: includeInTests });
+    await logUserAdminEvent(userId, includeInTests ? 'briefing_test_added' : 'briefing_test_removed', null, payload);
+    showToast(includeInTests ? 'User added to test group' : 'User removed from test group', 'success');
+    await loadPlatformUsers();
+    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+  } catch (err) {
+    showToast('Could not update test group: ' + err.message, 'error');
+  }
+}
+
+async function togglePlatformUserProfileActive(userId, isActive) {
+  const user = platformUsersCache.find(u => u.id === userId);
+  const nextState = !isActive;
+  if (!nextState && !confirm(`Disable platform access for ${user?.email || 'this user'}?`)) return;
+
+  const { error } = await sb.from('aml_user_profiles').update({
+    is_active: nextState,
+    updated_at: new Date().toISOString()
+  }).eq('id', userId);
+
+  if (error) { showToast('Could not update user access: ' + error.message, 'error'); return; }
+  await logUserAdminEvent(userId, nextState ? 'platform_user_enabled' : 'platform_user_disabled', { is_active: isActive }, { is_active: nextState });
+  showToast(nextState ? 'User enabled' : 'User disabled', 'success');
+  await loadPlatformUsers();
+}
+
+function openInterestProfileModal(userId) {
+  editingInterestUserId = userId;
+  const user = platformUsersCache.find(u => u.id === userId) || {};
+  const profile = interestProfilesByUser[userId] || {};
+  document.getElementById('interestProfileTitle').textContent = user.email || 'User Intelligence Profile';
+  document.getElementById('interestProfileSub').textContent = 'Configure markets, sectors, themes, and output preferences for personalised briefing generation.';
+  document.getElementById('interestProfileError').classList.remove('show');
+  document.getElementById('interestCountries').value = joinList(profile.countries);
+  document.getElementById('interestSectors').value = joinList(profile.sectors);
+  document.getElementById('interestThemes').value = joinList(profile.regulatory_themes);
+  document.getElementById('interestActivities').value = joinList(profile.activities);
+  document.getElementById('interestEntities').value = joinList(profile.entities);
+  document.getElementById('interestOutputPrefs').value = joinList(profile.output_preferences);
+  document.getElementById('interestAdminNotes').value = profile.admin_notes || '';
+  document.getElementById('interestProfileModal').classList.add('show');
+}
+
+function closeInterestProfileModal() {
+  editingInterestUserId = null;
+  document.getElementById('interestProfileModal').classList.remove('show');
+}
+
+async function saveInterestProfile() {
+  if (!editingInterestUserId) return;
+  const errBox = document.getElementById('interestProfileError');
+  errBox.classList.remove('show');
+
+  const payload = {
+    user_id: editingInterestUserId,
+    countries: splitList(document.getElementById('interestCountries').value),
+    sectors: splitList(document.getElementById('interestSectors').value),
+    regulatory_themes: splitList(document.getElementById('interestThemes').value),
+    activities: splitList(document.getElementById('interestActivities').value),
+    entities: splitList(document.getElementById('interestEntities').value),
+    output_preferences: splitList(document.getElementById('interestOutputPrefs').value),
+    admin_notes: document.getElementById('interestAdminNotes').value.trim() || null,
+    updated_by: currentUser?.id || null
+  };
+
+  try {
+    const { error } = await sb.from('user_interest_profiles')
+      .upsert(payload, { onConflict: 'user_id' });
+    if (error) throw error;
+    interestProfilesByUser[editingInterestUserId] = payload;
+    await logUserAdminEvent(editingInterestUserId, 'interest_profile_updated', null, payload);
+    showToast('Interest profile saved', 'success');
+    closeInterestProfileModal();
+    await loadPlatformUsers();
+  } catch (err) {
+    errBox.textContent = 'Could not save profile: ' + err.message;
+    errBox.classList.add('show');
+  }
+}
+
+async function loadBriefingOps() {
+  const area = document.getElementById('briefingOpsArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+
+  const { data: users, error: usersError } = await sb.from('aml_user_profiles').select('*').order('created_at', { ascending: false });
+  if (usersError) {
+    area.innerHTML = `<div class="empty-state" style="color:var(--red);">Error: ${usersError.message}</div>`;
+    return;
+  }
+  platformUsersCache = users || [];
+  const opsWarning = await loadBriefingUserOps(platformUsersCache.map(u => u.id));
+
+  let controlError = '';
+  try {
+    const { data, error } = await sb.from('briefing_delivery_controls')
+      .select('*')
+      .eq('briefing_key', DAILY_BRIEFING_KEY)
+      .limit(1);
+    if (error) throw error;
+    briefingControlCache = data?.[0] || null;
+  } catch (err) {
+    controlError = 'Global delivery controls are not fully available yet. Individual legacy subscriptions can still be viewed.';
+    briefingControlCache = null;
+    console.warn('Briefing control load failed:', err);
+  }
+
+  const subs = platformUsersCache.map(getUserBriefingSub);
+  const activeCount = subs.filter(s => s.status === 'active').length;
+  const testCount = subs.filter(s => s.include_in_tests).length;
+  const pausedCount = subs.filter(s => s.status === 'paused' || s.status === 'suppressed').length;
+  const control = briefingControlCache || {
+    delivery_status: 'test_only',
+    audience_mode: 'test_group',
+    current_test_label: 'local fallback'
+  };
+
+  let html = '';
+  if (opsWarning || controlError) html += `<div class="ops-warning">${esc(opsWarning || controlError)}</div>`;
+  html += '<div class="ops-grid">';
+  html += `<div class="ops-panel"><div class="ops-label">Global Delivery</div><div class="ops-value">${briefingStatusBadge(control.delivery_status)}</div><div class="ops-copy">Audience: ${esc(control.audience_mode || 'test_group')}</div></div>`;
+  html += `<div class="ops-panel"><div class="ops-label">Active Subscribers</div><div class="ops-value">${activeCount}</div><div class="ops-copy">Users marked to receive Daily Briefing</div></div>`;
+  html += `<div class="ops-panel"><div class="ops-label">Test Group</div><div class="ops-value">${testCount}</div><div class="ops-copy">Safe audience for content rebuilds</div></div>`;
+  html += `<div class="ops-panel"><div class="ops-label">Paused / Suppressed</div><div class="ops-value">${pausedCount}</div><div class="ops-copy">Users currently held back by admin</div></div>`;
+  html += '</div>';
+
+  html += '<div class="ops-panel" style="margin-bottom:18px;">';
+  html += '<div class="ops-label">Global Controls</div>';
+  html += '<div class="ops-actions">';
+  html += `<button class="btn btn-outline btn-sm" onclick="setBriefingGlobalControl('test_only','test_group')">Test group only</button>`;
+  html += `<button class="btn btn-outline btn-sm" onclick="setBriefingGlobalControl('paused','manual_only')">Pause all delivery</button>`;
+  html += `<button class="btn btn-outline btn-sm" onclick="setBriefingGlobalControl('disabled','disabled')">Disable all</button>`;
+  html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;width:auto;" onclick="setBriefingGlobalControl('enabled','all_active_subscribers')">Enable all active subscribers</button>`;
+  html += '</div>';
+  html += `<div class="ops-copy">Current test label: ${esc(control.current_test_label || '—')} · Updated: ${control.updated_at ? new Date(control.updated_at).toLocaleString() : '—'}</div>`;
+  html += '</div>';
+
+  html += '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
+  html += '<th>User</th><th>Briefing</th><th>Test</th><th>Language</th><th>Interests</th><th>Actions</th>';
+  html += '</tr></thead><tbody>';
+  platformUsersCache.forEach(u => {
+    const sub = getUserBriefingSub(u);
+    html += '<tr>';
+    html += `<td><div style="font-weight:600;">${esc(u.full_name || '—')}</div><div class="tiny-muted">${esc(u.email)}</div></td>`;
+    html += `<td>${briefingStatusBadge(sub.status, sub.legacy)}</td>`;
+    html += `<td>${sub.include_in_tests ? '<span class="status-pill status-test">Test group</span>' : '<span class="tiny-muted">—</span>'}</td>`;
+    html += `<td>${esc(sub.language_preference || 'en')}</td>`;
+    html += `<td>${renderInterestTags(interestProfilesByUser[u.id] || {})}</td>`;
+    html += '<td><div class="ops-actions" style="min-width:300px;">';
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','active')">Active</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','paused')">Pause</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','suppressed')">Suppress</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="toggleUserBriefingTest('${u.id}', ${sub.include_in_tests ? 'false' : 'true'})">${sub.include_in_tests ? 'Remove test' : 'Add test'}</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="openInterestProfileModal('${u.id}')">Profile</button>`;
+    html += '</div></td>';
+    html += '</tr>';
+  });
+  html += '</tbody></table></div></div>';
+  area.innerHTML = html;
+}
+
+async function setBriefingGlobalControl(deliveryStatus, audienceMode) {
+  if (deliveryStatus === 'enabled' && !confirm('Enable Daily Briefing for all active subscribers? Use this only after the new content pipeline is ready.')) return;
+  if ((deliveryStatus === 'paused' || deliveryStatus === 'disabled') && !confirm('Apply this global Daily Briefing control now?')) return;
+
+  const payload = {
+    briefing_key: DAILY_BRIEFING_KEY,
+    delivery_status: deliveryStatus,
+    audience_mode: audienceMode,
+    current_test_label: briefingControlCache?.current_test_label || 'v16-data-brain-admin-control',
+    notes: deliveryStatus === 'enabled'
+      ? 'Enabled from admin panel.'
+      : 'Controlled from admin panel during briefing product rebuild.',
+    updated_by: currentUser?.id || null
+  };
+
+  try {
+    const { error } = await sb.from('briefing_delivery_controls')
+      .upsert(payload, { onConflict: 'briefing_key' });
+    if (error) throw error;
+    await logAudit('UPDATE', 'briefing_delivery_controls', DAILY_BRIEFING_KEY, briefingControlCache, payload);
+    showToast('Global briefing control updated', 'success');
+    await loadBriefingOps();
+  } catch (err) {
+    showToast('Could not update global briefing control: ' + err.message, 'error');
+  }
+}
+
+async function logUserAdminEvent(targetUserId, eventType, oldData, newData) {
+  try {
+    await sb.from('user_admin_events').insert({
+      actor_user_id: currentUser?.id || null,
+      target_user_id: targetUserId,
+      event_type: eventType,
+      old_data: oldData || null,
+      new_data: newData || null
+    });
+  } catch (err) {
+    console.warn('User admin event log failed:', err);
+  }
 }
 
 function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
