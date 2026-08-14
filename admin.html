@@ -548,6 +548,18 @@ tbody td { padding:11px 14px; font-size:13px; }
 .user-name { font-size:14px; font-weight:600; color:var(--text); }
 .user-email { font-size:12px; color:var(--text-2); }
 .user-actions { display:flex; gap:8px; align-items:center; }
+.access-role-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:18px; }
+.access-role-card { background:#fff; border:1px solid var(--border); border-top:3px solid var(--role-color,#64748b); border-radius:10px; padding:13px; min-width:0; }
+.access-role-title { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:7px; }
+.access-role-copy { font-size:11px; line-height:1.5; color:var(--text-2); min-height:34px; }
+.permission-list { display:flex; flex-wrap:wrap; gap:4px; margin-top:9px; }
+.permission-chip { display:inline-flex; align-items:center; padding:2px 6px; border:1px solid var(--border); border-radius:5px; background:var(--bg); color:var(--text-2); font-size:9px; font-weight:600; white-space:nowrap; }
+.access-state { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; }
+.access-state::before { content:''; width:6px; height:6px; border-radius:50%; background:currentColor; }
+.access-state.active { color:var(--green); }
+.access-state.disabled,.access-state.expired { color:var(--red); }
+.access-date { width:142px; padding:7px 8px; font-size:11px; }
+.access-section-title { font-size:14px; font-weight:700; color:var(--text); margin:22px 0 10px; }
 
 /* ── Briefing Operations ── */
 .ops-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:18px; }
@@ -622,11 +634,13 @@ tbody td { padding:11px 14px; font-size:13px; }
   .nav-item span { display:none; }
   .sidebar-section-label { display:none; }
   .content { padding:20px 16px; }
+  .access-role-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
 }
 @media (max-width:640px) {
   .form-row { grid-template-columns:1fr; }
   .stats-grid { grid-template-columns:1fr 1fr; }
   .page-title { font-size:16px; }
+  .access-role-grid { grid-template-columns:1fr; }
 }
 </style>
 </head>
@@ -701,7 +715,7 @@ tbody td { padding:11px 14px; font-size:13px; }
       </button>
       <button class="nav-item" onclick="showTab('users')" id="nav-users" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        <span>Admin Users</span>
+        <span>Access Control</span>
       </button>
       <div class="sidebar-section-label" id="le-section-label" style="display:none;">User Operations</div>
       <button class="nav-item" onclick="showTab('le-requests')" id="nav-le-requests" style="display:none;">
@@ -932,8 +946,8 @@ tbody td { padding:11px 14px; font-size:13px; }
       <div class="tab-panel" id="tab-users">
         <div class="page-header">
           <div>
-            <div class="page-title">Admin Users</div>
-            <div class="page-sub">Manage admin access and roles</div>
+            <div class="page-title">Access Control</div>
+            <div class="page-sub">Manage staff roles, effective permissions, account status, expiry, and invitations</div>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openInviteModal()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -1196,6 +1210,11 @@ tbody td { padding:11px 14px; font-size:13px; }
         <option value="super_admin">Super Admin</option>
       </select>
     </div>
+    <div class="form-group">
+      <label class="form-label">Access expiry (optional)</label>
+      <input type="date" class="form-input" id="inviteAccessExpiry">
+      <div class="form-hint">Access ends at 23:59 Shanghai time on this date. Leave blank for permanent access.</div>
+    </div>
     <div class="modal-footer">
       <button class="btn btn-outline" onclick="closeInviteModal()">Cancel</button>
       <button class="btn btn-primary" onclick="doInviteUser()">Add User</button>
@@ -1259,6 +1278,32 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
 const PAGE_SIZE = 25;
 const DAILY_BRIEFING_KEY = 'daily_market_access';
+const ADMIN_ROLE_DEFINITIONS = Object.freeze({
+  viewer: {
+    label: 'Viewer',
+    color: '#64748b',
+    summary: 'Read operational dashboards, records, and audit history.',
+    permissions: ['Read dashboards', 'Read intelligence', 'Read audit log']
+  },
+  editor: {
+    label: 'Editor',
+    color: '#15803d',
+    summary: 'Maintain operational data without managing user access.',
+    permissions: ['Viewer access', 'Add/edit addresses', 'Import data']
+  },
+  admin: {
+    label: 'Admin',
+    color: '#1d4ed8',
+    summary: 'Run user operations, briefing delivery, and LE reviews.',
+    permissions: ['Editor access', 'Platform users', 'Briefing controls', 'LE approvals']
+  },
+  super_admin: {
+    label: 'Super Admin',
+    color: '#7c3aed',
+    summary: 'Full control, including staff roles and administrative access.',
+    permissions: ['Admin access', 'Manage staff roles', 'Invite admins', 'Deactivate admins']
+  }
+});
 
 // ════════════════════════════════════════════════
 // SUPABASE INIT
@@ -1284,6 +1329,9 @@ let briefingSubsByUser = {};
 let interestProfilesByUser = {};
 let briefingControlCache = null;
 let editingInterestUserId = null;
+let adminUsersCache = [];
+let adminInvitesCache = [];
+let adminAccessFilters = { query: '', role: 'all', status: 'all' };
 
 // ════════════════════════════════════════════════
 // AUTH
@@ -2100,68 +2148,195 @@ async function loadUsers() {
   area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
 
   try {
-    const { data, error } = await sb.from('aml_admin_users').select('*').order('created_at', { ascending: false });
-    if (error) throw error;
+    const [usersResult, invitesResult] = await Promise.all([
+      sb.from('aml_admin_users').select('*').order('created_at', { ascending: false }),
+      sb.from('aml_admin_invites').select('*').order('created_at', { ascending: false })
+    ]);
+    if (usersResult.error) throw usersResult.error;
+    if (invitesResult.error) throw invitesResult.error;
+    adminUsersCache = usersResult.data || [];
+    adminInvitesCache = invitesResult.data || [];
 
-    if (!data || !data.length) {
+    if (!adminUsersCache.length) {
       area.innerHTML = '<div class="empty-state"><div class="empty-state-text">No users found</div></div>';
       return;
     }
-
-    area.innerHTML = data.map(u => {
-      const initials = (u.display_name || u.email || '?').substring(0, 2).toUpperCase();
-      const lastLogin = u.last_login ? new Date(u.last_login).toLocaleDateString() : 'Never';
-      const isSelf = u.id === currentAdminUser?.id;
-
-      return `
-        <div class="user-card">
-          <div class="user-avatar">${initials}</div>
-          <div class="user-info">
-            <div class="user-name">${u.display_name || '—'} ${isSelf ? '<span style="font-size:11px;color:var(--text-3);">(you)</span>' : ''}</div>
-            <div class="user-email">${u.email} &middot; Last login: ${lastLogin}</div>
-          </div>
-          <div class="user-actions">
-            <select class="filter-select" onchange="changeUserRole('${u.id}', this.value)" ${isSelf ? 'disabled' : ''}>
-              <option value="viewer" ${u.role === 'viewer' ? 'selected' : ''}>Viewer</option>
-              <option value="editor" ${u.role === 'editor' ? 'selected' : ''}>Editor</option>
-              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-              <option value="super_admin" ${u.role === 'super_admin' ? 'selected' : ''}>Super Admin</option>
-            </select>
-            <span class="role-badge ${u.role}">${u.role.replace('_', ' ')}</span>
-            ${!isSelf ? `<button class="btn btn-xs ${u.is_active ? 'btn-outline' : 'btn-primary'}" onclick="toggleUserActive('${u.id}', ${u.is_active})">
-              ${u.is_active ? 'Deactivate' : 'Activate'}
-            </button>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
+    renderAdminAccessControl();
   } catch (err) {
     area.innerHTML = `<div class="error-box show">Error loading users: ${err.message}</div>`;
   }
 }
 
-async function changeUserRole(userId, newRole) {
+function adminRoleMeta(role) {
+  return ADMIN_ROLE_DEFINITIONS[role] || ADMIN_ROLE_DEFINITIONS.viewer;
+}
+
+function adminAccessState(user) {
+  if (!user.is_active) return { key: 'disabled', label: 'Disabled' };
+  if (user.access_expires_at && new Date(user.access_expires_at).getTime() <= Date.now()) return { key: 'expired', label: 'Expired' };
+  return { key: 'active', label: 'Active' };
+}
+
+function dateInputValue(value) {
+  if (!value) return '';
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return '';
+  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+}
+
+function renderAdminAccessControl() {
+  const area = document.getElementById('usersListArea');
+  const query = String(adminAccessFilters.query || '').trim().toLowerCase();
+  const roleFilter = adminAccessFilters.role || 'all';
+  const statusFilter = adminAccessFilters.status || 'all';
+  const activeCount = adminUsersCache.filter(u => adminAccessState(u).key === 'active').length;
+  const elevatedCount = adminUsersCache.filter(u => u.is_active && ['admin', 'super_admin'].includes(u.role)).length;
+  const expiringCount = adminUsersCache.filter(u => {
+    if (!u.is_active || !u.access_expires_at) return false;
+    const remaining = new Date(u.access_expires_at).getTime() - Date.now();
+    return remaining > 0 && remaining <= 30 * 86400000;
+  }).length;
+  const filteredUsers = adminUsersCache.filter(u => {
+    const matchesQuery = !query || String(u.email || '').toLowerCase().includes(query) || String(u.display_name || '').toLowerCase().includes(query);
+    const matchesRole = roleFilter === 'all' || u.role === roleFilter;
+    const matchesStatus = statusFilter === 'all' || adminAccessState(u).key === statusFilter;
+    return matchesQuery && matchesRole && matchesStatus;
+  });
+
+  const roleCards = Object.entries(ADMIN_ROLE_DEFINITIONS).map(([key, role]) => `
+    <div class="access-role-card" style="--role-color:${role.color}">
+      <div class="access-role-title"><strong>${esc(role.label)}</strong><span class="role-badge ${key}">${adminUsersCache.filter(u => u.role === key).length}</span></div>
+      <div class="access-role-copy">${esc(role.summary)}</div>
+      <div class="permission-list">${role.permissions.map(item => `<span class="permission-chip">${esc(item)}</span>`).join('')}</div>
+    </div>`).join('');
+
+  const userRows = filteredUsers.map(u => {
+    const state = adminAccessState(u);
+    const role = adminRoleMeta(u.role);
+    const isSelf = u.id === currentAdminUser?.id;
+    const lastLogin = u.last_login ? new Date(u.last_login).toLocaleString() : 'Never';
+    return `<tr>
+      <td><div style="font-weight:700;color:var(--text);">${esc(u.display_name || '—')} ${isSelf ? '<span class="tiny-muted">(you)</span>' : ''}</div><div class="tiny-muted">${esc(u.email)}</div></td>
+      <td><select class="filter-select" onchange="changeUserRole('${u.id}', this.value, this)" ${isSelf ? 'disabled' : ''}>
+        ${Object.entries(ADMIN_ROLE_DEFINITIONS).map(([key, meta]) => `<option value="${key}" ${u.role === key ? 'selected' : ''}>${esc(meta.label)}</option>`).join('')}
+      </select></td>
+      <td><div class="permission-list" style="margin-top:0;max-width:260px;">${role.permissions.map(item => `<span class="permission-chip">${esc(item)}</span>`).join('')}</div></td>
+      <td><span class="access-state ${state.key}">${state.label}</span><div class="tiny-muted" style="margin-top:3px;">Last login: ${esc(lastLogin)}</div></td>
+      <td><input type="date" class="filter-select access-date" value="${dateInputValue(u.access_expires_at)}" onchange="setAdminAccessExpiry('${u.id}', this.value, this)" ${isSelf ? 'disabled' : ''}><div class="tiny-muted" style="margin-top:3px;">${u.access_expires_at ? 'Shanghai time' : 'Permanent'}</div></td>
+      <td>${isSelf ? '<span class="tiny-muted">Protected current account</span>' : `<button class="btn btn-xs ${u.is_active ? 'btn-outline' : 'btn-primary'}" onclick="toggleUserActive('${u.id}', ${u.is_active})">${u.is_active ? 'Deactivate' : 'Activate'}</button>`}</td>
+    </tr>`;
+  }).join('');
+
+  const inviteRows = adminInvitesCache.map(invite => `<tr>
+    <td><div style="font-weight:700;">${esc(invite.display_name || '—')}</div><div class="tiny-muted">${esc(invite.email)}</div></td>
+    <td><span class="role-badge ${esc(invite.role)}">${esc(adminRoleMeta(invite.role).label)}</span></td>
+    <td>${invite.access_expires_at ? esc(new Date(invite.access_expires_at).toLocaleDateString()) : '<span class="tiny-muted">Permanent</span>'}</td>
+    <td><span class="tiny-muted">${esc(invite.invited_by || '—')}<br>${invite.created_at ? esc(new Date(invite.created_at).toLocaleString()) : ''}</span></td>
+    <td><button class="btn btn-xs btn-outline" onclick="cancelAdminInvite('${encodeURIComponent(invite.email)}')">Cancel invite</button></td>
+  </tr>`).join('');
+
+  area.innerHTML = `
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Active staff</div><div class="stat-val">${activeCount}</div><div class="stat-sub">Effective Admin access</div></div>
+      <div class="stat-card"><div class="stat-label">Elevated roles</div><div class="stat-val">${elevatedCount}</div><div class="stat-sub">Admin and Super Admin</div></div>
+      <div class="stat-card"><div class="stat-label">Expiring in 30 days</div><div class="stat-val">${expiringCount}</div><div class="stat-sub">Time-limited access</div></div>
+      <div class="stat-card"><div class="stat-label">Pending invites</div><div class="stat-val">${adminInvitesCache.length}</div><div class="stat-sub">Not yet activated</div></div>
+    </div>
+    <div class="access-role-grid">${roleCards}</div>
+    <div class="toolbar">
+      <div class="search-wrap"><span class="search-icon">⌕</span><input id="adminUserSearch" class="search-input" value="${esc(adminAccessFilters.query)}" placeholder="Search staff by name or email" oninput="updateAdminAccessFilter('query', this.value)"></div>
+      <select id="adminRoleFilter" class="filter-select" onchange="updateAdminAccessFilter('role', this.value)"><option value="all">All roles</option>${Object.entries(ADMIN_ROLE_DEFINITIONS).map(([key, meta]) => `<option value="${key}" ${roleFilter === key ? 'selected' : ''}>${esc(meta.label)}</option>`).join('')}</select>
+      <select id="adminStatusFilter" class="filter-select" onchange="updateAdminAccessFilter('status', this.value)"><option value="all">All states</option><option value="active" ${statusFilter === 'active' ? 'selected' : ''}>Active</option><option value="disabled" ${statusFilter === 'disabled' ? 'selected' : ''}>Disabled</option><option value="expired" ${statusFilter === 'expired' ? 'selected' : ''}>Expired</option></select>
+    </div>
+    <div class="table-card"><div class="table-wrapper"><table><thead><tr><th>Staff account</th><th>Role</th><th>Effective capabilities</th><th>Status</th><th>Access expiry</th><th>Action</th></tr></thead><tbody>${userRows || '<tr><td colspan="6" class="empty-state">No matching staff accounts.</td></tr>'}</tbody></table></div></div>
+    <div class="access-section-title">Pending invitations</div>
+    <div class="table-card"><div class="table-wrapper"><table><thead><tr><th>Invitee</th><th>Role</th><th>Expiry</th><th>Invited by</th><th>Action</th></tr></thead><tbody>${inviteRows || '<tr><td colspan="5" class="empty-state">No pending invitations.</td></tr>'}</tbody></table></div></div>`;
+}
+
+function updateAdminAccessFilter(field, value) {
+  if (!['query', 'role', 'status'].includes(field)) return;
+  adminAccessFilters[field] = value;
+  renderAdminAccessControl();
+  if (field === 'query') {
+    requestAnimationFrame(() => {
+      const input = document.getElementById('adminUserSearch');
+      if (!input) return;
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+  }
+}
+
+async function changeUserRole(userId, newRole, selectEl) {
+  const user = adminUsersCache.find(item => item.id === userId);
+  if (!user || !ADMIN_ROLE_DEFINITIONS[newRole]) return;
+  if (!confirm(`Change ${user.email} from ${adminRoleMeta(user.role).label} to ${adminRoleMeta(newRole).label}?`)) {
+    if (selectEl) selectEl.value = user.role;
+    return;
+  }
   try {
-    const { data: old } = await sb.from('aml_admin_users').select('*').eq('id', userId).single();
-    const { error } = await sb.from('aml_admin_users').update({ role: newRole, updated_at: new Date().toISOString() }).eq('id', userId);
+    const { data, error } = await sb.from('aml_admin_users').update({ role: newRole, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
     if (error) throw error;
-    await logAudit('UPDATE', 'aml_admin_users', userId, { role: old?.role }, { role: newRole });
+    if (!data || data.role !== newRole) throw new Error('Role change was not confirmed by the database.');
+    await logAudit('UPDATE', 'aml_admin_users', userId, { role: user.role }, { role: newRole });
     showToast('Role updated.', 'success');
-    loadUsers();
+    await loadUsers();
   } catch (err) {
     showToast('Failed to update role: ' + err.message, 'error');
+    if (selectEl) selectEl.value = user.role;
   }
 }
 
 async function toggleUserActive(userId, currentState) {
+  const user = adminUsersCache.find(item => item.id === userId);
+  if (!user) return;
+  if (currentState && !confirm(`Deactivate Admin access for ${user.email}?`)) return;
   try {
-    const { error } = await sb.from('aml_admin_users').update({ is_active: !currentState, updated_at: new Date().toISOString() }).eq('id', userId);
+    const nextState = !currentState;
+    const { data, error } = await sb.from('aml_admin_users').update({ is_active: nextState, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
     if (error) throw error;
-    await logAudit('UPDATE', 'aml_admin_users', userId, { is_active: currentState }, { is_active: !currentState });
-    showToast(`User ${!currentState ? 'activated' : 'deactivated'}.`, 'success');
-    loadUsers();
+    if (!data || data.is_active !== nextState) throw new Error('Access status change was not confirmed by the database.');
+    await logAudit('UPDATE', 'aml_admin_users', userId, { is_active: currentState }, { is_active: nextState });
+    showToast(`User ${nextState ? 'activated' : 'deactivated'}.`, 'success');
+    await loadUsers();
   } catch (err) {
     showToast('Failed: ' + err.message, 'error');
+  }
+}
+
+async function setAdminAccessExpiry(userId, value, inputEl) {
+  const user = adminUsersCache.find(item => item.id === userId);
+  if (!user) return;
+  const expiresAt = value ? new Date(value + 'T23:59:59+08:00').toISOString() : null;
+  if (expiresAt && new Date(expiresAt).getTime() <= Date.now()) {
+    showToast('Access expiry must be in the future.', 'error');
+    if (inputEl) inputEl.value = dateInputValue(user.access_expires_at);
+    return;
+  }
+  try {
+    const { data, error } = await sb.from('aml_admin_users').update({ access_expires_at: expiresAt, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
+    if (error) throw error;
+    if (!data || String(data.access_expires_at || '') !== String(expiresAt || '')) throw new Error('Expiry change was not confirmed by the database.');
+    await logAudit('UPDATE', 'aml_admin_users', userId, { access_expires_at: user.access_expires_at }, { access_expires_at: expiresAt });
+    showToast(expiresAt ? 'Access expiry updated.' : 'Permanent access restored.', 'success');
+    await loadUsers();
+  } catch (err) {
+    showToast('Failed to update expiry: ' + err.message, 'error');
+    if (inputEl) inputEl.value = dateInputValue(user.access_expires_at);
+  }
+}
+
+async function cancelAdminInvite(encodedEmail) {
+  const email = decodeURIComponent(encodedEmail);
+  if (!confirm(`Cancel the pending Admin invitation for ${email}?`)) return;
+  try {
+    const { error } = await sb.from('aml_admin_invites').delete().eq('email', email);
+    if (error) throw error;
+    await logAudit('DELETE', 'aml_admin_invites', email, { email }, null);
+    showToast('Invitation cancelled.', 'success');
+    await loadUsers();
+  } catch (err) {
+    showToast('Failed to cancel invitation: ' + err.message, 'error');
   }
 }
 
@@ -2169,6 +2344,7 @@ function openInviteModal() {
   document.getElementById('inviteEmail').value = '';
   document.getElementById('inviteDisplayName').value = '';
   document.getElementById('inviteRole').value = 'viewer';
+  document.getElementById('inviteAccessExpiry').value = '';
   document.getElementById('inviteError').classList.remove('show');
   document.getElementById('inviteModal').classList.add('show');
 }
@@ -2181,10 +2357,14 @@ async function doInviteUser() {
   const email = document.getElementById('inviteEmail').value.trim();
   const displayName = document.getElementById('inviteDisplayName').value.trim();
   const role = document.getElementById('inviteRole').value;
+  const expiryValue = document.getElementById('inviteAccessExpiry').value;
+  const accessExpiresAt = expiryValue ? new Date(expiryValue + 'T23:59:59+08:00').toISOString() : null;
   const errBox = document.getElementById('inviteError');
   errBox.classList.remove('show');
 
   if (!email) { errBox.textContent = 'Email is required.'; errBox.classList.add('show'); return; }
+  if (!ADMIN_ROLE_DEFINITIONS[role]) { errBox.textContent = 'Select a valid role.'; errBox.classList.add('show'); return; }
+  if (accessExpiresAt && new Date(accessExpiresAt).getTime() <= Date.now()) { errBox.textContent = 'Access expiry must be in the future.'; errBox.classList.add('show'); return; }
 
   try {
     // Already registered? (every registered user is auto-added to aml_admin_users)
@@ -2198,12 +2378,13 @@ async function doInviteUser() {
       email,
       display_name: displayName || email.split('@')[0],
       role,
+      access_expires_at: accessExpiresAt,
       invited_by: currentAdminUser?.email || null,
       created_at: new Date().toISOString()
     });
     if (error) throw error;
 
-    await logAudit('INSERT', 'aml_admin_invites', email, null, { email, role });
+    await logAudit('INSERT', 'aml_admin_invites', email, null, { email, role, access_expires_at: accessExpiresAt });
     showToast('Invite recorded. ' + email + ' will receive the "' + role + '" role automatically after registering at www.innobridge.io/login.html — share that link with them.', 'success');
     closeInviteModal();
     loadUsers();
@@ -2700,11 +2881,16 @@ async function upsertBriefingSubscription(userId, changes) {
     ...changes
   };
 
-  const { error } = await sb.from('user_briefing_subscriptions')
-    .upsert(payload, { onConflict: 'user_id,briefing_key,delivery_channel' });
+  const { data, error } = await sb.from('user_briefing_subscriptions')
+    .upsert(payload, { onConflict: 'user_id,briefing_key,delivery_channel' })
+    .select('*')
+    .single();
   if (error) throw error;
-  briefingSubsByUser[userId] = { ...existing, ...payload, legacy: false };
-  return payload;
+  if (!data || data.status !== payload.status || data.user_id !== userId) {
+    throw new Error('Subscription update was not confirmed by the database.');
+  }
+  briefingSubsByUser[userId] = { ...data, legacy: false };
+  return data;
 }
 
 async function setUserBriefingStatus(userId, status) {
@@ -2717,10 +2903,17 @@ async function setUserBriefingStatus(userId, status) {
       admin_paused: status === 'paused' || status === 'suppressed',
       paused_reason: status === 'paused' ? 'Paused from admin panel' : status === 'suppressed' ? 'Suppressed from admin panel' : null
     });
-    await sb.from('aml_user_profiles').update({
-      subscribe_daily_briefing: ['active', 'paused', 'test_only'].includes(status),
+    const legacyShouldSubscribe = status === 'active';
+    const { data: legacyProfile, error: legacyError } = await sb.from('aml_user_profiles').update({
+      subscribe_daily_briefing: legacyShouldSubscribe,
       updated_at: new Date().toISOString()
-    }).eq('id', userId);
+    }).eq('id', userId)
+      .select('id,subscribe_daily_briefing')
+      .single();
+    if (legacyError) throw legacyError;
+    if (!legacyProfile || legacyProfile.subscribe_daily_briefing !== legacyShouldSubscribe) {
+      throw new Error('Legacy delivery eligibility did not match the requested briefing status.');
+    }
     await logUserAdminEvent(userId, 'briefing_status_changed', null, payload);
     await logAudit('UPDATE', 'user_briefing_subscriptions', userId, null, payload);
     showToast('Briefing status updated', 'success');
