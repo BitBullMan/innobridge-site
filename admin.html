@@ -1276,6 +1276,7 @@ tbody td { padding:11px 14px; font-size:13px; }
 const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
 const API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
+const ADMIN_CONTROL_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/admin-control';
 const PAGE_SIZE = 25;
 const DAILY_BRIEFING_KEY = 'daily_market_access';
 const ADMIN_ROLE_DEFINITIONS = Object.freeze({
@@ -1311,6 +1312,24 @@ const ADMIN_ROLE_DEFINITIONS = Object.freeze({
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+async function invokeAdminControl(action, payload = {}) {
+  const { data: { session }, error: sessionError } = await sb.auth.getSession();
+  if (sessionError || !session?.access_token) throw new Error('Your Admin session has expired. Please sign in again.');
+
+  const response = await fetch(ADMIN_CONTROL_ENDPOINT, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${session.access_token}`,
+      'apikey': SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ action, payload })
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.error) throw new Error(result.error || `Control-plane request failed (${response.status})`);
+  return result.data;
+}
+
 // ════════════════════════════════════════════════
 // STATE
 // ════════════════════════════════════════════════
@@ -1328,6 +1347,7 @@ let platformUsersCache = [];
 let briefingSubsByUser = {};
 let interestProfilesByUser = {};
 let briefingControlCache = null;
+let briefingJobCache = [];
 let editingInterestUserId = null;
 let adminUsersCache = [];
 let adminInvitesCache = [];
@@ -2275,10 +2295,12 @@ async function changeUserRole(userId, newRole, selectEl) {
     return;
   }
   try {
-    const { data, error } = await sb.from('aml_admin_users').update({ role: newRole, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
-    if (error) throw error;
-    if (!data || data.role !== newRole) throw new Error('Role change was not confirmed by the database.');
-    await logAudit('UPDATE', 'aml_admin_users', userId, { role: user.role }, { role: newRole });
+    const result = await invokeAdminControl('manage_staff', {
+      p_target_user_id: userId,
+      p_role: newRole,
+      p_reason: `Role changed from ${user.role} to ${newRole}`
+    });
+    if (!result?.user || result.user.role !== newRole) throw new Error('Role change was not confirmed by the control plane.');
     showToast('Role updated.', 'success');
     await loadUsers();
   } catch (err) {
@@ -2293,10 +2315,12 @@ async function toggleUserActive(userId, currentState) {
   if (currentState && !confirm(`Deactivate Admin access for ${user.email}?`)) return;
   try {
     const nextState = !currentState;
-    const { data, error } = await sb.from('aml_admin_users').update({ is_active: nextState, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
-    if (error) throw error;
-    if (!data || data.is_active !== nextState) throw new Error('Access status change was not confirmed by the database.');
-    await logAudit('UPDATE', 'aml_admin_users', userId, { is_active: currentState }, { is_active: nextState });
+    const result = await invokeAdminControl('manage_staff', {
+      p_target_user_id: userId,
+      p_is_active: nextState,
+      p_reason: nextState ? 'Admin access reactivated' : 'Admin access deactivated'
+    });
+    if (!result?.user || result.user.is_active !== nextState) throw new Error('Access status change was not confirmed by the control plane.');
     showToast(`User ${nextState ? 'activated' : 'deactivated'}.`, 'success');
     await loadUsers();
   } catch (err) {
@@ -2314,10 +2338,13 @@ async function setAdminAccessExpiry(userId, value, inputEl) {
     return;
   }
   try {
-    const { data, error } = await sb.from('aml_admin_users').update({ access_expires_at: expiresAt, updated_at: new Date().toISOString(), updated_by: currentUser?.id || null }).eq('id', userId).select('*').single();
-    if (error) throw error;
-    if (!data || String(data.access_expires_at || '') !== String(expiresAt || '')) throw new Error('Expiry change was not confirmed by the database.');
-    await logAudit('UPDATE', 'aml_admin_users', userId, { access_expires_at: user.access_expires_at }, { access_expires_at: expiresAt });
+    const result = await invokeAdminControl('manage_staff', {
+      p_target_user_id: userId,
+      p_access_expires_at: expiresAt,
+      p_set_expiry: true,
+      p_reason: expiresAt ? 'Admin access expiry updated' : 'Permanent Admin access restored'
+    });
+    if (!result?.user || String(result.user.access_expires_at || '') !== String(expiresAt || '')) throw new Error('Expiry change was not confirmed by the control plane.');
     showToast(expiresAt ? 'Access expiry updated.' : 'Permanent access restored.', 'success');
     await loadUsers();
   } catch (err) {
@@ -2867,28 +2894,16 @@ function joinList(value) {
 }
 
 async function upsertBriefingSubscription(userId, changes) {
-  const user = platformUsersCache.find(u => u.id === userId) || {};
-  const existing = getUserBriefingSub(user);
-  const payload = {
-    user_id: userId,
-    briefing_key: DAILY_BRIEFING_KEY,
-    delivery_channel: 'email',
-    frequency: existing.frequency || 'daily',
-    language_preference: normalizeBriefingLanguage(existing.language_preference || user.language_preference),
-    status: existing.status || (user.subscribe_daily_briefing ? 'active' : 'inactive'),
-    include_in_tests: !!existing.include_in_tests,
-    updated_by: currentUser?.id || null,
-    ...changes
-  };
-
-  const { data, error } = await sb.from('user_briefing_subscriptions')
-    .upsert(payload, { onConflict: 'user_id,briefing_key,delivery_channel' })
-    .select('*')
-    .single();
-  if (error) throw error;
-  if (!data || data.status !== payload.status || data.user_id !== userId) {
-    throw new Error('Subscription update was not confirmed by the database.');
-  }
+  const result = await invokeAdminControl('set_subscription', {
+    p_user_id: userId,
+    p_status: Object.prototype.hasOwnProperty.call(changes, 'status') ? changes.status : null,
+    p_include_in_tests: Object.prototype.hasOwnProperty.call(changes, 'include_in_tests') ? !!changes.include_in_tests : null,
+    p_paused_reason: changes.paused_reason || null,
+    p_briefing_key: DAILY_BRIEFING_KEY,
+    p_delivery_channel: 'email'
+  });
+  const data = result?.subscription;
+  if (!data || data.user_id !== userId) throw new Error('Subscription update was not confirmed by the control plane.');
   briefingSubsByUser[userId] = { ...data, legacy: false };
   return data;
 }
@@ -2903,19 +2918,6 @@ async function setUserBriefingStatus(userId, status) {
       admin_paused: status === 'paused' || status === 'suppressed',
       paused_reason: status === 'paused' ? 'Paused from admin panel' : status === 'suppressed' ? 'Suppressed from admin panel' : null
     });
-    const legacyShouldSubscribe = status === 'active';
-    const { data: legacyProfile, error: legacyError } = await sb.from('aml_user_profiles').update({
-      subscribe_daily_briefing: legacyShouldSubscribe,
-      updated_at: new Date().toISOString()
-    }).eq('id', userId)
-      .select('id,subscribe_daily_briefing')
-      .single();
-    if (legacyError) throw legacyError;
-    if (!legacyProfile || legacyProfile.subscribe_daily_briefing !== legacyShouldSubscribe) {
-      throw new Error('Legacy delivery eligibility did not match the requested briefing status.');
-    }
-    await logUserAdminEvent(userId, 'briefing_status_changed', null, payload);
-    await logAudit('UPDATE', 'user_briefing_subscriptions', userId, null, payload);
     showToast('Briefing status updated', 'success');
     await loadPlatformUsers();
     if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
@@ -2941,15 +2943,19 @@ async function togglePlatformUserProfileActive(userId, isActive) {
   const nextState = !isActive;
   if (!nextState && !confirm(`Disable platform access for ${user?.email || 'this user'}?`)) return;
 
-  const { error } = await sb.from('aml_user_profiles').update({
-    is_active: nextState,
-    updated_at: new Date().toISOString()
-  }).eq('id', userId);
-
-  if (error) { showToast('Could not update user access: ' + error.message, 'error'); return; }
-  await logUserAdminEvent(userId, nextState ? 'platform_user_enabled' : 'platform_user_disabled', { is_active: isActive }, { is_active: nextState });
-  showToast(nextState ? 'User enabled' : 'User disabled', 'success');
-  await loadPlatformUsers();
+  try {
+    const result = await invokeAdminControl('set_platform_user_active', {
+      p_user_id: userId,
+      p_is_active: nextState,
+      p_reason: nextState ? 'Platform user enabled from Admin' : 'Platform user disabled from Admin'
+    });
+    if (!result?.profile || result.profile.is_active !== nextState) throw new Error('User state was not confirmed by the control plane.');
+    showToast(nextState ? 'User enabled; briefing remains manually controlled.' : 'User and briefing delivery disabled.', 'success');
+    await loadPlatformUsers();
+    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+  } catch (err) {
+    showToast('Could not update user access: ' + err.message, 'error');
+  }
 }
 
 function openInterestProfileModal(userId) {
@@ -3020,9 +3026,11 @@ async function loadBriefingOps() {
 
   let controlError = '';
   try {
-    const { data, error } = await sb.from('briefing_delivery_controls')
+    const { data, error } = await sb.from('briefing_delivery_policies')
       .select('*')
       .eq('briefing_key', DAILY_BRIEFING_KEY)
+      .eq('delivery_channel', 'email')
+      .eq('environment', 'production')
       .limit(1);
     if (error) throw error;
     briefingControlCache = data?.[0] || null;
@@ -3030,6 +3038,25 @@ async function loadBriefingOps() {
     controlError = 'Global delivery controls are not fully available yet. Individual legacy subscriptions can still be viewed.';
     briefingControlCache = null;
     console.warn('Briefing control load failed:', err);
+  }
+
+  try {
+    const editionDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
+    }).format(new Date());
+    const { data, error } = await sb.from('briefing_delivery_jobs')
+      .select('id,status,recipient_email,language_preference,eligibility_reason,provider_message_id,error_message,claimed_at,sent_at')
+      .eq('briefing_key', DAILY_BRIEFING_KEY)
+      .eq('delivery_channel', 'email')
+      .eq('environment', 'production')
+      .eq('edition_date', editionDate)
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    briefingJobCache = data || [];
+  } catch (err) {
+    briefingJobCache = [];
+    controlError = controlError || 'Delivery ledger is not available yet.';
+    console.warn('Delivery ledger load failed:', err);
   }
 
   const subs = platformUsersCache.map(getUserBriefingSub);
@@ -3059,7 +3086,17 @@ async function loadBriefingOps() {
   html += `<button class="btn btn-outline btn-sm" onclick="setBriefingGlobalControl('disabled','disabled')">Disable all</button>`;
   html += `<button class="btn btn-sm" style="background:var(--green);color:#fff;width:auto;" onclick="setBriefingGlobalControl('enabled','all_active_subscribers')">Enable all active subscribers</button>`;
   html += '</div>';
-  html += `<div class="ops-copy">Current test label: ${esc(control.current_test_label || '—')} · Updated: ${control.updated_at ? new Date(control.updated_at).toLocaleString() : '—'}</div>`;
+  html += `<div class="ops-copy">Database-enforced · Policy revision ${esc(String(control.revision || '—'))} · Current test label: ${esc(control.current_test_label || '—')} · Updated: ${control.updated_at ? new Date(control.updated_at).toLocaleString() : '—'}</div>`;
+  html += '</div>';
+
+  const sentJobs = briefingJobCache.filter(job => job.status === 'sent').length;
+  const claimedJobs = briefingJobCache.filter(job => ['pending', 'claimed', 'sending'].includes(job.status)).length;
+  const failedJobs = briefingJobCache.filter(job => job.status === 'failed').length;
+  const cancelledJobs = briefingJobCache.filter(job => ['cancelled', 'skipped'].includes(job.status)).length;
+  html += '<div class="ops-panel" style="margin-bottom:18px;">';
+  html += '<div class="ops-label">Today\'s Delivery Ledger</div>';
+  html += `<div class="ops-actions"><span class="status-pill status-active">Sent ${sentJobs}</span><span class="status-pill status-test">Claimed ${claimedJobs}</span><span class="status-pill status-suppressed">Failed ${failedJobs}</span><span class="status-pill status-paused">Cancelled ${cancelledJobs}</span></div>`;
+  html += '<div class="ops-copy">One edition + one channel + one email can be claimed only once. Pause and Disable are rechecked immediately before Gmail.</div>';
   html += '</div>';
 
   html += '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
@@ -3090,22 +3127,21 @@ async function setBriefingGlobalControl(deliveryStatus, audienceMode) {
   if (deliveryStatus === 'enabled' && !confirm('Enable Daily Briefing for all active subscribers? Use this only after the new content pipeline is ready.')) return;
   if ((deliveryStatus === 'paused' || deliveryStatus === 'disabled') && !confirm('Apply this global Daily Briefing control now?')) return;
 
-  const payload = {
-    briefing_key: DAILY_BRIEFING_KEY,
-    delivery_status: deliveryStatus,
-    audience_mode: audienceMode,
-    current_test_label: briefingControlCache?.current_test_label || 'v16-data-brain-admin-control',
-    notes: deliveryStatus === 'enabled'
+  const reason = deliveryStatus === 'enabled'
       ? 'Enabled from admin panel.'
-      : 'Controlled from admin panel during briefing product rebuild.',
-    updated_by: currentUser?.id || null
-  };
+      : 'Controlled from admin panel during briefing product rebuild.';
 
   try {
-    const { error } = await sb.from('briefing_delivery_controls')
-      .upsert(payload, { onConflict: 'briefing_key' });
-    if (error) throw error;
-    await logAudit('UPDATE', 'briefing_delivery_controls', DAILY_BRIEFING_KEY, briefingControlCache, payload);
+    const result = await invokeAdminControl('set_policy', {
+      p_briefing_key: DAILY_BRIEFING_KEY,
+      p_delivery_channel: 'email',
+      p_environment: 'production',
+      p_delivery_status: deliveryStatus,
+      p_audience_mode: audienceMode,
+      p_reason: reason,
+      p_current_test_label: briefingControlCache?.current_test_label || 'v16-data-brain-admin-control'
+    });
+    if (!result?.policy || result.policy.delivery_status !== deliveryStatus) throw new Error('Policy change was not confirmed by the control plane.');
     showToast('Global briefing control updated', 'success');
     await loadBriefingOps();
   } catch (err) {
