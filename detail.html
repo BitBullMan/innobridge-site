@@ -8,9 +8,9 @@
     <meta property="og:title" content="Address Detail — Innobridge">
     <meta property="og:description" content="View source-backed address intelligence, freeze status, risk labels, and compliance context.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://www.innobridge.io/detail.html">
+    <meta property="og:url" content="https://www.innobridge.io/detail">
     <meta name="twitter:card" content="summary">
-    <link rel="canonical" href="https://www.innobridge.io/detail.html">
+    <link rel="canonical" href="https://www.innobridge.io/detail">
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -154,20 +154,20 @@
 <body>
 
 <nav>
-  <a href="index.html" class="logo">
+  <a href="/" class="logo">
     <div class="logo-icon">IB</div>
     <span class="logo-text">Innobridge</span>
   </a>
   <div class="nav-right">
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="index.html#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
-      <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
-      <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
-      <li><a href="index.html#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
-      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="/" data-i18n="nav.home">Home</a></li>
+      <li><a href="/#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
+      <li><a href="/dashboard" data-i18n="nav.dashboard">Freeze Data</a></li>
+      <li><a href="/compliance" data-i18n="nav.compliance">Compliance</a></li>
+      <li><a href="/#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
+      <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
-    <a href="login.html" class="lang-toggle" id="auth-btn">Sign In</a>
+    <a href="/login" class="lang-toggle" id="auth-btn">Sign In</a>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
   </div>
@@ -195,9 +195,9 @@
 <footer style="padding:24px 40px;display:flex;align-items:center;justify-content:space-between;background:#1a1d23">
   <span style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.copy">&copy; 2026 Innobridge. All rights reserved.</span>
   <ul style="display:flex;gap:20px;list-style:none">
-    <li><a href="privacy.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.privacy">Privacy</a></li>
-    <li><a href="terms.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.terms">Terms</a></li>
-    <li><a href="disclaimer.html" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.disclaimer">Disclaimer</a></li>
+    <li><a href="/privacy" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.privacy">Privacy</a></li>
+    <li><a href="/terms" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.terms">Terms</a></li>
+    <li><a href="/disclaimer" style="font-size:12px;color:rgba(255,255,255,0.5);font-weight:600" data-i18n="ft.disclaimer">Disclaimer</a></li>
   </ul>
 </footer>
 
@@ -233,7 +233,7 @@ function doSearch() {
     var addr = document.getElementById('searchInput').value.trim();
     if (!addr) return;
     // Update URL without reload for bookmarkability
-    history.pushState(null, '', 'detail.html?address=' + encodeURIComponent(addr));
+    history.pushState(null, '', '/detail?address=' + encodeURIComponent(addr));
     loadAddress(addr);
 }
 document.getElementById('searchInput').addEventListener('keydown', function(e) {
@@ -305,7 +305,7 @@ function renderRateLimited(retryAfter) {
     html += '<h2>Too Many Requests</h2>';
     html += '<p>Please wait ' + (retryAfter || 60) + ' seconds before trying again.</p>';
     html += '<div style="margin-top:20px;">';
-    html += '<a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Freeze Data</a>';
+    html += '<a href="/dashboard" class="btn btn-fill" style="text-decoration:none;padding:8px 24px;font-size:13px;">Back to Freeze Data</a>';
     html += '</div></div>';
     document.getElementById('content').innerHTML = html;
 }
@@ -421,7 +421,7 @@ function renderNotFound(address, data) {
     html += '<h2>Not Found in Blacklist Database</h2>';
     html += '<p style="font-family:monospace; color:var(--blue); margin:12px auto; word-break:break-all; font-size:13px;">' + address + '</p>';
     html += '<p>This address is not currently flagged in our stablecoin blacklist database. This does not guarantee the address is safe.</p>';
-    html += '<div style="margin-top:20px;"><a href="dashboard.html" class="btn btn-fill" style="text-decoration:none;">Back to Freeze Data</a></div>';
+    html += '<div style="margin-top:20px;"><a href="/dashboard" class="btn btn-fill" style="text-decoration:none;">Back to Freeze Data</a></div>';
     html += '</div>';
     document.getElementById('content').innerHTML = html;
 }

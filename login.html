@@ -8,9 +8,9 @@
 <meta property="og:title" content="Sign In — Innobridge">
 <meta property="og:description" content="Access stablecoin freeze data, compliance intelligence resources, and saved monitoring workflows.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://www.innobridge.io/login.html">
+<meta property="og:url" content="https://www.innobridge.io/login">
 <meta name="twitter:card" content="summary">
-<link rel="canonical" href="https://www.innobridge.io/login.html">
+<link rel="canonical" href="https://www.innobridge.io/login">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -178,18 +178,18 @@ footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);backgr
 <body>
 
 <nav>
-  <a href="index.html" class="logo">
+  <a href="/" class="logo">
     <div class="logo-icon">IB</div>
     <span class="logo-text">Innobridge</span>
   </a>
   <div class="nav-right">
     <ul class="nav-links">
-      <li><a href="index.html" data-i18n="nav.home">Home</a></li>
-      <li><a href="index.html#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
-      <li><a href="dashboard.html" data-i18n="nav.dashboard">Freeze Data</a></li>
-      <li><a href="compliance.html" data-i18n="nav.compliance">Compliance</a></li>
-      <li><a href="index.html#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
-      <li><a href="index.html#contact" data-i18n="nav.contact">Contact</a></li>
+      <li><a href="/" data-i18n="nav.home">Home</a></li>
+      <li><a href="/#intelligence-platform" data-i18n="nav.intelligence">Intelligence</a></li>
+      <li><a href="/dashboard" data-i18n="nav.dashboard">Freeze Data</a></li>
+      <li><a href="/compliance" data-i18n="nav.compliance">Compliance</a></li>
+      <li><a href="/#news-pulse-combined" data-i18n="nav.briefing">Briefing</a></li>
+      <li><a href="/#contact" data-i18n="nav.contact">Contact</a></li>
     </ul>
     <button class="lang-toggle" onclick="toggleLang()" id="lang-btn">EN | 中</button>
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
@@ -389,7 +389,7 @@ footer{padding:20px 40px;text-align:center;border-top:1px solid var(--hl);backgr
 
           <!-- Actions -->
           <div class="profile-actions">
-            <button class="btn-secondary" onclick="window.location.href='index.html'" data-i18n="profile.home">Back to Home</button>
+            <button class="btn-secondary" onclick="window.location.href='/'" data-i18n="profile.home">Back to Home</button>
             <button class="btn-danger-outline" onclick="handleLogout()" data-i18n="profile.logout">Sign Out</button>
           </div>
         </div>
@@ -505,7 +505,7 @@ async function handleRegister(e) {
     password: pw,
     options: {
       data: { full_name: name },
-      emailRedirectTo: window.location.origin + '/login.html'
+      emailRedirectTo: window.location.origin + '/login'
     }
   });
 
