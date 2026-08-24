@@ -202,6 +202,10 @@
         .sanctions-window { height:29px;padding:0 25px 0 8px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text-2);font:600 10px var(--f); }
         .sanctions-window[hidden] { display:none; }
         .sanctions-results-meta { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;color:var(--text-3);font-size:10px; }
+        .sanctions-access-link { color:#008f70;font-weight:650;text-decoration:none; }
+        .sanctions-access-link:hover { text-decoration:underline; }
+        .sanctions-pagination { min-height:47px;background:#fff; }
+        .sanctions-pagination:empty { display:none; }
         .sanctions-sort-note { white-space:nowrap; }
         .sanctions-table-wrap { overflow-x:auto;min-height:420px; }
         .sanctions-table { width:100%;table-layout:fixed; }
@@ -404,6 +408,7 @@
                     </tbody>
                 </table>
             </div>
+            <div class="pagination sanctions-pagination" id="sanctionsPagination" aria-label="Sanctions records pagination"></div>
         </div>
     </div>
 </section>
@@ -644,6 +649,12 @@ var sanctionsLatestOnly=false;
 var sanctionsLatestDays=7;
 var sanctionsSearch='';
 var sanctionsSearchTimer=null;
+var sanctionsPage=1;
+var sanctionsPageSize=20;
+var sanctionsTotal=0;
+var sanctionsAuthenticated=false;
+var sanctionsAccessToken='';
+var sanctionsRequestId=0;
 var SANCTIONS_SOURCE_ORDER=['OFAC','UK','EU','UN','IL_NBCTF'];
 var SANCTIONS_SOURCE_META={
     'OFAC':{label:'OFAC SDN',labelCn:'OFAC SDN',flag:'🇺🇸'},
@@ -687,16 +698,37 @@ function setSanctionsLoading(){
     var body=document.getElementById('sanctionsTableBody');
     if(body)body.innerHTML='<tr><td colspan="6" class="sanctions-loading">'+sanctionsText('Loading official sanctions data...','正在加载官方制裁数据...')+'</td></tr>';
 }
+function setSanctionsSession(session){
+    sanctionsAccessToken=session&&session.access_token?session.access_token:'';
+    sanctionsAuthenticated=Boolean(sanctionsAccessToken);
+    sanctionsPageSize=sanctionsAuthenticated?25:20;
+    sanctionsPage=1;
+    loadSanctions();
+}
+async function sanctionsFetch(url){
+    var headers={Accept:'application/json'};
+    if(sanctionsAccessToken)headers.Authorization='Bearer '+sanctionsAccessToken;
+    var response=await fetch(url,{method:'GET',headers:headers,cache:'no-store'});
+    if(!response.ok)throw new Error('Sanctions request failed: '+response.status);
+    return response.json();
+}
 async function loadSanctions(){
+    var requestId=++sanctionsRequestId;
     setSanctionsLoading();
     try{
-        var url=GAS_BASE+'?action=sanctions_intelligence&limit=20';
+        var offset=(sanctionsPage-1)*sanctionsPageSize;
+        var url=GAS_BASE+'?action=sanctions_intelligence&limit='+sanctionsPageSize+'&offset='+offset;
         if(activeSanctionsSource)url+='&source='+encodeURIComponent(activeSanctionsSource);
         if(sanctionsRecordType!=='all')url+='&record_type='+encodeURIComponent(sanctionsRecordType);
         if(sanctionsLatestOnly)url+='&latest=true&days='+encodeURIComponent(sanctionsLatestDays);
         if(sanctionsSearch)url+='&q='+encodeURIComponent(sanctionsSearch);
-        var data=await jsonpFetch(url);
+        var data=await sanctionsFetch(url);
+        if(requestId!==sanctionsRequestId)return;
         if(!data||!data.success)throw new Error((data&&data.error)||'Unable to load sanctions data');
+        sanctionsAuthenticated=Boolean(data.authenticated);
+        sanctionsPageSize=sanctionsAuthenticated?25:20;
+        sanctionsTotal=Number(data.total)||0;
+        if(!sanctionsAuthenticated&&sanctionsPage!==1)sanctionsPage=1;
         sanctionsData=data;
         renderSanctionsSection();
     }catch(e){
@@ -704,9 +736,16 @@ async function loadSanctions(){
         document.getElementById('sanctionsTableBody').innerHTML='<tr><td colspan="6" class="sanctions-empty">'+sanctionsText('Official sanctions data is temporarily unavailable.','官方制裁数据暂时不可用。')+'</td></tr>';
     }
 }
-function setSanctionsSource(code){activeSanctionsSource=code||'';loadSanctions();}
-function setSanctionsRecordType(type){sanctionsRecordType=type||'all';loadSanctions();}
-function setSanctionsLatest(enabled){sanctionsLatestOnly=!!enabled;loadSanctions();}
+function resetSanctionsPage(){sanctionsPage=1;}
+function setSanctionsSource(code){activeSanctionsSource=code||'';resetSanctionsPage();loadSanctions();}
+function setSanctionsRecordType(type){sanctionsRecordType=type||'all';resetSanctionsPage();loadSanctions();}
+function setSanctionsLatest(enabled){sanctionsLatestOnly=!!enabled;resetSanctionsPage();loadSanctions();}
+function goSanctionsPage(page){
+    if(!sanctionsAuthenticated)return;
+    var totalPages=Math.max(1,Math.ceil(sanctionsTotal/sanctionsPageSize));
+    sanctionsPage=Math.min(Math.max(Number(page)||1,1),totalPages);
+    loadSanctions();
+}
 function renderSanctionsSources(){
     if(!sanctionsData)return;
     var coverage=sanctionsData.coverage||[];
@@ -771,6 +810,7 @@ function renderSanctionsTable(){
     if(!items.length){
         body.innerHTML='<tr><td colspan="6" class="sanctions-empty">'+sanctionsText('No official records match these filters.','没有符合当前筛选条件的官方记录。')+'</td></tr>';
         document.getElementById('sanctionsResultCount').textContent=sanctionsText('0 matching records','0 条匹配记录');
+        document.getElementById('sanctionsPagination').innerHTML='';
         return;
     }
     body.innerHTML=items.map(function(item){
@@ -784,7 +824,37 @@ function renderSanctionsTable(){
         var typeLabel=sanctionsTypeLabel(item),typeClass=isAddress?' address':(typeLabel===sanctionsText('Ship','船舶')?' ship':'');
         return '<tr><td><span class="sanctions-date'+dateClass+'">'+escH(officialDateLabel(item.designation_date))+'</span></td><td>'+entityTag+(secondary?'<div class="sanctions-entity-secondary" title="'+escH(secondary)+'">'+escH(secondary)+'</div>':'')+'</td><td><span class="sanctions-program" title="'+escH(program)+'">'+escH(program)+'</span>'+(item.source_ref?'<div class="sanctions-reference" title="'+escH(item.source_ref)+'">'+escH(item.source_ref)+'</div>':'')+'</td><td><span class="sanctions-record-type'+typeClass+'">'+escH(typeLabel)+'</span></td><td><span class="sanctions-address-count">'+(Number(item.address_count)>0?Number(item.address_count).toLocaleString('en-US'):'—')+'</span></td><td><div class="sanctions-source-cell"><span>'+meta.flag+'</span><span>'+escH(currentLang==='cn'?meta.labelCn:meta.label)+'</span></div></td></tr>';
     }).join('');
-    document.getElementById('sanctionsResultCount').textContent=sanctionsText('Showing '+items.length+' matching records','显示 '+items.length+' 条匹配记录');
+    var start=(sanctionsPage-1)*sanctionsPageSize+1;
+    var end=Math.min(start+items.length-1,sanctionsTotal);
+    var countEl=document.getElementById('sanctionsResultCount');
+    if(sanctionsAuthenticated){
+        countEl.textContent=sanctionsText('Showing '+start+'–'+end+' of '+sanctionsTotal.toLocaleString('en-US')+' matching records','显示第 '+start+'–'+end+' 条，共 '+sanctionsTotal.toLocaleString('en-US')+' 条匹配记录');
+    }else{
+        countEl.innerHTML=sanctionsText(
+            'Showing '+Math.min(items.length,20)+' of '+sanctionsTotal.toLocaleString('en-US')+' matching records · <a class="sanctions-access-link" href="/login">Sign in to view all</a>',
+            '显示 '+Math.min(items.length,20)+' / '+sanctionsTotal.toLocaleString('en-US')+' 条匹配记录 · <a class="sanctions-access-link" href="/login">登录后查看全部</a>'
+        );
+    }
+    renderSanctionsPagination();
+}
+function renderSanctionsPagination(){
+    var container=document.getElementById('sanctionsPagination');
+    if(!sanctionsAuthenticated){container.innerHTML='';return;}
+    var totalPages=Math.ceil(sanctionsTotal/sanctionsPageSize);
+    if(totalPages<=1){container.innerHTML='';return;}
+    var pages=[];
+    for(var page=1;page<=totalPages;page++){
+        if(page===1||page===totalPages||Math.abs(page-sanctionsPage)<=1)pages.push(page);
+    }
+    var html='<button class="page-btn" type="button" onclick="goSanctionsPage('+(sanctionsPage-1)+')" '+(sanctionsPage<=1?'disabled':'')+' aria-label="Previous page">&#171;</button>';
+    var previous=0;
+    pages.forEach(function(page){
+        if(previous&&page-previous>1)html+='<span style="color:var(--text-3);padding:0 4px">...</span>';
+        html+='<button class="page-btn'+(page===sanctionsPage?' active':'')+'" type="button" onclick="goSanctionsPage('+page+')" aria-current="'+(page===sanctionsPage?'page':'false')+'">'+page+'</button>';
+        previous=page;
+    });
+    html+='<button class="page-btn" type="button" onclick="goSanctionsPage('+(sanctionsPage+1)+')" '+(sanctionsPage>=totalPages?'disabled':'')+' aria-label="Next page">&#187;</button>';
+    container.innerHTML=html;
 }
 function renderSanctionsSection(){
     if(!sanctionsData)return;
@@ -796,10 +866,9 @@ function renderSanctionsSection(){
 document.addEventListener('DOMContentLoaded',function(){
     document.getElementById('sanctionsSearch').addEventListener('input',function(event){
         clearTimeout(sanctionsSearchTimer);
-        sanctionsSearchTimer=setTimeout(function(){sanctionsSearch=event.target.value.trim();loadSanctions();},350);
+        sanctionsSearchTimer=setTimeout(function(){sanctionsSearch=event.target.value.trim();resetSanctionsPage();loadSanctions();},350);
     });
-    document.getElementById('sanctionsWindow').addEventListener('change',function(event){sanctionsLatestDays=Number(event.target.value)||7;loadSanctions();});
-    loadSanctions();
+    document.getElementById('sanctionsWindow').addEventListener('change',function(event){sanctionsLatestDays=Number(event.target.value)||7;resetSanctionsPage();loadSanctions();});
 });
 
 // ===== Address Labels =====
@@ -967,7 +1036,7 @@ applyLang(currentLang);
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}}}catch(e){}})();
+(async function(){var session=null;try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var result=await sb.auth.getSession();session=result.data.session;if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}}}catch(e){console.warn('auth session fail',e);}finally{setSanctionsSession(session);}})();
 </script>
 </body>
 </html>
