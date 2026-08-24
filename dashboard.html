@@ -166,69 +166,83 @@
 
         /* Sanctions Intelligence */
         .sanctions-section { max-width:1100px; margin:0 auto; padding:0 24px 48px; }
-        .sanctions-header { display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:14px; }
-        .sanctions-title-row { display:flex;align-items:center;gap:9px; }
-        .sanctions-title { font-size:18px;font-weight:750;color:var(--text); }
-        .sanctions-new-badge { display:none;padding:2px 7px;border-radius:999px;background:#fff0f0;color:var(--red);font-size:10px;font-weight:700; }
-        .sanctions-subtitle,.sanctions-updated { color:var(--text-3);font-size:11px; }
-        .sanctions-updated { white-space:nowrap; }
-        .sanctions-workspace { display:grid;grid-template-columns:210px minmax(0,1fr) 220px;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:#fff; }
-        .sanctions-side { padding:16px;background:#fbfcfd; }
-        .sanctions-main { min-width:0;border-left:1px solid var(--border);border-right:1px solid var(--border); }
-        .sanctions-panel-title { font-size:12px;font-weight:700;color:var(--text); }
-        .sanctions-panel-label { margin-top:14px;color:var(--text-3);font-size:10px;text-transform:uppercase;font-weight:600; }
-        .sanctions-new-total { margin-top:2px;font-size:30px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums; }
-        .sanctions-new-window { color:var(--text-3);font-size:11px; }
-        .sanctions-no-new { margin-top:10px;padding:9px 10px;border-radius:8px;background:#f4f6f8;color:var(--text-2);font-size:11px;line-height:1.4; }
-        .sanctions-source-list { margin-top:12px;display:grid;gap:9px; }
-        .sanctions-source-row { display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px; }
-        .sanctions-source-name { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2); }
-        .sanctions-source-new { color:var(--red);font-weight:700;font-variant-numeric:tabular-nums; }
-        .sanctions-filters { display:flex;gap:6px;padding:11px 12px;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:thin; }
-        .sanctions-filter { flex:none;border:1px solid var(--border);border-radius:8px;background:#fff;padding:6px 10px;color:var(--text-2);font:600 11px var(--f);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s; }
-        .sanctions-filter:hover { background:var(--bg-hover);color:var(--text); }
-        .sanctions-filter:focus-visible { outline:2px solid rgba(0,200,150,.28);outline-offset:2px; }
-        .sanctions-filter.active { border-color:#ffb1b1;background:#fff5f5;color:#d72f2f; }
-        .sanctions-filter-count { margin-left:4px;color:var(--text-3);font-weight:500; }
-        .sanctions-filter.active .sanctions-filter-count { color:#d72f2f; }
-        .sanctions-table-wrap { overflow-x:auto;min-height:356px; }
-        .sanctions-table { min-width:620px; }
-        .sanctions-table th { padding:9px 12px;font-size:9px; }
-        .sanctions-table td { padding:10px 12px;font-size:11px;vertical-align:middle; }
+        .sanctions-header { margin-bottom:14px; }
+        .sanctions-title { font-size:18px;font-weight:750;color:var(--text);text-wrap:balance; }
+        .sanctions-subtitle { margin-top:3px;color:var(--text-3);font-size:11px; }
+        .sanctions-summary { display:flex;align-items:stretch;margin-bottom:12px;border:1px solid var(--border);border-radius:var(--r-sm);background:#fff;overflow:hidden; }
+        .sanctions-summary-item { display:flex;align-items:baseline;gap:7px;min-width:0;padding:11px 16px;border-right:1px solid var(--border); }
+        .sanctions-summary-item:last-child { flex:1;border-right:0;justify-content:flex-end; }
+        .sanctions-summary-value { color:var(--text);font-size:14px;font-weight:750;font-variant-numeric:tabular-nums;white-space:nowrap; }
+        .sanctions-summary-label { color:var(--text-3);font-size:10px;white-space:nowrap; }
+        .sanctions-workspace { display:grid;grid-template-columns:220px minmax(0,1fr);border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;background:#fff; }
+        .sanctions-sources { padding:14px 12px;background:#fafbfc;border-right:1px solid var(--border); }
+        .sanctions-panel-title { padding:0 6px 9px;font-size:12px;font-weight:700;color:var(--text); }
+        .sanctions-source-nav { display:grid;gap:3px; }
+        .sanctions-source-btn { width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--text-2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s; }
+        .sanctions-source-btn:hover { background:#f0f3f5;color:var(--text); }
+        .sanctions-source-btn:focus-visible { outline:2px solid rgba(0,200,150,.3);outline-offset:1px; }
+        .sanctions-source-btn.active { background:var(--accent-light);color:#087f64;font-weight:650; }
+        .sanctions-source-name { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+        .sanctions-source-count { flex:none;color:var(--text-3);font:600 9px var(--m);white-space:nowrap; }
+        .sanctions-source-btn.active .sanctions-source-count { color:#087f64; }
+        .sanctions-main { min-width:0; }
+        .sanctions-search-row { display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--border); }
+        .sanctions-search-wrap { position:relative;flex:1;min-width:0; }
+        .sanctions-search-icon { position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-3);pointer-events:none; }
+        .sanctions-search { width:100%;height:36px;padding:0 12px 0 34px;border:1px solid var(--border);border-radius:8px;background:#fff;color:var(--text);font:12px var(--f);outline:none; }
+        .sanctions-search::placeholder { color:#737986;opacity:1; }
+        .sanctions-search:focus { border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,200,150,.12); }
+        .sanctions-filterbar { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--border);background:#fbfcfd; }
+        .sanctions-filtergroup { display:flex;align-items:center;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:thin; }
+        .sanctions-filter { flex:none;border:1px solid transparent;border-radius:7px;background:transparent;padding:5px 8px;color:var(--text-3);font:600 10px var(--f);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s; }
+        .sanctions-filter:hover { color:var(--text);background:#fff; }
+        .sanctions-filter:focus-visible { outline:2px solid rgba(0,200,150,.28);outline-offset:1px; }
+        .sanctions-filter.active { border-color:var(--border);background:#fff;color:var(--text); }
+        .sanctions-filter.latest.active { border-color:#ffd2d2;background:#fff5f5;color:#d72f2f; }
+        .sanctions-window { height:29px;padding:0 25px 0 8px;border:1px solid var(--border);border-radius:7px;background:#fff;color:var(--text-2);font:600 10px var(--f); }
+        .sanctions-window[hidden] { display:none; }
+        .sanctions-results-meta { display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;color:var(--text-3);font-size:10px; }
+        .sanctions-sort-note { white-space:nowrap; }
+        .sanctions-table-wrap { overflow-x:auto;min-height:420px; }
+        .sanctions-table { width:100%;table-layout:fixed; }
+        .sanctions-table th { padding:9px 10px;font-size:9px; }
+        .sanctions-table td { padding:10px;font-size:11px;vertical-align:middle; }
+        .sanctions-table th:nth-child(1) { width:14%; }
+        .sanctions-table th:nth-child(2) { width:30%; }
+        .sanctions-table th:nth-child(3) { width:18%; }
+        .sanctions-table th:nth-child(4) { width:12%; }
+        .sanctions-table th:nth-child(5) { width:12%; }
+        .sanctions-table th:nth-child(6) { width:14%; }
         .sanctions-date { color:var(--text-2);font-family:var(--m);font-size:10px;white-space:nowrap; }
         .sanctions-date.is-new { color:var(--red);font-weight:700; }
-        .sanctions-entity-link { display:block;max-width:260px;color:var(--text);font-weight:650;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+        .sanctions-entity-link { display:block;max-width:100%;color:var(--text);font-weight:650;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
         .sanctions-entity-link:hover { color:var(--accent);text-decoration:underline; }
-        .sanctions-entity-meta { margin-top:2px;color:var(--text-3);font-size:9px;display:flex;gap:6px;align-items:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
-        .sanctions-record-type { padding:1px 5px;border-radius:999px;background:#f1f3f5;color:var(--text-2);font-size:8px;font-weight:700;text-transform:uppercase; }
+        .sanctions-entity-secondary { margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-3);font:9px var(--m); }
+        .sanctions-program { display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2); }
+        .sanctions-reference { margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-3);font:9px var(--m); }
+        .sanctions-record-type { display:inline-flex;padding:2px 6px;border-radius:999px;background:#f1f3f5;color:var(--text-2);font-size:8px;font-weight:700;text-transform:uppercase;white-space:nowrap; }
         .sanctions-record-type.address { background:#eef9f6;color:#087f64; }
+        .sanctions-record-type.ship { background:#eef4ff;color:#345db7; }
         .sanctions-address-count { font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap; }
-        .sanctions-chain-list { display:flex;align-items:center;gap:4px;white-space:nowrap; }
-        .sanctions-chain { padding:2px 5px;border-radius:5px;background:#f1f3f5;color:var(--text-2);font:600 9px var(--m); }
-        .sanctions-source-cell { display:flex;align-items:center;gap:5px;color:var(--text-2);font-size:10px;white-space:nowrap; }
-        .sanctions-loading,.sanctions-empty { padding:80px 24px;text-align:center;color:var(--text-3);font-size:12px; }
-        .sanctions-coverage-head { padding-bottom:13px;border-bottom:1px solid var(--border); }
-        .sanctions-official-sources { margin-top:5px;font-size:30px;font-weight:800;font-variant-numeric:tabular-nums; }
-        .sanctions-coverage-unit { color:var(--text-3);font-size:10px; }
-        .sanctions-total-split { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px; }
-        .sanctions-total-value { font-size:14px;font-weight:750;font-variant-numeric:tabular-nums; }
-        .sanctions-total-label { color:var(--text-3);font-size:9px;line-height:1.3; }
-        .sanctions-breakdown { margin-top:14px;display:grid;gap:11px; }
-        .sanctions-breakdown-row { display:grid;gap:4px; }
-        .sanctions-breakdown-line { display:flex;align-items:center;justify-content:space-between;gap:8px;color:var(--text-2);font-size:10px; }
-        .sanctions-breakdown-line strong { color:var(--text);font-size:10px;font-weight:700;white-space:nowrap; }
-        .sanctions-meter { height:3px;border-radius:999px;background:#edf0f3;overflow:hidden; }
-        .sanctions-meter-fill { height:100%;border-radius:inherit;background:var(--accent); }
-        .sanctions-meter-fill.addresses { background:#ef5350; }
+        .sanctions-source-cell { display:flex;align-items:center;gap:5px;color:var(--text-2);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+        .sanctions-loading,.sanctions-empty { padding:90px 24px;text-align:center;color:var(--text-3);font-size:12px; }
         @media (max-width:900px) {
-            .sanctions-workspace { grid-template-columns:1fr; }
-            .sanctions-main { border:0;border-top:1px solid var(--border);border-bottom:1px solid var(--border); }
-            .sanctions-side { min-width:0; }
+            .sanctions-summary { flex-wrap:wrap; }
+            .sanctions-summary-item { flex:1 1 33%; }
+            .sanctions-summary-item:last-child { flex-basis:100%;justify-content:flex-start;border-top:1px solid var(--border); }
+            .sanctions-workspace { grid-template-columns:minmax(0,1fr);width:100%; }
+            .sanctions-sources { min-width:0;border-right:0;border-bottom:1px solid var(--border); }
+            .sanctions-source-nav { display:flex;overflow-x:auto;scrollbar-width:thin; }
+            .sanctions-source-btn { width:auto;flex:none; }
         }
-        @media (max-width:600px) {
-            .sanctions-header { align-items:flex-start;flex-direction:column;gap:5px; }
-            .sanctions-updated { white-space:normal; }
+        @media (max-width:700px) {
             .sanctions-section { padding-left:16px;padding-right:16px; }
+            .sanctions-summary-item { flex-basis:50%;border-bottom:1px solid var(--border); }
+            .sanctions-summary-item:nth-child(2) { border-right:0; }
+            .sanctions-summary-item:last-child { border-bottom:0; }
+            .sanctions-filterbar { align-items:flex-start;flex-direction:column; }
+            .sanctions-filtergroup { width:100%; }
+            .sanctions-table { min-width:720px; }
         }
 
         /* Other Address Labels Section */
@@ -338,63 +352,59 @@
 
 <section class="sanctions-section" id="sanctions-intelligence" aria-labelledby="sanctionsTitle">
     <div class="sanctions-header">
-        <div>
-            <div class="sanctions-title-row">
-                <h2 class="sanctions-title" id="sanctionsTitle" data-i18n="sanctions.title">Sanctions Intelligence</h2>
-                <span class="sanctions-new-badge" id="sanctionsNewBadge">NEW</span>
-            </div>
-            <p class="sanctions-subtitle" data-i18n="sanctions.subtitle">Official sanctions lists and high-risk designations</p>
-        </div>
-        <div class="sanctions-updated" id="sanctionsUpdated" data-i18n="sanctions.loadingSync">Last updated: loading...</div>
+        <h2 class="sanctions-title" id="sanctionsTitle" data-i18n="sanctions.title">Sanctions Intelligence</h2>
+        <p class="sanctions-subtitle" data-i18n="sanctions.subtitle">Official sanctions lists and high-risk designations</p>
+    </div>
+    <div class="sanctions-summary" aria-label="Sanctions data summary">
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official sources</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Entity designations</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Crypto addresses</span></div>
+        <div class="sanctions-summary-item"><span class="sanctions-summary-label" id="sanctionsSummarySync" data-i18n="sanctions.loadingSync">Last synced: loading...</span></div>
     </div>
     <div class="sanctions-workspace">
-        <aside class="sanctions-side" aria-labelledby="latestAdditionsTitle">
-            <h3 class="sanctions-panel-title" id="latestAdditionsTitle" data-i18n="sanctions.latestAdditions">Latest Additions</h3>
-            <div class="sanctions-panel-label" data-i18n="sanctions.totalNew">Total officially designated</div>
-            <div class="sanctions-new-total" id="sanctionsNewTotal">--</div>
-            <div class="sanctions-new-window" data-i18n="sanctions.lastSevenDays">in the last 7 days</div>
-            <div class="sanctions-no-new" id="sanctionsNoNew" hidden></div>
-            <div class="sanctions-source-list" id="sanctionsNewBySource"></div>
+        <aside class="sanctions-sources" aria-labelledby="sanctionsSourcesTitle">
+            <h3 class="sanctions-panel-title" id="sanctionsSourcesTitle" data-i18n="sanctions.sources">Sanctions Sources</h3>
+            <div class="sanctions-source-nav" id="sanctionsSourceNav" role="navigation" aria-label="Sanctions sources"></div>
         </aside>
 
         <div class="sanctions-main">
-            <div class="sanctions-filters" id="sanctionsFilters" role="tablist" aria-label="Sanctions authorities"></div>
+            <div class="sanctions-search-row">
+                <label class="sanctions-search-wrap" for="sanctionsSearch">
+                    <span class="sanctions-search-icon" aria-hidden="true">&#128269;</span>
+                    <input class="sanctions-search" id="sanctionsSearch" type="search" autocomplete="off" data-i18n-ph="sanctions.searchPh" placeholder="Search entity, crypto address or reference...">
+                </label>
+            </div>
+            <div class="sanctions-filterbar">
+                <div class="sanctions-filtergroup" id="sanctionsTypeFilters" aria-label="Record type filters"></div>
+                <div class="sanctions-filtergroup" id="sanctionsRecencyFilters" aria-label="Recency filters"></div>
+                <select class="sanctions-window" id="sanctionsWindow" aria-label="Latest additions time window" hidden>
+                    <option value="1">24H</option>
+                    <option value="7" selected>7D</option>
+                    <option value="30">30D</option>
+                </select>
+            </div>
+            <div class="sanctions-results-meta">
+                <span id="sanctionsResultCount"></span>
+                <span class="sanctions-sort-note" data-i18n="sanctions.sort">Sorted by designation date</span>
+            </div>
             <div class="sanctions-table-wrap">
                 <table class="sanctions-table">
                     <thead>
                         <tr>
-                            <th data-i18n="sanctions.thDate">Added date</th>
-                            <th data-i18n="sanctions.thEntity">Entity / Program</th>
+                            <th data-i18n="sanctions.thDate">Designation date</th>
+                            <th data-i18n="sanctions.thEntity">Entity</th>
+                            <th data-i18n="sanctions.thProgram">Program</th>
+                            <th data-i18n="sanctions.thType">Type</th>
                             <th data-i18n="sanctions.thAddresses">Addresses</th>
-                            <th data-i18n="sanctions.thChains">Chains</th>
                             <th data-i18n="sanctions.thSource">Source</th>
                         </tr>
                     </thead>
                     <tbody id="sanctionsTableBody">
-                        <tr><td colspan="5" class="sanctions-loading" data-i18n="sanctions.loading">Loading official sanctions data...</td></tr>
+                        <tr><td colspan="6" class="sanctions-loading" data-i18n="sanctions.loading">Loading official sanctions data...</td></tr>
                     </tbody>
                 </table>
             </div>
         </div>
-
-        <aside class="sanctions-side" aria-labelledby="sanctionsCoverageTitle">
-            <div class="sanctions-coverage-head">
-                <h3 class="sanctions-panel-title" id="sanctionsCoverageTitle" data-i18n="sanctions.coverage">Sanctions Intelligence Coverage</h3>
-                <div class="sanctions-official-sources" id="sanctionsOfficialSources">--</div>
-                <div class="sanctions-coverage-unit" data-i18n="sanctions.officialSources">Official sources</div>
-                <div class="sanctions-total-split">
-                    <div>
-                        <div class="sanctions-total-value" id="sanctionsDesignationTotal">--</div>
-                        <div class="sanctions-total-label" data-i18n="sanctions.entityDesignations">Entity designations</div>
-                    </div>
-                    <div>
-                        <div class="sanctions-total-value" id="sanctionsAddressTotal">--</div>
-                        <div class="sanctions-total-label" data-i18n="sanctions.cryptoAddresses">Crypto addresses</div>
-                    </div>
-                </div>
-            </div>
-            <div class="sanctions-breakdown" id="sanctionsCoverageBreakdown"></div>
-        </aside>
     </div>
 </section>
 
@@ -629,6 +639,11 @@ document.addEventListener('DOMContentLoaded',function(){
 // ===== Sanctions Intelligence =====
 var sanctionsData=null;
 var activeSanctionsSource='';
+var sanctionsRecordType='all';
+var sanctionsLatestOnly=false;
+var sanctionsLatestDays=7;
+var sanctionsSearch='';
+var sanctionsSearchTimer=null;
 var SANCTIONS_SOURCE_ORDER=['OFAC','UK','EU','UN','IL_NBCTF'];
 var SANCTIONS_SOURCE_META={
     'OFAC':{label:'OFAC SDN',labelCn:'OFAC SDN',flag:'🇺🇸'},
@@ -670,99 +685,122 @@ function sanctionsMetricForSource(row){
 }
 function setSanctionsLoading(){
     var body=document.getElementById('sanctionsTableBody');
-    if(body)body.innerHTML='<tr><td colspan="5" class="sanctions-loading">'+sanctionsText('Loading official sanctions data...','正在加载官方制裁数据...')+'</td></tr>';
+    if(body)body.innerHTML='<tr><td colspan="6" class="sanctions-loading">'+sanctionsText('Loading official sanctions data...','正在加载官方制裁数据...')+'</td></tr>';
 }
-async function loadSanctions(sourceCode){
-    activeSanctionsSource=sourceCode||'';
+async function loadSanctions(){
     setSanctionsLoading();
     try{
-        var url=GAS_BASE+'?action=sanctions_intelligence&limit=12';
+        var url=GAS_BASE+'?action=sanctions_intelligence&limit=20';
         if(activeSanctionsSource)url+='&source='+encodeURIComponent(activeSanctionsSource);
+        if(sanctionsRecordType!=='all')url+='&record_type='+encodeURIComponent(sanctionsRecordType);
+        if(sanctionsLatestOnly)url+='&latest=true&days='+encodeURIComponent(sanctionsLatestDays);
+        if(sanctionsSearch)url+='&q='+encodeURIComponent(sanctionsSearch);
         var data=await jsonpFetch(url);
         if(!data||!data.success)throw new Error((data&&data.error)||'Unable to load sanctions data');
         sanctionsData=data;
         renderSanctionsSection();
     }catch(e){
         console.warn('sanctions intelligence fail',e);
-        document.getElementById('sanctionsTableBody').innerHTML='<tr><td colspan="5" class="sanctions-empty">'+sanctionsText('Official sanctions data is temporarily unavailable.','官方制裁数据暂时不可用。')+'</td></tr>';
+        document.getElementById('sanctionsTableBody').innerHTML='<tr><td colspan="6" class="sanctions-empty">'+sanctionsText('Official sanctions data is temporarily unavailable.','官方制裁数据暂时不可用。')+'</td></tr>';
     }
 }
-function renderSanctionsFilters(){
+function setSanctionsSource(code){activeSanctionsSource=code||'';loadSanctions();}
+function setSanctionsRecordType(type){sanctionsRecordType=type||'all';loadSanctions();}
+function setSanctionsLatest(enabled){sanctionsLatestOnly=!!enabled;loadSanctions();}
+function renderSanctionsSources(){
     if(!sanctionsData)return;
     var coverage=sanctionsData.coverage||[];
     var byCode={};coverage.forEach(function(row){byCode[row.source_code]=row;});
     var sourceCount=Number(sanctionsData.official_sources||coverage.length||0);
-    var filters=[{
+    var sources=[{
         code:'',
         label:sanctionsText('All Sanctions','全部制裁'),
         count:sourceCount+' '+sanctionsText(sourceCount===1?'source':'sources','个来源')
     }];
     SANCTIONS_SOURCE_ORDER.forEach(function(code){
         var meta=sanctionsSourceMeta(code),row=byCode[code]||{};
-        filters.push({code:code,label:meta.flag+' '+(currentLang==='cn'?meta.labelCn:meta.label),count:sanctionsMetricForSource(row)});
+        sources.push({code:code,label:meta.flag+' '+(currentLang==='cn'?meta.labelCn:meta.label),count:sanctionsMetricForSource(row)});
     });
-    document.getElementById('sanctionsFilters').innerHTML=filters.map(function(item){
+    document.getElementById('sanctionsSourceNav').innerHTML=sources.map(function(item){
         var active=item.code===activeSanctionsSource;
-        return '<button class="sanctions-filter'+(active?' active':'')+'" type="button" role="tab" aria-selected="'+(active?'true':'false')+'" onclick="loadSanctions(&apos;'+item.code+'&apos;)">'+escH(item.label)+'<span class="sanctions-filter-count">'+escH(item.count)+'</span></button>';
+        return '<button class="sanctions-source-btn'+(active?' active':'')+'" type="button" aria-pressed="'+(active?'true':'false')+'" onclick="setSanctionsSource(&apos;'+item.code+'&apos;)"><span class="sanctions-source-name">'+escH(item.label)+'</span><span class="sanctions-source-count">'+escH(item.count)+'</span></button>';
     }).join('');
 }
-function renderSanctionsNewPanel(){
-    if(!sanctionsData)return;
-    var total=Number(sanctionsData.new_last_7_days)||0;
-    document.getElementById('sanctionsNewTotal').textContent=total.toLocaleString('en-US');
-    var badge=document.getElementById('sanctionsNewBadge');
-    badge.style.display=total>0?'inline-flex':'none';
-    var empty=document.getElementById('sanctionsNoNew');
-    empty.hidden=total>0;
-    empty.textContent=sanctionsText('No new official designation dates in the last 7 days.','过去 7 天没有新的官方指认日期。');
-    var bySource=sanctionsData.new_by_source||{};
-    document.getElementById('sanctionsNewBySource').innerHTML=SANCTIONS_SOURCE_ORDER.map(function(code){
-        var meta=sanctionsSourceMeta(code),label=currentLang==='cn'?meta.labelCn:meta.label;
-        return '<div class="sanctions-source-row"><span class="sanctions-source-name">'+meta.flag+' '+escH(label)+'</span><span class="sanctions-source-new">+'+(Number(bySource[code])||0).toLocaleString('en-US')+'</span></div>';
+function renderSanctionsControls(){
+    var types=[
+        {value:'all',en:'All',cn:'全部'},
+        {value:'entities',en:'Entities',cn:'实体'},
+        {value:'individuals',en:'Individuals',cn:'个人'},
+        {value:'ships',en:'Ships',cn:'船舶'},
+        {value:'crypto_addresses',en:'Crypto Addresses',cn:'加密地址'}
+    ];
+    document.getElementById('sanctionsTypeFilters').innerHTML=types.map(function(item){
+        var active=item.value===sanctionsRecordType;
+        return '<button class="sanctions-filter'+(active?' active':'')+'" type="button" aria-pressed="'+(active?'true':'false')+'" onclick="setSanctionsRecordType(&apos;'+item.value+'&apos;)">'+escH(sanctionsText(item.en,item.cn))+'</button>';
     }).join('');
+    document.getElementById('sanctionsRecencyFilters').innerHTML=[
+        {latest:false,en:'All Records',cn:'全部记录'},
+        {latest:true,en:'Latest Additions',cn:'最新新增'}
+    ].map(function(item){
+        var active=item.latest===sanctionsLatestOnly;
+        return '<button class="sanctions-filter'+(item.latest?' latest':'')+(active?' active':'')+'" type="button" aria-pressed="'+(active?'true':'false')+'" onclick="setSanctionsLatest('+(item.latest?'true':'false')+')">'+escH(sanctionsText(item.en,item.cn))+'</button>';
+    }).join('');
+    var windowSelect=document.getElementById('sanctionsWindow');
+    windowSelect.hidden=!sanctionsLatestOnly;
+    windowSelect.value=String(sanctionsLatestDays);
+    var searchInput=document.getElementById('sanctionsSearch');
+    if(document.activeElement!==searchInput)searchInput.value=sanctionsSearch;
 }
-function renderSanctionsCoverage(){
+function renderSanctionsSummary(){
     if(!sanctionsData)return;
     document.getElementById('sanctionsOfficialSources').textContent=Number(sanctionsData.official_sources||0).toLocaleString('en-US');
     document.getElementById('sanctionsDesignationTotal').textContent=compactNumber(sanctionsData.entity_designations);
     document.getElementById('sanctionsAddressTotal').textContent=compactNumber(sanctionsData.crypto_addresses);
-    document.getElementById('sanctionsUpdated').textContent=sanctionsSyncLabel(sanctionsData.last_updated);
-    var coverage=sanctionsData.coverage||[],byCode={};coverage.forEach(function(row){byCode[row.source_code]=row;});
-    var maxDesignations=Math.max.apply(null,coverage.map(function(row){return Number(row.designation_count)||0;}).concat([1]));
-    var maxAddresses=Math.max.apply(null,coverage.map(function(row){return Number(row.address_count)||0;}).concat([1]));
-    document.getElementById('sanctionsCoverageBreakdown').innerHTML=SANCTIONS_SOURCE_ORDER.map(function(code){
-        var row=byCode[code]||{},meta=sanctionsSourceMeta(code),addresses=Number(row.address_count)||0,designations=Number(row.designation_count)||0;
-        var value=addresses||designations,maximum=addresses?maxAddresses:maxDesignations,width=value?Math.max(4,Math.round(value/maximum*100)):0;
-        var label=currentLang==='cn'?meta.labelCn:meta.label;
-        return '<div class="sanctions-breakdown-row"><div class="sanctions-breakdown-line"><span>'+meta.flag+' '+escH(label)+'</span><strong>'+escH(sanctionsMetricForSource(row))+'</strong></div><div class="sanctions-meter"><div class="sanctions-meter-fill'+(addresses?' addresses':'')+'" style="width:'+width+'%"></div></div></div>';
-    }).join('');
+    document.getElementById('sanctionsSummarySync').textContent=sanctionsSyncLabel(sanctionsData.last_updated).replace('Last updated:','Last synced:').replace('最后更新：','最后同步：');
+}
+function sanctionsTypeLabel(item){
+    if(item.record_type==='address')return sanctionsText('Crypto address','加密地址');
+    var type=String(item.entity_type||'').toLowerCase();
+    if(type==='individual'||type==='person')return sanctionsText('Individual','个人');
+    if(type==='ship'||type==='vessel')return sanctionsText('Ship','船舶');
+    return sanctionsText('Entity','实体');
 }
 function renderSanctionsTable(){
     if(!sanctionsData)return;
     var items=sanctionsData.items||[],body=document.getElementById('sanctionsTableBody');
     if(!items.length){
-        body.innerHTML='<tr><td colspan="5" class="sanctions-empty">'+sanctionsText('This official source is configured, but no current records are available.','该官方来源已配置，但目前尚无可用记录。')+'</td></tr>';
+        body.innerHTML='<tr><td colspan="6" class="sanctions-empty">'+sanctionsText('No official records match these filters.','没有符合当前筛选条件的官方记录。')+'</td></tr>';
+        document.getElementById('sanctionsResultCount').textContent=sanctionsText('0 matching records','0 条匹配记录');
         return;
     }
     body.innerHTML=items.map(function(item){
         var meta=sanctionsSourceMeta(item.source_code),dateClass=isOfficiallyNew(item.designation_date)?' is-new':'',url=safeExternalUrl(item.source_url);
-        var entity=item.entity_name||sanctionsText('Unnamed designation','未命名指认');
-        if(item.record_type==='address'&&item.address)entity=item.address;
+        var isAddress=item.record_type==='address';
+        var hasLinkedEntity=isAddress&&item.entity_name&&item.entity_name!==item.address;
+        var entity=hasLinkedEntity?item.entity_name:(isAddress&&item.address?item.address:(item.entity_name||sanctionsText('Unnamed designation','未命名指认')));
+        var secondary=hasLinkedEntity?item.address:'';
         var program=item.program_name||item.source_name||sanctionsText('Official sanctions record','官方制裁记录');
-        var typeLabel=item.record_type==='address'?sanctionsText('Crypto address','加密地址'):sanctionsText('Entity designation','实体指认');
         var entityTag=url?'<a class="sanctions-entity-link" href="'+escH(url)+'" target="_blank" rel="noopener noreferrer" title="'+escH(entity)+'">'+escH(entity)+'</a>':'<span class="sanctions-entity-link" title="'+escH(entity)+'">'+escH(entity)+'</span>';
-        var chains=(item.chains||[]).filter(Boolean);
-        return '<tr><td><span class="sanctions-date'+dateClass+'">'+escH(officialDateLabel(item.designation_date))+'</span></td><td>'+entityTag+'<div class="sanctions-entity-meta"><span class="sanctions-record-type'+(item.record_type==='address'?' address':'')+'">'+escH(typeLabel)+'</span><span title="'+escH(program)+'">'+escH(program)+'</span></div></td><td><span class="sanctions-address-count">'+(Number(item.address_count)>0?'+'+Number(item.address_count).toLocaleString('en-US'):'—')+'</span></td><td><div class="sanctions-chain-list">'+(chains.length?chains.slice(0,3).map(function(chain){return'<span class="sanctions-chain">'+escH(chain)+'</span>';}).join(''):'—')+'</div></td><td><div class="sanctions-source-cell"><span>'+meta.flag+'</span><span>'+escH(currentLang==='cn'?meta.labelCn:meta.label)+'</span></div></td></tr>';
+        var typeLabel=sanctionsTypeLabel(item),typeClass=isAddress?' address':(typeLabel===sanctionsText('Ship','船舶')?' ship':'');
+        return '<tr><td><span class="sanctions-date'+dateClass+'">'+escH(officialDateLabel(item.designation_date))+'</span></td><td>'+entityTag+(secondary?'<div class="sanctions-entity-secondary" title="'+escH(secondary)+'">'+escH(secondary)+'</div>':'')+'</td><td><span class="sanctions-program" title="'+escH(program)+'">'+escH(program)+'</span>'+(item.source_ref?'<div class="sanctions-reference" title="'+escH(item.source_ref)+'">'+escH(item.source_ref)+'</div>':'')+'</td><td><span class="sanctions-record-type'+typeClass+'">'+escH(typeLabel)+'</span></td><td><span class="sanctions-address-count">'+(Number(item.address_count)>0?Number(item.address_count).toLocaleString('en-US'):'—')+'</span></td><td><div class="sanctions-source-cell"><span>'+meta.flag+'</span><span>'+escH(currentLang==='cn'?meta.labelCn:meta.label)+'</span></div></td></tr>';
     }).join('');
+    document.getElementById('sanctionsResultCount').textContent=sanctionsText('Showing '+items.length+' matching records','显示 '+items.length+' 条匹配记录');
 }
 function renderSanctionsSection(){
     if(!sanctionsData)return;
-    renderSanctionsFilters();
-    renderSanctionsNewPanel();
-    renderSanctionsCoverage();
+    renderSanctionsSummary();
+    renderSanctionsSources();
+    renderSanctionsControls();
     renderSanctionsTable();
 }
-document.addEventListener('DOMContentLoaded',function(){loadSanctions('');});
+document.addEventListener('DOMContentLoaded',function(){
+    document.getElementById('sanctionsSearch').addEventListener('input',function(event){
+        clearTimeout(sanctionsSearchTimer);
+        sanctionsSearchTimer=setTimeout(function(){sanctionsSearch=event.target.value.trim();loadSanctions();},350);
+    });
+    document.getElementById('sanctionsWindow').addEventListener('change',function(event){sanctionsLatestDays=Number(event.target.value)||7;loadSanctions();});
+    loadSanctions();
+});
 
 // ===== Address Labels =====
 var labelPage=1, labelTotal=0, labelCat='', labelSearchTimer=null;
@@ -874,10 +912,10 @@ var I18N = {
     'table.title':'Recent Frozen Addresses',
     'th.address':'Address','th.chain':'Chain','th.asset':'Asset','th.source':'Source','th.risk':'Risk Level','th.balance':'Freeze Balance','th.time':'Freeze Time',
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
-    'sanctions.title':'Sanctions Intelligence','sanctions.subtitle':'Official sanctions lists and high-risk designations','sanctions.loadingSync':'Last updated: loading...',
-    'sanctions.latestAdditions':'Latest Additions','sanctions.totalNew':'Total officially designated','sanctions.lastSevenDays':'in the last 7 days',
-    'sanctions.thDate':'Added date','sanctions.thEntity':'Entity / Program','sanctions.thAddresses':'Addresses','sanctions.thChains':'Chains','sanctions.thSource':'Source',
-    'sanctions.loading':'Loading official sanctions data...','sanctions.coverage':'Sanctions Intelligence Coverage','sanctions.officialSources':'Official sources',
+    'sanctions.title':'Sanctions Intelligence','sanctions.subtitle':'Official sanctions lists and high-risk designations','sanctions.loadingSync':'Last synced: loading...',
+    'sanctions.sources':'Sanctions Sources','sanctions.searchPh':'Search entity, crypto address or reference...','sanctions.sort':'Sorted by designation date',
+    'sanctions.thDate':'Designation date','sanctions.thEntity':'Entity','sanctions.thProgram':'Program','sanctions.thType':'Type','sanctions.thAddresses':'Addresses','sanctions.thSource':'Source',
+    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official sources',
     'sanctions.entityDesignations':'Entity designations','sanctions.cryptoAddresses':'Crypto addresses',
     'labels.title':'Other Intelligence Labels',
     'ls.total':'Total Labels','ls.addresses':'Unique Addresses','ls.chains':'Chains','ls.entities':'Entities','ls.sources':'Sources',
@@ -895,10 +933,10 @@ var I18N = {
     'table.title':'最近冻结地址',
     'th.address':'地址','th.chain':'链','th.asset':'资产','th.source':'来源','th.risk':'风险等级','th.balance':'冻结余额','th.time':'冻结时间',
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
-    'sanctions.title':'制裁情报','sanctions.subtitle':'官方制裁名单与高风险指认','sanctions.loadingSync':'最后更新：加载中...',
-    'sanctions.latestAdditions':'最新新增','sanctions.totalNew':'官方新增指认总数','sanctions.lastSevenDays':'过去 7 天',
-    'sanctions.thDate':'新增日期','sanctions.thEntity':'主体 / 项目','sanctions.thAddresses':'地址','sanctions.thChains':'链','sanctions.thSource':'来源',
-    'sanctions.loading':'正在加载官方制裁数据...','sanctions.coverage':'制裁情报覆盖','sanctions.officialSources':'官方来源',
+    'sanctions.title':'制裁情报','sanctions.subtitle':'官方制裁名单与高风险指认','sanctions.loadingSync':'最后同步：加载中...',
+    'sanctions.sources':'制裁来源','sanctions.searchPh':'搜索主体、加密地址或参考编号...','sanctions.sort':'按指认日期排序',
+    'sanctions.thDate':'指认日期','sanctions.thEntity':'主体','sanctions.thProgram':'项目','sanctions.thType':'类型','sanctions.thAddresses':'地址','sanctions.thSource':'来源',
+    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方来源',
     'sanctions.entityDesignations':'实体指认','sanctions.cryptoAddresses':'加密地址',
     'labels.title':'其他情报标签',
     'ls.total':'总标签数','ls.addresses':'唯一地址','ls.chains':'链','ls.entities':'实体','ls.sources':'数据源',
