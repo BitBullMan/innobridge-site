@@ -726,44 +726,27 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <h2 data-i18n="ci.title">Global Crypto Regulatory Landscape</h2>
       <p data-i18n="ci.desc">Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.</p>
     </div>
-    <div class="ci-stats reveal">
-      <div class="ci-stat"><div class="ci-stat-val">10</div><div class="ci-stat-label" data-i18n="ci.s1">Jurisdictions</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">43</div><div class="ci-stat-label" data-i18n="ci.s2">Regulations</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">42</div><div class="ci-stat-label" data-i18n="ci.s3">Enforcement Cases</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">21</div><div class="ci-stat-label" data-i18n="ci.s4">Risk Rules</div></div>
-      <div class="ci-stat"><div class="ci-stat-val">130+</div><div class="ci-stat-label" data-i18n="ci.s5">Regulated Entities</div></div>
-    </div>
-    <div class="deadline-watch reveal" id="deadline-watch">
-      <div class="deadline-watch-head">
-        <div>
-          <h3 data-i18n="dl.title">Regulatory Deadline Watch</h3>
-          <p data-i18n="dl.sub">Near-term compliance milestones that may affect stablecoin issuers, VASPs, exchanges, and risk teams.</p>
-        </div>
-        <a href="/compliance#deadlineSection" class="deadline-watch-link" data-i18n="dl.link">View full tracker &rarr;</a>
-      </div>
-      <div class="deadline-strip" id="homeDeadlineStrip"></div>
-    </div>
     <div class="ci-preview-grid reveal">
       <div class="ci-preview-col">
         <div class="ci-preview-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span data-i18n="ci.f2.title">Enforcement Tracker</span>
+          <span data-i18n="ci.latest.enforcement">Latest Enforcement</span>
         </div>
         <div class="ci-preview-list" id="ci-enforcement-preview"><div class="ci-preview-loading">Loading enforcement intelligence...</div></div>
       </div>
       <div class="ci-preview-col">
         <div class="ci-preview-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-          <span data-i18n="ci.f3.title">Regulatory Updates</span>
+          <span data-i18n="ci.latest.regulatory">Latest Regulatory Update</span>
         </div>
         <div class="ci-preview-list" id="ci-regulatory-preview"><div class="ci-preview-loading">Loading regulatory intelligence...</div></div>
       </div>
       <div class="ci-preview-col">
         <div class="ci-preview-header">
           <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
-          <span data-i18n="ci.news.title">Compliance News Signals</span>
+          <span data-i18n="ci.next.deadline">Next Regulatory Deadline</span>
         </div>
-        <div class="ci-preview-list" id="ci-news-preview"><div class="ci-preview-loading">Loading compliance news signals...</div></div>
+        <div class="ci-preview-list" id="ci-deadline-preview"><div class="ci-preview-loading">Loading regulatory deadline...</div></div>
       </div>
     </div>
     <div class="ci-preview-fade"></div>
@@ -1089,6 +1072,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </footer>
 
+<script src="/assets/compliance-freshness.js"></script>
 <script>
 // ===== CONFIG =====
 var SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
@@ -1338,7 +1322,6 @@ function reloadNewsForLang(){
   var grid = document.getElementById('news-grid');
   if(grid) grid.innerHTML = '';
   loadNews();
-  loadComplianceNewsSignals();
 }
 
 function loadMoreNews(){
@@ -1355,14 +1338,6 @@ function renderPlaceholderNews(){
   renderNewsCards(placeholders);
 }
 
-function complianceSignalType(item){
-  var text = ((item.title||'') + ' ' + (item.content||'') + ' ' + (item.summary||'') + ' ' + (item.category||'')).toLowerCase();
-  if(/enforcement|lawsuit|sued|charge|charged|fine|penalty|settlement|probe|investigation|indictment|arrest|seizure|freeze order|cease and desist|sec |cftc|doj|ofac|fca|esma|sfc|mas|vara/.test(text)) return 'enforcement';
-  if(/regulation|regulatory|rule|law|bill|act |policy|guidance|consultation|framework|mica|fatf|travel rule|licens|registration|vasp|casp|aml|cft|kyc|stablecoin issuer|reserve|attestation/.test(text)) return 'regulatory';
-  if(/compliance|sanction|blacklist|blacklisted|freeze|frozen|issuer|tether|circle|usdt|usdc|risk control|monitoring|screening|wallet address|address/.test(text)) return 'compliance';
-  return '';
-}
-
 function complianceRegionFlag(item){
   var text = ((item.title||'') + ' ' + (item.content||'') + ' ' + (item.summary||'')).toLowerCase();
   if(/\beu\b|europe|european|mica|esma|france|germany|italy|netherlands/.test(text)) return '🇪🇺';
@@ -1375,69 +1350,6 @@ function complianceRegionFlag(item){
   if(/uae|dubai|abu dhabi|vara/.test(text)) return '🇦🇪';
   if(/uk |britain|fca|united kingdom/.test(text)) return '🇬🇧';
   return '🌍';
-}
-
-function inferComplianceSignalLabel(item){
-  var raw = String(item.category || item.type || '').toLowerCase();
-  if(raw && raw !== 'other' && raw !== 'compliance') return raw;
-
-  var text = ((item.title || '') + ' ' + (item.content || '') + ' ' + (item.summary || '')).toLowerCase();
-  if(/enforcement|law enforcement|prosecut|indict|charged|arrest|fine|penalt|cease and desist|revok|suspend|ban|sanction|blacklist|freeze|frozen|seiz/.test(text)) return 'enforcement';
-  if(/regulat|regulation|bill|act\b|amendment|rule|rulemaking|guidance|consultation|framework|license|licence|approval|supervision|authority|senate|congress|parliament|legislature|tax rate|etf ban/.test(text)) return 'regulatory';
-  if(/aml|cft|money laundering|travel rule|kyc|transaction monitoring|suspicious transaction/.test(text)) return 'AML/CFT';
-  if(/stablecoin|issuer|reserve|redemption|usdt|usdc|tether|circle/.test(text)) return 'stablecoin';
-  if(/market manipulation|insider trading|market conduct/.test(text)) return 'market conduct';
-  return 'compliance';
-}
-
-function renderComplianceNewsSignals(items){
-  var container = document.getElementById('ci-news-preview');
-  if(!container) return;
-
-  var signals = Array.isArray(items) ? items.slice(0,12) : [];
-  if(!signals.length){
-    container.innerHTML = '<div class="ci-preview-loading">' +
-      (currentLang === 'cn' ? '暂无累积合规新闻信号' : 'No accumulated compliance news signals yet') +
-      '</div>';
-    return;
-  }
-
-  container.innerHTML = signals.map(function(item){
-    var type = inferComplianceSignalLabel(item);
-    var dateStr = timeAgo(item.published_at || item.last_seen_at || new Date().toISOString());
-    var title = decodeHtml(item.title || '');
-    var desc = decodeHtml(item.content || item.summary || '');
-    var publisher = String(item.source_name || '').trim();
-
-    return '<div class="ci-preview-item">'
-      + '<div class="ci-preview-item-title"><span class="flag">' + complianceRegionFlag(item) + '</span>' + escHtml(title) + '</div>'
-      + '<div class="ci-preview-item-desc">' + escHtml(desc) + '</div>'
-      + '<div class="ci-preview-item-meta"><span>' + escHtml(dateStr) + '</span>'
-      + (publisher ? '<span>' + escHtml(publisher) + '</span>' : '')
-      + '<span class="severity ' + String(type).toLowerCase().replace(/[^a-z]/g,'') + '">' + escHtml(type) + '</span></div>'
-      + '</div>';
-  }).join('');
-}
-
-function loadComplianceNewsSignals(){
-  supabaseSelect('compliance_news_signals?select=title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,first_seen_at,seen_count&status=eq.published&order=published_at.desc&limit=40')
-  .then(function(items){
-    var normalized = (Array.isArray(items) ? items : []).map(function(item){
-      return {
-        title: currentLang === 'cn' ? (item.title_cn || item.title_en) : (item.title_en || item.title_cn),
-        content: currentLang === 'cn' ? (item.summary_cn || item.summary_en || item.logic_cn || item.logic_en) : (item.summary_en || item.summary_cn || item.logic_en || item.logic_cn),
-        summary: currentLang === 'cn' ? (item.summary_cn || item.summary_en) : (item.summary_en || item.summary_cn),
-        region: item.region || 'Global',
-        category: item.category || 'compliance',
-        source: item.source_name || item.source || 'News',
-        published_at: item.published_at || item.last_seen_at
-      };
-    });
-    renderComplianceNewsSignals(normalized);
-  })
-  .catch(function(){
-    renderComplianceNewsSignals([]);
-  });
 }
 
 function pulseDict(key){
@@ -2074,11 +1986,11 @@ var I18N = {
     'le.label':'For Law Enforcement','le.title':'Evidence Request Procedures','le.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
     'le.c1.val':'68','le.c1.label':'Exchanges','le.c2.val':'10','le.c2.label':'Wallets','le.c3.val':'4','le.c3.label':'Swap Platforms','le.c4.val':'3','le.c4.label':'Mining Pools',
     'le.cta':'View Full Evidence Directory',
-    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Navigate jurisdiction-specific AML requirements, risk rules, enforcement actions, and compliance-relevant news across major financial centers. News signals are filtered from the live feed and sorted by latest publish time.',
+    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Current enforcement, regulatory, and deadline records from the same verified data layer used by the full compliance tracker.',
     'ci.s1':'Jurisdictions','ci.s2':'Regulations','ci.s3':'Enforcement Cases','ci.s4':'Risk Rules','ci.s5':'Regulated Entities',
     'ci.f1.title':'Jurisdiction Profiles','ci.f1.desc':'Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.',
     'ci.f2.title':'Enforcement Tracker','ci.f2.desc':'Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.',
-    'ci.f3.title':'Regulatory Updates','ci.f3.desc':'Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.','ci.news.title':'Compliance News Signals',
+    'ci.f3.title':'Regulatory Updates','ci.f3.desc':'Stay current with new legislation, amendments, and policy guidance across all covered jurisdictions. Filterable by region and type.','ci.news.title':'Compliance News Signals','ci.latest.enforcement':'Latest Enforcement','ci.latest.regulatory':'Latest Regulatory Update','ci.next.deadline':'Next Regulatory Deadline',
     'ci.cta':'Explore Compliance Intelligence',
     'ct.label':'Contact','ct.title':'Join the intelligence waitlist.','ct.desc':'Tell us which stablecoin, sanctions, address, or regulatory signals you want Innobridge to monitor.',
     'ct.email':'info@innobridge.io','ct.response':'Response within 24 hours','ct.web':'innobridge.io',
@@ -2116,11 +2028,11 @@ var I18N = {
     'le.label':'执法支持','le.title':'取证请求流程','le.desc':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
     'le.c1.val':'68','le.c1.label':'交易所','le.c2.val':'10','le.c2.label':'钱包','le.c3.val':'4','le.c3.label':'闪兑平台','le.c4.val':'3','le.c4.label':'矿池',
     'le.cta':'查看完整取证目录',
-    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'覆盖主要金融中心的 AML 要求、风险规则、执法行动和合规相关新闻。系统会从实时新闻流中筛选合规信号，并按最新发布时间展示。',
+    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'直接展示完整合规追踪器所使用的同一套已核实执法、监管和截止日期数据。',
     'ci.s1':'司法管辖区','ci.s2':'法规','ci.s3':'执法案例','ci.s4':'风险规则','ci.s5':'持牌实体',
     'ci.f1.title':'司法管辖区档案','ci.f1.desc':'每个管辖区的完整合规档案：法规、风险规则、执法案例、法规动态和持牌实体。',
     'ci.f2.title':'执法追踪','ci.f2.desc':'追踪全球对加密实体的重大监管行动 — 从 SEC 和解到欧盟 MiCA 执法和 VARA 处罚。',
-    'ci.f3.title':'法规动态','ci.f3.desc':'实时更新各管辖区的新立法、修正案和政策指引。可按地区和类型筛选。','ci.news.title':'合规新闻信号',
+    'ci.f3.title':'法规动态','ci.f3.desc':'实时更新各管辖区的新立法、修正案和政策指引。可按地区和类型筛选。','ci.news.title':'合规新闻信号','ci.latest.enforcement':'最新执法','ci.latest.regulatory':'最新监管更新','ci.next.deadline':'下一监管截止日期',
     'ci.cta':'探索合规情报',
     'ct.label':'联系我们','ct.title':'加入情报产品候补名单。','ct.desc':'告诉我们你希望 Innobridge 监测哪些稳定币、制裁、地址或监管信号。',
     'ct.email':'info@innobridge.io','ct.response':'24 小时内回复','ct.web':'innobridge.io',
@@ -2164,84 +2076,12 @@ function toggleLang() {
   if(typeof reloadNewsForLang === 'function') reloadNewsForLang();
   if(typeof loadWhaleAlerts === 'function') loadWhaleAlerts();
   if(typeof reloadMarketPulse === 'function') reloadMarketPulse();
-  if(typeof renderHomeDeadlines === 'function') renderHomeDeadlines();
   if(typeof renderHomeUnifiedCompliance === 'function') renderHomeUnifiedCompliance();
   if(typeof loadHomeIntelligencePulse === 'function') loadHomeIntelligencePulse();
 }
 
 applyLang(currentLang);
 loadHomeIntelligencePulse();
-
-// ===== HOME DEADLINE WATCH — unified with Compliance database =====
-var HOME_DEADLINES = [];
-
-function deadlineFlag(code){
-  var flags = {EU:'🇪🇺',US:'🇺🇸',HK:'🇭🇰',SG:'🇸🇬',GB:'🇬🇧',AE:'🇦🇪',KR:'🇰🇷',JP:'🇯🇵',CN:'🇨🇳',CH:'🇨🇭'};
-  return flags[code] || '🌍';
-}
-
-function renderHomeDeadlines(){
-  var el = document.getElementById('homeDeadlineStrip');
-  if(!el) return;
-  var dict = I18N[currentLang] || I18N.en;
-  var today = new Date();
-  var items = HOME_DEADLINES.slice().sort(function(a,b){
-    if(!a.deadline_date && b.deadline_date) return 1;
-    if(a.deadline_date && !b.deadline_date) return -1;
-    return new Date(a.deadline_date || '2999-12-31') - new Date(b.deadline_date || '2999-12-31');
-  }).slice(0,4);
-
-  if(!items.length){
-    el.innerHTML = '<div class="deadline-mini"><div class="deadline-mini-title">' +
-      (currentLang === 'cn' ? '监管期限数据加载中' : 'Loading regulatory deadlines') +
-      '</div></div>';
-    return;
-  }
-
-  var html = '';
-  items.forEach(function(d){
-    var hasDate = !!d.deadline_date;
-    var target = hasDate ? new Date(d.deadline_date + 'T00:00:00') : null;
-    var diff = hasDate ? Math.ceil((target - today) / 86400000) : null;
-    var status = d.status || 'planned';
-    var urgency = status === 'critical' ? 'critical' : (status === 'upcoming' || status === 'needs_review' ? 'upcoming' : 'planned');
-    var dayClass = diff === null ? 'warning' : diff <= 0 ? 'passed' : diff <= 14 ? 'urgent' : diff <= 60 ? 'warning' : '';
-    var daysText = diff === null
-      ? (currentLang === 'cn' ? '核验中' : 'Review')
-      : diff <= 0 ? dict['dl.passed'] : String(diff);
-    var label = diff === null || diff <= 0 ? '' : (diff === 1 ? dict['dl.day'] : dict['dl.days']);
-    var name = currentLang === 'cn' ? (d.name_cn || d.name_en) : (d.name_en || d.name_cn);
-    var reg = currentLang === 'cn'
-      ? (d.source_note_cn || d.authority || '')
-      : (d.source_note_en || d.authority || '');
-    var dateStr = hasDate
-      ? target.toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US',{month:'short',day:'numeric',year:'numeric'})
-      : (currentLang === 'cn' ? '日期核验中' : 'Date under review');
-    var tagText = d.verification_status === 'needs_review'
-      ? (currentLang === 'cn' ? '待核验' : 'Review')
-      : (dict['dl.' + urgency] || urgency);
-
-    html += '<div class="deadline-mini">'
-      + '<div><div class="deadline-mini-top"><div><div class="deadline-mini-title"><span>'+deadlineFlag(d.jurisdiction_code)+'</span><span>'+escHtml(name||'')+'</span></div><div class="deadline-mini-reg">'+escHtml(reg||'')+'</div></div>'
-      + '<span class="deadline-mini-tag '+urgency+'">'+escHtml(tagText)+'</span></div></div>'
-      + '<div class="deadline-mini-bottom"><div><span class="deadline-days '+dayClass+'">'+escHtml(daysText)+'</span>'+(label?'<span class="deadline-label">'+escHtml(label)+'</span>':'')+'</div><span class="deadline-date">'+escHtml(dateStr)+'</span></div>'
-      + '</div>';
-  });
-  el.innerHTML = html;
-}
-
-function loadHomeDeadlines(){
-  return supabaseSelect('ck_regulatory_deadlines?select=name_en,name_cn,jurisdiction_code,authority,deadline_date,status,source_note_en,source_note_cn,verification_status,last_verified_at&verification_status=in.(verified,needs_review)&order=deadline_date.asc.nullslast&limit=8')
-    .then(function(rows){
-      HOME_DEADLINES = Array.isArray(rows) ? rows : [];
-      renderHomeDeadlines();
-    })
-    .catch(function(){
-      HOME_DEADLINES = [];
-      renderHomeDeadlines();
-    });
-}
-loadHomeDeadlines();
 
 // ===== BLACKLIST PREVIEW TABLE =====
 (function loadBlacklistPreview() {
@@ -2278,8 +2118,10 @@ loadHomeDeadlines();
 })();
 
 
-// ===== COMPLIANCE INTEL PREVIEW — unified with Compliance page =====
-var HOME_COMPLIANCE_RUN = null;
+// ===== COMPLIANCE INTEL PREVIEW — shared freshness layer =====
+var HOME_ENFORCEMENT = [];
+var HOME_REGULATORY = [];
+var HOME_NEXT_DEADLINE = null;
 
 function homeStoredText(item, field){
   if(!item) return '';
@@ -2303,10 +2145,12 @@ function homeRegionFlag(item){
 function renderHomeComplianceList(containerId, items, type){
   var container = document.getElementById(containerId);
   if(!container) return;
-  var rows = Array.isArray(items) ? items.slice(0,4) : [];
+  var rows = Array.isArray(items) ? items.slice(0,1) : [];
   if(!rows.length){
     container.innerHTML = '<div class="ci-preview-loading">' +
-      (currentLang === 'cn' ? '暂无最新数据' : 'No current data') +
+      (type === 'enforcement'
+        ? (currentLang === 'cn' ? '过去 45 天暂无已核实的执法记录。' : 'No verified enforcement records in the last 45 days.')
+        : (currentLang === 'cn' ? '过去 45 天暂无已核实的监管更新。' : 'No verified regulatory updates in the last 45 days.')) +
       '</div>';
     return;
   }
@@ -2327,11 +2171,9 @@ function renderHomeComplianceList(containerId, items, type){
 }
 
 function renderHomeUnifiedCompliance(){
-  if(HOME_COMPLIANCE_RUN){
-    renderHomeComplianceList('ci-enforcement-preview', HOME_COMPLIANCE_RUN.enforcement_items, 'enforcement');
-    renderHomeComplianceList('ci-regulatory-preview', HOME_COMPLIANCE_RUN.regulatory_items, 'regulatory');
-  }
-  loadComplianceNewsSignals();
+  renderHomeComplianceList('ci-enforcement-preview', HOME_ENFORCEMENT, 'enforcement');
+  renderHomeComplianceList('ci-regulatory-preview', HOME_REGULATORY, 'regulatory');
+  renderHomeDeadline();
 }
 
 function normalizeEnforcementRow(item){
@@ -2364,35 +2206,56 @@ function normalizeRegulatoryRow(item){
   };
 }
 
-function loadHomeUnifiedCompliance(){
-  var enforcementQuery = 'enforcement_actions?select=entity_name,entity_name_cn,summary,summary_cn,penalty_description,penalty_description_cn,action_date,severity,action_type,enforcing_agency,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=in.(ongoing,resolved,settled,appealed)&order=action_date.desc.nullslast&limit=6';
-  var regulatoryQuery = 'aml_regulation_updates?select=title,title_cn,summary,summary_cn,published_date,severity,update_type,source_name,created_at,jurisdiction:aml_jurisdictions(code)&status=in.(reviewed,published)&order=published_date.desc.nullslast&limit=6';
+function renderHomeDeadline(){
+  var container = document.getElementById('ci-deadline-preview');
+  if(!container) return;
+  var item = HOME_NEXT_DEADLINE;
+  if(!item){
+    container.innerHTML = '<div class="ci-preview-loading">' +
+      (currentLang === 'cn' ? '暂无已核实的未来监管截止日期。' : 'No verified future regulatory deadline is available.') +
+      '</div>';
+    return;
+  }
+  var name = currentLang === 'cn' ? (item.name_cn || item.name_en) : (item.name_en || item.name_cn);
+  var note = currentLang === 'cn'
+    ? (item.source_note_cn || item.source_note_en || item.authority || '')
+    : (item.source_note_en || item.authority || '');
+  var date = new Date(item.deadline_date + 'T00:00:00Z');
+  var dateText = date.toLocaleDateString(currentLang === 'cn' ? 'zh-CN' : 'en-US', {year:'numeric',month:'short',day:'numeric',timeZone:'UTC'});
+  var status = item.display_status || InnobridgeComplianceData.deadlineStatus(item);
+  var statusText = currentLang === 'cn'
+    ? ({critical:'关键',upcoming:'临近',planned:'计划'}[status] || status)
+    : status.charAt(0).toUpperCase() + status.slice(1);
+  var daysText = currentLang === 'cn' ? item.days_remaining + ' 天后到期' : item.days_remaining + (item.days_remaining === 1 ? ' day remaining' : ' days remaining');
+  container.innerHTML = '<div class="ci-preview-item">'
+    + '<div class="ci-preview-item-title"><span class="flag">'+homeRegionFlag({region:item.jurisdiction_code,title_en:name})+'</span>'+escHtml(name||'')+'</div>'
+    + '<div class="ci-preview-item-desc">'+escHtml(note||'')+'</div>'
+    + '<div class="ci-preview-item-meta"><span>'+escHtml(dateText)+'</span><span>'+escHtml(daysText)+'</span><span class="severity '+escHtml(status)+'">'+escHtml(statusText)+'</span></div>'
+    + '</div>';
+}
 
+function loadHomeUnifiedCompliance(){
   return Promise.all([
-    supabaseSelect(enforcementQuery),
-    supabaseSelect(regulatoryQuery)
+    InnobridgeComplianceData.loadEnforcement({limit:1}),
+    InnobridgeComplianceData.loadRegulatoryUpdates({limit:1}),
+    InnobridgeComplianceData.loadDeadlines()
   ]).then(function(results){
     var enforcementRows = Array.isArray(results[0]) ? results[0].map(function(item){
-      item.jurisdiction_code = item.jurisdiction && item.jurisdiction.code ? item.jurisdiction.code : '';
       return normalizeEnforcementRow(item);
     }) : [];
 
     var regulatoryRows = Array.isArray(results[1]) ? results[1].map(function(item){
-      item.jurisdiction_code = item.jurisdiction && item.jurisdiction.code ? item.jurisdiction.code : '';
       return normalizeRegulatoryRow(item);
     }) : [];
 
-    HOME_COMPLIANCE_RUN = {
-      enforcement_items: enforcementRows,
-      regulatory_items: regulatoryRows
-    };
-
+    HOME_ENFORCEMENT = enforcementRows;
+    HOME_REGULATORY = regulatoryRows;
+    HOME_NEXT_DEADLINE = InnobridgeComplianceData.nextVerifiedDeadline((results[2] || {}).current || []);
     renderHomeUnifiedCompliance();
   }).catch(function(){
-    HOME_COMPLIANCE_RUN = {
-      enforcement_items: [],
-      regulatory_items: []
-    };
+    HOME_ENFORCEMENT = [];
+    HOME_REGULATORY = [];
+    HOME_NEXT_DEADLINE = null;
     renderHomeUnifiedCompliance();
   });
 }
