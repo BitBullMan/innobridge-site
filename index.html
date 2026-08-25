@@ -1986,7 +1986,7 @@ var I18N = {
     'le.label':'For Law Enforcement','le.title':'Evidence Request Procedures','le.desc':'Comprehensive directory of law enforcement evidence request procedures for 80+ crypto exchanges, wallets, swap platforms, and mining pools.',
     'le.c1.val':'68','le.c1.label':'Exchanges','le.c2.val':'10','le.c2.label':'Wallets','le.c3.val':'4','le.c3.label':'Swap Platforms','le.c4.val':'3','le.c4.label':'Mining Pools',
     'le.cta':'View Full Evidence Directory',
-    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Current enforcement, regulatory, and deadline records from the same verified data layer used by the full compliance tracker.',
+    'ci.label':'Compliance Intelligence','ci.title':'Global Crypto Regulatory Landscape','ci.desc':'Current enforcement, regulatory, and deadline records from the same published data layer used by the full compliance tracker.',
     'ci.s1':'Jurisdictions','ci.s2':'Regulations','ci.s3':'Enforcement Cases','ci.s4':'Risk Rules','ci.s5':'Regulated Entities',
     'ci.f1.title':'Jurisdiction Profiles','ci.f1.desc':'Complete compliance profiles for each jurisdiction: regulations, risk rules, enforcement cases, regulatory updates, and licensed entities.',
     'ci.f2.title':'Enforcement Tracker','ci.f2.desc':'Track major regulatory actions against crypto entities worldwide — from SEC settlements to EU MiCA enforcement and VARA penalties.',
@@ -2028,7 +2028,7 @@ var I18N = {
     'le.label':'执法支持','le.title':'取证请求流程','le.desc':'80+ 加密交易所、钱包、闪兑平台和矿池的执法取证请求流程大全。',
     'le.c1.val':'68','le.c1.label':'交易所','le.c2.val':'10','le.c2.label':'钱包','le.c3.val':'4','le.c3.label':'闪兑平台','le.c4.val':'3','le.c4.label':'矿池',
     'le.cta':'查看完整取证目录',
-    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'直接展示完整合规追踪器所使用的同一套已核实执法、监管和截止日期数据。',
+    'ci.label':'合规情报','ci.title':'全球加密货币监管全景','ci.desc':'直接展示完整合规追踪器所使用的同一套已发布执法、监管和截止日期数据。',
     'ci.s1':'司法管辖区','ci.s2':'法规','ci.s3':'执法案例','ci.s4':'风险规则','ci.s5':'持牌实体',
     'ci.f1.title':'司法管辖区档案','ci.f1.desc':'每个管辖区的完整合规档案：法规、风险规则、执法案例、法规动态和持牌实体。',
     'ci.f2.title':'执法追踪','ci.f2.desc':'追踪全球对加密实体的重大监管行动 — 从 SEC 和解到欧盟 MiCA 执法和 VARA 处罚。',
@@ -2131,14 +2131,15 @@ function homeStoredText(item, field){
 
 function homeRegionFlag(item){
   var code = item.region || item.jurisdiction || '';
-  var flags = {US:'🇺🇸',EU:'🇪🇺',CN:'🇨🇳',HK:'🇭🇰',GB:'🇬🇧',AE:'🇦🇪',KR:'🇰🇷',JP:'🇯🇵',SG:'🇸🇬',CH:'🇨🇭'};
+  var flags = {US:'🇺🇸',EU:'🇪🇺',CN:'🇨🇳',HK:'🇭🇰',GB:'🇬🇧',AE:'🇦🇪',KR:'🇰🇷',JP:'🇯🇵',SG:'🇸🇬',CH:'🇨🇭',PK:'🇵🇰'};
   if(flags[code]) return flags[code];
   var text = (homeStoredText(item,'title') + ' ' + homeStoredText(item,'summary')).toLowerCase();
   if(/europe|european|mica|esma/.test(text)) return '🇪🇺';
-  if(/united states|u\.s\.|senate|congress|ofac|sec/.test(text)) return '🇺🇸';
-  if(/hong kong|sfc/.test(text)) return '🇭🇰';
-  if(/singapore|mas/.test(text)) return '🇸🇬';
-  if(/uae|dubai|vara/.test(text)) return '🇦🇪';
+  if(/united states|u\.s\.|senate|congress|ofac|sec\b/.test(text)) return '🇺🇸';
+  if(/hong kong|sfc\b/.test(text)) return '🇭🇰';
+  if(/singapore|mas\b/.test(text)) return '🇸🇬';
+  if(/pakistan|pvara\b/.test(text)) return '🇵🇰';
+  if(/uae|dubai|\bvara\b/.test(text)) return '🇦🇪';
   return '🌍';
 }
 
@@ -2149,8 +2150,8 @@ function renderHomeComplianceList(containerId, items, type){
   if(!rows.length){
     container.innerHTML = '<div class="ci-preview-loading">' +
       (type === 'enforcement'
-        ? (currentLang === 'cn' ? '过去 45 天暂无已核实的执法记录。' : 'No verified enforcement records in the last 45 days.')
-        : (currentLang === 'cn' ? '过去 45 天暂无已核实的监管更新。' : 'No verified regulatory updates in the last 45 days.')) +
+        ? (currentLang === 'cn' ? '过去 45 天暂无执法动态。' : 'No enforcement actions in the last 45 days.')
+        : (currentLang === 'cn' ? '过去 45 天暂无监管更新。' : 'No regulatory updates in the last 45 days.')) +
       '</div>';
     return;
   }
@@ -2212,7 +2213,7 @@ function renderHomeDeadline(){
   var item = HOME_NEXT_DEADLINE;
   if(!item){
     container.innerHTML = '<div class="ci-preview-loading">' +
-      (currentLang === 'cn' ? '暂无已核实的未来监管截止日期。' : 'No verified future regulatory deadline is available.') +
+      (currentLang === 'cn' ? '暂无未来监管截止日期。' : 'No future regulatory deadline is available.') +
       '</div>';
     return;
   }
@@ -2250,7 +2251,7 @@ function loadHomeUnifiedCompliance(){
 
     HOME_ENFORCEMENT = enforcementRows;
     HOME_REGULATORY = regulatoryRows;
-    HOME_NEXT_DEADLINE = InnobridgeComplianceData.nextVerifiedDeadline((results[2] || {}).current || []);
+    HOME_NEXT_DEADLINE = InnobridgeComplianceData.nextPublicDeadline((results[2] || {}).current || []);
     renderHomeUnifiedCompliance();
   }).catch(function(){
     HOME_ENFORCEMENT = [];
