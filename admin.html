@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Innobridge AML Admin</title>
-<meta name="description" content="Innobridge Admin Panel — Manage blacklist data, user accounts, and system configuration.">
+<title>Innobridge Product Operations</title>
+<meta name="description" content="Innobridge product operations console for users, subscriptions, intelligence data, and system health.">
 <meta property="og:title" content="Admin Panel — Innobridge">
-<meta property="og:description" content="Manage blacklist data, user accounts, and system configuration.">
+<meta property="og:description" content="Manage users, subscriptions, intelligence operations, and platform health.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.innobridge.io/admin">
 <meta name="twitter:card" content="summary">
@@ -602,6 +602,102 @@ tbody td { padding:11px 14px; font-size:13px; }
   margin-bottom:14px;
 }
 
+/* ── Product Operations V3 ── */
+.sidebar { padding-bottom:28px; }
+.sidebar-section-label { margin-top:7px; }
+.sidebar-section-label:first-child { margin-top:0; }
+.overview-kpis { display:grid;grid-template-columns:repeat(6,minmax(130px,1fr));gap:12px;margin-bottom:20px; }
+.overview-kpi { background:#fff;border:1px solid var(--border);border-radius:12px;padding:15px;min-width:0; }
+.overview-kpi-label { color:var(--text-3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.35px; }
+.overview-kpi-value { margin-top:6px;color:#172033;font-size:24px;font-weight:800;line-height:1.1; }
+.overview-kpi-note { margin-top:5px;color:var(--text-3);font-size:10px;line-height:1.4; }
+.overview-kpi.unavailable { background:#f9fbfd;border-style:dashed; }
+.overview-kpi.unavailable .overview-kpi-value { color:var(--text-2);font-size:13px;line-height:1.35; }
+.ops-layout { display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.8fr);gap:16px;margin-bottom:16px; }
+.ops-card { background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;padding:16px; }
+.ops-card-head { display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border); }
+.ops-card-title { font-size:13px;font-weight:700;color:var(--text); }
+.ops-card-sub { margin-top:2px;font-size:10px;color:var(--text-3); }
+.ops-card-body { padding:14px 16px; }
+.ops-empty { min-height:0;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;padding:14px 16px;color:var(--text-2);background:#f9fbfd;border:1px dashed var(--border);border-radius:9px; }
+.ops-empty strong { color:var(--text);font-size:12px; }
+.ops-empty span { margin-top:4px;font-size:11px;line-height:1.5; }
+.health-list { display:grid;gap:0; }
+.health-row { display:grid;grid-template-columns:minmax(130px,1fr) auto auto;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border); }
+.health-row:last-child { border-bottom:0; }
+.health-name { font-size:12px;font-weight:650;color:var(--text); }
+.health-time { font-size:10px;color:var(--text-3);font-family:monospace;white-space:nowrap; }
+.health-state { display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;white-space:nowrap; }
+.health-state::before { content:'';width:6px;height:6px;border-radius:50%;background:currentColor; }
+.health-state.current { color:#15803d; }
+.health-state.delayed { color:#b45309; }
+.health-state.stale { color:#b91c1c; }
+.health-state.unknown { color:#64748b; }
+.distribution-list { display:grid;gap:10px; }
+.distribution-list > div { display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:9px;border-bottom:1px solid var(--border);font-size:11px; }
+.distribution-list > div:last-child { border-bottom:0;padding-bottom:0; }
+.distribution-row { display:grid;grid-template-columns:minmax(110px,1fr) 2fr auto;align-items:center;gap:10px;font-size:11px; }
+.distribution-bar { height:6px;border-radius:999px;background:#e8eef5;overflow:hidden; }
+.distribution-fill { height:100%;border-radius:inherit;background:#2563eb; }
+.metric-strip { display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px; }
+.metric-strip > div { min-width:0;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:10px; }
+.metric-strip > div strong { display:block;font-size:20px;line-height:1.15;color:var(--text); }
+.metric-strip > div span { display:block;margin-top:4px;font-size:10px;color:var(--text-3); }
+.metric-strip .ops-panel { padding:13px; }
+.metric-strip .ops-value { font-size:20px; }
+.user-toolbar { display:grid;grid-template-columns:minmax(220px,1fr) repeat(3,150px);gap:9px;margin-bottom:14px; }
+.user-row-action { color:var(--accent);font-size:11px;font-weight:700;background:none;border:0;cursor:pointer; }
+.user-row-action:hover { text-decoration:underline; }
+.activity-meter { display:flex;align-items:center;gap:7px;white-space:nowrap; }
+.activity-track { width:54px;height:5px;border-radius:999px;background:#e8eef5;overflow:hidden; }
+.activity-fill { height:100%;background:#2563eb;border-radius:inherit; }
+.lifecycle-pill { display:inline-flex;padding:3px 8px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:10px;font-weight:700;white-space:nowrap; }
+.lifecycle-pill.engaged { background:#dcfce7;color:#15803d; }
+.lifecycle-pill.new { background:#dbeafe;color:#1d4ed8; }
+.lifecycle-pill.inactive { background:#fee2e2;color:#b91c1c; }
+.user360-grid { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px; }
+.user360-section { border:1px solid var(--border);border-radius:10px;padding:13px;background:#fff; }
+.user360-section.wide { grid-column:1/-1; }
+.user360-title { font-size:10px;font-weight:700;color:var(--text-3);text-transform:uppercase;letter-spacing:.35px;margin-bottom:9px; }
+.detail-list { display:grid;gap:7px; }
+.detail-row { display:flex;align-items:flex-start;justify-content:space-between;gap:12px;font-size:11px; }
+.detail-row span:first-child { color:var(--text-3); }
+.detail-row strong { color:var(--text);font-weight:600;text-align:right;word-break:break-word; }
+.timeline { display:grid;gap:10px; }
+.timeline > div { display:flex;flex-direction:column;gap:2px;padding-left:14px;border-left:2px solid #dbeafe;font-size:11px; }
+.timeline > div span { color:var(--text-3); }
+.timeline-item { position:relative;padding-left:18px;font-size:11px;color:var(--text-2); }
+.timeline-item::before { content:'';position:absolute;left:2px;top:4px;width:7px;height:7px;border-radius:50%;background:#2563eb; }
+.timeline-item::after { content:'';position:absolute;left:5px;top:13px;bottom:-11px;width:1px;background:var(--border); }
+.timeline-item:last-child::after { display:none; }
+.timeline-time { display:block;margin-top:2px;color:var(--text-3);font:10px monospace; }
+.source-grid { display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px; }
+.source-card { border:1px solid var(--border);border-radius:10px;padding:14px;background:#fff; }
+.source-card-head { display:flex;justify-content:space-between;gap:10px;align-items:flex-start; }
+.source-name { font-size:12px;font-weight:700;color:var(--text); }
+.source-metric { margin-top:10px;font-size:21px;font-weight:800;color:#172033; }
+.source-meta { margin-top:3px;font-size:10px;color:var(--text-3); }
+.ready-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#dcfce7;color:#15803d;font-size:9px;font-weight:800; }
+.needs-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#fff7ed;color:#b45309;font-size:9px;font-weight:800; }
+.decision-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:9px;font-weight:800; }
+
+@media (max-width:1200px) {
+  .overview-kpis { grid-template-columns:repeat(3,minmax(0,1fr)); }
+  .user-toolbar { grid-template-columns:1fr 1fr; }
+}
+@media (max-width:820px) {
+  .ops-layout { grid-template-columns:1fr; }
+  .metric-strip { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .user360-grid { grid-template-columns:1fr; }
+  .user360-section.wide { grid-column:auto; }
+}
+@media (max-width:640px) {
+  .overview-kpis { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .user-toolbar { grid-template-columns:1fr; }
+  .health-row { grid-template-columns:1fr auto; }
+  .health-time { grid-column:1/-1; }
+}
+
 /* ── Confirm Dialog ── */
 .confirm-overlay {
   display:none;
@@ -656,8 +752,8 @@ tbody td { padding:11px 14px; font-size:13px; }
       <span class="login-logo-text" style="margin-left:4px;">nnobridge</span>
       <span class="login-logo-tag">Admin</span>
     </div>
-    <div class="login-title">Admin Sign In</div>
-    <div class="login-sub">Access the AML Blacklist management platform</div>
+    <div class="login-title">Product Operations Sign In</div>
+    <div class="login-sub">Manage users, intelligence products and production operations</div>
     <div id="loginError" class="error-box"></div>
     <div class="form-group">
       <label class="form-label">Email address</label>
@@ -695,58 +791,92 @@ tbody td { padding:11px 14px; font-size:13px; }
 
   <div class="app-body">
     <!-- Sidebar -->
-    <nav class="sidebar">
-      <div class="sidebar-section-label">Navigation</div>
-      <button class="nav-item active" onclick="showTab('dashboard')" id="nav-dashboard">
+    <nav class="sidebar" aria-label="Product operations navigation">
+      <div class="sidebar-section-label">Overview</div>
+      <button class="nav-item active" onclick="showTab('overview')" id="nav-overview">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-        <span>Dashboard</span>
+        <span>Overview</span>
       </button>
-      <button class="nav-item" onclick="showTab('addresses')" id="nav-addresses">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-        <span>Addresses</span>
-      </button>
-      <button class="nav-item" onclick="showTab('import')" id="nav-import">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
-        <span>Import</span>
-      </button>
-      <button class="nav-item" onclick="showTab('auditlog')" id="nav-auditlog">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10,9 9,9 8,9"/></svg>
-        <span>Audit Log</span>
-      </button>
-      <button class="nav-item" onclick="showTab('users')" id="nav-users" style="display:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-        <span>Access Control</span>
-      </button>
-      <div class="sidebar-section-label" id="le-section-label" style="display:none;">User Operations</div>
-      <button class="nav-item" onclick="showTab('le-requests')" id="nav-le-requests" style="display:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        <span>LE Requests</span>
-        <span class="le-badge-count" id="le-pending-count" style="display:none;background:#ea580c;color:#fff;font-size:10px;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:auto;"></span>
-      </button>
-      <button class="nav-item" onclick="showTab('platform-users')" id="nav-platform-users" style="display:none;">
+
+      <div class="sidebar-section-label admin-nav" style="display:none;">Users</div>
+      <button class="nav-item admin-nav" onclick="showTab('platform-users')" id="nav-platform-users" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Platform Users</span>
+        <span>Users</span>
       </button>
-      <button class="nav-item" onclick="showTab('briefing-ops')" id="nav-briefing-ops" style="display:none;">
+      <button class="nav-item admin-nav" onclick="showTab('subscriptions')" id="nav-subscriptions" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+        <span>Subscriptions</span>
+      </button>
+      <button class="nav-item admin-nav" onclick="showTab('entitlements')" id="nav-entitlements" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        <span>Access &amp; Entitlements</span>
+      </button>
+
+      <div class="sidebar-section-label">Intelligence</div>
+      <button class="nav-item" onclick="showTab('content-signals')" id="nav-content-signals">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M5 16l4-5 3 3 5-8 2 3"/></svg>
+        <span>Content &amp; Signals</span>
+      </button>
+      <button class="nav-item" onclick="showTab('sanctions')" id="nav-sanctions">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
+        <span>Sanctions</span>
+      </button>
+      <button class="nav-item" onclick="showTab('dashboard')" id="nav-dashboard">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+        <span>Freeze Data</span>
+      </button>
+
+      <div class="sidebar-section-label admin-nav" style="display:none;">Operations</div>
+      <button class="nav-item admin-nav" onclick="showTab('briefing-ops')" id="nav-briefing-ops" style="display:none;">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v14H7l-3 3V4z"/><path d="M8 9h8M8 13h5"/></svg>
-        <span>Briefing Ops</span>
+        <span>Briefing Operations</span>
+      </button>
+      <button class="nav-item admin-nav" onclick="showTab('pipelines')" id="nav-pipelines" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 12h4a4 4 0 004-4V7M11 12a4 4 0 014 4v1"/></svg>
+        <span>Data Pipelines</span>
+      </button>
+      <button class="nav-item admin-nav" onclick="showTab('import')" id="nav-import" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        <span>Imports</span>
+      </button>
+
+      <div class="sidebar-section-label superadmin-nav" style="display:none;">Admin</div>
+      <button class="nav-item superadmin-nav" onclick="showTab('users')" id="nav-users" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M16 11h6"/></svg>
+        <span>Admin Access</span>
+      </button>
+      <button class="nav-item superadmin-nav" onclick="showTab('auditlog')" id="nav-auditlog" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        <span>Audit Log</span>
       </button>
     </nav>
 
     <!-- Content -->
     <main class="content">
 
-      <!-- ── Dashboard Tab ── -->
-      <div class="tab-panel active" id="tab-dashboard">
+      <!-- ── Product Operations Overview ── -->
+      <div class="tab-panel active" id="tab-overview">
         <div class="page-header">
           <div>
-            <div class="page-title">Dashboard</div>
-            <div class="page-sub">AML Blacklist statistics overview</div>
+            <div class="page-title">Product Operations</div>
+            <div class="page-sub">Platform performance, users and system operations</div>
           </div>
-          <button class="btn btn-outline btn-sm" onclick="loadDashboard()">
+          <button class="btn btn-outline btn-sm" onclick="loadOverview()">Refresh</button>
+        </div>
+        <div id="overviewArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
+      <!-- ── Dashboard Tab ── -->
+      <div class="tab-panel" id="tab-dashboard">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Freeze Data</div>
+            <div class="page-sub">Stablecoin freeze records, additions and risk distribution</div>
+          </div>
+          <div style="display:flex;gap:8px;"><button class="btn btn-outline btn-sm" onclick="showTab('addresses')">Manage Records</button><button class="btn btn-outline btn-sm" onclick="loadDashboard()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-.67-4.6"/></svg>
             Refresh
-          </button>
+          </button></div>
         </div>
         <div class="stats-grid" id="dashStatsGrid">
           <!-- populated dynamically -->
@@ -946,7 +1076,7 @@ tbody td { padding:11px 14px; font-size:13px; }
       <div class="tab-panel" id="tab-users">
         <div class="page-header">
           <div>
-            <div class="page-title">Access Control</div>
+            <div class="page-title">Admin Access</div>
             <div class="page-sub">Manage staff roles, effective permissions, account status, expiry, and invitations</div>
           </div>
           <button class="btn btn-primary btn-sm" onclick="openInviteModal()">
@@ -988,8 +1118,8 @@ tbody td { padding:11px 14px; font-size:13px; }
       <div class="tab-panel" id="tab-platform-users">
         <div class="page-header">
           <div>
-            <div class="page-title">Platform Users</div>
-            <div class="page-sub">Registered user directory, LE access, and per-user briefing controls</div>
+            <div class="page-title">Users</div>
+            <div class="page-sub">Registered users, account state, subscriptions and product profiles</div>
           </div>
           <div style="display:flex;gap:8px;">
             <button class="btn btn-outline btn-sm" onclick="showTab('briefing-ops')">
@@ -1008,6 +1138,36 @@ tbody td { padding:11px 14px; font-size:13px; }
         <div id="platformUsersArea">
           <div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>
         </div>
+      </div>
+
+      <!-- ── Subscriptions Tab ── -->
+      <div class="tab-panel" id="tab-subscriptions">
+        <div class="page-header"><div><div class="page-title">Subscriptions</div><div class="page-sub">Delivery status and audience controls backed by production subscription records</div></div><button class="btn btn-outline btn-sm" onclick="loadSubscriptions()">Refresh</button></div>
+        <div id="subscriptionsArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
+      <!-- ── Entitlements Tab ── -->
+      <div class="tab-panel" id="tab-entitlements">
+        <div class="page-header"><div><div class="page-title">Access &amp; Entitlements</div><div class="page-sub">Read-only view of effective platform and intelligence access</div></div><button class="btn btn-outline btn-sm" onclick="loadEntitlements()">Refresh</button></div>
+        <div id="entitlementsArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
+      <!-- ── Content & Signals Tab ── -->
+      <div class="tab-panel" id="tab-content-signals">
+        <div class="page-header"><div><div class="page-title">Content &amp; Signals</div><div class="page-sub">Current intelligence inventory and compliance signals</div></div><button class="btn btn-outline btn-sm" onclick="loadContentSignals()">Refresh</button></div>
+        <div id="contentSignalsArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
+      <!-- ── Sanctions Tab ── -->
+      <div class="tab-panel" id="tab-sanctions">
+        <div class="page-header"><div><div class="page-title">Sanctions</div><div class="page-sub">Operational coverage and recent designations; public access policy remains unchanged</div></div><button class="btn btn-outline btn-sm" onclick="loadSanctionsOps()">Refresh</button></div>
+        <div id="sanctionsOpsArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
+      <!-- ── Data Pipelines Tab ── -->
+      <div class="tab-panel" id="tab-pipelines">
+        <div class="page-header"><div><div class="page-title">Data Pipelines</div><div class="page-sub">Observed freshness of production datasets and generated outputs</div></div><button class="btn btn-outline btn-sm" onclick="loadPipelines()">Refresh</button></div>
+        <div id="pipelinesArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
       </div>
 
       <!-- ── Briefing Operations Tab ── -->
@@ -1254,6 +1414,15 @@ tbody td { padding:11px 14px; font-size:13px; }
 </div>
 
 <!-- ════ CONFIRM DIALOG ════ -->
+<div class="modal-overlay" id="user360Modal">
+  <div class="modal modal-lg">
+    <div class="modal-header"><div><div class="modal-title" id="user360Title">User 360</div><div class="modal-sub" id="user360Sub">Account, access and observed operational history</div></div><button class="modal-close" onclick="closeUser360()">&#215;</button></div>
+    <div id="user360Area"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeUser360()">Close</button></div>
+  </div>
+</div>
+
+<!-- ════ CONFIRM DIALOG ════ -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
     <div class="confirm-icon" id="confirmIcon">&#9888;</div>
@@ -1295,8 +1464,8 @@ const ADMIN_ROLE_DEFINITIONS = Object.freeze({
   admin: {
     label: 'Admin',
     color: '#1d4ed8',
-    summary: 'Run user operations, briefing delivery, and LE reviews.',
-    permissions: ['Editor access', 'Platform users', 'Briefing controls', 'LE approvals']
+    summary: 'Run user, subscription, intelligence, and delivery operations.',
+    permissions: ['Editor access', 'Platform users', 'Briefing controls', 'Intelligence operations']
   },
   super_admin: {
     label: 'Super Admin',
@@ -1352,6 +1521,55 @@ let editingInterestUserId = null;
 let adminUsersCache = [];
 let adminInvitesCache = [];
 let adminAccessFilters = { query: '', role: 'all', status: 'all' };
+let productUserFilters = { query: '', segment: 'all', sort: 'newest' };
+
+function opsDate(value) {
+  if (!value) return 'Unavailable';
+  const date = new Date(value);
+  return Number.isFinite(date.getTime()) ? date.toLocaleString() : 'Unavailable';
+}
+
+function ageLabel(value) {
+  if (!value) return 'No timestamp';
+  const ageMs = Date.now() - new Date(value).getTime();
+  if (!Number.isFinite(ageMs)) return 'Invalid timestamp';
+  const hours = Math.max(0, Math.floor(ageMs / 3600000));
+  if (hours < 1) return 'Less than 1 hour ago';
+  if (hours < 48) return `${hours} hours ago`;
+  return `${Math.floor(hours / 24)} days ago`;
+}
+
+async function safeCount(table, configure) {
+  try {
+    let query = sb.from(table).select('*', { count: 'exact', head: true });
+    if (configure) query = configure(query);
+    const { count, error } = await query;
+    if (error) throw error;
+    return { value: count || 0, available: true };
+  } catch (error) {
+    console.warn(`Count unavailable for ${table}:`, error);
+    return { value: null, available: false, error: error.message };
+  }
+}
+
+async function safeLatest(table, timestamp = 'created_at') {
+  try {
+    const { data, error } = await sb.from(table).select('*').order(timestamp, { ascending: false }).limit(1);
+    if (error) throw error;
+    return { row: data?.[0] || null, available: true };
+  } catch (error) {
+    console.warn(`Freshness unavailable for ${table}:`, error);
+    return { row: null, available: false, error: error.message };
+  }
+}
+
+function unavailableKpi(label, note = 'Product analytics not connected') {
+  return `<div class="overview-kpi"><div class="stat-label">${esc(label)}</div><div class="stat-val" style="font-size:18px;color:var(--text-3);">Unavailable</div><div class="stat-sub">${esc(note)}</div></div>`;
+}
+
+function realKpi(label, value, note) {
+  return `<div class="overview-kpi"><div class="stat-label">${esc(label)}</div><div class="stat-val">${Number(value || 0).toLocaleString()}</div><div class="stat-sub">${esc(note || 'Current production record')}</div></div>`;
+}
 
 // ════════════════════════════════════════════════
 // AUTH
@@ -1468,19 +1686,9 @@ function initApp() {
   badge.textContent = currentAdminUser.role.replace('_', ' ');
   badge.className = 'role-badge ' + currentAdminUser.role;
 
-  // Show/hide Users tab for super_admin
-  if (currentAdminUser.role === 'super_admin') {
-    document.getElementById('nav-users').style.display = 'flex';
-  }
-
-  // Show LE management for admin and super_admin
-  if (currentAdminUser.role === 'super_admin' || currentAdminUser.role === 'admin') {
-    document.getElementById('le-section-label').style.display = 'block';
-    document.getElementById('nav-le-requests').style.display = 'flex';
-    document.getElementById('nav-platform-users').style.display = 'flex';
-    document.getElementById('nav-briefing-ops').style.display = 'flex';
-    loadLEPendingCount();
-  }
+  const canOperate = currentAdminUser.role === 'super_admin' || currentAdminUser.role === 'admin';
+  document.querySelectorAll('.admin-nav').forEach(el => { el.style.display = canOperate ? (el.tagName === 'BUTTON' ? 'flex' : 'block') : 'none'; });
+  document.querySelectorAll('.superadmin-nav').forEach(el => { el.style.display = currentAdminUser.role === 'super_admin' ? (el.tagName === 'BUTTON' ? 'flex' : 'block') : 'none'; });
 
   // Restrict Add Address for viewers
   if (currentAdminUser.role === 'viewer') {
@@ -1488,7 +1696,7 @@ function initApp() {
     if (addBtn) addBtn.style.display = 'none';
   }
 
-  loadDashboard();
+  showTab('overview');
 }
 
 // ════════════════════════════════════════════════
@@ -1497,20 +1705,89 @@ function initApp() {
 function showTab(name) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('tab-' + name).classList.add('active');
-  document.getElementById('nav-' + name).classList.add('active');
+  const panel = document.getElementById('tab-' + name);
+  if (!panel) return;
+  panel.classList.add('active');
+  const nav = document.getElementById('nav-' + name);
+  if (nav) nav.classList.add('active');
 
+  if (name === 'overview') loadOverview();
   if (name === 'addresses') loadAddresses(1);
   if (name === 'auditlog') loadAuditLog(1);
   if (name === 'users') loadUsers();
   if (name === 'dashboard') loadDashboard();
   if (name === 'le-requests') loadLERequests();
   if (name === 'platform-users') loadPlatformUsers();
+  if (name === 'subscriptions') loadSubscriptions();
+  if (name === 'entitlements') loadEntitlements();
+  if (name === 'content-signals') loadContentSignals();
+  if (name === 'sanctions') loadSanctionsOps();
+  if (name === 'pipelines') loadPipelines();
   if (name === 'briefing-ops') loadBriefingOps();
 }
 
 // ════════════════════════════════════════════════
-// DASHBOARD
+// PRODUCT OPERATIONS OVERVIEW
+// ════════════════════════════════════════════════
+async function loadOverview() {
+  const area = document.getElementById('overviewArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const [registered, subscribers, freezeCount, sanctionsCount, news24h, signals24h, profiles, subscriptions, freezeLatest, sanctionsLatest, newsLatest, signalLatest, briefingLatest, regulatoryLatest, enforcementLatest] = await Promise.all([
+    safeCount('aml_user_profiles'),
+    safeCount('user_briefing_subscriptions', q => q.eq('briefing_key', DAILY_BRIEFING_KEY).eq('delivery_channel', 'email').eq('status', 'active')),
+    safeCount('aml_addresses', q => q.eq('status', 'active')),
+    safeCount('sanctions_designations', q => q.eq('is_active', true)),
+    safeCount('news', q => q.gte('published_at', new Date(Date.now() - 86400000).toISOString())),
+    safeCount('compliance_news_signals', q => q.gte('created_at', new Date(Date.now() - 86400000).toISOString())),
+    sb.from('aml_user_profiles').select('*').order('created_at', { ascending: false }).limit(6),
+    sb.from('user_briefing_subscriptions').select('*').eq('briefing_key', DAILY_BRIEFING_KEY).eq('delivery_channel', 'email'),
+    safeLatest('aml_addresses', 'updated_at'),
+    safeLatest('sanctions_designations', 'updated_at'),
+    safeLatest('news', 'published_at'),
+    safeLatest('compliance_news_signals', 'created_at'),
+    safeLatest('briefing_runs', 'created_at'),
+    safeLatest('regulatory_updates', 'updated_at'),
+    safeLatest('enforcement_actions', 'updated_at')
+  ]);
+  const recentUsers = profiles.data || [];
+  const subs = subscriptions.data || [];
+  const subStatus = subs.reduce((acc, row) => { const key = row.status || 'unknown'; acc[key] = (acc[key] || 0) + 1; return acc; }, {});
+  const health = [
+    ['News ingestion', newsLatest.row?.published_at || newsLatest.row?.created_at, newsLatest.available],
+    ['Compliance signals', signalLatest.row?.created_at || signalLatest.row?.published_at, signalLatest.available],
+    ['Freeze data', freezeLatest.row?.updated_at || freezeLatest.row?.created_at, freezeLatest.available],
+    ['Sanctions / OFAC', sanctionsLatest.row?.updated_at || sanctionsLatest.row?.created_at, sanctionsLatest.available],
+    ['Regulatory updates', regulatoryLatest.row?.updated_at || regulatoryLatest.row?.created_at, regulatoryLatest.available],
+    ['Enforcement', enforcementLatest.row?.updated_at || enforcementLatest.row?.created_at, enforcementLatest.available],
+    ['Daily briefing', briefingLatest.row?.created_at || briefingLatest.row?.generated_at, briefingLatest.available]
+  ];
+  const healthHtml = health.map(([label, value, available]) => {
+    const age = value ? Date.now() - new Date(value).getTime() : Infinity;
+    const state = !available || !value ? 'Unavailable' : age <= 36 * 3600000 ? 'Current' : age <= 8 * 86400000 ? 'Delayed' : 'Stale';
+    const color = state === 'Current' ? 'var(--green)' : state === 'Delayed' ? 'var(--orange)' : 'var(--red)';
+    return `<div class="health-row"><div><strong>${esc(label)}</strong><div class="tiny-muted">${esc(value ? opsDate(value) : 'No observable timestamp')}</div></div><span style="color:${color};font-weight:700;">${state}</span></div>`;
+  }).join('');
+  area.innerHTML = `
+    <div class="overview-kpis">
+      ${unavailableKpi('Visitors')}${registered.available ? realKpi('Registered Users', registered.value, 'Supabase profiles') : unavailableKpi('Registered Users','Query unavailable')}${unavailableKpi('Active Users')}${unavailableKpi('Returning Users')}${subscribers.available ? realKpi('Subscribers', subscribers.value, 'Active Daily Briefing') : unavailableKpi('Subscribers','Query unavailable')}${unavailableKpi('Core Product Actions')}
+    </div>
+    <div class="ops-empty" style="margin:14px 0;">Visitor, active-user, returning-user and product-action analytics are intentionally not estimated. Connect a first-party event stream before these KPIs are enabled.</div>
+    <div class="metric-strip">
+      <div><strong>${freezeCount.available ? freezeCount.value.toLocaleString() : 'Unavailable'}</strong><span>Active freeze records</span></div>
+      <div><strong>${sanctionsCount.available ? sanctionsCount.value.toLocaleString() : 'Unavailable'}</strong><span>Active sanctions designations</span></div>
+      <div><strong>${news24h.available ? news24h.value.toLocaleString() : 'Unavailable'}</strong><span>News records · 24h</span></div>
+      <div><strong>${signals24h.available ? signals24h.value.toLocaleString() : 'Unavailable'}</strong><span>Compliance signals · 24h</span></div>
+    </div>
+    <div class="ops-layout">
+      <section class="ops-card"><div class="ops-card-title">Recent registrations</div>${recentUsers.length ? `<div class="table-wrapper"><table><thead><tr><th>User</th><th>Joined</th><th>Status</th></tr></thead><tbody>${recentUsers.map(u => `<tr><td><strong>${esc(u.full_name || u.email || 'Unnamed')}</strong><div class="tiny-muted">${esc(u.email || '')}</div></td><td>${esc(opsDate(u.created_at))}</td><td>${u.is_active ? '<span class="status-pill status-active">Active</span>' : '<span class="status-pill status-disabled">Disabled</span>'}</td></tr>`).join('')}</tbody></table></div>` : '<div class="ops-empty">No registered users returned.</div>'}</section>
+      <section class="ops-card"><div class="ops-card-title">System freshness</div><div class="health-list">${healthHtml}</div></section>
+      <section class="ops-card"><div class="ops-card-title">Subscription distribution</div>${Object.keys(subStatus).length ? `<div class="distribution-list">${Object.entries(subStatus).map(([key,value]) => `<div><span>${esc(key)}</span><strong>${value}</strong></div>`).join('')}</div>` : '<div class="ops-empty">No subscription records available.</div>'}</section>
+      <section class="ops-card"><div class="ops-card-title">Implementation status</div><div class="distribution-list"><div><span>User and subscription operations</span><strong class="ready-badge">Ready</strong></div><div><span>Intelligence inventory and freshness</span><strong class="ready-badge">Ready</strong></div><div><span>Behavior analytics</span><strong>Needs data</strong></div><div><span>Engagement score and lifecycle thresholds</span><strong>Needs decision</strong></div></div></section>
+    </div>`;
+}
+
+// ════════════════════════════════════════════════
+// FREEZE DATA DASHBOARD
 // ════════════════════════════════════════════════
 async function loadDashboard() {
   const grid = document.getElementById('dashStatsGrid');
@@ -2739,7 +3016,7 @@ async function revokeDirectLEAccess(userId, email) {
 // PLATFORM USERS
 // ════════════════════════════════════════════════
 
-async function loadPlatformUsers() {
+async function loadPlatformUsersLegacy() {
   const area = document.getElementById('platformUsersArea');
   area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
 
@@ -3010,6 +3287,112 @@ async function saveInterestProfile() {
     errBox.textContent = 'Could not save profile: ' + err.message;
     errBox.classList.add('show');
   }
+}
+
+// Product Operations V3 user directory. This intentionally does not invent
+// engagement scores while first-party product events are unavailable.
+async function loadPlatformUsers() {
+  const area = document.getElementById('platformUsersArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const { data, error } = await sb.from('aml_user_profiles').select('*').order('created_at', { ascending: false });
+  if (error) { area.innerHTML = `<div class="ops-empty">Users unavailable: ${esc(error.message)}</div>`; return; }
+  platformUsersCache = data || [];
+  await loadBriefingUserOps(platformUsersCache.map(u => u.id));
+  renderProductUsers();
+}
+
+function renderProductUsers() {
+  const area = document.getElementById('platformUsersArea');
+  const query = productUserFilters.query.toLowerCase().trim();
+  const now = Date.now();
+  let rows = platformUsersCache.filter(u => {
+    const sub = getUserBriefingSub(u);
+    const joined = now - new Date(u.created_at || 0).getTime();
+    const matchesQuery = !query || `${u.email || ''} ${u.full_name || ''} ${u.company_name || ''}`.toLowerCase().includes(query);
+    const matchesSegment = productUserFilters.segment === 'all'
+      || (productUserFilters.segment === 'active' && u.is_active)
+      || (productUserFilters.segment === 'new' && joined >= 0 && joined <= 14 * 86400000)
+      || (productUserFilters.segment === 'subscribers' && sub.status === 'active')
+      || (productUserFilters.segment === 'inactive' && !u.is_active);
+    return matchesQuery && matchesSegment;
+  });
+  rows.sort((a,b) => productUserFilters.sort === 'oldest' ? new Date(a.created_at)-new Date(b.created_at) : productUserFilters.sort === 'email' ? String(a.email).localeCompare(String(b.email)) : new Date(b.created_at)-new Date(a.created_at));
+  const body = rows.map(u => {
+    const sub = getUserBriefingSub(u);
+    const lifecycle = Date.now() - new Date(u.created_at || 0).getTime() <= 14 * 86400000 ? 'New' : u.is_active ? 'Activated' : 'Inactive';
+    return `<tr><td><strong>${esc(u.full_name || 'Unnamed user')}</strong><div class="tiny-muted">${esc(u.email || '')}</div></td><td>${esc(u.company_name || u.organization || '—')}</td><td>${esc(u.role || 'public')}</td><td>${esc(opsDate(u.created_at))}</td><td><span class="tiny-muted">Not tracked</span></td><td>${briefingStatusBadge(sub.status, sub.legacy)}</td><td>${u.is_active ? 'Authenticated products' : 'Public preview only'}</td><td><span class="tiny-muted">Not tracked</span></td><td><span class="access-state ${u.is_active ? 'active' : 'disabled'}">${u.is_active ? 'Active' : 'Disabled'}</span><div style="margin-top:4px;"><span class="lifecycle-pill">${lifecycle}</span></div></td><td><button class="btn btn-xs btn-outline" onclick="openUser360('${u.id}')">View</button></td></tr>`;
+  }).join('');
+  area.innerHTML = `<div class="user-toolbar"><div class="search-wrap"><span class="search-icon">⌕</span><input class="search-input" value="${esc(productUserFilters.query)}" placeholder="Search user, email or company" oninput="setProductUserFilter('query',this.value)"></div><select class="filter-select" onchange="setProductUserFilter('segment',this.value)"><option value="all">All users</option><option value="active" ${productUserFilters.segment==='active'?'selected':''}>Active</option><option value="new" ${productUserFilters.segment==='new'?'selected':''}>New · 14 days</option><option value="subscribers" ${productUserFilters.segment==='subscribers'?'selected':''}>Subscribers</option><option value="inactive" ${productUserFilters.segment==='inactive'?'selected':''}>Inactive</option></select><select class="filter-select" onchange="setProductUserFilter('sort',this.value)"><option value="newest">Newest first</option><option value="oldest" ${productUserFilters.sort==='oldest'?'selected':''}>Oldest first</option><option value="email" ${productUserFilters.sort==='email'?'selected':''}>Email</option></select></div><div class="ops-empty" style="margin-bottom:12px;">Last Active and engagement scoring require a first-party product event stream. They are not inferred from account records.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Company</th><th>Role</th><th>Joined</th><th>Last Active</th><th>Subscriptions</th><th>Access</th><th>Activity</th><th>Status</th><th></th></tr></thead><tbody>${body || '<tr><td colspan="10"><div class="empty-state">No matching users.</div></td></tr>'}</tbody></table></div></div><div class="tiny-muted" style="margin-top:10px;">${rows.length} of ${platformUsersCache.length} registered users</div>`;
+}
+
+function setProductUserFilter(field, value) {
+  productUserFilters[field] = value;
+  renderProductUsers();
+  if (field === 'query') requestAnimationFrame(() => { const input = document.querySelector('#platformUsersArea .search-input'); if (input) { input.focus(); input.setSelectionRange(input.value.length,input.value.length); } });
+}
+
+async function openUser360(userId) {
+  const user = platformUsersCache.find(u => u.id === userId);
+  if (!user) return;
+  document.getElementById('user360Modal').classList.add('show');
+  document.getElementById('user360Title').textContent = user.full_name || user.email || 'User 360';
+  document.getElementById('user360Sub').textContent = user.email || '';
+  const area = document.getElementById('user360Area');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const [events, deliveries] = await Promise.all([
+    sb.from('user_admin_events').select('*').eq('user_id', userId).order('created_at',{ascending:false}).limit(10),
+    sb.from('briefing_delivery_jobs').select('*').eq('user_id', userId).order('created_at',{ascending:false}).limit(10)
+  ]);
+  const sub = getUserBriefingSub(user);
+  const timeline = [...(events.data || []).map(e => ({ at:e.created_at, label:e.event_type || e.action || 'Admin event', detail:e.reason || '' })), ...(deliveries.data || []).map(d => ({ at:d.created_at, label:`Briefing ${d.status || 'job'}`, detail:d.recipient_email || '' }))].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,12);
+  const profile=interestProfilesByUser[userId]||{};
+  area.innerHTML = `<div class="user360-grid"><div class="ops-card"><div class="ops-card-title">Account Summary</div><div class="distribution-list"><div><span>Role</span><strong>${esc(user.role || 'public')}</strong></div><div><span>Joined</span><strong>${esc(opsDate(user.created_at))}</strong></div><div><span>Account status</span><strong>${user.is_active ? 'Active' : 'Disabled'}</strong></div><div><span>Last login</span><strong>${esc(opsDate(user.last_login_at||user.last_login))}</strong></div><div><span>Sessions</span><strong>Not tracked</strong></div><div><span>Total actions</span><strong>Not tracked</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Profile</div><div class="distribution-list"><div><span>Company</span><strong>${esc(user.company_name||user.organization||'Not set')}</strong></div><div><span>Job role</span><strong>${esc(user.job_role||'Not set')}</strong></div><div><span>Country</span><strong>${esc(user.country||'Not set')}</strong></div><div><span>Language</span><strong>${esc(user.language_preference||'en')}</strong></div><div><span>Target markets</span><strong>${esc(joinList(profile.countries)||'Not set')}</strong></div><div><span>Industries / interests</span><strong>${esc([...profile.sectors||[],...profile.regulatory_themes||[]].join(', ')||'Not set')}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Subscriptions</div><div class="distribution-list"><div><span>Daily Briefing</span><strong>${esc(sub.status || 'inactive')}</strong></div><div><span>Weekly Briefing</span><strong>No production record</strong></div><div><span>Real-time alerts</span><strong>No production record</strong></div><div><span>Last daily delivery</span><strong>${esc(opsDate(sub.last_sent_at))}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Access</div><div class="distribution-list"><div><span>Sanctions search</span><strong>${user.is_active?'Authenticated':'Preview'}</strong></div><div><span>Full sanctions list</span><strong>${user.is_active?'Allowed by active-profile rule':'No'}</strong></div><div><span>Freeze tracker</span><strong>Public</strong></div><div><span>Address screening</span><strong>${user.is_active?'Authenticated':'Unavailable'}</strong></div><div><span>Compliance</span><strong>Public</strong></div><div><span>Export</span><strong>Not modelled</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Engagement · 30 days</div><div class="ops-empty">Sessions, searches, content views, briefing opens and core actions are unavailable until product analytics is connected.</div></div><div class="ops-card"><div class="ops-card-title">Admin Notes</div><div class="tiny-muted">${esc(profile.admin_notes||'No admin notes.')}</div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openInterestProfileModal('${userId}')">Edit profile and notes</button></div></div></div><div class="ops-card" style="margin-top:14px;"><div class="ops-card-title">Activity</div>${timeline.length ? `<div class="timeline">${timeline.map(e => `<div><strong>${esc(e.label)}</strong><span>${esc(opsDate(e.at))}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>`).join('')}</div>` : '<div class="ops-empty">No product activity events are tracked. Admin and delivery events were also unavailable for this user.</div>'}</div>`;
+}
+
+function closeUser360(){ document.getElementById('user360Modal').classList.remove('show'); }
+
+async function loadSubscriptions() {
+  const area = document.getElementById('subscriptionsArea'); area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const [profiles, subscriptions] = await Promise.all([sb.from('aml_user_profiles').select('*'), sb.from('user_briefing_subscriptions').select('*').order('updated_at',{ascending:false})]);
+  if (subscriptions.error) { area.innerHTML = `<div class="ops-empty">Subscriptions unavailable: ${esc(subscriptions.error.message)}</div>`; return; }
+  platformUsersCache = profiles.data || [];
+  briefingSubsByUser = {}; (subscriptions.data || []).forEach(s => briefingSubsByUser[s.user_id] = s);
+  const usersById = Object.fromEntries(platformUsersCache.map(u => [u.id,u]));
+  const counts = (subscriptions.data || []).reduce((a,s)=>{const key=s.briefing_key||'unknown';a[key]=(a[key]||0)+1;return a;},{});
+  const rows = (subscriptions.data || []).map(s => { const u=usersById[s.user_id]||{}; const isDaily=s.briefing_key===DAILY_BRIEFING_KEY&&s.delivery_channel==='email'; return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${esc(opsDate(s.last_sent_at))}</td><td>${isDaily?`<div class="ops-actions">${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`; }).join('');
+  area.innerHTML = `<div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${counts.weekly_briefing||0}</strong><span>Weekly records</span></div><div><strong>${counts.realtime_alerts||0}</strong><span>Real-time records</span></div><div><strong>${(subscriptions.data||[]).filter(s=>s.status==='active').length}</strong><span>Active subscriptions</span></div></div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Last sent</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="7"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
+}
+
+async function loadEntitlements() {
+  const area=document.getElementById('entitlementsArea'); area.innerHTML='<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const {data,error}=await sb.from('aml_user_profiles').select('*').order('created_at',{ascending:false});
+  if(error){area.innerHTML=`<div class="ops-empty">Entitlements unavailable: ${esc(error.message)}</div>`;return;}
+  area.innerHTML=`<div class="ops-empty" style="margin-bottom:14px;"><strong>Current sanctions rule:</strong> full sanctions results require an authenticated, non-anonymous user with an active <code>aml_user_profiles</code> record. This is enforced by the <code>aml-api</code> Edge Function, not by this page. Subscription and legacy LE status do not currently grant full-list access.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Profile</th><th>Sanctions dataset</th><th>Admin role</th><th>Legacy LE</th></tr></thead><tbody>${(data||[]).map(u=>`<tr><td><strong>${esc(u.full_name||u.email||'Unnamed')}</strong><div class="tiny-muted">${esc(u.email||'')}</div></td><td>${u.is_active?'<span class="status-pill status-active">Active</span>':'<span class="status-pill status-disabled">Disabled</span>'}</td><td>${u.is_active?'<strong>Full authenticated results</strong>':'Preview only'}</td><td>${esc(u.role||'public')}</td><td>${esc(u.le_status||'none')}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+
+async function loadContentSignals() {
+  const area=document.getElementById('contentSignalsArea'); area.innerHTML='<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const [news,signals,objects,recent]=await Promise.all([safeCount('news'),safeCount('compliance_news_signals'),safeCount('intelligence_objects'),sb.from('compliance_news_signals').select('*').order('published_at',{ascending:false}).limit(12)]);
+  const cards=(recent.data||[]).map(item=>`<div class="ops-card"><div class="tiny-muted">${esc(item.source_name||item.region||'Signal')} · ${esc(opsDate(item.published_at||item.created_at))}</div><div class="ops-card-title" style="margin-top:6px;">${esc(item.title_en||item.title_cn||item.title||'Untitled signal')}</div><div class="tiny-muted">${esc(item.summary_en||item.summary_cn||item.summary||'No summary')}</div></div>`).join('');
+  area.innerHTML=`<div class="metric-strip"><div><strong>${news.available?news.value.toLocaleString():'Unavailable'}</strong><span>News records</span></div><div><strong>${signals.available?signals.value.toLocaleString():'Unavailable'}</strong><span>Compliance signals</span></div><div><strong>${objects.available?objects.value.toLocaleString():'Unavailable'}</strong><span>Intelligence objects</span></div></div><div class="source-grid">${cards||'<div class="ops-empty">No compliance signals returned.</div>'}</div>`;
+}
+
+async function loadSanctionsOps() {
+  const area=document.getElementById('sanctionsOpsArea'); area.innerHTML='<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  try {
+    const {data:{session}}=await sb.auth.getSession();
+    const response=await fetch(`${API_ENDPOINT}?action=sanctions_intelligence&limit=10&offset=0`,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${session.access_token}`},cache:'no-store'});
+    const payload=await response.json(); if(!response.ok||!payload.success)throw new Error(payload.error||`Request failed (${response.status})`);
+    const records=payload.items||[]; const coverage=payload.coverage||[];
+    area.innerHTML=`<div class="metric-strip"><div><strong>${Number(payload.official_sources||coverage.length||0).toLocaleString()}</strong><span>Official sources</span></div><div><strong>${Number(payload.entity_designations||0).toLocaleString()}</strong><span>Designations</span></div><div><strong>${Number(payload.crypto_addresses||0).toLocaleString()}</strong><span>Crypto addresses</span></div><div><strong>${payload.authenticated?'Authenticated':'Preview'}</strong><span>Current access mode</span></div></div><div class="ops-empty" style="margin-bottom:14px;">Sanctions authorization is unchanged and remains enforced by the existing Edge Function.</div><div class="source-grid">${coverage.map(c=>`<div class="ops-card"><strong>${esc(c.source_name||c.source_code||'Source')}</strong><div class="tiny-muted">${Number(c.designation_count||0).toLocaleString()} designations · ${Number(c.address_count||0).toLocaleString()} addresses</div></div>`).join('')}</div><div class="table-card" style="margin-top:14px;"><div class="table-wrapper"><table><thead><tr><th>Designation date</th><th>Entity</th><th>Program</th><th>Type</th><th>Source</th></tr></thead><tbody>${records.map(r=>`<tr><td>${esc(r.designation_date||r.added_date||'—')}</td><td><strong>${esc(r.entity_name||r.name||r.address||'—')}</strong></td><td>${esc(r.program_name||'—')}</td><td>${esc(r.record_type||r.entity_type||'—')}</td><td>${esc(r.source_name||r.source_code||'—')}</td></tr>`).join('')||'<tr><td colspan="5"><div class="empty-state">No sanctions records returned.</div></td></tr>'}</tbody></table></div></div>`;
+  } catch(error){area.innerHTML=`<div class="ops-empty">Sanctions operations unavailable: ${esc(error.message)}</div>`;}
+}
+
+async function loadPipelines() {
+  const area=document.getElementById('pipelinesArea'); area.innerHTML='<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  const checks=await Promise.all([safeLatest('news','published_at'),safeLatest('aml_addresses','updated_at'),safeLatest('sanctions_designations','updated_at'),safeLatest('compliance_news_signals','created_at'),safeLatest('briefing_runs','created_at'),safeLatest('intelligence_ingestion_runs','created_at')]);
+  const meta=[['News ingestion','published_at',36],['Freeze records','updated_at',36],['Sanctions sync','updated_at',72],['Compliance signals','created_at',36],['Briefing generation','created_at',36],['Intelligence ingestion runs','created_at',72]];
+  area.innerHTML=`<div class="ops-card"><div class="health-list">${checks.map((result,i)=>{const [label,key,threshold]=meta[i];const row=result.row||{};const value=row[key]||row.updated_at||row.created_at;const hours=value?(Date.now()-new Date(value).getTime())/3600000:Infinity;const status=!result.available||!value?'Unavailable':hours<=threshold?'Current':hours<=threshold*3?'Delayed':'Stale';const color=status==='Current'?'var(--green)':status==='Delayed'?'var(--orange)':'var(--red)';return `<div class="health-row"><div><strong>${label}</strong><div class="tiny-muted">${esc(value?opsDate(value):result.error||'No observable timestamp')}</div></div><span style="color:${color};font-weight:700;">${status}</span></div>`;}).join('')}</div></div><div class="ops-empty" style="margin-top:14px;">Health states are calculated only from observed production timestamps. No synthetic uptime or success rate is shown.</div>`;
 }
 
 async function loadBriefingOps() {
