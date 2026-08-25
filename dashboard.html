@@ -653,6 +653,7 @@ var sanctionsPage=1;
 var sanctionsPageSize=20;
 var sanctionsTotal=0;
 var sanctionsAuthenticated=false;
+var sanctionsAccessReason='anonymous';
 var sanctionsAccessToken='';
 var sanctionsRequestId=0;
 var SANCTIONS_SOURCE_ORDER=['OFAC','UK','EU','UN','IL_NBCTF'];
@@ -726,6 +727,7 @@ async function loadSanctions(){
         if(requestId!==sanctionsRequestId)return;
         if(!data||!data.success)throw new Error((data&&data.error)||'Unable to load sanctions data');
         sanctionsAuthenticated=Boolean(data.authenticated);
+        sanctionsAccessReason=data.access_reason||'anonymous';
         sanctionsPageSize=sanctionsAuthenticated?25:20;
         sanctionsTotal=Number(data.total)||0;
         if(!sanctionsAuthenticated&&sanctionsPage!==1)sanctionsPage=1;
@@ -829,6 +831,16 @@ function renderSanctionsTable(){
     var countEl=document.getElementById('sanctionsResultCount');
     if(sanctionsAuthenticated){
         countEl.textContent=sanctionsText('Showing '+start+'–'+end+' of '+sanctionsTotal.toLocaleString('en-US')+' matching records','显示第 '+start+'–'+end+' 条，共 '+sanctionsTotal.toLocaleString('en-US')+' 条匹配记录');
+    }else if(sanctionsAccessReason==='account_inactive'){
+        countEl.innerHTML=sanctionsText(
+            'Showing '+Math.min(items.length,20)+' preview records · <a class="sanctions-access-link" href="/account">Account access is paused</a>',
+            '显示 '+Math.min(items.length,20)+' 条预览记录 · <a class="sanctions-access-link" href="/account">账号访问已暂停</a>'
+        );
+    }else if(sanctionsAccessReason==='profile_unavailable'){
+        countEl.innerHTML=sanctionsText(
+            'Showing '+Math.min(items.length,20)+' preview records · <a class="sanctions-access-link" href="/contact">Contact support to restore access</a>',
+            '显示 '+Math.min(items.length,20)+' 条预览记录 · <a class="sanctions-access-link" href="/contact">请联系支持恢复访问</a>'
+        );
     }else{
         countEl.innerHTML=sanctionsText(
             'Showing '+Math.min(items.length,20)+' of '+sanctionsTotal.toLocaleString('en-US')+' matching records · <a class="sanctions-access-link" href="/login">Sign in to view all</a>',
