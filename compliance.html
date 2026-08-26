@@ -586,18 +586,8 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;font:500 13px var(--f);padding:10px 20px;border-radius:8px;z-index:999;opacity:0;transition:all .3s ease;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
-/* SIDEBAR NAV */
-.side-nav{position:fixed;left:0;top:56px;bottom:0;width:188px;z-index:100;padding:18px 0;overflow-y:auto;display:flex;flex-direction:column;gap:2px;background:rgba(255,255,255,0.78);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-right:1px solid var(--hl);scrollbar-width:none}
-.side-nav::-webkit-scrollbar{display:none}
-.side-nav-item{display:flex;align-items:center;gap:8px;padding:9px 16px;font:500 12.5px var(--f);color:var(--ink3);cursor:pointer;transition:all .2s;border-left:3px solid transparent;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.side-nav-item:hover{color:var(--ink);background:var(--hl)}
-.side-nav-item.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-bg);font-weight:600}
-.side-nav-item .side-icon{font-size:15px;line-height:1;flex-shrink:0;width:20px;text-align:center}
-.side-nav-label{overflow:hidden;text-overflow:ellipsis}
-
 /* TASK-BASED COMPLIANCE WORKSPACE */
-.hero,.overview-intel-section,.deadline-section,.workspace-section,.screen-section,footer{margin-left:188px}
-.compliance-section-nav{position:sticky;top:56px;z-index:140;margin-left:188px;background:rgba(255,255,255,.94);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.compliance-section-nav{position:sticky;top:56px;z-index:140;background:rgba(255,255,255,.94);border-top:1px solid var(--hl);border-bottom:1px solid var(--hl);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .compliance-section-nav-inner{max-width:var(--max);margin:0 auto;padding:0 40px;display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none}
 .compliance-section-nav-inner::-webkit-scrollbar{display:none}
 .compliance-section-link{display:inline-flex;align-items:center;min-height:44px;padding:0 13px;border-bottom:2px solid transparent;color:var(--ink3);font:600 12px var(--f);white-space:nowrap;transition:color .18s,border-color .18s}
@@ -629,13 +619,23 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .jurisdiction-deadlines .deadline-row{border:1px solid var(--hl);border-radius:10px;margin-bottom:8px}
 .self-check-workspace>.check-section,.self-check-workspace>.mica-mvp-section{padding:0}
 .self-check-workspace .check-header,.self-check-workspace .mica-mvp-head{display:none}
-.event-detail-trigger{margin-top:10px;border:0;background:none;color:var(--accent-h);font:650 12px var(--f);cursor:pointer;padding:3px 0}
-.event-detail-trigger:hover{text-decoration:underline}
-.event-detail-trigger:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.event-detail-dialog{position:fixed;inset:56px 0 0 auto;width:min(520px,100vw);height:calc(100vh - 56px);max-height:none;margin:0;border:0;border-left:1px solid var(--hl2);padding:0;background:var(--canvas);box-shadow:-8px 0 24px rgba(0,0,0,.08)}
+.live-preview-list{display:flex;flex-direction:column;gap:8px}
+.live-preview-card{border:1px solid var(--hl);border-radius:10px;background:var(--canvas);padding:14px 16px;cursor:pointer;transition:background .18s,border-color .18s,box-shadow .18s}
+.live-preview-card:hover{background:var(--s1);border-color:var(--hl2)}
+.live-preview-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.live-preview-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.live-preview-title{font:650 13.5px/1.42 var(--f);color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.live-preview-type{font:650 10px var(--f);padding:3px 7px;border-radius:5px;background:var(--s1);color:var(--ink3);white-space:nowrap;text-transform:uppercase}
+.live-preview-type.high,.live-preview-type.critical{background:var(--danger-bg);color:var(--danger)}
+.live-preview-type.medium,.live-preview-type.upcoming{background:rgba(245,158,11,.08);color:#b85f00}
+.live-preview-summary{font:400 12.5px/1.55 var(--f);color:var(--ink2);margin-top:7px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.live-preview-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-top:9px;font:500 10.5px var(--f);color:var(--ink3)}
+.live-preview-meta span+span::before{content:'·';margin-right:7px;color:var(--s3)}
+.live-preview-view{margin-left:auto;color:var(--accent-h);font-weight:650}
+.event-detail-dialog{position:fixed;inset:56px 0 0 auto;width:min(520px,100vw);max-width:none;height:calc(100vh - 56px);max-height:none;margin:0;border:0;border-left:1px solid var(--hl2);padding:0;background:var(--canvas);box-shadow:-8px 0 24px rgba(0,0,0,.08)}
 .event-detail-dialog::backdrop{background:rgba(17,24,39,.32)}
 .event-detail-shell{height:100%;display:flex;flex-direction:column}
-.event-detail-head{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:22px 24px;border-bottom:1px solid var(--hl)}
+.event-detail-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:22px 24px;border-bottom:1px solid var(--hl);background:var(--canvas)}
 .event-detail-head h2{font:650 18px/1.35 var(--f);color:var(--ink)}
 .event-detail-head p{font:500 11px var(--f);color:var(--ink3);margin-top:5px}
 .event-detail-close{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--hl);border-radius:8px;background:var(--canvas);color:var(--ink2);font-size:20px;cursor:pointer;flex:0 0 auto}
@@ -650,12 +650,14 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .event-detail-meta dt{font:600 11px var(--f);color:var(--ink3)}
 .event-detail-meta dd{font:500 12px/1.5 var(--f);color:var(--ink);min-width:0;overflow-wrap:anywhere}
 .event-detail-source{display:inline-flex;align-items:center;gap:5px;color:var(--blue);font:600 12px var(--f)}
+.event-detail-pager{margin-top:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 24px;border-top:1px solid var(--hl);background:var(--canvas)}
+.event-detail-page-btn{border:1px solid var(--hl);border-radius:8px;background:var(--canvas);color:var(--ink2);font:600 12px var(--f);padding:8px 12px;cursor:pointer}
+.event-detail-page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent-h)}
+.event-detail-page-btn:disabled{opacity:.35;cursor:not-allowed}
+.event-detail-position{font:500 11px var(--f);color:var(--ink3)}
 
 /* RESPONSIVE */
 @media(max-width:960px){
-  .side-nav{display:none}
-  .hero,.overview-intel-section,.deadline-section,.workspace-section,.screen-section,footer{margin-left:0}
-  .compliance-section-nav{margin-left:0}
   .nav-links{display:none}
   .mobile-toggle{display:block}
   .rules-grid{grid-template-columns:1fr}
@@ -706,7 +708,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .workspace-section{padding:0 20px 48px}
   .compliance-section-nav-inner{padding:0 12px}
   .workspace-heading{align-items:flex-start;flex-direction:column}
-  .event-detail-dialog{top:56px;width:100%;height:calc(100vh - 56px)}
+  .event-detail-dialog{top:56px;width:100%;height:calc(100vh - 56px);border-left:0}
+  .event-detail-head{padding:16px 18px}
+  .event-detail-body{padding:18px}
+  .event-detail-pager{padding:12px 18px}
   .deadline-row{grid-template-columns:76px minmax(0,1fr) 110px;gap:12px;padding:14px}
   .deadline-row-state strong{font-size:12px}
 }
@@ -751,28 +756,6 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <button class="mobile-toggle" onclick="document.querySelector('.nav-links').style.display=document.querySelector('.nav-links').style.display==='flex'?'none':'flex'" aria-label="Menu">&#9776;</button>
   </div>
 </nav>
-
-<!-- SIDEBAR NAV -->
-<aside class="side-nav" id="sideNav">
-  <a class="side-nav-item active" href="#overviewSection" data-section="overviewSection">
-    <span class="side-icon">&#128269;</span><span class="side-nav-label" data-i18n="side.overview">Overview</span>
-  </a>
-  <a class="side-nav-item" href="#liveIntelSection" data-section="liveIntelSection">
-    <span class="side-icon">&#128226;</span><span class="side-nav-label" data-i18n="side.live">Live Intelligence</span>
-  </a>
-  <a class="side-nav-item" href="#deadlineSection" data-section="deadlineSection">
-    <span class="side-icon">&#128197;</span><span class="side-nav-label" data-i18n="side.deadlines">Deadlines</span>
-  </a>
-  <a class="side-nav-item" href="#jurisdictionsWorkspace" data-section="jurisdictionsWorkspace">
-    <span class="side-icon">&#127760;</span><span class="side-nav-label" data-i18n="side.juris">Jurisdictions</span>
-  </a>
-  <a class="side-nav-item" href="#selfCheckWorkspace" data-section="selfCheckWorkspace">
-    <span class="side-icon">&#9989;</span><span class="side-nav-label" data-i18n="side.check">Self-Check</span>
-  </a>
-  <a class="side-nav-item" href="#screenSection" data-section="screenSection">
-    <span class="side-icon">&#128269;</span><span class="side-nav-label" data-i18n="side.screen">Screening</span>
-  </a>
-</aside>
 
 <!-- HERO -->
 <section class="hero" id="overviewSection">
@@ -1274,6 +1257,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <button class="event-detail-close" type="button" onclick="closeComplianceEventDetail()" aria-label="Close event details">&times;</button>
     </div>
     <div class="event-detail-body" id="complianceEventBody"></div>
+    <div class="event-detail-pager" id="complianceEventPager">
+      <button class="event-detail-page-btn" id="complianceEventPrev" type="button" onclick="navigateComplianceEvent(-1)">&larr; Previous</button>
+      <span class="event-detail-position" id="complianceEventPosition"></span>
+      <button class="event-detail-page-btn" id="complianceEventNext" type="button" onclick="navigateComplianceEvent(1)">Next &rarr;</button>
+    </div>
   </div>
 </dialog>
 
@@ -3752,50 +3740,26 @@ function renderGlobalEnforcement() {
     items = items.filter(function(c) { return c.jurisdiction_code === enforcementFilter; });
   }
   if (!items.length) {
-    document.getElementById('enforcementContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#9878;</div><p>' + (currentLang === 'cn' ? '过去 45 天暂无执法动态。' : 'No enforcement actions were published in the last 45 days.') + '</p></div>';
+    document.getElementById('enforcementContent').innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '近期未发现执法行动。' : 'No recent enforcement actions identified.') + '</p></div>';
     return;
   }
-  var html = '<div class="cases-timeline">';
+  var html = '<div class="live-preview-list">';
   items.forEach(function(c) {
     var eventIndex = globalEnforcementData.indexOf(c);
-    var entityName = getCn(c, 'entity_name');
-    var desc = getCn(c, 'summary');
-    var penaltyDesc = getCn(c, 'penalty_description');
-    var agencyName = getCn(c, 'enforcing_agency');
-    var sevClass = getSeverityClass(c.severity);
-    html += '<div class="case-card">';
-    html += '<div class="case-header">';
-    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-    html += '<span style="font-size:20px">' + getFlag(c.jurisdiction_code) + '</span>';
-    html += '<span class="case-title">' + escHtml(entityName) + '</span>';
-    if (c.entity_type) html += '<span class="meta-tag" style="font-size:10px">' + escHtml(c.entity_type.replace(/_/g,' ')) + '</span>';
-    html += '</div>';
-    if (c.penalty_amount_usd) html += '<span class="case-penalty">' + formatUsd(c.penalty_amount_usd) + '</span>';
-    html += '</div>';
-    var metaLine = '';
-    if (c.action_type) metaLine += escHtml(c.action_type.replace(/_/g,' '));
-    if (agencyName) metaLine += (metaLine ? ' — ' : '') + escHtml(agencyName);
-    if (c.jurisdiction_name) metaLine += (metaLine ? ' | ' : '') + escHtml(currentLang === 'cn' ? (c.jurisdiction_name_cn || c.jurisdiction_name) : c.jurisdiction_name);
-    if (metaLine) html += '<div class="case-entity">' + metaLine + '</div>';
-    if (desc) html += '<div class="case-desc">' + escHtml(desc) + '</div>';
-    if (penaltyDesc) html += '<div style="font:400 12px/1.5 var(--f);color:var(--ink3);margin-bottom:8px"><em>' + escHtml(penaltyDesc) + '</em></div>';
-    html += '<div class="case-footer">';
-    html += '<span class="case-date">' + formatDate(c.action_date) + '</span>';
-    html += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">';
-    if (c.severity) html += '<span class="severity-badge ' + sevClass + '">' + escHtml(c.severity) + '</span>';
-    if (c.status && c.status !== 'resolved') html += '<span class="meta-tag">' + escHtml(c.status) + '</span>';
-    if (c.violation_type) html += '<span class="case-tag">' + escHtml(c.violation_type.replace(/_/g,' ')) + '</span>';
-    html += '</div>';
-    html += '</div>';
-    var tags = c.tags;
-    if (tags) {
-      html += '<div class="case-tags" style="margin-top:8px">';
-      var tagArr = typeof tags === 'string' ? tags.split(',') : (Array.isArray(tags) ? tags : []);
-      tagArr.forEach(function(tag) { tag = tag.trim(); if (tag) html += '<span class="case-tag">' + escHtml(tag) + '</span>'; });
-      html += '</div>';
-    }
-    if (c.source_url) html += '<a href="' + escHtml(c.source_url) + '" target="_blank" rel="noopener" class="reg-link" style="margin-top:8px;display:inline-flex" onclick="event.stopPropagation()">' + (c.source_name ? escHtml(c.source_name) : 'Source') + ' &#8599;</a>';
-    html += '<div><button class="event-detail-trigger" type="button" onclick="openComplianceEventDetail(\'enforcement\',' + eventIndex + ')">' + (currentLang === 'cn' ? '查看事件详情' : 'View event details') + ' &#8594;</button></div>';
+    var title = getCn(c, 'entity_name') || getCn(c, 'title') || (currentLang === 'cn' ? '执法事件' : 'Enforcement event');
+    var summary = getCn(c, 'summary') || getCn(c, 'penalty_description');
+    var authority = getCn(c, 'enforcing_agency') || c.source_name || '';
+    var region = currentLang === 'cn' ? (c.jurisdiction_name_cn || c.jurisdiction_name || c.jurisdiction_code) : (c.jurisdiction_name || c.jurisdiction_code);
+    var type = c.severity || c.action_type || 'enforcement';
+    var typeClass = String(getSeverityClass(type)).replace(/[^a-z0-9_-]+/g, '_');
+    html += '<div class="live-preview-card" role="button" tabindex="0" onclick="openComplianceEventDetail(\'enforcement\',' + eventIndex + ',this)" onkeydown="handleLivePreviewKey(event,\'enforcement\',' + eventIndex + ')">';
+    html += '<div class="live-preview-head"><div class="live-preview-title">' + escHtml(title) + '</div><span class="live-preview-type ' + escHtml(typeClass) + '">' + escHtml(String(type).replace(/_/g,' ')) + '</span></div>';
+    if (summary) html += '<div class="live-preview-summary">' + escHtml(summary) + '</div>';
+    html += '<div class="live-preview-meta">';
+    if (region) html += '<span>' + getFlag(c.jurisdiction_code) + ' ' + escHtml(region) + '</span>';
+    if (authority) html += '<span>' + escHtml(authority) + '</span>';
+    if (c.action_date) html += '<span>' + escHtml(formatDate(c.action_date)) + '</span>';
+    html += '<span class="live-preview-view">' + (currentLang === 'cn' ? '查看详情' : 'View details') + ' &#8594;</span></div>';
     html += '</div>';
   });
   html += '</div>';
@@ -3845,41 +3809,26 @@ function renderGlobalRegUpdates() {
     items = items.filter(function(u) { return u.jurisdiction_code === regUpdatesFilter; });
   }
   if (!items.length) {
-    document.getElementById('regUpdatesContent').innerHTML = '<div class="empty-state"><div class="empty-icon">&#128225;</div><p>' + (currentLang === 'cn' ? '过去 45 天暂无监管更新。' : 'No regulatory updates were published in the last 45 days.') + '</p></div>';
+    document.getElementById('regUpdatesContent').innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '近期未发现监管更新。' : 'No recent regulatory updates identified.') + '</p></div>';
     return;
   }
-  var html = '<div class="updates-list">';
+  var html = '<div class="live-preview-list">';
   items.forEach(function(u) {
     var eventIndex = globalRegUpdates.indexOf(u);
     var title = getCn(u, 'title');
     var summary = getCn(u, 'summary');
-    var typeClass = (u.update_type || '').toLowerCase().replace(/\s+/g, '_');
-    html += '<div class="update-card">';
-    html += '<div class="update-header">';
-    html += '<div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">';
-    html += '<span style="font-size:18px;flex-shrink:0">' + getFlag(u.jurisdiction_code) + '</span>';
-    html += '<span class="update-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escHtml(title) + '</span>';
-    html += '</div>';
-    html += '<span class="update-type ' + typeClass + '">' + escHtml(u.update_type || '') + '</span>';
-    html += '</div>';
-    html += '<div class="update-summary">' + escHtml(summary) + '</div>';
-    html += '<div class="update-footer">';
-    html += '<span>' + formatDate(u.published_date) + '</span>';
-    if (u.jurisdiction_name) html += '<span style="color:var(--ink3)">' + escHtml(currentLang === 'cn' ? (u.jurisdiction_name_cn || u.jurisdiction_name) : u.jurisdiction_name) + '</span>';
-    if (u.severity) {
-      var sevClass = getSeverityClass(u.severity);
-      html += '<span class="severity-badge ' + sevClass + '">' + escHtml(u.severity) + '</span>';
-    }
-    if (u.source_url) html += '<a href="' + escHtml(u.source_url) + '" target="_blank" rel="noopener" class="reg-link" onclick="event.stopPropagation()">' + (u.source_name ? escHtml(u.source_name) : 'Source') + ' &#8599;</a>';
-    html += '<div><button class="event-detail-trigger" type="button" onclick="openComplianceEventDetail(\'regulatory\',' + eventIndex + ')">' + (currentLang === 'cn' ? '查看事件详情' : 'View event details') + ' &#8594;</button></div>';
-    html += '</div>';
-    var tags = u.tags;
-    if (tags) {
-      html += '<div class="case-tags" style="margin-top:8px">';
-      var tagArr = typeof tags === 'string' ? tags.split(',') : (Array.isArray(tags) ? tags : []);
-      tagArr.forEach(function(tag) { tag = tag.trim(); if (tag) html += '<span class="case-tag">' + escHtml(tag) + '</span>'; });
-      html += '</div>';
-    }
+    var region = currentLang === 'cn' ? (u.jurisdiction_name_cn || u.jurisdiction_name || u.jurisdiction_code) : (u.jurisdiction_name || u.jurisdiction_code);
+    var authority = u.authority || u.source_name || '';
+    var type = u.severity || u.update_type || 'regulatory';
+    var typeClass = String(getSeverityClass(type)).replace(/[^a-z0-9_-]+/g, '_');
+    html += '<div class="live-preview-card" role="button" tabindex="0" onclick="openComplianceEventDetail(\'regulatory\',' + eventIndex + ',this)" onkeydown="handleLivePreviewKey(event,\'regulatory\',' + eventIndex + ')">';
+    html += '<div class="live-preview-head"><div class="live-preview-title">' + escHtml(title) + '</div><span class="live-preview-type ' + escHtml(typeClass) + '">' + escHtml(String(type).replace(/_/g,' ')) + '</span></div>';
+    if (summary) html += '<div class="live-preview-summary">' + escHtml(summary) + '</div>';
+    html += '<div class="live-preview-meta">';
+    if (region) html += '<span>' + getFlag(u.jurisdiction_code) + ' ' + escHtml(region) + '</span>';
+    if (authority) html += '<span>' + escHtml(authority) + '</span>';
+    if (u.published_date) html += '<span>' + escHtml(formatDate(u.published_date)) + '</span>';
+    html += '<span class="live-preview-view">' + (currentLang === 'cn' ? '查看详情' : 'View details') + ' &#8594;</span></div>';
     html += '</div>';
   });
   html += '</div>';
@@ -4016,10 +3965,12 @@ function renderStoredComplianceList(containerId, items, tagClass, emptyText){
   }
 
   container.innerHTML = list.map(function(item){
+    var eventIndex = complianceNewsSignals.indexOf(item);
     var title = cleanCardText(storedComplianceText(item, 'title') || storedComplianceText(item, 'name') || 'Compliance signal');
     var desc = cleanCardText(storedComplianceText(item, 'summary') || storedComplianceText(item, 'logic'));
     var date = item.published_at || item.date || item.generated_at || item.last_seen_at || '';
     var publisher = safePublisher(item);
+    var region = item.jurisdiction || item.jurisdiction_code || item.region || '';
     function inferSignalLabel(item){
       var raw = String(item.severity || item.update_type || item.type || item.category || '').toLowerCase();
       if(raw && raw !== 'other' && raw !== 'compliance') return raw;
@@ -4046,14 +3997,14 @@ function renderStoredComplianceList(containerId, items, tagClass, emptyText){
 
     var label = inferSignalLabel(item);
 
-    return '<div class="overview-item">'
-      + '<div class="overview-item-title"><span class="flag">' + storedComplianceFlag(item) + '</span><span>' + escHtml(title) + '</span></div>'
-      + (desc ? '<div class="overview-item-desc">' + escHtml(desc) + '</div>' : '')
-      + '<div class="overview-item-meta">'
-      + (date ? '<span>' + escHtml(formatDate(date)) + '</span>' : '')
+    return '<div class="live-preview-card" role="button" tabindex="0" onclick="openComplianceEventDetail(\'news\',' + eventIndex + ',this)" onkeydown="handleLivePreviewKey(event,\'news\',' + eventIndex + ')">'
+      + '<div class="live-preview-head"><div class="live-preview-title">' + escHtml(title) + '</div><span class="live-preview-type">' + escHtml(label) + '</span></div>'
+      + (desc ? '<div class="live-preview-summary">' + escHtml(desc) + '</div>' : '')
+      + '<div class="live-preview-meta">'
+      + (region ? '<span>' + storedComplianceFlag(item) + ' ' + escHtml(region) + '</span>' : '')
       + (publisher ? '<span>' + escHtml(publisher) + '</span>' : '')
-      + '<span class="overview-tag ' + escHtml(tagClass) + '">' + escHtml(label) + '</span>'
-      + '</div>'
+      + (date ? '<span>' + escHtml(formatDate(date)) + '</span>' : '')
+      + '<span class="live-preview-view">' + (currentLang === 'cn' ? '查看详情' : 'View details') + ' &#8594;</span></div>'
       + '</div>';
   }).join('');
 }
@@ -4070,7 +4021,7 @@ function updateComplianceSignalSearchUi(count, searching){
 }
 
 function buildComplianceSignalPath(keyword){
-  var select = 'title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source_name,published_at,last_seen_at,seen_count';
+  var select = 'title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source,source_name,published_at,last_seen_at,seen_count';
   var path = 'compliance_news_signals?select=' + select + '&status=eq.published';
   var q = String(keyword || '').trim();
   if(q){
@@ -4178,6 +4129,7 @@ function loadComplianceNewsSignals(){
 function switchWorkspaceTab(group, key, button) {
   var root = document.querySelector('[data-workspace="' + group + '"]');
   if (!root) return;
+  if (group === 'live') closeComplianceEventDetail();
   root.querySelectorAll('.workspace-tabs .workspace-tab').forEach(function(tab) {
     tab.classList.toggle('active', tab === button);
     tab.setAttribute('aria-selected', tab === button ? 'true' : 'false');
@@ -4295,13 +4247,39 @@ function setupComplianceWorkspaceIA() {
     var target = document.getElementById(link.getAttribute('data-section'));
     if (target) stickyObserver.observe(target);
   });
+
+  var eventDialog = document.getElementById('complianceEventDialog');
+  if (eventDialog) {
+    eventDialog.addEventListener('click', function(event) {
+      if (event.target === eventDialog) closeComplianceEventDetail();
+    });
+    eventDialog.addEventListener('close', finishComplianceEventClose);
+  }
+  document.addEventListener('keydown', function(event) {
+    if (!eventDialog || !eventDialog.open) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeComplianceEventDetail();
+      return;
+    }
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    var target = event.target;
+    if (target && (target.matches('input, textarea, select, a') || target.isContentEditable)) return;
+    event.preventDefault();
+    navigateComplianceEvent(event.key === 'ArrowLeft' ? -1 : 1);
+  });
 }
 
 function eventDetailValue(item, keys) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
-    var localized = currentLang === 'cn' && item[key + '_cn'] ? item[key + '_cn'] : item[key];
-    if (localized !== undefined && localized !== null && String(localized).trim() !== '') return localized;
+    var candidates = currentLang === 'cn'
+      ? [item[key + '_cn'], item[key + '_zh'], item[key], item[key + '_en']]
+      : [item[key + '_en'], item[key], item[key + '_cn'], item[key + '_zh']];
+    for (var j = 0; j < candidates.length; j++) {
+      var localized = candidates[j];
+      if (localized !== undefined && localized !== null && String(localized).trim() !== '') return localized;
+    }
   }
   return '';
 }
@@ -4320,55 +4298,200 @@ function eventDetailSection(label, value) {
   return '<section class="event-detail-section"><h3>' + escHtml(label) + '</h3><ul>' + values.map(function(value) { return '<li>' + escHtml(value) + '</li>'; }).join('') + '</ul></section>';
 }
 
-function openComplianceEventDetail(kind, index) {
-  var item = kind === 'enforcement' ? globalEnforcementData[index] : globalRegUpdates[index];
-  var dialog = document.getElementById('complianceEventDialog');
-  if (!item || !dialog) return;
+var complianceEventState = { kind: '', position: -1, items: [] };
+var complianceEventTrigger = null;
+
+function resetComplianceEventState() {
+  complianceEventState = { kind: '', position: -1, items: [] };
+}
+
+function finishComplianceEventClose() {
+  var trigger = complianceEventTrigger;
+  complianceEventTrigger = null;
+  resetComplianceEventState();
+  if (trigger && document.contains(trigger) && typeof trigger.focus === 'function') {
+    window.setTimeout(function() { trigger.focus(); }, 0);
+  }
+}
+
+function complianceEventItems(kind) {
+  if (kind === 'enforcement') {
+    return globalEnforcementData.filter(function(item) {
+      return enforcementFilter === 'all' || item.jurisdiction_code === enforcementFilter;
+    });
+  }
+  if (kind === 'regulatory') {
+    return globalRegUpdates.filter(function(item) {
+      return regUpdatesFilter === 'all' || item.jurisdiction_code === regUpdatesFilter;
+    });
+  }
+  return kind === 'news' ? complianceNewsSignals.slice() : [];
+}
+
+function complianceEventAt(kind, index) {
+  if (kind === 'enforcement') return globalEnforcementData[index];
+  if (kind === 'regulatory') return globalRegUpdates[index];
+  if (kind === 'news') return complianceNewsSignals[index];
+  return null;
+}
+
+function handleLivePreviewKey(event, kind, index) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  openComplianceEventDetail(kind, index, event.currentTarget);
+}
+
+function safeEventSource(item) {
+  var value = item.source_url || item.source || '';
+  if (!/^https?:\/\//i.test(String(value))) return '';
+  try {
+    var parsed = new URL(String(value));
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+    return parsed.href;
+  } catch (error) {
+    return '';
+  }
+}
+
+function eventDateRows(item) {
+  var labels = currentLang === 'cn'
+    ? { action_date:'执法日期', published_date:'发布日期', published_at:'发布时间', effective_date:'生效日期', deadline_date:'截止日期', last_seen_at:'最近收录' }
+    : { action_date:'Action date', published_date:'Published date', published_at:'Published date', effective_date:'Effective date', deadline_date:'Deadline', last_seen_at:'Last seen' };
+  var seen = {};
+  return Object.keys(labels).reduce(function(rows, key) {
+    if (!item[key]) return rows;
+    var formatted = formatDate(item[key]);
+    var dedupeKey = labels[key] + ':' + formatted;
+    if (seen[dedupeKey]) return rows;
+    seen[dedupeKey] = true;
+    rows.push(labels[key] + ': ' + formatted);
+    return rows;
+  }, []);
+}
+
+function eventKindName(kind) {
+  var names = currentLang === 'cn'
+    ? { enforcement:'执法事件', regulatory:'监管更新', news:'合规新闻信号' }
+    : { enforcement:'Enforcement Event', regulatory:'Regulatory Update', news:'Compliance News Signal' };
+  return names[kind] || names.news;
+}
+
+function eventTypeValue(kind, item) {
+  if (kind === 'enforcement') return eventDetailValue(item, ['action_type','entity_type','violation_type']) || eventKindName(kind);
+  if (kind === 'regulatory') return eventDetailValue(item, ['update_type','category']) || eventKindName(kind);
+  return eventDetailValue(item, ['category','type']) || eventKindName(kind);
+}
+
+function eventTitleValue(kind, item) {
+  if (kind === 'enforcement') return eventDetailValue(item, ['entity_name','title']);
+  return eventDetailValue(item, ['title','name']);
+}
+
+function renderComplianceEventDetail() {
+  var item = complianceEventState.items[complianceEventState.position];
+  if (!item) return;
+  var kind = complianceEventState.kind;
   var labels = currentLang === 'cn' ? {
-    changed:'发生了什么', matters:'为何重要', affected:'可能受影响的主体', requirements:'关键要求', dates:'重要日期',
-    authority:'监管机构', jurisdiction:'司法管辖区', source:'官方来源', related:'相关法规', enforcement:'执法事件', regulatory:'监管更新'
+    summary:'完整摘要', changed:'发生了什么', matters:'为何重要', affected:'可能受影响的主体', requirements:'关键要求', outcome:'结果与处罚', dates:'重要日期',
+    eventType:'事件类型', authority:'监管机构 / 来源', jurisdiction:'司法管辖区 / 地区', date:'日期', severity:'严重程度', category:'类别', source:'官方来源', related:'相关法规 / 分类', sourceCta:'查看官方来源', noDetail:'当前记录仅包含标题，暂无更多已核验字段。', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
   } : {
-    changed:'What Changed', matters:'Why It Matters', affected:'Who May Be Affected', requirements:'Key Requirements', dates:'Important Dates',
-    authority:'Authority', jurisdiction:'Jurisdiction', source:'Official Source', related:'Related Regulations', enforcement:'Enforcement Event', regulatory:'Regulatory Update'
+    summary:'Full Summary', changed:'What Changed', matters:'Why It Matters', affected:'Who May Be Affected', requirements:'Key Requirements', outcome:'Outcome / Penalty', dates:'Important Dates',
+    eventType:'Event Type', authority:'Authority / Source', jurisdiction:'Jurisdiction / Region', date:'Date', severity:'Severity', category:'Category', source:'Official Source', related:'Related Regulation / Category', sourceCta:'View official source', noDetail:'This record currently contains no additional verified fields.', previous:'Previous', next:'Next', position:'{current} of {total}'
   };
-  var title = kind === 'enforcement'
-    ? eventDetailValue(item, ['entity_name','title'])
-    : eventDetailValue(item, ['title']);
-  var changed = eventDetailValue(item, ['what_changed','summary','description','penalty_description']);
-  var matters = eventDetailValue(item, ['why_it_matters','impact','implications']);
+  var title = eventTitleValue(kind, item) || eventKindName(kind);
+  var eventType = eventTypeValue(kind, item);
+  var summary = eventDetailValue(item, ['summary','content','description']);
+  var changed = eventDetailValue(item, ['what_changed']);
+  var matters = eventDetailValue(item, ['why_it_matters','impact','implications','logic']);
   var affected = eventDetailValue(item, ['who_may_be_affected','affected_entities','affected_parties']);
   var requirements = eventDetailValue(item, ['key_requirements','requirements','obligations']);
-  var related = eventDetailValue(item, ['related_regulations','regulations_violated','legal_basis']);
+  var outcome = eventDetailValue(item, ['penalty_description','outcome']);
+  var related = eventDetailValue(item, ['related_regulations','regulations_violated','legal_basis','violation_type','program','tags']);
   var authority = eventDetailValue(item, ['enforcing_agency','authority','source_name']);
-  var jurisdiction = eventDetailValue(item, ['jurisdiction_name','jurisdiction']);
-  var dates = [];
-  [['action_date','Action'],['published_date','Published'],['effective_date','Effective'],['deadline_date','Deadline']].forEach(function(pair) {
-    if (item[pair[0]]) dates.push((currentLang === 'cn' ? {'Action':'执法','Published':'发布','Effective':'生效','Deadline':'截止'}[pair[1]] : pair[1]) + ': ' + formatDate(item[pair[0]]));
-  });
-  document.getElementById('complianceEventTitle').textContent = title || labels[kind === 'enforcement' ? 'enforcement' : 'regulatory'];
-  document.getElementById('complianceEventKind').textContent = labels[kind === 'enforcement' ? 'enforcement' : 'regulatory'];
-  var html = eventDetailSection(labels.changed, changed)
+  var jurisdiction = eventDetailValue(item, ['jurisdiction_name','jurisdiction','region','jurisdiction_code']);
+  var severity = eventDetailValue(item, ['severity']);
+  var category = eventDetailValue(item, ['category']);
+  var primaryDate = item.action_date || item.published_date || item.published_at || item.created_at || '';
+  var sourceUrl = safeEventSource(item);
+
+  document.getElementById('complianceEventTitle').textContent = title;
+  document.getElementById('complianceEventKind').textContent = eventKindName(kind);
+
+  var meta = '<dt>' + escHtml(labels.eventType) + '</dt><dd>' + escHtml(String(eventType).replace(/_/g, ' ')) + '</dd>';
+  if (jurisdiction) meta += '<dt>' + escHtml(labels.jurisdiction) + '</dt><dd>' + escHtml(jurisdiction) + '</dd>';
+  if (authority) meta += '<dt>' + escHtml(labels.authority) + '</dt><dd>' + escHtml(authority) + '</dd>';
+  if (primaryDate) meta += '<dt>' + escHtml(labels.date) + '</dt><dd>' + escHtml(formatDate(primaryDate)) + '</dd>';
+  if (severity) meta += '<dt>' + escHtml(labels.severity) + '</dt><dd>' + escHtml(String(severity).replace(/_/g, ' ')) + '</dd>';
+  if (category) meta += '<dt>' + escHtml(labels.category) + '</dt><dd>' + escHtml(String(category).replace(/_/g, ' ')) + '</dd>';
+
+  var html = '<section class="event-detail-section"><dl class="event-detail-meta">' + meta + '</dl></section>'
+    + eventDetailSection(labels.summary, summary)
+    + eventDetailSection(labels.changed, changed)
     + eventDetailSection(labels.matters, matters)
     + eventDetailSection(labels.affected, affected)
     + eventDetailSection(labels.requirements, requirements)
-    + eventDetailSection(labels.dates, dates)
+    + eventDetailSection(labels.outcome, outcome)
+    + eventDetailSection(labels.dates, eventDateRows(item))
     + eventDetailSection(labels.related, related);
-  var meta = '';
-  if (authority) meta += '<dt>' + escHtml(labels.authority) + '</dt><dd>' + escHtml(authority) + '</dd>';
-  if (jurisdiction) meta += '<dt>' + escHtml(labels.jurisdiction) + '</dt><dd>' + escHtml(jurisdiction) + '</dd>';
-  if (item.source_url && /^https?:\/\//i.test(item.source_url)) meta += '<dt>' + escHtml(labels.source) + '</dt><dd><a class="event-detail-source" href="' + escHtml(item.source_url) + '" target="_blank" rel="noopener">' + escHtml(item.source_name || labels.source) + ' &#8599;</a></dd>';
-  if (meta) html += '<section class="event-detail-section"><dl class="event-detail-meta">' + meta + '</dl></section>';
-  if (!html) html = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '当前记录仅包含标题，暂无更多已核验字段。' : 'This record currently contains no additional verified fields.') + '</p></div>';
+  if (sourceUrl) {
+    var safeHref = escHtml(sourceUrl).replace(/"/g, '&quot;');
+    html += '<section class="event-detail-section"><h3>' + escHtml(labels.source) + '</h3><a class="event-detail-source" href="' + safeHref + '" target="_blank" rel="noopener noreferrer">' + escHtml(labels.sourceCta) + ' &#8599;</a></section>';
+  }
+  if (!summary && !changed && !matters && !affected && !requirements && !outcome && !related && !sourceUrl) {
+    html += '<div class="empty-state"><p>' + escHtml(labels.noDetail) + '</p></div>';
+  }
   document.getElementById('complianceEventBody').innerHTML = html;
-  if (typeof dialog.showModal === 'function') dialog.showModal();
-  else dialog.setAttribute('open', '');
+
+  var total = complianceEventState.items.length;
+  var current = complianceEventState.position + 1;
+  var prev = document.getElementById('complianceEventPrev');
+  var next = document.getElementById('complianceEventNext');
+  var position = document.getElementById('complianceEventPosition');
+  prev.textContent = '\u2190 ' + labels.previous;
+  next.textContent = labels.next + ' \u2192';
+  prev.disabled = current <= 1;
+  next.disabled = current >= total;
+  position.textContent = labels.position.replace('{current}', current).replace('{total}', total);
+  document.getElementById('complianceEventBody').scrollTop = 0;
+}
+
+function openComplianceEventDetail(kind, index, trigger) {
+  var item = complianceEventAt(kind, index);
+  var dialog = document.getElementById('complianceEventDialog');
+  if (!item || !dialog) return;
+  var items = complianceEventItems(kind);
+  var position = items.indexOf(item);
+  complianceEventState = { kind: kind, position: position >= 0 ? position : 0, items: position >= 0 ? items : [item] };
+  renderComplianceEventDetail();
+  if (!dialog.open) {
+    complianceEventTrigger = trigger || (document.activeElement && document.activeElement !== document.body ? document.activeElement : null);
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    var closeButton = dialog.querySelector('.event-detail-close');
+    if (closeButton) closeButton.focus();
+  }
+}
+
+function navigateComplianceEvent(direction) {
+  if (!complianceEventState.items.length) return;
+  var target = complianceEventState.position + direction;
+  if (target < 0 || target >= complianceEventState.items.length) return;
+  complianceEventState.position = target;
+  renderComplianceEventDetail();
 }
 
 function closeComplianceEventDetail() {
   var dialog = document.getElementById('complianceEventDialog');
-  if (!dialog) return;
+  if (!dialog || !dialog.open) {
+    complianceEventTrigger = null;
+    resetComplianceEventState();
+    return;
+  }
   if (typeof dialog.close === 'function') dialog.close();
-  else dialog.removeAttribute('open');
+  else {
+    dialog.removeAttribute('open');
+    resetComplianceEventState();
+  }
 }
 
 // ===== INIT =====
@@ -4382,59 +4505,6 @@ initComplianceSignalSearch();
 loadComplianceNewsSignals();
 initPolicies();
 
-// SIDEBAR NAV - Scroll tracking with IntersectionObserver
-(function() {
-  var sideNav = document.getElementById('sideNav');
-  if (!sideNav) return;
-
-  var sideItems = sideNav.querySelectorAll('.side-nav-item');
-  var sectionIds = [];
-  sideItems.forEach(function(item) {
-    sectionIds.push(item.getAttribute('data-section'));
-  });
-
-  // Click handler with smooth scroll
-  sideItems.forEach(function(item) {
-    item.addEventListener('click', function(e) {
-      e.preventDefault();
-      var targetId = this.getAttribute('data-section');
-      var target = document.getElementById(targetId);
-      if (target) {
-        var offset = 70;
-        var top = target.getBoundingClientRect().top + window.pageYOffset - offset;
-        window.scrollTo({ top: top, behavior: 'smooth' });
-      }
-    });
-  });
-
-  // IntersectionObserver for active state
-  var currentActive = null;
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        var id = entry.target.id;
-        if (id && currentActive !== id) {
-          currentActive = id;
-          sideItems.forEach(function(item) {
-            if (item.getAttribute('data-section') === id) {
-              item.classList.add('active');
-            } else {
-              item.classList.remove('active');
-            }
-          });
-        }
-      }
-    });
-  }, {
-    rootMargin: '-80px 0px -60% 0px',
-    threshold: 0
-  });
-
-  sectionIds.forEach(function(id) {
-    var el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
-})();
 </script>
 
 <!-- SUPABASE AUTH -->
