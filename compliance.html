@@ -594,11 +594,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .compliance-section-link:hover{color:var(--accent-h);background:var(--accent-bg)}
 .compliance-section-link.active{color:var(--accent-h);border-bottom-color:var(--accent)}
 .compliance-section-link:focus-visible{outline:2px solid var(--accent);outline-offset:-3px;color:var(--accent-h)}
-#overviewSection,#liveIntelSection,#deadlineSection,#jurisdictionsWorkspace,#selfCheckWorkspace,#screenSection{scroll-margin-top:112px}
-.overview-intel-section,.deadline-section,.workspace-section,.screen-section{padding:0 40px 22px}
+#overviewSection,#liveIntelSection,#deadlineSection,#jurisdictionsWorkspace,#selfCheckWorkspace,#sanctionsIntelSection,#screenSection{scroll-margin-top:112px}
+.overview-intel-section,.deadline-section,.workspace-section,.sanctions-intel-section,.screen-section{padding:0 40px 22px}
 #liveIntelSection{padding-top:24px}
 .workspace-inner{max-width:var(--max);margin:0 auto}
-.overview-intel-section>.overview-intel-inner,.deadline-section>.wrap,.workspace-section>.workspace-inner,.screen-section>.screen-inner{max-width:var(--max);margin:0 auto;padding:24px;background:#fafbfc;border:1px solid var(--hl2);border-radius:14px}
+.overview-intel-section>.overview-intel-inner,.deadline-section>.wrap,.workspace-section>.workspace-inner,.sanctions-intel-section>.sanctions-intel-inner,.screen-section>.screen-inner{max-width:var(--max);margin:0 auto;padding:24px;background:#fafbfc;border:1px solid var(--hl2);border-radius:14px}
 .deadline-section>.wrap{padding:24px}
 .screen-section>.screen-inner{padding:24px}
 .workspace-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px}
@@ -651,11 +651,100 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .self-check-demo-btn:hover{background:var(--accent-bg)}
 .self-check-demo-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .self-check-demo-note{padding:10px 12px;margin-bottom:14px;border:1px solid rgba(0,200,150,.22);border-radius:8px;background:var(--accent-bg);color:#08785e;font:600 11.5px/1.5 var(--f)}
-.sanctions-intelligence-overview{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;padding:18px 20px;margin-bottom:16px;background:var(--canvas);border:1px solid var(--hl);border-radius:12px}
-.sanctions-intelligence-overview h3{font:650 16px var(--f);color:var(--ink);margin-bottom:4px}
-.sanctions-intelligence-overview p{font:400 12.5px/1.6 var(--f);color:var(--ink2);max-width:650px}
-.sanctions-source-list{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.sanctions-source-list span{font:600 10.5px var(--f);color:var(--ink2);background:var(--s1);border:1px solid var(--hl);border-radius:6px;padding:5px 8px;white-space:nowrap}
+.sanctions-intel-header{margin-bottom:18px}
+.sanctions-intel-header h2{font:600 22px var(--f);letter-spacing:-.5px;color:var(--ink)}
+.sanctions-intel-header p{max-width:760px;margin-top:4px;font:400 14px/1.6 var(--f);color:var(--ink3)}
+.sanctions-summary{display:flex;align-items:stretch;margin-bottom:12px;border:1px solid var(--hl);border-radius:10px;background:var(--canvas);overflow:hidden}
+.sanctions-summary-item{display:flex;align-items:baseline;gap:7px;min-width:0;padding:11px 16px;border-right:1px solid var(--hl)}
+.sanctions-summary-item:last-child{flex:1;border-right:0;justify-content:flex-end}
+.sanctions-summary-value{color:var(--ink);font:750 14px var(--f);font-variant-numeric:tabular-nums;white-space:nowrap}
+.sanctions-summary-label{color:var(--ink3);font:500 10.5px var(--f);white-space:nowrap}
+.sanctions-workspace{display:grid;grid-template-columns:220px minmax(0,1fr);border:1px solid var(--hl);border-radius:10px;overflow:hidden;background:var(--canvas)}
+.sanctions-sources{padding:14px 12px;background:var(--s1);border-right:1px solid var(--hl)}
+.sanctions-panel-title{padding:0 6px 9px;font:700 12px var(--f);color:var(--ink)}
+.sanctions-source-nav{display:grid;gap:3px}
+.sanctions-source-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--ink2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s}
+.sanctions-source-btn:hover{background:var(--s2);color:var(--ink)}
+.sanctions-source-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sanctions-source-btn.active{background:var(--accent-bg);color:var(--accent-h);font-weight:650}
+.sanctions-source-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sanctions-source-count{flex:none;color:var(--ink3);font:600 9px var(--m);white-space:nowrap}
+.sanctions-source-btn.active .sanctions-source-count{color:var(--accent-h)}
+.sanctions-main{min-width:0}
+.sanctions-search-row{display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--hl)}
+.sanctions-search-wrap{position:relative;flex:1;min-width:0}
+.sanctions-search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--ink3);pointer-events:none}
+.sanctions-search{width:100%;height:38px;padding:0 12px 0 36px;border:1px solid var(--hl2);border-radius:8px;background:var(--canvas);color:var(--ink);font:12px var(--f);outline:none}
+.sanctions-search::placeholder{color:#6f7683;opacity:1}
+.sanctions-search:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,200,150,.12)}
+.sanctions-filterbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;border-bottom:1px solid var(--hl);background:#fbfcfd}
+.sanctions-filtergroup{display:flex;align-items:center;gap:4px;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.sanctions-filter{flex:none;border:1px solid transparent;border-radius:7px;background:transparent;padding:6px 9px;color:var(--ink3);font:600 10px var(--f);cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s,color .15s}
+.sanctions-filter:hover{color:var(--accent-h);background:var(--accent-bg)}
+.sanctions-filter:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.sanctions-filter.active{border-color:rgba(0,200,150,.28);background:var(--accent-bg);color:var(--accent-h)}
+.sanctions-window{height:30px;padding:0 25px 0 8px;border:1px solid var(--hl);border-radius:7px;background:var(--canvas);color:var(--ink2);font:600 10px var(--f)}
+.sanctions-window[hidden]{display:none}
+.sanctions-results-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 12px;color:var(--ink3);font:500 10.5px var(--f)}
+.sanctions-access-link{color:var(--accent-h);font-weight:650}
+.sanctions-access-link:hover{text-decoration:underline}
+.sanctions-sort-note{white-space:nowrap}
+.sanctions-table-wrap{min-height:410px;overflow:hidden}
+.sanctions-table{width:100%;table-layout:fixed;border-collapse:collapse}
+.sanctions-table th{padding:9px 10px;border-bottom:1px solid var(--hl);background:var(--s1);color:var(--ink3);font:650 9px var(--f);text-align:left;text-transform:uppercase}
+.sanctions-table td{padding:11px 10px;border-bottom:1px solid var(--hl);font:500 11px var(--f);vertical-align:middle}
+.sanctions-table tbody tr{cursor:pointer;transition:background .15s}
+.sanctions-table tbody tr:hover{background:var(--accent-bg)}
+.sanctions-table tbody tr:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.sanctions-table th:nth-child(1){width:14%}.sanctions-table th:nth-child(2){width:30%}.sanctions-table th:nth-child(3){width:18%}.sanctions-table th:nth-child(4){width:12%}.sanctions-table th:nth-child(5){width:12%}.sanctions-table th:nth-child(6){width:14%}
+.sanctions-date{color:var(--ink2);font:500 10px var(--m);white-space:nowrap}
+.sanctions-date.is-new{color:var(--danger);font-weight:700}
+.sanctions-entity-link{display:block;max-width:100%;color:var(--ink);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sanctions-entity-secondary{margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink3);font:9px var(--m)}
+.sanctions-program{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
+.sanctions-reference{margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink3);font:9px var(--m)}
+.sanctions-record-type{display:inline-flex;padding:3px 6px;border-radius:5px;background:var(--s2);color:var(--ink2);font:700 8.5px var(--f);text-transform:uppercase;white-space:nowrap}
+.sanctions-record-type.address{background:var(--accent-bg);color:var(--accent-h)}
+.sanctions-record-type.ship{background:rgba(57,114,255,.08);color:#345db7}
+.sanctions-address-count{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sanctions-source-cell{display:flex;align-items:center;gap:5px;color:var(--ink2);font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sanctions-loading,.sanctions-empty{padding:70px 24px!important;text-align:center;color:var(--ink3)!important;font:500 12px var(--f)!important}
+.sanctions-pagination{min-height:47px;display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 12px;background:var(--canvas)}
+.sanctions-pagination:empty{display:none}
+.sanctions-page-btn{min-width:31px;height:31px;padding:0 8px;border:1px solid var(--hl);border-radius:7px;background:var(--canvas);color:var(--ink2);font:600 11px var(--f);cursor:pointer}
+.sanctions-page-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent-h)}
+.sanctions-page-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-h)}
+.sanctions-page-btn:disabled{opacity:.35;cursor:not-allowed}
+.sanctions-page-gap{padding:0 3px;color:var(--ink3)}
+@media(max-width:900px){
+  .sanctions-summary{flex-wrap:wrap}
+  .sanctions-summary-item{flex:1 1 33%}
+  .sanctions-summary-item:last-child{flex-basis:100%;justify-content:flex-start;border-top:1px solid var(--hl)}
+  .sanctions-workspace{grid-template-columns:minmax(0,1fr)}
+  .sanctions-sources{min-width:0;border-right:0;border-bottom:1px solid var(--hl)}
+  .sanctions-source-nav{display:flex;overflow-x:auto;scrollbar-width:thin}
+  .sanctions-source-btn{width:auto;flex:none}
+}
+@media(max-width:700px){
+  .sanctions-summary-item{flex-basis:50%;border-bottom:1px solid var(--hl)}
+  .sanctions-summary-item:nth-child(2){border-right:0}
+  .sanctions-summary-item:last-child{border-bottom:0}
+  .sanctions-filterbar{align-items:flex-start;flex-direction:column}
+  .sanctions-filtergroup{width:100%}
+  .sanctions-results-meta{align-items:flex-start;flex-direction:column}
+  .sanctions-sort-note{white-space:normal}
+  .sanctions-table-wrap{min-height:0;padding:10px}
+  .sanctions-table,.sanctions-table tbody{display:block}
+  .sanctions-table thead{display:none}
+  .sanctions-table tr{display:block;margin-bottom:9px;padding:10px 12px;border:1px solid var(--hl);border-radius:9px;background:var(--canvas)}
+  .sanctions-table tr:last-child{margin-bottom:0}
+  .sanctions-table td{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:5px 0;border:0;overflow-wrap:anywhere}
+  .sanctions-table td::before{content:attr(data-label);color:var(--ink3);font:650 9.5px var(--f);text-transform:uppercase}
+  .sanctions-entity-link,.sanctions-entity-secondary,.sanctions-program,.sanctions-reference{white-space:normal;overflow-wrap:anywhere}
+  .sanctions-source-cell{white-space:normal}
+  .sanctions-loading,.sanctions-empty{display:block!important;margin:0!important;padding:24px 14px!important;border:0!important}
+  .sanctions-loading::before,.sanctions-empty::before{display:none}
+}
 .screen-tool-heading{margin:0 0 10px}
 .screen-tool-heading h3{font:650 14px var(--f);color:var(--ink)}
 .screen-tool-heading p{font:400 12px/1.5 var(--f);color:var(--ink3);margin-top:2px}
@@ -745,14 +834,13 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .entity-name-cell{max-width:140px}
   .notes-cell{max-width:150px}
   .deadline-section{padding:0 20px 48px}
-  .overview-intel-section,.deadline-section,.workspace-section,.screen-section{padding:0 14px 16px}
+  .overview-intel-section,.deadline-section,.workspace-section,.sanctions-intel-section,.screen-section{padding:0 14px 16px}
   #liveIntelSection{padding-top:16px}
-  .overview-intel-section>.overview-intel-inner,.deadline-section>.wrap,.workspace-section>.workspace-inner,.screen-section>.screen-inner{padding:18px}
+  .overview-intel-section>.overview-intel-inner,.deadline-section>.wrap,.workspace-section>.workspace-inner,.sanctions-intel-section>.sanctions-intel-inner,.screen-section>.screen-inner{padding:18px}
   .compliance-section-nav-inner{padding:0 12px}
   .workspace-heading{align-items:flex-start;flex-direction:column}
   .jurisdiction-featured-preview{grid-template-columns:1fr;padding:16px;gap:16px}
-  .self-check-onboarding,.sanctions-intelligence-overview{align-items:stretch;flex-direction:column}
-  .sanctions-source-list{justify-content:flex-start}
+  .self-check-onboarding{align-items:stretch;flex-direction:column}
   .event-detail-dialog{inset:8px;width:calc(100vw - 16px);height:calc(100vh - 16px);max-height:none;border-radius:12px}
   .event-detail-shell{height:100%;max-height:none}
   .event-detail-head{padding:16px 18px}
@@ -826,7 +914,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     <a class="compliance-section-link" href="#deadlineSection" data-section="deadlineSection" data-i18n="side.deadlines">Deadlines</a>
     <a class="compliance-section-link" href="#jurisdictionsWorkspace" data-section="jurisdictionsWorkspace" data-i18n="side.juris">Jurisdictions</a>
     <a class="compliance-section-link" href="#selfCheckWorkspace" data-section="selfCheckWorkspace" data-i18n="side.check">Self-Check</a>
-    <a class="compliance-section-link" href="#screenSection" data-section="screenSection" data-i18n="side.screen">Screening</a>
+    <a class="compliance-section-link" href="#sanctionsIntelSection" data-section="sanctionsIntelSection" data-i18n="side.screen">Sanctions</a>
   </div>
 </nav>
 
@@ -1175,27 +1263,76 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   </div>
 </section>
 
+<!-- SANCTIONS INTELLIGENCE -->
+<section class="sanctions-intel-section" id="sanctionsIntelSection" aria-labelledby="sanctionsIntelTitle">
+  <div class="sanctions-intel-inner">
+    <div class="sanctions-intel-header">
+      <h2 id="sanctionsIntelTitle" data-i18n="sanctions.title">Sanctions Intelligence</h2>
+      <p data-i18n="sanctions.subtitle">Official sanctions lists, designated entities and crypto addresses across major authorities.</p>
+    </div>
+
+    <div class="sanctions-summary" aria-label="Sanctions data coverage">
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official sources</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Entity designations</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Crypto addresses</span></div>
+      <div class="sanctions-summary-item"><span class="sanctions-summary-label" id="sanctionsSummarySync" data-i18n="sanctions.loadingSync">Last synced: loading...</span></div>
+    </div>
+
+    <div class="sanctions-workspace">
+      <aside class="sanctions-sources" aria-labelledby="sanctionsSourcesTitle">
+        <h3 class="sanctions-panel-title" id="sanctionsSourcesTitle" data-i18n="sanctions.sources">Sanctions Sources</h3>
+        <div class="sanctions-source-nav" id="sanctionsSourceNav" role="navigation" aria-label="Sanctions sources"></div>
+      </aside>
+
+      <div class="sanctions-main">
+        <div class="sanctions-search-row">
+          <label class="sanctions-search-wrap" for="sanctionsSearch">
+            <span class="sanctions-search-icon" aria-hidden="true">&#128269;</span>
+            <input class="sanctions-search" id="sanctionsSearch" type="search" autocomplete="off" data-i18n-ph="sanctions.searchPh" placeholder="Search entity, crypto address or reference...">
+          </label>
+        </div>
+        <div class="sanctions-filterbar">
+          <div class="sanctions-filtergroup" id="sanctionsTypeFilters" aria-label="Record type filters"></div>
+          <div class="sanctions-filtergroup" id="sanctionsRecencyFilters" aria-label="Recency filters"></div>
+          <select class="sanctions-window" id="sanctionsWindow" aria-label="Latest additions time window" hidden>
+            <option value="1">24H</option>
+            <option value="7" selected>7D</option>
+            <option value="30">30D</option>
+          </select>
+        </div>
+        <div class="sanctions-results-meta">
+          <span id="sanctionsResultCount"></span>
+          <span class="sanctions-sort-note" data-i18n="sanctions.sort">Sorted by official designation date</span>
+        </div>
+        <div class="sanctions-table-wrap">
+          <table class="sanctions-table">
+            <thead>
+              <tr>
+                <th data-i18n="sanctions.thDate">Designation date</th>
+                <th data-i18n="sanctions.thEntity">Entity</th>
+                <th data-i18n="sanctions.thProgram">Program</th>
+                <th data-i18n="sanctions.thType">Type</th>
+                <th data-i18n="sanctions.thAddresses">Addresses</th>
+                <th data-i18n="sanctions.thSource">Source</th>
+              </tr>
+            </thead>
+            <tbody id="sanctionsTableBody">
+              <tr><td colspan="6" class="sanctions-loading" data-i18n="sanctions.loading">Loading official sanctions data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="sanctions-pagination" id="sanctionsPagination" aria-label="Sanctions records pagination"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- SANCTIONS SCREENING TOOL -->
 <section class="screen-section" id="screenSection">
   <div class="screen-inner">
     <div class="screen-header">
-      <h2 data-i18n="cp.screen.title">Sanctions Intelligence &amp; Screening</h2>
-      <p data-i18n="cp.screen.sub">Review the sanctions data sources used by Innobridge, then screen individual or multiple wallet addresses.</p>
-    </div>
-
-    <div class="sanctions-intelligence-overview">
-      <div>
-        <h3 data-i18n="cp.screen.intel.title">Sanctions Intelligence</h3>
-        <p data-i18n="cp.screen.intel.desc">Innobridge checks existing issuer blacklists, official sanctions designations, and known high-risk entity records used by the screening workflow.</p>
-      </div>
-      <div class="sanctions-source-list" aria-label="Connected sanctions intelligence sources">
-        <span data-i18n="cp.screen.source.issuer">Issuer Blacklists</span><span>OFAC SDN</span><span data-i18n="cp.screen.source.highrisk">High-Risk Entities</span>
-      </div>
-    </div>
-
-    <div class="screen-tool-heading">
-      <h3 data-i18n="cp.screen.tool.title">Address Screening</h3>
-      <p data-i18n="cp.screen.tool.desc">Check a wallet address against the connected sanctions and blacklist records.</p>
+      <h2 data-i18n="cp.screen.title">Sanctions Screening Tool</h2>
+      <p data-i18n="cp.screen.sub">Run a specific wallet address check against connected sanctions and blacklist records.</p>
     </div>
     <div class="screen-box">
       <!-- Mode tabs -->
@@ -1321,6 +1458,21 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <button class="event-detail-page-btn" id="complianceEventPrev" type="button" onclick="navigateComplianceEvent(-1)">&larr; Previous</button>
       <span class="event-detail-position" id="complianceEventPosition"></span>
       <button class="event-detail-page-btn" id="complianceEventNext" type="button" onclick="navigateComplianceEvent(1)">Next &rarr;</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="event-detail-dialog" id="sanctionsRecordDialog" aria-labelledby="sanctionsRecordTitle">
+  <div class="event-detail-shell">
+    <div class="event-detail-head">
+      <div><h2 id="sanctionsRecordTitle">Sanctions record</h2><p id="sanctionsRecordKind"></p></div>
+      <button class="event-detail-close" type="button" onclick="closeSanctionsRecordDetail()" aria-label="Close sanctions record details">&times;</button>
+    </div>
+    <div class="event-detail-body" id="sanctionsRecordBody"></div>
+    <div class="event-detail-pager">
+      <button class="event-detail-page-btn" id="sanctionsRecordPrev" type="button" onclick="navigateSanctionsRecord(-1)">&larr; Previous</button>
+      <span class="event-detail-position" id="sanctionsRecordPosition"></span>
+      <button class="event-detail-page-btn" id="sanctionsRecordNext" type="button" onclick="navigateSanctionsRecord(1)">Next &rarr;</button>
     </div>
   </div>
 </dialog>
@@ -1465,9 +1617,12 @@ var I18N = {
     'cp.result.met':'Met',
     'cp.result.notmet':'Not Met',
     'cp.result.partial':'Partial',
-    'cp.screen.title':'Sanctions Intelligence & Screening',
-    'cp.screen.sub':'Review the sanctions data sources used by Innobridge, then screen individual or multiple wallet addresses.',
-    'cp.screen.intel.title':'Sanctions Intelligence','cp.screen.intel.desc':'Innobridge checks existing issuer blacklists, official sanctions designations, and known high-risk entity records used by the screening workflow.','cp.screen.source.issuer':'Issuer Blacklists','cp.screen.source.highrisk':'High-Risk Entities','cp.screen.tool.title':'Address Screening','cp.screen.tool.desc':'Check a wallet address against the connected sanctions and blacklist records.',
+    'sanctions.title':'Sanctions Intelligence','sanctions.subtitle':'Official sanctions lists, designated entities and crypto addresses across major authorities.','sanctions.loadingSync':'Last synced: loading...',
+    'sanctions.sources':'Sanctions Sources','sanctions.searchPh':'Search entity, crypto address or reference...','sanctions.sort':'Sorted by official designation date',
+    'sanctions.thDate':'Designation date','sanctions.thEntity':'Entity','sanctions.thProgram':'Program','sanctions.thType':'Type','sanctions.thAddresses':'Addresses','sanctions.thSource':'Source',
+    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official sources','sanctions.entityDesignations':'Entity designations','sanctions.cryptoAddresses':'Crypto addresses',
+    'cp.screen.title':'Sanctions Screening Tool',
+    'cp.screen.sub':'Run a specific wallet address check against connected sanctions and blacklist records.',
     'cp.screen.single':'Single Address',
     'cp.screen.batch':'Batch Screening',
     'cp.screen.ph':'Enter wallet address (0x... or T...)',
@@ -1611,9 +1766,12 @@ var I18N = {
     'cp.result.met':'已满足',
     'cp.result.notmet':'未满足',
     'cp.result.partial':'部分满足',
-    'cp.screen.title':'制裁情报与筛查',
-    'cp.screen.sub':'先了解 Innobridge 使用的制裁数据来源，再对单个或多个钱包地址进行筛查。',
-    'cp.screen.intel.title':'制裁情报','cp.screen.intel.desc':'Innobridge 使用现有发行方黑名单、官方制裁指定名单和已知高风险实体记录支持筛查流程。','cp.screen.source.issuer':'发行方黑名单','cp.screen.source.highrisk':'高风险实体','cp.screen.tool.title':'地址筛查','cp.screen.tool.desc':'将钱包地址与已连接的制裁及黑名单记录进行比对。',
+    'sanctions.title':'制裁情报','sanctions.subtitle':'汇集主要官方机构的制裁名单、被指定主体和加密地址。','sanctions.loadingSync':'最后同步：加载中...',
+    'sanctions.sources':'制裁来源','sanctions.searchPh':'搜索主体、加密地址或参考编号...','sanctions.sort':'按官方指认日期排序',
+    'sanctions.thDate':'指认日期','sanctions.thEntity':'主体','sanctions.thProgram':'项目','sanctions.thType':'类型','sanctions.thAddresses':'地址','sanctions.thSource':'来源',
+    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方来源','sanctions.entityDesignations':'实体指认','sanctions.cryptoAddresses':'加密地址',
+    'cp.screen.title':'制裁筛查工具',
+    'cp.screen.sub':'对单个或多个钱包地址执行制裁与黑名单记录核查。',
     'cp.screen.single':'单地址筛查',
     'cp.screen.batch':'批量筛查',
     'cp.screen.ph':'输入钱包地址 (0x... 或 T...)',
@@ -1696,6 +1854,8 @@ function toggleLang() {
   // Re-render intel feed
   if (globalEnforcementData.length) { buildEnforcementFilters(); renderGlobalEnforcement(); }
   if (globalRegUpdates.length) { buildRegUpdatesFilters(); renderGlobalRegUpdates(); }
+  if (sanctionsData) renderSanctionsSection();
+  if ((document.getElementById('sanctionsRecordDialog') || {}).open) renderSanctionsRecordDetail();
   renderOverviewEnforcement();
   renderOverviewRegUpdates();
   if (complianceNewsSignals.length) renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
@@ -2947,6 +3107,441 @@ function resetCheck() {
     rb.closest('.radio-item').classList.remove('selected');
   });
   updateWizard();
+}
+
+// ===== SANCTIONS INTELLIGENCE =====
+var sanctionsData = null;
+var activeSanctionsSource = '';
+var sanctionsRecordType = 'all';
+var sanctionsLatestOnly = false;
+var sanctionsLatestDays = 7;
+var sanctionsSearch = '';
+var sanctionsSearchTimer = null;
+var sanctionsPage = 1;
+var sanctionsPageSize = 20;
+var sanctionsTotal = 0;
+var sanctionsAuthenticated = false;
+var sanctionsAccessReason = 'anonymous';
+var sanctionsAccessToken = '';
+var sanctionsRequestId = 0;
+var sanctionsRecordIndex = -1;
+var sanctionsRecordTrigger = null;
+var SANCTIONS_SOURCE_ORDER = ['OFAC', 'UK', 'EU', 'UN', 'IL_NBCTF'];
+var SANCTIONS_SOURCE_META = {
+  OFAC: { label:'OFAC SDN', labelCn:'OFAC SDN', flag:'\u{1F1FA}\u{1F1F8}' },
+  UK: { label:'UK', labelCn:'英国', flag:'\u{1F1EC}\u{1F1E7}' },
+  EU: { label:'EU', labelCn:'欧盟', flag:'\u{1F1EA}\u{1F1FA}' },
+  UN: { label:'UN', labelCn:'联合国', flag:'\u{1F1FA}\u{1F1F3}' },
+  IL_NBCTF: { label:'Israel NBCTF', labelCn:'以色列 NBCTF', flag:'\u{1F1EE}\u{1F1F1}' }
+};
+
+function sanctionsText(en, cn) { return currentLang === 'cn' ? cn : en; }
+function sanctionsSourceMeta(code) { return SANCTIONS_SOURCE_META[code] || { label:code || '', labelCn:code || '', flag:'\u{1F310}' }; }
+function sanctionsAttr(value) { return escHtml(String(value || '')).replace(/"/g, '&quot;'); }
+
+function sanctionsCompactNumber(value) {
+  var number = Number(value) || 0;
+  if (number >= 1000000) return (number / 1000000).toFixed(number >= 10000000 ? 0 : 1).replace(/\.0$/, '') + 'M';
+  if (number >= 1000) return (number / 1000).toFixed(number >= 10000 ? 0 : 1).replace(/\.0$/, '') + 'K';
+  return number.toLocaleString('en-US');
+}
+
+function sanctionsOfficialDate(value) {
+  if (!value) return '\u2014';
+  try {
+    return new Intl.DateTimeFormat(currentLang === 'cn' ? 'zh-CN' : 'en-US', {
+      year:'numeric', month:currentLang === 'cn' ? 'numeric' : 'short', day:'numeric', timeZone:'UTC'
+    }).format(new Date(String(value).slice(0, 10) + 'T00:00:00Z'));
+  } catch (error) { return value; }
+}
+
+function sanctionsTimestamp(value) {
+  if (!value) return '';
+  try {
+    return new Intl.DateTimeFormat(currentLang === 'cn' ? 'zh-CN' : 'en-US', {
+      year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit'
+    }).format(new Date(value));
+  } catch (error) { return value; }
+}
+
+function sanctionsSyncLabel(value) {
+  if (!value) return sanctionsText('Last synced: awaiting source sync', '最后同步：等待来源同步');
+  return sanctionsText('Last synced: ', '最后同步：') + sanctionsTimestamp(value);
+}
+
+function isOfficiallyNew(value) {
+  if (!value) return false;
+  var cutoff = new Date();
+  cutoff.setUTCHours(0, 0, 0, 0);
+  cutoff.setUTCDate(cutoff.getUTCDate() - 7);
+  return new Date(String(value).slice(0, 10) + 'T00:00:00Z') >= cutoff;
+}
+
+function safeSanctionsUrl(value) {
+  try {
+    var url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:' ? url.href : '';
+  } catch (error) { return ''; }
+}
+
+function sanctionsMetricForSource(row) {
+  var addresses = Number(row.address_count) || 0;
+  var designations = Number(row.designation_count) || 0;
+  if (addresses > 0) return sanctionsCompactNumber(addresses) + ' ' + sanctionsText('addr.', '地址');
+  if (designations > 0) return sanctionsCompactNumber(designations) + ' ' + sanctionsText('des.', '指认');
+  return sanctionsText('Awaiting sync', '等待同步');
+}
+
+function setSanctionsLoading() {
+  var body = document.getElementById('sanctionsTableBody');
+  if (body) body.innerHTML = '<tr><td colspan="6" class="sanctions-loading">' + sanctionsText('Loading official sanctions data...', '正在加载官方制裁数据...') + '</td></tr>';
+}
+
+function setSanctionsSession(session) {
+  sanctionsAccessToken = session && session.access_token ? session.access_token : '';
+  sanctionsAuthenticated = Boolean(sanctionsAccessToken);
+  sanctionsPageSize = sanctionsAuthenticated ? 25 : 20;
+  sanctionsPage = 1;
+  loadSanctions();
+}
+
+function sanctionsFetch(url) {
+  var headers = { Accept:'application/json' };
+  if (sanctionsAccessToken) headers.Authorization = 'Bearer ' + sanctionsAccessToken;
+  return fetch(url, { method:'GET', headers:headers, cache:'no-store' }).then(function(response) {
+    if (!response.ok) throw new Error('Sanctions request failed: ' + response.status);
+    return response.json();
+  });
+}
+
+async function loadSanctions(openIndex) {
+  var requestId = ++sanctionsRequestId;
+  setSanctionsLoading();
+  try {
+    var offset = (sanctionsPage - 1) * sanctionsPageSize;
+    var url = API_BASE + '?action=sanctions_intelligence&limit=' + sanctionsPageSize + '&offset=' + offset;
+    if (activeSanctionsSource) url += '&source=' + encodeURIComponent(activeSanctionsSource);
+    if (sanctionsRecordType !== 'all') url += '&record_type=' + encodeURIComponent(sanctionsRecordType);
+    if (sanctionsLatestOnly) url += '&latest=true&days=' + encodeURIComponent(sanctionsLatestDays);
+    if (sanctionsSearch) url += '&q=' + encodeURIComponent(sanctionsSearch);
+    var data = await sanctionsFetch(url);
+    if (requestId !== sanctionsRequestId) return;
+    if (!data || !data.success) throw new Error((data && data.error) || 'Unable to load sanctions data');
+    sanctionsAuthenticated = Boolean(data.authenticated);
+    sanctionsAccessReason = data.access_reason || 'anonymous';
+    sanctionsPageSize = sanctionsAuthenticated ? 25 : 20;
+    sanctionsTotal = Number(data.total) || 0;
+    if (!sanctionsAuthenticated && sanctionsPage !== 1) sanctionsPage = 1;
+    sanctionsData = data;
+    renderSanctionsSection();
+    if (typeof openIndex === 'number' && (data.items || [])[openIndex]) openSanctionsRecord(openIndex, sanctionsRecordTrigger);
+  } catch (error) {
+    console.warn('sanctions intelligence fail', error);
+    var body = document.getElementById('sanctionsTableBody');
+    if (body) body.innerHTML = '<tr><td colspan="6" class="sanctions-empty">' + sanctionsText('Official sanctions data is temporarily unavailable.', '官方制裁数据暂时不可用。') + '</td></tr>';
+  }
+}
+
+function resetSanctionsPage() { sanctionsPage = 1; }
+function setSanctionsSource(code) { activeSanctionsSource = code || ''; resetSanctionsPage(); loadSanctions(); }
+function setSanctionsRecordType(type) { sanctionsRecordType = type || 'all'; resetSanctionsPage(); loadSanctions(); }
+function setSanctionsLatest(enabled) { sanctionsLatestOnly = Boolean(enabled); resetSanctionsPage(); loadSanctions(); }
+
+function goSanctionsPage(page) {
+  if (!sanctionsAuthenticated) return;
+  var totalPages = Math.max(1, Math.ceil(sanctionsTotal / sanctionsPageSize));
+  sanctionsPage = Math.min(Math.max(Number(page) || 1, 1), totalPages);
+  loadSanctions();
+  var section = document.getElementById('sanctionsIntelSection');
+  if (section) section.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function renderSanctionsSources() {
+  if (!sanctionsData) return;
+  var coverage = sanctionsData.coverage || [];
+  var byCode = {};
+  coverage.forEach(function(row) { byCode[row.source_code] = row; });
+  var sourceCount = Number(sanctionsData.official_sources || coverage.length || 0);
+  var sources = [{ code:'', label:sanctionsText('All Sanctions', '全部制裁'), count:sourceCount + ' ' + sanctionsText(sourceCount === 1 ? 'source' : 'sources', '个来源') }];
+  SANCTIONS_SOURCE_ORDER.forEach(function(code) {
+    var meta = sanctionsSourceMeta(code);
+    sources.push({ code:code, label:meta.flag + ' ' + (currentLang === 'cn' ? meta.labelCn : meta.label), count:sanctionsMetricForSource(byCode[code] || {}) });
+  });
+  document.getElementById('sanctionsSourceNav').innerHTML = sources.map(function(item) {
+    var active = item.code === activeSanctionsSource;
+    return '<button class="sanctions-source-btn' + (active ? ' active' : '') + '" type="button" aria-pressed="' + (active ? 'true' : 'false') + '" onclick="setSanctionsSource(&quot;' + escHtml(item.code) + '&quot;)"><span class="sanctions-source-name">' + escHtml(item.label) + '</span><span class="sanctions-source-count">' + escHtml(item.count) + '</span></button>';
+  }).join('');
+}
+
+function renderSanctionsControls() {
+  var types = [
+    { value:'all', en:'All', cn:'全部' },
+    { value:'entities', en:'Entities', cn:'实体' },
+    { value:'individuals', en:'Individuals', cn:'个人' },
+    { value:'ships', en:'Ships', cn:'船舶' },
+    { value:'crypto_addresses', en:'Crypto Addresses', cn:'加密地址' }
+  ];
+  document.getElementById('sanctionsTypeFilters').innerHTML = types.map(function(item) {
+    var active = item.value === sanctionsRecordType;
+    return '<button class="sanctions-filter' + (active ? ' active' : '') + '" type="button" aria-pressed="' + (active ? 'true' : 'false') + '" onclick="setSanctionsRecordType(&quot;' + item.value + '&quot;)">' + escHtml(sanctionsText(item.en, item.cn)) + '</button>';
+  }).join('');
+  document.getElementById('sanctionsRecencyFilters').innerHTML = [
+    { latest:false, en:'All Records', cn:'全部记录' },
+    { latest:true, en:'Latest Additions', cn:'最新新增' }
+  ].map(function(item) {
+    var active = item.latest === sanctionsLatestOnly;
+    return '<button class="sanctions-filter' + (active ? ' active' : '') + '" type="button" aria-pressed="' + (active ? 'true' : 'false') + '" onclick="setSanctionsLatest(' + (item.latest ? 'true' : 'false') + ')">' + escHtml(sanctionsText(item.en, item.cn)) + '</button>';
+  }).join('');
+  var windowSelect = document.getElementById('sanctionsWindow');
+  windowSelect.hidden = !sanctionsLatestOnly;
+  windowSelect.value = String(sanctionsLatestDays);
+  var searchInput = document.getElementById('sanctionsSearch');
+  if (document.activeElement !== searchInput) searchInput.value = sanctionsSearch;
+}
+
+function renderSanctionsSummary() {
+  if (!sanctionsData) return;
+  document.getElementById('sanctionsOfficialSources').textContent = Number(sanctionsData.official_sources || 0).toLocaleString('en-US');
+  document.getElementById('sanctionsDesignationTotal').textContent = sanctionsCompactNumber(sanctionsData.entity_designations);
+  document.getElementById('sanctionsAddressTotal').textContent = sanctionsCompactNumber(sanctionsData.crypto_addresses);
+  document.getElementById('sanctionsSummarySync').textContent = sanctionsSyncLabel(sanctionsData.last_updated);
+}
+
+function sanctionsTypeLabel(item) {
+  if (item.record_type === 'address') return sanctionsText('Crypto address', '加密地址');
+  var type = String(item.entity_type || '').toLowerCase();
+  if (type === 'individual' || type === 'person') return sanctionsText('Individual', '个人');
+  if (type === 'ship' || type === 'vessel') return sanctionsText('Ship', '船舶');
+  return sanctionsText('Entity', '实体');
+}
+
+function sanctionsRecordEntity(item) {
+  var isAddress = item.record_type === 'address';
+  var hasLinkedEntity = isAddress && item.entity_name && item.entity_name !== item.address;
+  return {
+    primary:hasLinkedEntity ? item.entity_name : (isAddress && item.address ? item.address : (item.entity_name || sanctionsText('Unnamed designation', '未命名指认'))),
+    secondary:hasLinkedEntity ? item.address : ''
+  };
+}
+
+function renderSanctionsTable() {
+  if (!sanctionsData) return;
+  var items = sanctionsData.items || [];
+  var body = document.getElementById('sanctionsTableBody');
+  if (!items.length) {
+    body.innerHTML = '<tr><td colspan="6" class="sanctions-empty">' + sanctionsText('No official records match these filters.', '没有符合当前筛选条件的官方记录。') + '</td></tr>';
+    document.getElementById('sanctionsResultCount').textContent = sanctionsText('0 matching records', '0 条匹配记录');
+    document.getElementById('sanctionsPagination').innerHTML = '';
+    return;
+  }
+  var labels = currentLang === 'cn'
+    ? ['指认日期', '主体', '项目', '类型', '地址', '来源']
+    : ['Designation date', 'Entity', 'Program', 'Type', 'Addresses', 'Source'];
+  body.innerHTML = items.map(function(item, index) {
+    var meta = sanctionsSourceMeta(item.source_code);
+    var entity = sanctionsRecordEntity(item);
+    var isAddress = item.record_type === 'address';
+    var typeLabel = sanctionsTypeLabel(item);
+    var typeClass = isAddress ? ' address' : (String(item.entity_type || '').toLowerCase().match(/ship|vessel/) ? ' ship' : '');
+    var program = item.program_name || item.source_name || sanctionsText('Official sanctions record', '官方制裁记录');
+    return '<tr tabindex="0" role="button" aria-label="' + sanctionsAttr(sanctionsText('View sanctions record: ', '查看制裁记录：') + entity.primary) + '" onclick="openSanctionsRecord(' + index + ',this)" onkeydown="handleSanctionsRowKey(event,' + index + ')">'
+      + '<td data-label="' + labels[0] + '"><span class="sanctions-date' + (isOfficiallyNew(item.designation_date) ? ' is-new' : '') + '">' + escHtml(sanctionsOfficialDate(item.designation_date)) + '</span></td>'
+      + '<td data-label="' + labels[1] + '"><span class="sanctions-entity-link" title="' + sanctionsAttr(entity.primary) + '">' + escHtml(entity.primary) + '</span>' + (entity.secondary ? '<div class="sanctions-entity-secondary" title="' + sanctionsAttr(entity.secondary) + '">' + escHtml(entity.secondary) + '</div>' : '') + '</td>'
+      + '<td data-label="' + labels[2] + '"><span class="sanctions-program" title="' + sanctionsAttr(program) + '">' + escHtml(program) + '</span>' + (item.source_ref ? '<div class="sanctions-reference" title="' + sanctionsAttr(item.source_ref) + '">' + escHtml(item.source_ref) + '</div>' : '') + '</td>'
+      + '<td data-label="' + labels[3] + '"><span class="sanctions-record-type' + typeClass + '">' + escHtml(typeLabel) + '</span></td>'
+      + '<td data-label="' + labels[4] + '"><span class="sanctions-address-count">' + (Number(item.address_count) > 0 ? Number(item.address_count).toLocaleString('en-US') : '\u2014') + '</span></td>'
+      + '<td data-label="' + labels[5] + '"><div class="sanctions-source-cell"><span>' + meta.flag + '</span><span>' + escHtml(currentLang === 'cn' ? meta.labelCn : meta.label) + '</span></div></td></tr>';
+  }).join('');
+  var start = (sanctionsPage - 1) * sanctionsPageSize + 1;
+  var end = Math.min(start + items.length - 1, sanctionsTotal);
+  var count = document.getElementById('sanctionsResultCount');
+  if (sanctionsAuthenticated) {
+    count.textContent = sanctionsText('Showing ' + start + '\u2013' + end + ' of ' + sanctionsTotal.toLocaleString('en-US') + ' matching records', '显示第 ' + start + '\u2013' + end + ' 条，共 ' + sanctionsTotal.toLocaleString('en-US') + ' 条匹配记录');
+  } else if (sanctionsAccessReason === 'account_inactive') {
+    count.innerHTML = sanctionsText('Showing ' + Math.min(items.length, 20) + ' preview records \u00b7 <a class="sanctions-access-link" href="/account">Account access is paused</a>', '显示 ' + Math.min(items.length, 20) + ' 条预览记录 \u00b7 <a class="sanctions-access-link" href="/account">账号访问已暂停</a>');
+  } else if (sanctionsAccessReason === 'profile_unavailable') {
+    count.innerHTML = sanctionsText('Showing ' + Math.min(items.length, 20) + ' preview records \u00b7 <a class="sanctions-access-link" href="/contact">Contact support to restore access</a>', '显示 ' + Math.min(items.length, 20) + ' 条预览记录 \u00b7 <a class="sanctions-access-link" href="/contact">请联系支持恢复访问</a>');
+  } else {
+    count.innerHTML = sanctionsText('Showing ' + Math.min(items.length, 20) + ' of ' + sanctionsTotal.toLocaleString('en-US') + ' matching records \u00b7 <a class="sanctions-access-link" href="/login">Sign in to view all</a>', '显示 ' + Math.min(items.length, 20) + ' / ' + sanctionsTotal.toLocaleString('en-US') + ' 条匹配记录 \u00b7 <a class="sanctions-access-link" href="/login">登录后查看全部</a>');
+  }
+  renderSanctionsPagination();
+}
+
+function renderSanctionsPagination() {
+  var container = document.getElementById('sanctionsPagination');
+  if (!sanctionsAuthenticated) { container.innerHTML = ''; return; }
+  var totalPages = Math.ceil(sanctionsTotal / sanctionsPageSize);
+  if (totalPages <= 1) { container.innerHTML = ''; return; }
+  var pages = [];
+  for (var page = 1; page <= totalPages; page++) {
+    if (page === 1 || page === totalPages || Math.abs(page - sanctionsPage) <= 1) pages.push(page);
+  }
+  var html = '<button class="sanctions-page-btn" type="button" onclick="goSanctionsPage(' + (sanctionsPage - 1) + ')" ' + (sanctionsPage <= 1 ? 'disabled' : '') + ' aria-label="Previous page">&#171;</button>';
+  var previous = 0;
+  pages.forEach(function(page) {
+    if (previous && page - previous > 1) html += '<span class="sanctions-page-gap">...</span>';
+    html += '<button class="sanctions-page-btn' + (page === sanctionsPage ? ' active' : '') + '" type="button" onclick="goSanctionsPage(' + page + ')" aria-current="' + (page === sanctionsPage ? 'page' : 'false') + '">' + page + '</button>';
+    previous = page;
+  });
+  html += '<button class="sanctions-page-btn" type="button" onclick="goSanctionsPage(' + (sanctionsPage + 1) + ')" ' + (sanctionsPage >= totalPages ? 'disabled' : '') + ' aria-label="Next page">&#187;</button>';
+  container.innerHTML = html;
+}
+
+function renderSanctionsSection() {
+  if (!sanctionsData) return;
+  renderSanctionsSummary();
+  renderSanctionsSources();
+  renderSanctionsControls();
+  renderSanctionsTable();
+}
+
+function handleSanctionsRowKey(event, index) {
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  openSanctionsRecord(index, event.currentTarget);
+}
+
+function sanctionsDetailMeta(label, value) {
+  if (value === undefined || value === null || String(value).trim() === '') return '';
+  return '<dt>' + escHtml(label) + '</dt><dd>' + escHtml(String(value)) + '</dd>';
+}
+
+function renderSanctionsRecordDetail() {
+  var items = sanctionsData && sanctionsData.items ? sanctionsData.items : [];
+  var item = items[sanctionsRecordIndex];
+  if (!item) return;
+  var entity = sanctionsRecordEntity(item);
+  var isAddress = item.record_type === 'address';
+  var meta = sanctionsSourceMeta(item.source_code);
+  var labels = currentLang === 'cn' ? {
+    designation:'制裁指认记录', address:'加密地址记录', entity:'主体名称', type:'主体类型', date:'指认日期', source:'来源', program:'项目 / 名单', reference:'来源编号', jurisdiction:'司法管辖区', status:'状态', addresses:'关联加密地址', addressValue:'地址', chain:'链', asset:'资产', associated:'关联主体', firstSeen:'首次收录', lastSeen:'最近收录', risk:'风险等级', official:'官方来源', officialCta:'查看官方来源', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
+  } : {
+    designation:'Sanctions designation', address:'Crypto address record', entity:'Entity name', type:'Entity type', date:'Designation date', source:'Source', program:'Program / list', reference:'Source reference', jurisdiction:'Jurisdiction', status:'Status', addresses:'Associated crypto addresses', addressValue:'Address', chain:'Chain', asset:'Asset', associated:'Associated entity', firstSeen:'First seen', lastSeen:'Last seen', risk:'Risk level', official:'Official source', officialCta:'View official source', previous:'Previous', next:'Next', position:'{current} of {total}'
+  };
+  document.getElementById('sanctionsRecordTitle').textContent = entity.primary;
+  document.getElementById('sanctionsRecordKind').textContent = isAddress ? labels.address : labels.designation;
+  var rows = '';
+  if (isAddress) {
+    rows += sanctionsDetailMeta(labels.addressValue, item.address);
+    rows += sanctionsDetailMeta(labels.chain, Array.isArray(item.chains) ? item.chains.join(', ') : item.chains);
+    rows += sanctionsDetailMeta(labels.asset, Array.isArray(item.assets) ? item.assets.join(', ') : item.assets);
+    if (entity.secondary) rows += sanctionsDetailMeta(labels.associated, item.entity_name);
+    rows += sanctionsDetailMeta(labels.source, (currentLang === 'cn' ? meta.labelCn : meta.label));
+    rows += sanctionsDetailMeta(labels.program, item.program_name || item.source_name);
+    rows += sanctionsDetailMeta(labels.jurisdiction, item.jurisdiction);
+    rows += sanctionsDetailMeta(labels.risk, item.risk_level);
+    rows += sanctionsDetailMeta(labels.firstSeen, sanctionsTimestamp(item.first_seen_at));
+    rows += sanctionsDetailMeta(labels.lastSeen, sanctionsTimestamp(item.last_seen_at));
+  } else {
+    rows += sanctionsDetailMeta(labels.entity, item.entity_name);
+    rows += sanctionsDetailMeta(labels.type, item.entity_type);
+    rows += sanctionsDetailMeta(labels.date, sanctionsOfficialDate(item.designation_date));
+    rows += sanctionsDetailMeta(labels.source, (currentLang === 'cn' ? meta.labelCn : meta.label));
+    rows += sanctionsDetailMeta(labels.program, item.program_name || item.source_name);
+    rows += sanctionsDetailMeta(labels.reference, item.source_ref);
+    rows += sanctionsDetailMeta(labels.jurisdiction, item.jurisdiction);
+    rows += sanctionsDetailMeta(labels.status, item.status);
+    if (Number(item.address_count) > 0) rows += sanctionsDetailMeta(labels.addresses, Number(item.address_count).toLocaleString('en-US'));
+  }
+  var html = '<section class="event-detail-section"><dl class="event-detail-meta">' + rows + '</dl></section>';
+  var sourceUrl = safeSanctionsUrl(item.source_url);
+  if (sourceUrl) html += '<section class="event-detail-section"><h3>' + escHtml(labels.official) + '</h3><a class="event-detail-source" href="' + sanctionsAttr(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(labels.officialCta) + ' &#8599;</a></section>';
+  document.getElementById('sanctionsRecordBody').innerHTML = html;
+  document.getElementById('sanctionsRecordBody').scrollTop = 0;
+  var globalIndex = (sanctionsPage - 1) * sanctionsPageSize + sanctionsRecordIndex;
+  var browsableTotal = sanctionsAuthenticated ? sanctionsTotal : items.length;
+  var previous = document.getElementById('sanctionsRecordPrev');
+  var next = document.getElementById('sanctionsRecordNext');
+  previous.textContent = '\u2190 ' + labels.previous;
+  next.textContent = labels.next + ' \u2192';
+  previous.disabled = globalIndex <= 0;
+  next.disabled = globalIndex >= browsableTotal - 1;
+  document.getElementById('sanctionsRecordPosition').textContent = labels.position.replace('{current}', globalIndex + 1).replace('{total}', browsableTotal.toLocaleString('en-US'));
+}
+
+function openSanctionsRecord(index, trigger) {
+  var items = sanctionsData && sanctionsData.items ? sanctionsData.items : [];
+  var dialog = document.getElementById('sanctionsRecordDialog');
+  if (!items[index] || !dialog) return;
+  sanctionsRecordIndex = index;
+  renderSanctionsRecordDetail();
+  if (!dialog.open) {
+    sanctionsRecordTrigger = trigger || (document.activeElement && document.activeElement !== document.body ? document.activeElement : null);
+    if (typeof dialog.showModal === 'function') dialog.showModal();
+    else dialog.setAttribute('open', '');
+    var close = dialog.querySelector('.event-detail-close');
+    if (close) close.focus();
+  }
+}
+
+async function navigateSanctionsRecord(direction) {
+  var items = sanctionsData && sanctionsData.items ? sanctionsData.items : [];
+  if (!items.length) return;
+  var target = sanctionsRecordIndex + direction;
+  if (target >= 0 && target < items.length) {
+    sanctionsRecordIndex = target;
+    renderSanctionsRecordDetail();
+    return;
+  }
+  if (!sanctionsAuthenticated) return;
+  var totalPages = Math.ceil(sanctionsTotal / sanctionsPageSize);
+  if (direction > 0 && sanctionsPage < totalPages) {
+    sanctionsPage += 1;
+    await loadSanctions(0);
+  } else if (direction < 0 && sanctionsPage > 1) {
+    sanctionsPage -= 1;
+    await loadSanctions(sanctionsPageSize - 1);
+  }
+}
+
+function finishSanctionsRecordClose() {
+  var trigger = sanctionsRecordTrigger;
+  sanctionsRecordTrigger = null;
+  sanctionsRecordIndex = -1;
+  if (trigger && document.contains(trigger) && typeof trigger.focus === 'function') window.setTimeout(function() { trigger.focus(); }, 0);
+}
+
+function closeSanctionsRecordDetail() {
+  var dialog = document.getElementById('sanctionsRecordDialog');
+  if (!dialog || !dialog.open) return;
+  if (typeof dialog.close === 'function') dialog.close();
+  else { dialog.removeAttribute('open'); finishSanctionsRecordClose(); }
+}
+
+function initSanctionsExplorer() {
+  var search = document.getElementById('sanctionsSearch');
+  var windowSelect = document.getElementById('sanctionsWindow');
+  var dialog = document.getElementById('sanctionsRecordDialog');
+  if (search) search.addEventListener('input', function(event) {
+    clearTimeout(sanctionsSearchTimer);
+    sanctionsSearchTimer = setTimeout(function() {
+      sanctionsSearch = event.target.value.trim();
+      resetSanctionsPage();
+      loadSanctions();
+    }, 350);
+  });
+  if (windowSelect) windowSelect.addEventListener('change', function(event) {
+    sanctionsLatestDays = Number(event.target.value) || 7;
+    resetSanctionsPage();
+    loadSanctions();
+  });
+  if (dialog) {
+    dialog.addEventListener('click', function(event) { if (event.target === dialog) closeSanctionsRecordDetail(); });
+    dialog.addEventListener('close', finishSanctionsRecordClose);
+  }
+  document.addEventListener('keydown', function(event) {
+    if (!dialog || !dialog.open) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      closeSanctionsRecordDetail();
+      return;
+    }
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    var target = event.target;
+    if (target && (target.matches('input, textarea, select, a') || target.isContentEditable)) return;
+    event.preventDefault();
+    navigateSanctionsRecord(event.key === 'ArrowLeft' ? -1 : 1);
+  });
 }
 
 // ===== SANCTIONS SCREENING =====
@@ -4440,8 +5035,11 @@ function setupComplianceWorkspaceIA() {
     var selfInner = selfWorkspace.querySelector('.workspace-inner');
     selfInner.appendChild(createWorkspacePanel('business', check, true));
     selfInner.appendChild(createWorkspacePanel('token', mica, false));
+    var sanctionsIntel = document.getElementById('sanctionsIntelSection');
     var screening = document.getElementById('screenSection');
-    if (screening) selfWorkspace.after(screening);
+    if (sanctionsIntel) selfWorkspace.after(sanctionsIntel);
+    if (screening && sanctionsIntel) sanctionsIntel.after(screening);
+    else if (screening) selfWorkspace.after(screening);
   }
 
   var stickyLinks = document.querySelectorAll('.compliance-section-link');
@@ -4721,15 +5319,16 @@ loadGlobalRegUpdates();
 initComplianceSignalSearch();
 loadComplianceNewsSignals();
 initPolicies();
+initSanctionsExplorer();
 
 </script>
 
 <!-- SUPABASE AUTH -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-(async function(){try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var{data:{session}}=await sb.auth.getSession();if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}
+(async function(){var session=null;try{var sb=supabase.createClient('https://hbfdelixtwkegxpmfyea.supabase.co','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4');var result=await sb.auth.getSession();session=result.data.session;if(session){var n=session.user.user_metadata?.full_name||session.user.email.split('@')[0];var b=document.getElementById('auth-btn');if(b){b.textContent=n.length>10?n.slice(0,10)+'…':n;b.title=session.user.email}
 // Show compliance check tool for logged-in users
-document.getElementById('checkLoginGate').style.display='none';document.getElementById('checkContainer').style.display='block';populateJurisSelect();}}catch(e){}})();
+document.getElementById('checkLoginGate').style.display='none';document.getElementById('checkContainer').style.display='block';populateJurisSelect();}}catch(e){console.warn('auth session fail',e);}finally{setSanctionsSession(session);}})();
 </script>
 
 <script>
