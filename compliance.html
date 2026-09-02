@@ -3184,12 +3184,33 @@ function safeSanctionsUrl(value) {
   } catch (error) { return ''; }
 }
 
-function sanctionsMetricForSource(row) {
+function sanctionsMetricForSource(row, code) {
   var addresses = Number(row.address_count) || 0;
   var designations = Number(row.designation_count) || 0;
+  if (code === 'UK') {
+    var designationMetric = sanctionsCompactNumber(designations) + ' ' + sanctionsText('des.', '指认');
+    var addressMetric = addresses > 0
+      ? sanctionsCompactNumber(addresses) + ' ' + sanctionsText('crypto', '加密地址')
+      : sanctionsText('crypto sync pending', '加密地址待同步');
+    return designationMetric + ' · ' + addressMetric;
+  }
   if (addresses > 0) return sanctionsCompactNumber(addresses) + ' ' + sanctionsText('addr.', '地址');
   if (designations > 0) return sanctionsCompactNumber(designations) + ' ' + sanctionsText('des.', '指认');
   return sanctionsText('Awaiting sync', '等待同步');
+}
+
+function sanctionsSourceLabel(row, code) {
+  var addresses = Number(row.address_count) || 0;
+  var designations = Number(row.designation_count) || 0;
+  var meta = sanctionsSourceMeta(code);
+  var sourceName = code === 'UK' ? sanctionsText('UK Sanctions List', '英国制裁名单') : (currentLang === 'cn' ? meta.labelCn : meta.label);
+  if (code === 'UK') {
+    var addressText = addresses > 0
+      ? addresses.toLocaleString('en-US') + sanctionsText(' officially linked crypto addresses', ' 个官方关联加密地址')
+      : sanctionsText('linked crypto address sync pending', '关联加密地址待同步');
+    return designations.toLocaleString('en-US') + ' ' + sourceName + sanctionsText(' designations · ', ' 项指认 · ') + addressText;
+  }
+  return sourceName + ' · ' + sanctionsMetricForSource(row, code);
 }
 
 function setSanctionsLoading() {
@@ -3265,11 +3286,13 @@ function renderSanctionsSources() {
   var sources = [{ code:'', label:sanctionsText('All Sanctions', '全部制裁'), count:sourceCount + ' ' + sanctionsText(sourceCount === 1 ? 'source' : 'sources', '个来源') }];
   SANCTIONS_SOURCE_ORDER.forEach(function(code) {
     var meta = sanctionsSourceMeta(code);
-    sources.push({ code:code, label:meta.flag + ' ' + (currentLang === 'cn' ? meta.labelCn : meta.label), count:sanctionsMetricForSource(byCode[code] || {}) });
+    var row = byCode[code] || {};
+    sources.push({ code:code, label:meta.flag + ' ' + (currentLang === 'cn' ? meta.labelCn : meta.label), count:sanctionsMetricForSource(row, code), accessible:sanctionsSourceLabel(row, code) });
   });
   document.getElementById('sanctionsSourceNav').innerHTML = sources.map(function(item) {
     var active = item.code === activeSanctionsSource;
-    return '<button class="sanctions-source-btn' + (active ? ' active' : '') + '" type="button" aria-pressed="' + (active ? 'true' : 'false') + '" onclick="setSanctionsSource(&quot;' + escHtml(item.code) + '&quot;)"><span class="sanctions-source-name">' + escHtml(item.label) + '</span><span class="sanctions-source-count">' + escHtml(item.count) + '</span></button>';
+    var accessible = item.accessible || (item.label + ' · ' + item.count);
+    return '<button class="sanctions-source-btn' + (active ? ' active' : '') + '" type="button" title="' + sanctionsAttr(accessible) + '" aria-label="' + sanctionsAttr(accessible) + '" aria-pressed="' + (active ? 'true' : 'false') + '" onclick="setSanctionsSource(&quot;' + escHtml(item.code) + '&quot;)"><span class="sanctions-source-name">' + escHtml(item.label) + '</span><span class="sanctions-source-count">' + escHtml(item.count) + '</span></button>';
   }).join('');
 }
 
@@ -3318,9 +3341,11 @@ function sanctionsTypeLabel(item) {
 function sanctionsRecordEntity(item) {
   var isAddress = item.record_type === 'address';
   var hasLinkedEntity = isAddress && item.entity_name && item.entity_name !== item.address;
+  var chain = Array.isArray(item.chains) ? item.chains[0] : item.chains;
+  var addressDetail = [chain, item.address].filter(Boolean).join(' · ');
   return {
     primary:hasLinkedEntity ? item.entity_name : (isAddress && item.address ? item.address : (item.entity_name || sanctionsText('Unnamed designation', '未命名指认'))),
-    secondary:hasLinkedEntity ? item.address : ''
+    secondary:hasLinkedEntity ? addressDetail : ''
   };
 }
 
@@ -3413,11 +3438,18 @@ function renderSanctionsRecordDetail() {
   var entity = sanctionsRecordEntity(item);
   var isAddress = item.record_type === 'address';
   var meta = sanctionsSourceMeta(item.source_code);
+  var isUkAddress = isAddress && item.source_code === 'UK';
   var labels = currentLang === 'cn' ? {
-    designation:'制裁指认记录', address:'加密地址记录', entity:'主体名称', type:'主体类型', date:'指认日期', source:'来源', program:'项目 / 名单', reference:'来源编号', jurisdiction:'司法管辖区', status:'状态', addresses:'关联加密地址', addressValue:'地址', chain:'链', asset:'资产', associated:'关联主体', firstSeen:'首次收录', lastSeen:'最近收录', risk:'风险等级', official:'官方来源', officialCta:'查看官方来源', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
+    designation:'制裁指认记录', address:'加密地址记录', entity:'主体名称', type:'主体类型', date:'指认日期', source:'来源', program:'项目 / 名单', reference:'来源编号', jurisdiction:'司法管辖区', status:'状态', addresses:'关联加密地址', addressValue:'加密地址', chain:'链', asset:'资产', associated:'关联主体', firstSeen:'首次收录', lastSeen:'最近收录', risk:'风险等级', official:'官方来源', officialCta:'查看官方来源', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
   } : {
-    designation:'Sanctions designation', address:'Crypto address record', entity:'Entity name', type:'Entity type', date:'Designation date', source:'Source', program:'Program / list', reference:'Source reference', jurisdiction:'Jurisdiction', status:'Status', addresses:'Associated crypto addresses', addressValue:'Address', chain:'Chain', asset:'Asset', associated:'Associated entity', firstSeen:'First seen', lastSeen:'Last seen', risk:'Risk level', official:'Official source', officialCta:'View official source', previous:'Previous', next:'Next', position:'{current} of {total}'
+    designation:'Sanctions designation', address:'Crypto address record', entity:'Entity name', type:'Entity type', date:'Designation date', source:'Source', program:'Program / list', reference:'Source reference', jurisdiction:'Jurisdiction', status:'Status', addresses:'Associated crypto addresses', addressValue:'Crypto address', chain:'Chain', asset:'Asset', associated:'Associated entity', firstSeen:'First seen', lastSeen:'Last seen', risk:'Risk level', official:'Official source', officialCta:'View official source', previous:'Previous', next:'Next', position:'{current} of {total}'
   };
+  if (isUkAddress) {
+    labels.associated = sanctionsText('Linked entity', '关联制裁主体');
+    labels.reference = 'UKSL Unique ID';
+    labels.program = sanctionsText('Sanctions regime', '制裁机制');
+    labels.officialCta = sanctionsText('Officially linked in UK Sanctions List', '英国制裁名单官方关联记录');
+  }
   document.getElementById('sanctionsRecordTitle').textContent = entity.primary;
   document.getElementById('sanctionsRecordKind').textContent = isAddress ? labels.address : labels.designation;
   var rows = '';
@@ -3426,7 +3458,9 @@ function renderSanctionsRecordDetail() {
     rows += sanctionsDetailMeta(labels.chain, Array.isArray(item.chains) ? item.chains.join(', ') : item.chains);
     rows += sanctionsDetailMeta(labels.asset, Array.isArray(item.assets) ? item.assets.join(', ') : item.assets);
     if (entity.secondary) rows += sanctionsDetailMeta(labels.associated, item.entity_name);
-    rows += sanctionsDetailMeta(labels.source, (currentLang === 'cn' ? meta.labelCn : meta.label));
+    rows += sanctionsDetailMeta(labels.reference, item.source_ref);
+    rows += sanctionsDetailMeta(labels.date, sanctionsOfficialDate(item.designation_date));
+    rows += sanctionsDetailMeta(labels.source, isUkAddress ? sanctionsText('UK Sanctions List', '英国制裁名单') : (currentLang === 'cn' ? meta.labelCn : meta.label));
     rows += sanctionsDetailMeta(labels.program, item.program_name || item.source_name);
     rows += sanctionsDetailMeta(labels.jurisdiction, item.jurisdiction);
     rows += sanctionsDetailMeta(labels.risk, item.risk_level);
