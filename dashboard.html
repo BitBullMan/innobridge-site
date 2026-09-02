@@ -178,12 +178,12 @@
         .sanctions-sources { padding:14px 12px;background:#fafbfc;border-right:1px solid var(--border); }
         .sanctions-panel-title { padding:0 6px 9px;font-size:12px;font-weight:700;color:var(--text); }
         .sanctions-source-nav { display:grid;gap:3px; }
-        .sanctions-source-btn { width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--text-2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s; }
+        .sanctions-source-btn { width:100%;display:block;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--text-2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s; }
         .sanctions-source-btn:hover { background:#f0f3f5;color:var(--text); }
         .sanctions-source-btn:focus-visible { outline:2px solid rgba(0,200,150,.3);outline-offset:1px; }
         .sanctions-source-btn.active { background:var(--accent-light);color:#087f64;font-weight:650; }
-        .sanctions-source-name { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-        .sanctions-source-count { flex:none;color:var(--text-3);font:600 9px var(--m);white-space:nowrap; }
+        .sanctions-source-name { display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+        .sanctions-source-count { display:block;margin-top:3px;color:var(--text-3);font:600 9px/1.35 var(--m);white-space:normal; }
         .sanctions-source-btn.active .sanctions-source-count { color:#087f64; }
         .sanctions-main { min-width:0; }
         .sanctions-search-row { display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--border); }
@@ -211,12 +211,12 @@
         .sanctions-table { width:100%;table-layout:fixed; }
         .sanctions-table th { padding:9px 10px;font-size:9px; }
         .sanctions-table td { padding:10px;font-size:11px;vertical-align:middle; }
-        .sanctions-table th:nth-child(1) { width:14%; }
-        .sanctions-table th:nth-child(2) { width:30%; }
+        .sanctions-table th:nth-child(1) { width:13%; }
+        .sanctions-table th:nth-child(2) { width:25%; }
         .sanctions-table th:nth-child(3) { width:18%; }
-        .sanctions-table th:nth-child(4) { width:12%; }
-        .sanctions-table th:nth-child(5) { width:12%; }
-        .sanctions-table th:nth-child(6) { width:14%; }
+        .sanctions-table th:nth-child(4) { width:18%; }
+        .sanctions-table th:nth-child(5) { width:16%; }
+        .sanctions-table th:nth-child(6) { width:10%; }
         .sanctions-date { color:var(--text-2);font-family:var(--m);font-size:10px;white-space:nowrap; }
         .sanctions-date.is-new { color:var(--red);font-weight:700; }
         .sanctions-entity-link { display:block;max-width:100%;color:var(--text);font-weight:650;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
@@ -224,6 +224,10 @@
         .sanctions-entity-secondary { margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-3);font:9px var(--m); }
         .sanctions-program { display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2); }
         .sanctions-reference { margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-3);font:9px var(--m); }
+        .sanctions-measure { display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text);font-weight:600; }
+        .sanctions-authority { display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2);font-size:10px; }
+        .sanctions-crypto-context { display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-2);font-size:10px; }
+        .sanctions-crypto-context.is-official { color:#087f64;font-weight:650; }
         .sanctions-record-type { display:inline-flex;padding:2px 6px;border-radius:999px;background:#f1f3f5;color:var(--text-2);font-size:8px;font-weight:700;text-transform:uppercase;white-space:nowrap; }
         .sanctions-record-type.address { background:#eef9f6;color:#087f64; }
         .sanctions-record-type.ship { background:#eef4ff;color:#345db7; }
@@ -237,16 +241,25 @@
             .sanctions-workspace { grid-template-columns:minmax(0,1fr);width:100%; }
             .sanctions-sources { min-width:0;border-right:0;border-bottom:1px solid var(--border); }
             .sanctions-source-nav { display:flex;overflow-x:auto;scrollbar-width:thin; }
-            .sanctions-source-btn { width:auto;flex:none; }
+            .sanctions-source-btn { width:auto;min-width:150px;flex:none; }
         }
         @media (max-width:700px) {
             .sanctions-section { padding-left:16px;padding-right:16px; }
             .sanctions-summary-item { flex-basis:50%;border-bottom:1px solid var(--border); }
-            .sanctions-summary-item:nth-child(2) { border-right:0; }
+            .sanctions-summary-item:nth-child(2), .sanctions-summary-item:nth-child(4) { border-right:0; }
             .sanctions-summary-item:last-child { border-bottom:0; }
             .sanctions-filterbar { align-items:flex-start;flex-direction:column; }
             .sanctions-filtergroup { width:100%; }
-            .sanctions-table { min-width:720px; }
+            .sanctions-table-wrap { min-height:0;padding:10px;overflow:hidden; }
+            .sanctions-table,.sanctions-table tbody { display:block; }
+            .sanctions-table thead { display:none; }
+            .sanctions-table tr { display:block;margin-bottom:9px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:#fff; }
+            .sanctions-table tr:last-child { margin-bottom:0; }
+            .sanctions-table td { display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:5px 0;border:0;overflow-wrap:anywhere; }
+            .sanctions-table td::before { content:attr(data-label);color:var(--text-3);font-size:9px;font-weight:650;text-transform:uppercase; }
+            .sanctions-entity-link,.sanctions-entity-secondary,.sanctions-program,.sanctions-reference,.sanctions-measure,.sanctions-authority,.sanctions-crypto-context { white-space:normal;overflow-wrap:anywhere; }
+            .sanctions-loading,.sanctions-empty { display:block!important;margin:0!important;padding:24px 14px!important;border:0!important; }
+            .sanctions-loading::before,.sanctions-empty::before { display:none; }
         }
 
         /* Other Address Labels Section */
@@ -360,9 +373,10 @@
         <p class="sanctions-subtitle" data-i18n="sanctions.subtitle">Official sanctions lists and high-risk designations</p>
     </div>
     <div class="sanctions-summary" aria-label="Sanctions data summary">
-        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official sources</span></div>
-        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Entity designations</span></div>
-        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Crypto addresses</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official Authorities</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Sanctions Designations</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsCryptoTargetTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoTargets">Crypto-related Targets</span></div>
+        <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Official Crypto Addresses</span></div>
         <div class="sanctions-summary-item"><span class="sanctions-summary-label" id="sanctionsSummarySync" data-i18n="sanctions.loadingSync">Last synced: loading...</span></div>
     </div>
     <div class="sanctions-workspace">
@@ -396,11 +410,11 @@
                     <thead>
                         <tr>
                             <th data-i18n="sanctions.thDate">Designation date</th>
-                            <th data-i18n="sanctions.thEntity">Entity</th>
-                            <th data-i18n="sanctions.thProgram">Program</th>
-                            <th data-i18n="sanctions.thType">Type</th>
-                            <th data-i18n="sanctions.thAddresses">Addresses</th>
-                            <th data-i18n="sanctions.thSource">Source</th>
+                            <th data-i18n="sanctions.thEntity">Target</th>
+                            <th data-i18n="sanctions.thAuthority">Authority</th>
+                            <th data-i18n="sanctions.thMeasure">Measure / Programme</th>
+                            <th data-i18n="sanctions.thCrypto">Crypto relevance</th>
+                            <th data-i18n="sanctions.thWallets">Official wallets</th>
                         </tr>
                     </thead>
                     <tbody id="sanctionsTableBody">
@@ -658,11 +672,11 @@ var sanctionsAccessToken='';
 var sanctionsRequestId=0;
 var SANCTIONS_SOURCE_ORDER=['OFAC','UK','EU','UN','IL_NBCTF'];
 var SANCTIONS_SOURCE_META={
-    'OFAC':{label:'OFAC SDN',labelCn:'OFAC SDN',flag:'🇺🇸'},
-    'UK':{label:'UK',labelCn:'英国',flag:'🇬🇧'},
-    'EU':{label:'EU',labelCn:'欧盟',flag:'🇪🇺'},
-    'UN':{label:'UN',labelCn:'联合国',flag:'🇺🇳'},
-    'IL_NBCTF':{label:'Israel NBCTF',labelCn:'以色列 NBCTF',flag:'🇮🇱'}
+    'OFAC':{label:'US — OFAC SDN',labelCn:'美国 — OFAC SDN',flag:'🇺🇸'},
+    'UK':{label:'UK — UKSL / OFSI',labelCn:'英国 — UKSL / OFSI',flag:'🇬🇧'},
+    'EU':{label:'EU — EU Restrictive Measures',labelCn:'欧盟 — 限制性措施',flag:'🇪🇺'},
+    'UN':{label:'UN — UNSC Consolidated List',labelCn:'联合国 — 安理会综合名单',flag:'🇺🇳'},
+    'IL_NBCTF':{label:'Israel — NBCTF',labelCn:'以色列 — NBCTF',flag:'🇮🇱'}
 };
 
 function sanctionsText(en,cn){return currentLang==='cn'?cn:en;}
@@ -689,9 +703,10 @@ function isOfficiallyNew(value){
 function safeExternalUrl(value){
     try{var u=new URL(value);return(u.protocol==='https:'||u.protocol==='http:')?u.href:'';}catch(e){return'';}
 }
-function sanctionsMetricForSource(row){
-    var addresses=Number(row.address_count)||0,designations=Number(row.designation_count)||0;
-    if(addresses>0)return compactNumber(addresses)+' '+sanctionsText('addr.','地址');
+function sanctionsMetricForSource(row,code){
+    var addresses=Number(row.address_count)||0,designations=Number(row.designation_count)||0,cryptoTargets=Number(row.crypto_target_count)||0;
+    if(code==='UK'||code==='EU')return compactNumber(designations)+' '+sanctionsText('des.','指认')+' · '+compactNumber(cryptoTargets)+' '+sanctionsText('crypto targets','加密目标')+' · '+compactNumber(addresses)+' '+sanctionsText('linked addr.','关联地址');
+    if(addresses>0)return compactNumber(addresses)+' '+sanctionsText('crypto addr.','加密地址');
     if(designations>0)return compactNumber(designations)+' '+sanctionsText('des.','指认');
     return sanctionsText('Awaiting sync','等待同步');
 }
@@ -760,7 +775,7 @@ function renderSanctionsSources(){
     }];
     SANCTIONS_SOURCE_ORDER.forEach(function(code){
         var meta=sanctionsSourceMeta(code),row=byCode[code]||{};
-        sources.push({code:code,label:meta.flag+' '+(currentLang==='cn'?meta.labelCn:meta.label),count:sanctionsMetricForSource(row)});
+        sources.push({code:code,label:meta.flag+' '+(currentLang==='cn'?meta.labelCn:meta.label),count:sanctionsMetricForSource(row,code)});
     });
     document.getElementById('sanctionsSourceNav').innerHTML=sources.map(function(item){
         var active=item.code===activeSanctionsSource;
@@ -773,6 +788,7 @@ function renderSanctionsControls(){
         {value:'entities',en:'Entities',cn:'实体'},
         {value:'individuals',en:'Individuals',cn:'个人'},
         {value:'ships',en:'Ships',cn:'船舶'},
+        {value:'crypto_related',en:'Crypto-related',cn:'加密相关'},
         {value:'crypto_addresses',en:'Crypto Addresses',cn:'加密地址'}
     ];
     document.getElementById('sanctionsTypeFilters').innerHTML=types.map(function(item){
@@ -795,8 +811,9 @@ function renderSanctionsControls(){
 function renderSanctionsSummary(){
     if(!sanctionsData)return;
     document.getElementById('sanctionsOfficialSources').textContent=Number(sanctionsData.official_sources||0).toLocaleString('en-US');
-    document.getElementById('sanctionsDesignationTotal').textContent=compactNumber(sanctionsData.entity_designations);
-    document.getElementById('sanctionsAddressTotal').textContent=compactNumber(sanctionsData.crypto_addresses);
+    document.getElementById('sanctionsDesignationTotal').textContent=Number(sanctionsData.entity_designations||0).toLocaleString('en-US');
+    document.getElementById('sanctionsCryptoTargetTotal').textContent=Number(sanctionsData.crypto_related_targets||0).toLocaleString('en-US');
+    document.getElementById('sanctionsAddressTotal').textContent=Number(sanctionsData.crypto_addresses||0).toLocaleString('en-US');
     document.getElementById('sanctionsSummarySync').textContent=sanctionsSyncLabel(sanctionsData.last_updated).replace('Last updated:','Last synced:').replace('最后更新：','最后同步：');
 }
 function sanctionsTypeLabel(item){
@@ -805,6 +822,20 @@ function sanctionsTypeLabel(item){
     if(type==='individual'||type==='person')return sanctionsText('Individual','个人');
     if(type==='ship'||type==='vessel')return sanctionsText('Ship','船舶');
     return sanctionsText('Entity','实体');
+}
+function sanctionsMeasureLabel(item){
+    if(item.measure_type)return String(item.measure_type);
+    if(item.record_type==='address')return sanctionsText('Officially published blockchain wallet','官方发布的区块链钱包');
+    return sanctionsText('Official sanctions designation','官方制裁指认');
+}
+function sanctionsCryptoContext(item){
+    if(item.record_type==='address'){
+        var chain=Array.isArray(item.chains)?item.chains[0]:item.chains;
+        var asset=Array.isArray(item.assets)?item.assets[0]:item.assets;
+        return{text:[chain,asset].filter(Boolean).join(' · ')||sanctionsText('Official address','官方地址'),official:true};
+    }
+    if(item.crypto_related)return{text:item.crypto_role||sanctionsText('Officially identified crypto-related target','官方识别的加密相关目标'),official:true};
+    return{text:'—',official:false};
 }
 function renderSanctionsTable(){
     if(!sanctionsData)return;
@@ -815,16 +846,18 @@ function renderSanctionsTable(){
         document.getElementById('sanctionsPagination').innerHTML='';
         return;
     }
+    var labels=currentLang==='cn'?['指认日期','制裁目标','主管机构','措施 / 制裁机制','加密相关性','官方钱包']:['Designation date','Target','Authority','Measure / Programme','Crypto relevance','Official wallets'];
     body.innerHTML=items.map(function(item){
         var meta=sanctionsSourceMeta(item.source_code),dateClass=isOfficiallyNew(item.designation_date)?' is-new':'',url=safeExternalUrl(item.source_url);
         var isAddress=item.record_type==='address';
         var hasLinkedEntity=isAddress&&item.entity_name&&item.entity_name!==item.address;
         var entity=hasLinkedEntity?item.entity_name:(isAddress&&item.address?item.address:(item.entity_name||sanctionsText('Unnamed designation','未命名指认')));
-        var secondary=hasLinkedEntity?item.address:'';
+        var chain=Array.isArray(item.chains)?item.chains[0]:item.chains;
+        var secondary=hasLinkedEntity?[chain,item.address].filter(Boolean).join(' · '):'';
         var program=item.program_name||item.source_name||sanctionsText('Official sanctions record','官方制裁记录');
         var entityTag=url?'<a class="sanctions-entity-link" href="'+escH(url)+'" target="_blank" rel="noopener noreferrer" title="'+escH(entity)+'">'+escH(entity)+'</a>':'<span class="sanctions-entity-link" title="'+escH(entity)+'">'+escH(entity)+'</span>';
-        var typeLabel=sanctionsTypeLabel(item),typeClass=isAddress?' address':(typeLabel===sanctionsText('Ship','船舶')?' ship':'');
-        return '<tr><td><span class="sanctions-date'+dateClass+'">'+escH(officialDateLabel(item.designation_date))+'</span></td><td>'+entityTag+(secondary?'<div class="sanctions-entity-secondary" title="'+escH(secondary)+'">'+escH(secondary)+'</div>':'')+'</td><td><span class="sanctions-program" title="'+escH(program)+'">'+escH(program)+'</span>'+(item.source_ref?'<div class="sanctions-reference" title="'+escH(item.source_ref)+'">'+escH(item.source_ref)+'</div>':'')+'</td><td><span class="sanctions-record-type'+typeClass+'">'+escH(typeLabel)+'</span></td><td><span class="sanctions-address-count">'+(Number(item.address_count)>0?Number(item.address_count).toLocaleString('en-US'):'—')+'</span></td><td><div class="sanctions-source-cell"><span>'+meta.flag+'</span><span>'+escH(currentLang==='cn'?meta.labelCn:meta.label)+'</span></div></td></tr>';
+        var measure=sanctionsMeasureLabel(item),cryptoContext=sanctionsCryptoContext(item),authority=currentLang==='cn'?meta.labelCn:meta.label,walletCount=Number(item.address_count)||0;
+        return '<tr><td data-label="'+labels[0]+'"><span class="sanctions-date'+dateClass+'">'+escH(officialDateLabel(item.designation_date))+'</span></td><td data-label="'+labels[1]+'">'+entityTag+(secondary?'<div class="sanctions-entity-secondary" title="'+escH(secondary)+'">'+escH(secondary)+'</div>':'')+(item.source_ref?'<div class="sanctions-reference" title="'+escH(item.source_ref)+'">'+escH(item.source_ref)+'</div>':'')+'</td><td data-label="'+labels[2]+'"><span class="sanctions-authority" title="'+escH(authority)+'">'+meta.flag+' '+escH(authority)+'</span></td><td data-label="'+labels[3]+'"><span class="sanctions-measure" title="'+escH(measure)+'">'+escH(measure)+'</span><div class="sanctions-reference" title="'+escH(program)+'">'+escH(program)+'</div></td><td data-label="'+labels[4]+'"><span class="sanctions-crypto-context'+(cryptoContext.official?' is-official':'')+'" title="'+escH(cryptoContext.text)+'">'+escH(cryptoContext.text)+'</span></td><td data-label="'+labels[5]+'"><span class="sanctions-address-count">'+(walletCount>0?walletCount.toLocaleString('en-US'):sanctionsText('None','无'))+'</span></td></tr>';
     }).join('');
     var start=(sanctionsPage-1)*sanctionsPageSize+1;
     var end=Math.min(start+items.length-1,sanctionsTotal);
@@ -995,9 +1028,9 @@ var I18N = {
     'ft.copy':'© 2026 Innobridge. All rights reserved.','ft.privacy':'Privacy','ft.terms':'Terms','ft.disclaimer':'Disclaimer',
     'sanctions.title':'Sanctions Intelligence','sanctions.subtitle':'Official sanctions lists and high-risk designations','sanctions.loadingSync':'Last synced: loading...',
     'sanctions.sources':'Sanctions Sources','sanctions.searchPh':'Search entity, crypto address or reference...','sanctions.sort':'Sorted by designation date',
-    'sanctions.thDate':'Designation date','sanctions.thEntity':'Entity','sanctions.thProgram':'Program','sanctions.thType':'Type','sanctions.thAddresses':'Addresses','sanctions.thSource':'Source',
-    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official sources',
-    'sanctions.entityDesignations':'Entity designations','sanctions.cryptoAddresses':'Crypto addresses',
+    'sanctions.thDate':'Designation date','sanctions.thEntity':'Target','sanctions.thAuthority':'Authority','sanctions.thMeasure':'Measure / Programme','sanctions.thCrypto':'Crypto relevance','sanctions.thWallets':'Official wallets',
+    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official Authorities',
+    'sanctions.entityDesignations':'Sanctions Designations','sanctions.cryptoTargets':'Crypto-related Targets','sanctions.cryptoAddresses':'Official Crypto Addresses',
     'labels.title':'Other Intelligence Labels',
     'ls.total':'Total Labels','ls.addresses':'Unique Addresses','ls.chains':'Chains','ls.entities':'Entities','ls.sources':'Sources',
     'ls.searchPh':'Search entity, address, or tag...',
@@ -1016,9 +1049,9 @@ var I18N = {
     'ft.copy':'© 2026 Innobridge. 版权所有。','ft.privacy':'隐私政策','ft.terms':'服务条款','ft.disclaimer':'免责声明',
     'sanctions.title':'制裁情报','sanctions.subtitle':'官方制裁名单与高风险指认','sanctions.loadingSync':'最后同步：加载中...',
     'sanctions.sources':'制裁来源','sanctions.searchPh':'搜索主体、加密地址或参考编号...','sanctions.sort':'按指认日期排序',
-    'sanctions.thDate':'指认日期','sanctions.thEntity':'主体','sanctions.thProgram':'项目','sanctions.thType':'类型','sanctions.thAddresses':'地址','sanctions.thSource':'来源',
-    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方来源',
-    'sanctions.entityDesignations':'实体指认','sanctions.cryptoAddresses':'加密地址',
+    'sanctions.thDate':'指认日期','sanctions.thEntity':'制裁目标','sanctions.thAuthority':'主管机构','sanctions.thMeasure':'措施 / 制裁机制','sanctions.thCrypto':'加密相关性','sanctions.thWallets':'官方钱包',
+    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方机构',
+    'sanctions.entityDesignations':'制裁指认','sanctions.cryptoTargets':'加密相关目标','sanctions.cryptoAddresses':'官方加密地址',
     'labels.title':'其他情报标签',
     'ls.total':'总标签数','ls.addresses':'唯一地址','ls.chains':'链','ls.entities':'实体','ls.sources':'数据源',
     'ls.searchPh':'搜索实体、地址或标签...',

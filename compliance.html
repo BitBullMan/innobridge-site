@@ -663,12 +663,12 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .sanctions-sources{padding:14px 12px;background:var(--s1);border-right:1px solid var(--hl)}
 .sanctions-panel-title{padding:0 6px 9px;font:700 12px var(--f);color:var(--ink)}
 .sanctions-source-nav{display:grid;gap:3px}
-.sanctions-source-btn{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--ink2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s}
+.sanctions-source-btn{width:100%;display:block;padding:9px 8px;border:0;border-radius:7px;background:transparent;color:var(--ink2);font:500 11px var(--f);text-align:left;cursor:pointer;transition:background .15s,color .15s}
 .sanctions-source-btn:hover{background:var(--s2);color:var(--ink)}
 .sanctions-source-btn:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 .sanctions-source-btn.active{background:var(--accent-bg);color:var(--accent-h);font-weight:650}
-.sanctions-source-name{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sanctions-source-count{flex:none;color:var(--ink3);font:600 9px var(--m);white-space:nowrap}
+.sanctions-source-name{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sanctions-source-count{display:block;margin-top:3px;color:var(--ink3);font:600 9px var(--m);white-space:normal;line-height:1.35}
 .sanctions-source-btn.active .sanctions-source-count{color:var(--accent-h)}
 .sanctions-main{min-width:0}
 .sanctions-search-row{display:flex;gap:8px;padding:12px;border-bottom:1px solid var(--hl)}
@@ -696,13 +696,17 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .sanctions-table tbody tr{cursor:pointer;transition:background .15s}
 .sanctions-table tbody tr:hover{background:var(--accent-bg)}
 .sanctions-table tbody tr:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
-.sanctions-table th:nth-child(1){width:14%}.sanctions-table th:nth-child(2){width:30%}.sanctions-table th:nth-child(3){width:18%}.sanctions-table th:nth-child(4){width:12%}.sanctions-table th:nth-child(5){width:12%}.sanctions-table th:nth-child(6){width:14%}
+.sanctions-table th:nth-child(1){width:13%}.sanctions-table th:nth-child(2){width:25%}.sanctions-table th:nth-child(3){width:18%}.sanctions-table th:nth-child(4){width:18%}.sanctions-table th:nth-child(5){width:16%}.sanctions-table th:nth-child(6){width:10%}
 .sanctions-date{color:var(--ink2);font:500 10px var(--m);white-space:nowrap}
 .sanctions-date.is-new{color:var(--danger);font-weight:700}
 .sanctions-entity-link{display:block;max-width:100%;color:var(--ink);font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sanctions-entity-secondary{margin-top:2px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink3);font:9px var(--m)}
 .sanctions-program{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2)}
 .sanctions-reference{margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink3);font:9px var(--m)}
+.sanctions-measure{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:600}
+.sanctions-authority{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2);font-size:10px}
+.sanctions-crypto-context{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink2);font-size:10px}
+.sanctions-crypto-context.is-official{color:var(--accent-h);font-weight:650}
 .sanctions-record-type{display:inline-flex;padding:3px 6px;border-radius:5px;background:var(--s2);color:var(--ink2);font:700 8.5px var(--f);text-transform:uppercase;white-space:nowrap}
 .sanctions-record-type.address{background:var(--accent-bg);color:var(--accent-h)}
 .sanctions-record-type.ship{background:rgba(57,114,255,.08);color:#345db7}
@@ -716,6 +720,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
 .sanctions-page-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent-h)}
 .sanctions-page-btn:disabled{opacity:.35;cursor:not-allowed}
 .sanctions-page-gap{padding:0 3px;color:var(--ink3)}
+.sanctions-wallet-list{display:grid;gap:0;border-top:1px solid var(--hl)}
+.sanctions-wallet-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;padding:10px 0;border-bottom:1px solid var(--hl)}
+.sanctions-wallet-chain{color:var(--ink2);font:650 10px var(--f)}
+.sanctions-wallet-address{min-width:0;color:var(--ink);font:10px/1.45 var(--m);overflow-wrap:anywhere}
+.sanctions-evidence{margin:0;color:var(--ink2);font:400 12.5px/1.7 var(--f);white-space:pre-wrap;overflow-wrap:anywhere}
 @media(max-width:900px){
   .sanctions-summary{flex-wrap:wrap}
   .sanctions-summary-item{flex:1 1 33%}
@@ -723,11 +732,11 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
   .sanctions-workspace{grid-template-columns:minmax(0,1fr)}
   .sanctions-sources{min-width:0;border-right:0;border-bottom:1px solid var(--hl)}
   .sanctions-source-nav{display:flex;overflow-x:auto;scrollbar-width:thin}
-  .sanctions-source-btn{width:auto;flex:none}
+  .sanctions-source-btn{width:auto;min-width:150px;flex:none}
 }
 @media(max-width:700px){
   .sanctions-summary-item{flex-basis:50%;border-bottom:1px solid var(--hl)}
-  .sanctions-summary-item:nth-child(2){border-right:0}
+  .sanctions-summary-item:nth-child(2),.sanctions-summary-item:nth-child(4){border-right:0}
   .sanctions-summary-item:last-child{border-bottom:0}
   .sanctions-filterbar{align-items:flex-start;flex-direction:column}
   .sanctions-filtergroup{width:100%}
@@ -1272,9 +1281,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
     </div>
 
     <div class="sanctions-summary" aria-label="Sanctions data coverage">
-      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official sources</span></div>
-      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Entity designations</span></div>
-      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Crypto addresses</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsOfficialSources">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.officialSources">Official Authorities</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsDesignationTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.entityDesignations">Sanctions Designations</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsCryptoTargetTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoTargets">Crypto-related Targets</span></div>
+      <div class="sanctions-summary-item"><strong class="sanctions-summary-value" id="sanctionsAddressTotal">--</strong><span class="sanctions-summary-label" data-i18n="sanctions.cryptoAddresses">Official Crypto Addresses</span></div>
       <div class="sanctions-summary-item"><span class="sanctions-summary-label" id="sanctionsSummarySync" data-i18n="sanctions.loadingSync">Last synced: loading...</span></div>
     </div>
 
@@ -1310,10 +1320,10 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
               <tr>
                 <th data-i18n="sanctions.thDate">Designation date</th>
                 <th data-i18n="sanctions.thEntity">Entity</th>
-                <th data-i18n="sanctions.thProgram">Program</th>
-                <th data-i18n="sanctions.thType">Type</th>
-                <th data-i18n="sanctions.thAddresses">Addresses</th>
-                <th data-i18n="sanctions.thSource">Source</th>
+                <th data-i18n="sanctions.thAuthority">Authority</th>
+                <th data-i18n="sanctions.thMeasure">Measure / Programme</th>
+                <th data-i18n="sanctions.thCrypto">Crypto relevance</th>
+                <th data-i18n="sanctions.thWallets">Official wallets</th>
               </tr>
             </thead>
             <tbody id="sanctionsTableBody">
@@ -1619,8 +1629,8 @@ var I18N = {
     'cp.result.partial':'Partial',
     'sanctions.title':'Sanctions Intelligence','sanctions.subtitle':'Official sanctions lists, designated entities and crypto addresses across major authorities.','sanctions.loadingSync':'Last synced: loading...',
     'sanctions.sources':'Sanctions Sources','sanctions.searchPh':'Search entity, crypto address or reference...','sanctions.sort':'Sorted by official designation date',
-    'sanctions.thDate':'Designation date','sanctions.thEntity':'Entity','sanctions.thProgram':'Program','sanctions.thType':'Type','sanctions.thAddresses':'Addresses','sanctions.thSource':'Source',
-    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official sources','sanctions.entityDesignations':'Entity designations','sanctions.cryptoAddresses':'Crypto addresses',
+    'sanctions.thDate':'Designation date','sanctions.thEntity':'Target','sanctions.thAuthority':'Authority','sanctions.thMeasure':'Measure / Programme','sanctions.thCrypto':'Crypto relevance','sanctions.thWallets':'Official wallets',
+    'sanctions.loading':'Loading official sanctions data...','sanctions.officialSources':'Official Authorities','sanctions.entityDesignations':'Sanctions Designations','sanctions.cryptoTargets':'Crypto-related Targets','sanctions.cryptoAddresses':'Official Crypto Addresses',
     'cp.screen.title':'Sanctions Screening Tool',
     'cp.screen.sub':'Run a specific wallet address check against connected sanctions and blacklist records.',
     'cp.screen.single':'Single Address',
@@ -1768,8 +1778,8 @@ var I18N = {
     'cp.result.partial':'部分满足',
     'sanctions.title':'制裁情报','sanctions.subtitle':'汇集主要官方机构的制裁名单、被指定主体和加密地址。','sanctions.loadingSync':'最后同步：加载中...',
     'sanctions.sources':'制裁来源','sanctions.searchPh':'搜索主体、加密地址或参考编号...','sanctions.sort':'按官方指认日期排序',
-    'sanctions.thDate':'指认日期','sanctions.thEntity':'主体','sanctions.thProgram':'项目','sanctions.thType':'类型','sanctions.thAddresses':'地址','sanctions.thSource':'来源',
-    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方来源','sanctions.entityDesignations':'实体指认','sanctions.cryptoAddresses':'加密地址',
+    'sanctions.thDate':'指认日期','sanctions.thEntity':'制裁目标','sanctions.thAuthority':'主管机构','sanctions.thMeasure':'措施 / 制裁机制','sanctions.thCrypto':'加密相关性','sanctions.thWallets':'官方钱包',
+    'sanctions.loading':'正在加载官方制裁数据...','sanctions.officialSources':'官方机构','sanctions.entityDesignations':'制裁指认','sanctions.cryptoTargets':'加密相关目标','sanctions.cryptoAddresses':'官方加密地址',
     'cp.screen.title':'制裁筛查工具',
     'cp.screen.sub':'对单个或多个钱包地址执行制裁与黑名单记录核查。',
     'cp.screen.single':'单地址筛查',
@@ -3128,11 +3138,11 @@ var sanctionsRecordIndex = -1;
 var sanctionsRecordTrigger = null;
 var SANCTIONS_SOURCE_ORDER = ['OFAC', 'UK', 'EU', 'UN', 'IL_NBCTF'];
 var SANCTIONS_SOURCE_META = {
-  OFAC: { label:'OFAC SDN', labelCn:'OFAC SDN', flag:'\u{1F1FA}\u{1F1F8}' },
-  UK: { label:'UK', labelCn:'英国', flag:'\u{1F1EC}\u{1F1E7}' },
-  EU: { label:'EU', labelCn:'欧盟', flag:'\u{1F1EA}\u{1F1FA}' },
-  UN: { label:'UN', labelCn:'联合国', flag:'\u{1F1FA}\u{1F1F3}' },
-  IL_NBCTF: { label:'Israel NBCTF', labelCn:'以色列 NBCTF', flag:'\u{1F1EE}\u{1F1F1}' }
+  OFAC: { label:'US — OFAC SDN', labelCn:'美国 — OFAC SDN', flag:'\u{1F1FA}\u{1F1F8}' },
+  UK: { label:'UK — UKSL / OFSI', labelCn:'英国 — UKSL / OFSI', flag:'\u{1F1EC}\u{1F1E7}' },
+  EU: { label:'EU — EU Restrictive Measures', labelCn:'欧盟 — 限制性措施', flag:'\u{1F1EA}\u{1F1FA}' },
+  UN: { label:'UN — UNSC Consolidated List', labelCn:'联合国 — 安理会综合名单', flag:'\u{1F1FA}\u{1F1F3}' },
+  IL_NBCTF: { label:'Israel — NBCTF', labelCn:'以色列 — NBCTF', flag:'\u{1F1EE}\u{1F1F1}' }
 };
 
 function sanctionsText(en, cn) { return currentLang === 'cn' ? cn : en; }
@@ -3187,14 +3197,14 @@ function safeSanctionsUrl(value) {
 function sanctionsMetricForSource(row, code) {
   var addresses = Number(row.address_count) || 0;
   var designations = Number(row.designation_count) || 0;
-  if (code === 'UK') {
+  var cryptoTargets = Number(row.crypto_target_count) || 0;
+  if (code === 'UK' || code === 'EU') {
     var designationMetric = sanctionsCompactNumber(designations) + ' ' + sanctionsText('des.', '指认');
-    var addressMetric = addresses > 0
-      ? sanctionsCompactNumber(addresses) + ' ' + sanctionsText('crypto', '加密地址')
-      : sanctionsText('crypto sync pending', '加密地址待同步');
-    return designationMetric + ' · ' + addressMetric;
+    var targetMetric = sanctionsCompactNumber(cryptoTargets) + ' ' + sanctionsText('crypto targets', '加密目标');
+    var addressMetric = sanctionsCompactNumber(addresses) + ' ' + sanctionsText('linked addr.', '关联地址');
+    return designationMetric + ' · ' + targetMetric + ' · ' + addressMetric;
   }
-  if (addresses > 0) return sanctionsCompactNumber(addresses) + ' ' + sanctionsText('addr.', '地址');
+  if (addresses > 0) return sanctionsCompactNumber(addresses) + ' ' + sanctionsText('crypto addr.', '加密地址');
   if (designations > 0) return sanctionsCompactNumber(designations) + ' ' + sanctionsText('des.', '指认');
   return sanctionsText('Awaiting sync', '等待同步');
 }
@@ -3203,12 +3213,12 @@ function sanctionsSourceLabel(row, code) {
   var addresses = Number(row.address_count) || 0;
   var designations = Number(row.designation_count) || 0;
   var meta = sanctionsSourceMeta(code);
-  var sourceName = code === 'UK' ? sanctionsText('UK Sanctions List', '英国制裁名单') : (currentLang === 'cn' ? meta.labelCn : meta.label);
-  if (code === 'UK') {
-    var addressText = addresses > 0
-      ? addresses.toLocaleString('en-US') + sanctionsText(' officially linked crypto addresses', ' 个官方关联加密地址')
-      : sanctionsText('linked crypto address sync pending', '关联加密地址待同步');
-    return designations.toLocaleString('en-US') + ' ' + sourceName + sanctionsText(' designations · ', ' 项指认 · ') + addressText;
+  var cryptoTargets = Number(row.crypto_target_count) || 0;
+  var sourceName = currentLang === 'cn' ? meta.labelCn : meta.label;
+  if (code === 'UK' || code === 'EU') {
+    return sourceName + ' · ' + designations.toLocaleString('en-US') + sanctionsText(' designations · ', ' 项指认 · ')
+      + cryptoTargets.toLocaleString('en-US') + sanctionsText(' crypto-related targets · ', ' 个加密相关目标 · ')
+      + addresses.toLocaleString('en-US') + sanctionsText(' official linked addresses', ' 个官方关联地址');
   }
   return sourceName + ' · ' + sanctionsMetricForSource(row, code);
 }
@@ -3302,6 +3312,7 @@ function renderSanctionsControls() {
     { value:'entities', en:'Entities', cn:'实体' },
     { value:'individuals', en:'Individuals', cn:'个人' },
     { value:'ships', en:'Ships', cn:'船舶' },
+    { value:'crypto_related', en:'Crypto-related', cn:'加密相关' },
     { value:'crypto_addresses', en:'Crypto Addresses', cn:'加密地址' }
   ];
   document.getElementById('sanctionsTypeFilters').innerHTML = types.map(function(item) {
@@ -3325,8 +3336,9 @@ function renderSanctionsControls() {
 function renderSanctionsSummary() {
   if (!sanctionsData) return;
   document.getElementById('sanctionsOfficialSources').textContent = Number(sanctionsData.official_sources || 0).toLocaleString('en-US');
-  document.getElementById('sanctionsDesignationTotal').textContent = sanctionsCompactNumber(sanctionsData.entity_designations);
-  document.getElementById('sanctionsAddressTotal').textContent = sanctionsCompactNumber(sanctionsData.crypto_addresses);
+  document.getElementById('sanctionsDesignationTotal').textContent = Number(sanctionsData.entity_designations || 0).toLocaleString('en-US');
+  document.getElementById('sanctionsCryptoTargetTotal').textContent = Number(sanctionsData.crypto_related_targets || 0).toLocaleString('en-US');
+  document.getElementById('sanctionsAddressTotal').textContent = Number(sanctionsData.crypto_addresses || 0).toLocaleString('en-US');
   document.getElementById('sanctionsSummarySync').textContent = sanctionsSyncLabel(sanctionsData.last_updated);
 }
 
@@ -3349,6 +3361,30 @@ function sanctionsRecordEntity(item) {
   };
 }
 
+function sanctionsMeasureLabel(item) {
+  if (item.measure_type) return String(item.measure_type);
+  if (item.record_type === 'address') return sanctionsText('Officially published blockchain wallet', '官方发布的区块链钱包');
+  return sanctionsText('Official sanctions designation', '官方制裁指认');
+}
+
+function sanctionsCryptoContext(item) {
+  if (item.record_type === 'address') {
+    var chain = Array.isArray(item.chains) ? item.chains[0] : item.chains;
+    var asset = Array.isArray(item.assets) ? item.assets[0] : item.assets;
+    return {
+      text:[chain, asset].filter(Boolean).join(' · ') || sanctionsText('Official address', '官方地址'),
+      official:true
+    };
+  }
+  if (item.crypto_related) {
+    return {
+      text:item.crypto_role || sanctionsText('Officially identified crypto-related target', '官方识别的加密相关目标'),
+      official:true
+    };
+  }
+  return { text:'\u2014', official:false };
+}
+
 function renderSanctionsTable() {
   if (!sanctionsData) return;
   var items = sanctionsData.items || [];
@@ -3360,22 +3396,23 @@ function renderSanctionsTable() {
     return;
   }
   var labels = currentLang === 'cn'
-    ? ['指认日期', '主体', '项目', '类型', '地址', '来源']
-    : ['Designation date', 'Entity', 'Program', 'Type', 'Addresses', 'Source'];
+    ? ['指认日期', '制裁目标', '主管机构', '措施 / 制裁机制', '加密相关性', '官方钱包']
+    : ['Designation date', 'Target', 'Authority', 'Measure / Programme', 'Crypto relevance', 'Official wallets'];
   body.innerHTML = items.map(function(item, index) {
     var meta = sanctionsSourceMeta(item.source_code);
     var entity = sanctionsRecordEntity(item);
-    var isAddress = item.record_type === 'address';
-    var typeLabel = sanctionsTypeLabel(item);
-    var typeClass = isAddress ? ' address' : (String(item.entity_type || '').toLowerCase().match(/ship|vessel/) ? ' ship' : '');
     var program = item.program_name || item.source_name || sanctionsText('Official sanctions record', '官方制裁记录');
+    var measure = sanctionsMeasureLabel(item);
+    var cryptoContext = sanctionsCryptoContext(item);
+    var authority = currentLang === 'cn' ? meta.labelCn : meta.label;
+    var walletCount = Number(item.address_count) || 0;
     return '<tr tabindex="0" role="button" aria-label="' + sanctionsAttr(sanctionsText('View sanctions record: ', '查看制裁记录：') + entity.primary) + '" onclick="openSanctionsRecord(' + index + ',this)" onkeydown="handleSanctionsRowKey(event,' + index + ')">'
       + '<td data-label="' + labels[0] + '"><span class="sanctions-date' + (isOfficiallyNew(item.designation_date) ? ' is-new' : '') + '">' + escHtml(sanctionsOfficialDate(item.designation_date)) + '</span></td>'
-      + '<td data-label="' + labels[1] + '"><span class="sanctions-entity-link" title="' + sanctionsAttr(entity.primary) + '">' + escHtml(entity.primary) + '</span>' + (entity.secondary ? '<div class="sanctions-entity-secondary" title="' + sanctionsAttr(entity.secondary) + '">' + escHtml(entity.secondary) + '</div>' : '') + '</td>'
-      + '<td data-label="' + labels[2] + '"><span class="sanctions-program" title="' + sanctionsAttr(program) + '">' + escHtml(program) + '</span>' + (item.source_ref ? '<div class="sanctions-reference" title="' + sanctionsAttr(item.source_ref) + '">' + escHtml(item.source_ref) + '</div>' : '') + '</td>'
-      + '<td data-label="' + labels[3] + '"><span class="sanctions-record-type' + typeClass + '">' + escHtml(typeLabel) + '</span></td>'
-      + '<td data-label="' + labels[4] + '"><span class="sanctions-address-count">' + (Number(item.address_count) > 0 ? Number(item.address_count).toLocaleString('en-US') : '\u2014') + '</span></td>'
-      + '<td data-label="' + labels[5] + '"><div class="sanctions-source-cell"><span>' + meta.flag + '</span><span>' + escHtml(currentLang === 'cn' ? meta.labelCn : meta.label) + '</span></div></td></tr>';
+      + '<td data-label="' + labels[1] + '"><span class="sanctions-entity-link" title="' + sanctionsAttr(entity.primary) + '">' + escHtml(entity.primary) + '</span>' + (entity.secondary ? '<div class="sanctions-entity-secondary" title="' + sanctionsAttr(entity.secondary) + '">' + escHtml(entity.secondary) + '</div>' : '') + (item.source_ref ? '<div class="sanctions-reference" title="' + sanctionsAttr(item.source_ref) + '">' + escHtml(item.source_ref) + '</div>' : '') + '</td>'
+      + '<td data-label="' + labels[2] + '"><span class="sanctions-authority" title="' + sanctionsAttr(authority) + '">' + meta.flag + ' ' + escHtml(authority) + '</span></td>'
+      + '<td data-label="' + labels[3] + '"><span class="sanctions-measure" title="' + sanctionsAttr(measure) + '">' + escHtml(measure) + '</span><div class="sanctions-reference" title="' + sanctionsAttr(program) + '">' + escHtml(program) + '</div></td>'
+      + '<td data-label="' + labels[4] + '"><span class="sanctions-crypto-context' + (cryptoContext.official ? ' is-official' : '') + '" title="' + sanctionsAttr(cryptoContext.text) + '">' + escHtml(cryptoContext.text) + '</span></td>'
+      + '<td data-label="' + labels[5] + '"><span class="sanctions-address-count">' + (walletCount > 0 ? walletCount.toLocaleString('en-US') : sanctionsText('None', '无')) + '</span></td></tr>';
   }).join('');
   var start = (sanctionsPage - 1) * sanctionsPageSize + 1;
   var end = Math.min(start + items.length - 1, sanctionsTotal);
@@ -3431,6 +3468,11 @@ function sanctionsDetailMeta(label, value) {
   return '<dt>' + escHtml(label) + '</dt><dd>' + escHtml(String(value)) + '</dd>';
 }
 
+function sanctionsDetailList(value) {
+  if (Array.isArray(value)) return value.filter(Boolean).join(', ');
+  return value || '';
+}
+
 function renderSanctionsRecordDetail() {
   var items = sanctionsData && sanctionsData.items ? sanctionsData.items : [];
   var item = items[sanctionsRecordIndex];
@@ -3438,18 +3480,11 @@ function renderSanctionsRecordDetail() {
   var entity = sanctionsRecordEntity(item);
   var isAddress = item.record_type === 'address';
   var meta = sanctionsSourceMeta(item.source_code);
-  var isUkAddress = isAddress && item.source_code === 'UK';
   var labels = currentLang === 'cn' ? {
-    designation:'制裁指认记录', address:'加密地址记录', entity:'主体名称', type:'主体类型', date:'指认日期', source:'来源', program:'项目 / 名单', reference:'来源编号', jurisdiction:'司法管辖区', status:'状态', addresses:'关联加密地址', addressValue:'加密地址', chain:'链', asset:'资产', associated:'关联主体', firstSeen:'首次收录', lastSeen:'最近收录', risk:'风险等级', official:'官方来源', officialCta:'查看官方来源', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
+    designation:'制裁指认记录', address:'官方加密地址记录', entity:'目标名称', aliases:'别名', type:'目标类型', authority:'主管机构', date:'指认日期', effective:'生效日期', source:'法律 / 名单来源', program:'制裁机制 / 项目', measure:'适用措施', reference:'官方参考编号', jurisdiction:'司法管辖区', status:'状态', addresses:'官方关联地址', addressValue:'加密地址', chain:'链', asset:'资产', associated:'关联制裁目标', cryptoRole:'加密角色', evidence:'官方加密证据', reason:'官方理由 / 证据摘录', method:'分类方法', firstSeen:'首次收录', lastSeen:'最近收录', risk:'风险等级', official:'官方来源', officialCta:'查看官方来源', previous:'上一条', next:'下一条', position:'第 {current} 条，共 {total} 条'
   } : {
-    designation:'Sanctions designation', address:'Crypto address record', entity:'Entity name', type:'Entity type', date:'Designation date', source:'Source', program:'Program / list', reference:'Source reference', jurisdiction:'Jurisdiction', status:'Status', addresses:'Associated crypto addresses', addressValue:'Crypto address', chain:'Chain', asset:'Asset', associated:'Associated entity', firstSeen:'First seen', lastSeen:'Last seen', risk:'Risk level', official:'Official source', officialCta:'View official source', previous:'Previous', next:'Next', position:'{current} of {total}'
+    designation:'Sanctions designation', address:'Official crypto address record', entity:'Target name', aliases:'Aliases', type:'Target type', authority:'Authority', date:'Designation date', effective:'Effective date', source:'Legal / list source', program:'Regime / programme', measure:'Measure(s)', reference:'Official reference', jurisdiction:'Jurisdiction', status:'Status', addresses:'Official linked addresses', addressValue:'Crypto address', chain:'Chain', asset:'Asset', associated:'Linked sanctioned target', cryptoRole:'Crypto role', evidence:'Official crypto evidence', reason:'Official reason / evidence excerpt', method:'Classification method', firstSeen:'First seen', lastSeen:'Last seen', risk:'Risk level', official:'Official source', officialCta:'View official source', previous:'Previous', next:'Next', position:'{current} of {total}'
   };
-  if (isUkAddress) {
-    labels.associated = sanctionsText('Linked entity', '关联制裁主体');
-    labels.reference = 'UKSL Unique ID';
-    labels.program = sanctionsText('Sanctions regime', '制裁机制');
-    labels.officialCta = sanctionsText('Officially linked in UK Sanctions List', '英国制裁名单官方关联记录');
-  }
   document.getElementById('sanctionsRecordTitle').textContent = entity.primary;
   document.getElementById('sanctionsRecordKind').textContent = isAddress ? labels.address : labels.designation;
   var rows = '';
@@ -3460,7 +3495,8 @@ function renderSanctionsRecordDetail() {
     if (entity.secondary) rows += sanctionsDetailMeta(labels.associated, item.entity_name);
     rows += sanctionsDetailMeta(labels.reference, item.source_ref);
     rows += sanctionsDetailMeta(labels.date, sanctionsOfficialDate(item.designation_date));
-    rows += sanctionsDetailMeta(labels.source, isUkAddress ? sanctionsText('UK Sanctions List', '英国制裁名单') : (currentLang === 'cn' ? meta.labelCn : meta.label));
+    rows += sanctionsDetailMeta(labels.authority, currentLang === 'cn' ? meta.labelCn : meta.label);
+    rows += sanctionsDetailMeta(labels.source, item.source_name || (currentLang === 'cn' ? meta.labelCn : meta.label));
     rows += sanctionsDetailMeta(labels.program, item.program_name || item.source_name);
     rows += sanctionsDetailMeta(labels.jurisdiction, item.jurisdiction);
     rows += sanctionsDetailMeta(labels.risk, item.risk_level);
@@ -3468,16 +3504,32 @@ function renderSanctionsRecordDetail() {
     rows += sanctionsDetailMeta(labels.lastSeen, sanctionsTimestamp(item.last_seen_at));
   } else {
     rows += sanctionsDetailMeta(labels.entity, item.entity_name);
+    rows += sanctionsDetailMeta(labels.aliases, sanctionsDetailList(item.aliases));
     rows += sanctionsDetailMeta(labels.type, item.entity_type);
+    rows += sanctionsDetailMeta(labels.authority, currentLang === 'cn' ? meta.labelCn : meta.label);
     rows += sanctionsDetailMeta(labels.date, sanctionsOfficialDate(item.designation_date));
-    rows += sanctionsDetailMeta(labels.source, (currentLang === 'cn' ? meta.labelCn : meta.label));
+    if (item.effective_date) rows += sanctionsDetailMeta(labels.effective, sanctionsOfficialDate(item.effective_date));
+    rows += sanctionsDetailMeta(labels.source, item.source_name || (currentLang === 'cn' ? meta.labelCn : meta.label));
     rows += sanctionsDetailMeta(labels.program, item.program_name || item.source_name);
+    rows += sanctionsDetailMeta(labels.measure, item.measure_type);
     rows += sanctionsDetailMeta(labels.reference, item.source_ref);
     rows += sanctionsDetailMeta(labels.jurisdiction, item.jurisdiction);
     rows += sanctionsDetailMeta(labels.status, item.status);
+    rows += sanctionsDetailMeta(labels.cryptoRole, item.crypto_role);
+    rows += sanctionsDetailMeta(labels.method, item.classification_method);
     if (Number(item.address_count) > 0) rows += sanctionsDetailMeta(labels.addresses, Number(item.address_count).toLocaleString('en-US'));
   }
   var html = '<section class="event-detail-section"><dl class="event-detail-meta">' + rows + '</dl></section>';
+  if (item.crypto_evidence) html += '<section class="event-detail-section"><h3>' + escHtml(labels.evidence) + '</h3><p class="sanctions-evidence">' + escHtml(item.crypto_evidence) + '</p></section>';
+  if (item.official_reason) html += '<section class="event-detail-section"><h3>' + escHtml(labels.reason) + '</h3><p class="sanctions-evidence">' + escHtml(item.official_reason) + '</p></section>';
+  var officialAddresses = Array.isArray(item.official_addresses) ? item.official_addresses : [];
+  if (officialAddresses.length) {
+    html += '<section class="event-detail-section"><h3>' + escHtml(labels.addresses) + '</h3><div class="sanctions-wallet-list">'
+      + officialAddresses.map(function(address) {
+        var chainAsset = [address.chain, address.asset].filter(Boolean).join(' · ') || sanctionsText('Official wallet', '官方钱包');
+        return '<div class="sanctions-wallet-row"><span class="sanctions-wallet-chain">' + escHtml(chainAsset) + '</span><span class="sanctions-wallet-address">' + escHtml(address.address) + '</span></div>';
+      }).join('') + '</div></section>';
+  }
   var sourceUrl = safeSanctionsUrl(item.source_url);
   if (sourceUrl) html += '<section class="event-detail-section"><h3>' + escHtml(labels.official) + '</h3><a class="event-detail-source" href="' + sanctionsAttr(sourceUrl) + '" target="_blank" rel="noopener noreferrer">' + escHtml(labels.officialCta) + ' &#8599;</a></section>';
   document.getElementById('sanctionsRecordBody').innerHTML = html;
