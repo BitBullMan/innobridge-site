@@ -910,7 +910,7 @@ footer{background:var(--ink);color:rgba(255,255,255,0.7);padding:64px 40px 24px}
       <div class="hero-stat"><div class="num" id="statJuris">--</div><div class="label" data-i18n="cp.stat.juris">Jurisdictions</div></div>
       <div class="hero-stat"><div class="num" id="statRegs">--</div><div class="label" data-i18n="cp.stat.regs">Regulations</div></div>
       <div class="hero-stat"><div class="num" id="statRules">--</div><div class="label" data-i18n="cp.stat.rules">Risk Rules</div></div>
-      <div class="hero-stat"><div class="num" id="statEnforce">--</div><div class="label" data-i18n="cp.stat.enforce">Enforcement (45D)</div></div>
+      <div class="hero-stat"><div class="num" id="statEnforce">--</div><div class="label" data-i18n="cp.stat.enforce">Enforcement (90D)</div></div>
       <div class="hero-stat"><div class="num" id="statDeadlines">--</div><div class="label" data-i18n="cp.stat.deadlines">Current Deadlines</div></div>
     </div>
   </div>
@@ -1535,7 +1535,7 @@ var I18N = {
     'cp.badge':'Compliance Intelligence',
     'cp.title':'Global Compliance Intelligence',
     'cp.sub':'Navigate the complex landscape of global crypto regulations. Explore jurisdiction-specific AML requirements, risk rules, and enforcement actions across major financial centers.',
-    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement (45D)','cp.stat.deadlines':'Current Deadlines',
+    'cp.stat.juris':'Jurisdictions','cp.stat.regs':'Regulations','cp.stat.rules':'Risk Rules','cp.stat.enforce':'Enforcement (90D)','cp.stat.deadlines':'Current Deadlines',
     'cp.grid.title':'Select a Jurisdiction',
     'cp.grid.sub':'Choose a jurisdiction to view its complete compliance profile',
     'cp.juris.placeholder':'-- Select a jurisdiction --',
@@ -1684,7 +1684,7 @@ var I18N = {
     'cp.badge':'合规情报',
     'cp.title':'全球合规情报',
     'cp.sub':'探索全球加密货币监管格局。查看各司法管辖区的反洗钱要求、风险规则和执法行动。',
-    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'45天执法','cp.stat.deadlines':'当前截止日期',
+    'cp.stat.juris':'司法管辖区','cp.stat.regs':'法规数量','cp.stat.rules':'风险规则','cp.stat.enforce':'90天执法','cp.stat.deadlines':'当前截止日期',
     'cp.grid.title':'选择司法管辖区',
     'cp.grid.sub':'选择司法管辖区查看完整合规概况',
     'cp.juris.placeholder':'-- 请选择司法管辖区 --',
@@ -4591,7 +4591,7 @@ var globalEnforcementData = [];
 var enforcementFilter = 'all';
 
 function loadGlobalEnforcement() {
-  InnobridgeComplianceData.loadEnforcement({ limit: 50 }).then(function(items) {
+  InnobridgeComplianceData.loadEnforcement({ limit: 100 }).then(function(items) {
     globalEnforcementData = items;
     document.getElementById('statEnforce').textContent = items.length;
     buildEnforcementFilters();
@@ -4661,7 +4661,7 @@ var globalRegUpdates = [];
 var regUpdatesFilter = 'all';
 
 function loadGlobalRegUpdates() {
-  InnobridgeComplianceData.loadRegulatoryUpdates({ limit: 50 }).then(function(items) {
+  InnobridgeComplianceData.loadRegulatoryUpdates({ limit: 100 }).then(function(items) {
     globalRegUpdates = items;
     buildRegUpdatesFilters();
     renderGlobalRegUpdates();
@@ -4732,7 +4732,7 @@ function renderOverviewEnforcement() {
     return new Date(b.action_date || b.created_at || 0) - new Date(a.action_date || a.created_at || 0);
   }).slice(0, 6);
   if (!items.length) {
-    container.innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '过去 45 天暂无执法动态。' : 'No enforcement actions in the last 45 days.') + '</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '过去 90 天暂无执法动态。' : 'No enforcement actions in the last 90 days.') + '</p></div>';
     return;
   }
   container.innerHTML = items.map(function(c) {
@@ -4756,7 +4756,7 @@ function renderOverviewRegUpdates() {
     return new Date(b.published_date || b.effective_date || b.created_at || 0) - new Date(a.published_date || a.effective_date || a.created_at || 0);
   }).slice(0, 6);
   if (!items.length) {
-    container.innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '过去 45 天暂无监管更新。' : 'No regulatory updates in the last 45 days.') + '</p></div>';
+    container.innerHTML = '<div class="empty-state"><p>' + (currentLang === 'cn' ? '过去 90 天暂无监管更新。' : 'No regulatory updates in the last 90 days.') + '</p></div>';
     return;
   }
   container.innerHTML = items.map(function(u) {
@@ -4840,7 +4840,7 @@ function renderStoredComplianceList(containerId, items, tagClass, emptyText){
   }
 
   function safePublisher(item){
-    var value = item.source_name || item.authority || item.jurisdiction || item.region || '';
+    var value = item.source_name || item.authority || item.source || item.jurisdiction || item.region || '';
     value = String(value || '').trim();
     // Never expose raw URLs, query strings, or internal source paths in cards.
     if(!value || /^https?:\/\//i.test(value) || /[?&](from|utm_|ref)=/i.test(value)) return '';
@@ -4910,39 +4910,13 @@ function updateComplianceSignalSearchUi(count, searching){
   if(countEl) countEl.textContent = count ? (count + ' ' + t('cp.news.results')) : '';
 }
 
-function buildComplianceSignalPath(keyword){
-  var select = 'title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,region,category,source,source_name,published_at,last_seen_at,seen_count';
-  var path = 'compliance_news_signals?select=' + select + '&status=eq.published';
-  var q = String(keyword || '').trim();
-  if(q){
-    var safe = q.replace(/[(),]/g, ' ').trim();
-    var term = encodeURIComponent('*' + safe + '*');
-    path += '&or=(' + [
-      'title_en.ilike.' + term,
-      'title_cn.ilike.' + term,
-      'summary_en.ilike.' + term,
-      'summary_cn.ilike.' + term,
-      'logic_en.ilike.' + term,
-      'logic_cn.ilike.' + term,
-      'source_name.ilike.' + term,
-      'category.ilike.' + term,
-      'region.ilike.' + term
-    ].join(',') + ')';
-  }
-  // The table is cumulative. We retrieve the newest 100 matching records rather than applying a 24-hour cutoff.
-  return path + '&order=published_at.desc&limit=100';
-}
-
 function loadCumulativeComplianceSignals(keyword) {
   var q = String(keyword || '').trim();
   var container = document.getElementById('overviewNewsSignals');
   if(container) container.innerHTML = '<div class="loading-block"><div class="spinner"></div><span>' + escHtml(t('cp.news.loading')) + '</span></div>';
-  return supabaseSelect(buildComplianceSignalPath(q))
+  return InnobridgeComplianceData.loadComplianceNews({ limit: 150, keyword: q })
     .then(function(rows) {
-      complianceNewsSignals = (Array.isArray(rows) ? rows : []).filter(function(item) {
-        var category = String(item.category || '').toLowerCase();
-        return category !== 'enforcement' && category !== 'regulatory';
-      });
+      complianceNewsSignals = Array.isArray(rows) ? rows : [];
       storedComplianceOverviewLoaded.news = complianceNewsSignals.length > 0;
       renderStoredComplianceList('overviewNewsSignals', complianceNewsSignals, 'compliance', t('cp.news.empty'));
       updateComplianceSignalSearchUi(complianceNewsSignals.length, !!q);

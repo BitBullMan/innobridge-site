@@ -2150,8 +2150,8 @@ function renderHomeComplianceList(containerId, items, type){
   if(!rows.length){
     container.innerHTML = '<div class="ci-preview-loading">' +
       (type === 'enforcement'
-        ? (currentLang === 'cn' ? '过去 45 天暂无执法动态。' : 'No enforcement actions in the last 45 days.')
-        : (currentLang === 'cn' ? '过去 45 天暂无监管更新。' : 'No regulatory updates in the last 45 days.')) +
+        ? (currentLang === 'cn' ? '过去 90 天暂无执法动态。' : 'No enforcement actions in the last 90 days.')
+        : (currentLang === 'cn' ? '过去 90 天暂无监管更新。' : 'No regulatory updates in the last 90 days.')) +
       '</div>';
     return;
   }

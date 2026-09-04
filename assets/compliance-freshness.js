@@ -3,7 +3,9 @@
 
   var SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
   var SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
-  var LIVE_DAYS = 45;
+  var LIVE_DAYS = 90;
+  var UNIFIED_FETCH_LIMIT = 150;
+  var UNIFIED_FIELDS = 'id,fingerprint,event_type,title_en,title_cn,summary_en,summary_cn,logic_en,logic_cn,jurisdiction,authority,category,severity,regulatory_type,source,source_name,source_url,event_date,published_at,status,first_seen_at,last_seen_at,seen_count,created_at,updated_at';
 
   function dateOnly(value) {
     var date = value ? new Date(value) : new Date();
@@ -26,6 +28,109 @@
     }).then(function (response) {
       if (!response.ok) throw new Error('Supabase REST ' + response.status);
       return response.json();
+    });
+  }
+
+  function unifiedJurisdictionCode(value) {
+    var raw = String(value || '').trim();
+    var upper = raw.toUpperCase();
+    var direct = {
+      US: 'US', USA: 'US', EU: 'EU', GB: 'GB', UK: 'GB', HK: 'HK', SG: 'SG',
+      KR: 'KR', JP: 'JP', CN: 'CN', AE: 'AE', UAE: 'AE', PK: 'PK', RU: 'RU', TH: 'TH'
+    };
+    if (direct[upper]) return direct[upper];
+    if (/united states|america/i.test(raw)) return 'US';
+    if (/european union|europe/i.test(raw)) return 'EU';
+    if (/united kingdom|britain/i.test(raw)) return 'GB';
+    if (/hong kong/i.test(raw)) return 'HK';
+    if (/singapore/i.test(raw)) return 'SG';
+    if (/south korea|korea/i.test(raw)) return 'KR';
+    if (/japan/i.test(raw)) return 'JP';
+    if (/china/i.test(raw)) return 'CN';
+    if (/united arab emirates|dubai|abu dhabi/i.test(raw)) return 'AE';
+    if (/pakistan/i.test(raw)) return 'PK';
+    if (/russia/i.test(raw)) return 'RU';
+    if (/thailand/i.test(raw)) return 'TH';
+    return '';
+  }
+
+  function dedupeByFingerprint(rows) {
+    var seen = {};
+    return (rows || []).filter(function (row) {
+      var key = String(row.fingerprint || row.id || '');
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+  }
+
+  function loadUnifiedEvents(eventType, options) {
+    options = options || {};
+    var limit = Math.max(1, Math.min(Number(options.limit) || 100, UNIFIED_FETCH_LIMIT));
+    var path = 'compliance_event_signals?select=' + encodeURIComponent(UNIFIED_FIELDS)
+      + '&event_type=eq.' + encodeURIComponent(eventType)
+      + '&status=eq.published'
+      + '&event_date=gte.' + encodeURIComponent(cutoffDate(LIVE_DAYS))
+      + '&order=event_date.desc.nullslast,published_at.desc.nullslast'
+      + '&limit=' + UNIFIED_FETCH_LIMIT;
+    return select(path).then(function (rows) {
+      var deduped = dedupeByFingerprint(rows);
+      var keyword = String(options.keyword || '').trim().toLowerCase();
+      if (keyword) {
+        deduped = deduped.filter(function (row) {
+          return [row.title_en, row.title_cn, row.summary_en, row.summary_cn, row.logic_en, row.logic_cn,
+            row.jurisdiction, row.authority, row.category, row.source_name]
+            .filter(Boolean).join(' ').toLowerCase().indexOf(keyword) !== -1;
+        });
+      }
+      return deduped.slice(0, limit);
+    });
+  }
+
+  function sourceUrl(row) {
+    if (/^https?:/i.test(String(row.source_url || ''))) return row.source_url;
+    if (/^https?:/i.test(String(row.source || ''))) return row.source;
+    return '';
+  }
+
+  function enforcementFromUnified(row) {
+    return Object.assign({}, row, {
+      entity_name: row.title_en,
+      entity_name_cn: row.title_cn,
+      entity_type: row.category || 'enforcement',
+      action_type: row.category || 'enforcement',
+      enforcing_agency: row.authority || row.source_name || '',
+      enforcing_agency_cn: row.authority || row.source_name || '',
+      action_date: row.event_date || row.published_at,
+      summary: row.summary_en || '',
+      summary_cn: row.summary_cn || '',
+      logic: row.logic_en || '',
+      logic_cn: row.logic_cn || '',
+      source_url: sourceUrl(row),
+      source_name: row.source_name || row.authority || '',
+      jurisdiction_code: unifiedJurisdictionCode(row.jurisdiction),
+      jurisdiction_name: row.jurisdiction || '',
+      jurisdiction_name_cn: row.jurisdiction || '',
+      data_source: 'compliance_event_signals'
+    });
+  }
+
+  function regulatoryFromUnified(row) {
+    return Object.assign({}, row, {
+      title: row.title_en,
+      title_cn: row.title_cn,
+      update_type: row.regulatory_type || row.category || 'regulatory',
+      summary: row.summary_en || '',
+      summary_cn: row.summary_cn || '',
+      logic: row.logic_en || '',
+      logic_cn: row.logic_cn || '',
+      source_url: sourceUrl(row),
+      source_name: row.source_name || row.authority || '',
+      published_date: row.event_date || row.published_at,
+      jurisdiction_code: unifiedJurisdictionCode(row.jurisdiction),
+      jurisdiction_name: row.jurisdiction || '',
+      jurisdiction_name_cn: row.jurisdiction || '',
+      data_source: 'compliance_event_signals'
     });
   }
 
@@ -147,51 +252,21 @@
   function loadEnforcement(options) {
     options = options || {};
     var limit = Math.max(1, Math.min(Number(options.limit) || 50, 100));
-    var fields = 'id,entity_name,entity_name_cn,entity_type,action_type,enforcing_agency,enforcing_agency_cn,action_date,penalty_amount_usd,penalty_description,penalty_description_cn,violation_type,summary,summary_cn,source_url,source_name,status,severity,tags,created_at,aml_jurisdictions(code,name,name_cn)';
-    var path = 'enforcement_actions?select=' + encodeURIComponent(fields)
-      + '&action_date=gte.' + cutoffDate(LIVE_DAYS)
-      + '&status=in.(ongoing,resolved,settled,appealed)'
-      + '&order=action_date.desc.nullslast&limit=' + limit;
-    return Promise.all([select(path), loadSignals('enforcement', limit)]).then(function (results) {
-      var structured = results[0].map(function (row) {
-        var j = jurisdiction(row);
-        row.jurisdiction_code = j.code || '';
-        row.jurisdiction_name = j.name || '';
-        row.jurisdiction_name_cn = j.name_cn || '';
-        row.data_source = 'enforcement_actions';
-        delete row.aml_jurisdictions;
-        return row;
-      });
-      var signals = results[1].map(enforcementFromSignal);
-      return dedupeRows(structured.concat(signals), 'entity_name').sort(function (a, b) {
-        return new Date(b.action_date || 0) - new Date(a.action_date || 0);
-      }).slice(0, limit);
+    return loadUnifiedEvents('enforcement', { limit: limit }).then(function (rows) {
+      return rows.map(enforcementFromUnified);
     });
   }
 
   function loadRegulatoryUpdates(options) {
     options = options || {};
     var limit = Math.max(1, Math.min(Number(options.limit) || 50, 100));
-    var fields = 'id,title,title_cn,update_type,summary,summary_cn,source_url,source_name,published_date,severity,status,ai_confidence,tags,created_at,aml_jurisdictions(code,name,name_cn)';
-    var path = 'aml_regulation_updates?select=' + encodeURIComponent(fields)
-      + '&published_date=gte.' + cutoffDate(LIVE_DAYS)
-      + '&status=in.(reviewed,published)'
-      + '&order=published_date.desc.nullslast&limit=' + limit;
-    return Promise.all([select(path), loadSignals('regulatory', limit)]).then(function (results) {
-      var structured = results[0].map(function (row) {
-        var j = jurisdiction(row);
-        row.jurisdiction_code = j.code || '';
-        row.jurisdiction_name = j.name || '';
-        row.jurisdiction_name_cn = j.name_cn || '';
-        row.data_source = 'aml_regulation_updates';
-        delete row.aml_jurisdictions;
-        return row;
-      });
-      var signals = results[1].map(regulatoryFromSignal);
-      return dedupeRows(structured.concat(signals), 'title').sort(function (a, b) {
-        return new Date(b.published_date || 0) - new Date(a.published_date || 0);
-      }).slice(0, limit);
+    return loadUnifiedEvents('regulatory', { limit: limit }).then(function (rows) {
+      return rows.map(regulatoryFromUnified);
     });
+  }
+
+  function loadComplianceNews(options) {
+    return loadUnifiedEvents('compliance_news', options || {});
   }
 
   function daysUntil(value) {
@@ -292,6 +367,7 @@
     liveDays: LIVE_DAYS,
     loadEnforcement: loadEnforcement,
     loadRegulatoryUpdates: loadRegulatoryUpdates,
+    loadComplianceNews: loadComplianceNews,
     loadDeadlines: loadDeadlines,
     nextPublicDeadline: nextPublicDeadline,
     nextVerifiedDeadline: nextPublicDeadline,
