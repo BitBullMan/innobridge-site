@@ -1571,6 +1571,47 @@ function realKpi(label, value, note) {
   return `<div class="overview-kpi"><div class="stat-label">${esc(label)}</div><div class="stat-val">${Number(value || 0).toLocaleString()}</div><div class="stat-sub">${esc(note || 'Current production record')}</div></div>`;
 }
 
+function subscriptionEligibility(sub, user, policy) {
+  if (!user?.is_active) return { eligible: false, reason: 'Platform user disabled' };
+  if (!sub || sub.status !== 'active') return { eligible: false, reason: `Subscription ${sub?.status || 'missing'}` };
+  if (sub.admin_paused) return { eligible: false, reason: 'Paused by admin' };
+  if (sub.paused_until && new Date(sub.paused_until).getTime() > Date.now()) return { eligible: false, reason: 'Temporarily paused' };
+  if (!policy) return { eligible: false, reason: 'Delivery policy unavailable' };
+  if (['paused', 'disabled'].includes(policy.delivery_status)) return { eligible: false, reason: `Global ${policy.delivery_status}` };
+  if ((policy.suppress_user_ids || []).includes(sub.user_id)) return { eligible: false, reason: 'Suppressed by policy' };
+  if (policy.delivery_status === 'test_only' || policy.audience_mode === 'test_group') {
+    return sub.include_in_tests
+      ? { eligible: true, reason: 'Eligible test recipient' }
+      : { eligible: false, reason: 'Not in test group' };
+  }
+  if (policy.audience_mode === 'allowlist') {
+    return (policy.allow_user_ids || []).includes(sub.user_id)
+      ? { eligible: true, reason: 'Eligible allowlist recipient' }
+      : { eligible: false, reason: 'Not on allowlist' };
+  }
+  if (policy.delivery_status === 'enabled' && policy.audience_mode === 'all_active_subscribers') {
+    return { eligible: true, reason: 'Eligible active subscriber' };
+  }
+  return { eligible: false, reason: 'Audience mode does not send automatically' };
+}
+
+function deliveryOutcome(job) {
+  if (!job) return '<span class="tiny-muted">No delivery attempt</span>';
+  const timestamp = job.sent_at || job.failed_at || job.cancelled_at || job.claimed_at || job.created_at;
+  const when = esc(opsDate(timestamp));
+  if (job.status === 'sent') {
+    const provider = job.provider_message_id ? `<div class="tiny-muted">Gmail ID ${esc(String(job.provider_message_id).slice(-10))}</div>` : '';
+    return `<span class="status-pill status-active">Accepted by Gmail</span><div class="tiny-muted">${when}</div>${provider}`;
+  }
+  if (job.status === 'failed') {
+    return `<span class="status-pill status-suppressed">Failed</span><div class="tiny-muted">${when}${job.error_message ? ' · ' + esc(job.error_message) : ''}</div>`;
+  }
+  if (['cancelled', 'skipped'].includes(job.status)) {
+    return `<span class="status-pill status-paused">${esc(job.status)}</span><div class="tiny-muted">${when}${job.eligibility_reason ? ' · ' + esc(job.eligibility_reason) : ''}</div>`;
+  }
+  return `<span class="status-pill status-test">${esc(job.status || 'Pending')}</span><div class="tiny-muted">${when}</div>`;
+}
+
 // ════════════════════════════════════════════════
 // AUTH
 // ════════════════════════════════════════════════
@@ -3344,23 +3385,47 @@ async function openUser360(userId) {
     sb.from('briefing_delivery_jobs').select('*').eq('user_id', userId).order('created_at',{ascending:false}).limit(10)
   ]);
   const sub = getUserBriefingSub(user);
-  const timeline = [...(events.data || []).map(e => ({ at:e.created_at, label:e.event_type || e.action || 'Admin event', detail:e.reason || '' })), ...(deliveries.data || []).map(d => ({ at:d.created_at, label:`Briefing ${d.status || 'job'}`, detail:d.recipient_email || '' }))].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,12);
+  const timeline = [...(events.data || []).map(e => ({ at:e.created_at, label:e.event_type || e.action || 'Admin event', detail:e.reason || '' })), ...(deliveries.data || []).map(d => ({ at:d.created_at, label:d.status === 'sent' ? 'Briefing accepted by Gmail' : `Briefing ${d.status || 'job'}`, detail:[d.recipient_email, d.provider_message_id ? `Gmail ID ${String(d.provider_message_id).slice(-10)}` : ''].filter(Boolean).join(' · ') }))].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,12);
   const profile=interestProfilesByUser[userId]||{};
-  area.innerHTML = `<div class="user360-grid"><div class="ops-card"><div class="ops-card-title">Account Summary</div><div class="distribution-list"><div><span>Role</span><strong>${esc(user.role || 'public')}</strong></div><div><span>Joined</span><strong>${esc(opsDate(user.created_at))}</strong></div><div><span>Account status</span><strong>${user.is_active ? 'Active' : 'Disabled'}</strong></div><div><span>Last login</span><strong>${esc(opsDate(user.last_login_at||user.last_login))}</strong></div><div><span>Sessions</span><strong>Not tracked</strong></div><div><span>Total actions</span><strong>Not tracked</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Profile</div><div class="distribution-list"><div><span>Company</span><strong>${esc(user.company_name||user.organization||'Not set')}</strong></div><div><span>Job role</span><strong>${esc(user.job_role||'Not set')}</strong></div><div><span>Country</span><strong>${esc(user.country||'Not set')}</strong></div><div><span>Language</span><strong>${esc(user.language_preference||'en')}</strong></div><div><span>Target markets</span><strong>${esc(joinList(profile.countries)||'Not set')}</strong></div><div><span>Industries / interests</span><strong>${esc([...profile.sectors||[],...profile.regulatory_themes||[]].join(', ')||'Not set')}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Subscriptions</div><div class="distribution-list"><div><span>Daily Briefing</span><strong>${esc(sub.status || 'inactive')}</strong></div><div><span>Weekly Briefing</span><strong>No production record</strong></div><div><span>Real-time alerts</span><strong>No production record</strong></div><div><span>Last daily delivery</span><strong>${esc(opsDate(sub.last_sent_at))}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Access</div><div class="distribution-list"><div><span>Sanctions search</span><strong>${user.is_active?'Authenticated':'Preview'}</strong></div><div><span>Full sanctions list</span><strong>${user.is_active?'Allowed by active-profile rule':'No'}</strong></div><div><span>Freeze tracker</span><strong>Public</strong></div><div><span>Address screening</span><strong>${user.is_active?'Authenticated':'Unavailable'}</strong></div><div><span>Compliance</span><strong>Public</strong></div><div><span>Export</span><strong>Not modelled</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Engagement · 30 days</div><div class="ops-empty">Sessions, searches, content views, briefing opens and core actions are unavailable until product analytics is connected.</div></div><div class="ops-card"><div class="ops-card-title">Admin Notes</div><div class="tiny-muted">${esc(profile.admin_notes||'No admin notes.')}</div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openInterestProfileModal('${userId}')">Edit profile and notes</button></div></div></div><div class="ops-card" style="margin-top:14px;"><div class="ops-card-title">Activity</div>${timeline.length ? `<div class="timeline">${timeline.map(e => `<div><strong>${esc(e.label)}</strong><span>${esc(opsDate(e.at))}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>`).join('')}</div>` : '<div class="ops-empty">No product activity events are tracked. Admin and delivery events were also unavailable for this user.</div>'}</div>`;
+  area.innerHTML = `<div class="user360-grid"><div class="ops-card"><div class="ops-card-title">Account Summary</div><div class="distribution-list"><div><span>Role</span><strong>${esc(user.role || 'public')}</strong></div><div><span>Joined</span><strong>${esc(opsDate(user.created_at))}</strong></div><div><span>Account status</span><strong>${user.is_active ? 'Active' : 'Disabled'}</strong></div><div><span>Last login</span><strong>${esc(opsDate(user.last_login_at||user.last_login))}</strong></div><div><span>Sessions</span><strong>Not tracked</strong></div><div><span>Total actions</span><strong>Not tracked</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Profile</div><div class="distribution-list"><div><span>Company</span><strong>${esc(user.company_name||user.organization||'Not set')}</strong></div><div><span>Job role</span><strong>${esc(user.job_role||'Not set')}</strong></div><div><span>Country</span><strong>${esc(user.country||'Not set')}</strong></div><div><span>Language</span><strong>${esc(user.language_preference||'en')}</strong></div><div><span>Target markets</span><strong>${esc(joinList(profile.countries)||'Not set')}</strong></div><div><span>Industries / interests</span><strong>${esc([...profile.sectors||[],...profile.regulatory_themes||[]].join(', ')||'Not set')}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Subscriptions</div><div class="distribution-list"><div><span>Daily Briefing</span><strong>${esc(sub.status || 'inactive')}</strong></div><div><span>Weekly Briefing</span><strong>No production record</strong></div><div><span>Real-time alerts</span><strong>No production record</strong></div><div><span>Last Gmail acceptance</span><strong>${esc(opsDate(sub.last_sent_at))}</strong></div></div><div class="tiny-muted" style="margin-top:10px;">Provider acceptance is not proof of Inbox placement.</div></div><div class="ops-card"><div class="ops-card-title">Access</div><div class="distribution-list"><div><span>Sanctions search</span><strong>${user.is_active?'Authenticated':'Preview'}</strong></div><div><span>Full sanctions list</span><strong>${user.is_active?'Allowed by active-profile rule':'No'}</strong></div><div><span>Freeze tracker</span><strong>Public</strong></div><div><span>Address screening</span><strong>${user.is_active?'Authenticated':'Unavailable'}</strong></div><div><span>Compliance</span><strong>Public</strong></div><div><span>Export</span><strong>Not modelled</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Engagement · 30 days</div><div class="ops-empty">Sessions, searches, content views, briefing opens and core actions are unavailable until product analytics is connected.</div></div><div class="ops-card"><div class="ops-card-title">Admin Notes</div><div class="tiny-muted">${esc(profile.admin_notes||'No admin notes.')}</div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openInterestProfileModal('${userId}')">Edit profile and notes</button></div></div></div><div class="ops-card" style="margin-top:14px;"><div class="ops-card-title">Activity</div>${timeline.length ? `<div class="timeline">${timeline.map(e => `<div><strong>${esc(e.label)}</strong><span>${esc(opsDate(e.at))}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>`).join('')}</div>` : '<div class="ops-empty">No product activity events are tracked. Admin and delivery events were also unavailable for this user.</div>'}</div>`;
 }
 
 function closeUser360(){ document.getElementById('user360Modal').classList.remove('show'); }
 
 async function loadSubscriptions() {
   const area = document.getElementById('subscriptionsArea'); area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
-  const [profiles, subscriptions] = await Promise.all([sb.from('aml_user_profiles').select('*'), sb.from('user_briefing_subscriptions').select('*').order('updated_at',{ascending:false})]);
+  const [profiles, subscriptions, policies, jobs] = await Promise.all([
+    sb.from('aml_user_profiles').select('*'),
+    sb.from('user_briefing_subscriptions').select('*').order('updated_at',{ascending:false}),
+    sb.from('briefing_delivery_policies').select('*').eq('briefing_key', DAILY_BRIEFING_KEY).eq('delivery_channel', 'email').eq('environment', 'production').limit(1),
+    sb.from('briefing_delivery_jobs').select('*').eq('briefing_key', DAILY_BRIEFING_KEY).eq('delivery_channel', 'email').eq('environment', 'production').order('created_at',{ascending:false}).limit(200)
+  ]);
   if (subscriptions.error) { area.innerHTML = `<div class="ops-empty">Subscriptions unavailable: ${esc(subscriptions.error.message)}</div>`; return; }
   platformUsersCache = profiles.data || [];
   briefingSubsByUser = {}; (subscriptions.data || []).forEach(s => briefingSubsByUser[s.user_id] = s);
   const usersById = Object.fromEntries(platformUsersCache.map(u => [u.id,u]));
+  const policy = policies.data?.[0] || null;
+  const latestJobBySubscription = {};
+  (jobs.data || []).forEach(job => { if (!latestJobBySubscription[job.subscription_id]) latestJobBySubscription[job.subscription_id] = job; });
   const counts = (subscriptions.data || []).reduce((a,s)=>{const key=s.briefing_key||'unknown';a[key]=(a[key]||0)+1;return a;},{});
-  const rows = (subscriptions.data || []).map(s => { const u=usersById[s.user_id]||{}; const isDaily=s.briefing_key===DAILY_BRIEFING_KEY&&s.delivery_channel==='email'; return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${esc(opsDate(s.last_sent_at))}</td><td>${isDaily?`<div class="ops-actions">${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`; }).join('');
-  area.innerHTML = `<div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${counts.weekly_briefing||0}</strong><span>Weekly records</span></div><div><strong>${counts.realtime_alerts||0}</strong><span>Real-time records</span></div><div><strong>${(subscriptions.data||[]).filter(s=>s.status==='active').length}</strong><span>Active subscriptions</span></div></div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Last sent</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="7"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
+  const dailySubs = (subscriptions.data || []).filter(s => s.briefing_key===DAILY_BRIEFING_KEY && s.delivery_channel==='email');
+  const eligibleCount = dailySubs.filter(s => subscriptionEligibility(s, usersById[s.user_id], policy).eligible).length;
+  const shanghaiToday = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Shanghai', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+  const todayJobs = (jobs.data || []).filter(job => job.edition_date === shanghaiToday);
+  const rows = (subscriptions.data || []).map(s => {
+    const u=usersById[s.user_id]||{};
+    const isDaily=s.briefing_key===DAILY_BRIEFING_KEY&&s.delivery_channel==='email';
+    const eligibility = isDaily ? subscriptionEligibility(s, u, policy) : { eligible:false, reason:'Read only' };
+    const eligibilityHtml = eligibility.eligible
+      ? `<span class="status-pill status-active">Eligible now</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`
+      : `<span class="status-pill status-inactive">Not sending</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`;
+    return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${eligibilityHtml}</td><td>${deliveryOutcome(latestJobBySubscription[s.id])}</td><td>${isDaily?`<div class="ops-actions">${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`;
+  }).join('');
+  const policyState = policy
+    ? `${briefingStatusBadge(policy.delivery_status)} <strong>${esc(policy.audience_mode || 'unknown')}</strong>`
+    : '<span class="status-pill status-suppressed">Unavailable</span>';
+  const warnings = [profiles.error, policies.error, jobs.error].filter(Boolean).map(error => error.message).join(' · ');
+  area.innerHTML = `${warnings ? `<div class="ops-warning">Some delivery diagnostics are unavailable: ${esc(warnings)}</div>` : ''}<div class="ops-panel" style="margin-bottom:18px;"><div class="ops-label">Effective delivery policy</div><div class="ops-value">${policyState}</div><div class="ops-copy">Active is a subscription state, not a promise of delivery. Under <strong>test_only</strong>, only users marked Test are eligible. Manage the policy and test audience in <button class="btn btn-xs btn-outline" onclick="showTab('briefing-ops')">Briefing Operations</button>.</div></div><div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${eligibleCount}</strong><span>Eligible now</span></div><div><strong>${todayJobs.filter(j=>j.status==='sent').length}</strong><span>Gmail accepted today</span></div><div><strong>${todayJobs.filter(j=>j.status==='failed').length}</strong><span>Failed today</span></div></div><div class="ops-empty" style="margin-bottom:14px;text-align:left;"><strong>Delivery meaning:</strong> “Accepted by Gmail” means the Gmail API returned a provider message ID. It does not prove Inbox placement. Confirm final delivery in Google Workspace Admin → Reporting → Email Log Search.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Effective audience</th><th>Latest provider result</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="8"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
 }
 
 async function loadEntitlements() {
@@ -3428,7 +3493,7 @@ async function loadBriefingOps() {
       timeZone: 'Asia/Shanghai', year: 'numeric', month: '2-digit', day: '2-digit'
     }).format(new Date());
     const { data, error } = await sb.from('briefing_delivery_jobs')
-      .select('id,status,recipient_email,language_preference,eligibility_reason,provider_message_id,error_message,claimed_at,sent_at')
+      .select('id,user_id,status,recipient_email,language_preference,eligibility_reason,provider_message_id,error_message,claimed_at,sent_at,failed_at,cancelled_at,created_at')
       .eq('briefing_key', DAILY_BRIEFING_KEY)
       .eq('delivery_channel', 'email')
       .eq('environment', 'production')
@@ -3476,22 +3541,27 @@ async function loadBriefingOps() {
   const claimedJobs = briefingJobCache.filter(job => ['pending', 'claimed', 'sending'].includes(job.status)).length;
   const failedJobs = briefingJobCache.filter(job => job.status === 'failed').length;
   const cancelledJobs = briefingJobCache.filter(job => ['cancelled', 'skipped'].includes(job.status)).length;
+  const todayJobByUser = {};
+  briefingJobCache.forEach(job => { if (!todayJobByUser[job.user_id]) todayJobByUser[job.user_id] = job; });
   html += '<div class="ops-panel" style="margin-bottom:18px;">';
   html += '<div class="ops-label">Today\'s Delivery Ledger</div>';
-  html += `<div class="ops-actions"><span class="status-pill status-active">Sent ${sentJobs}</span><span class="status-pill status-test">Claimed ${claimedJobs}</span><span class="status-pill status-suppressed">Failed ${failedJobs}</span><span class="status-pill status-paused">Cancelled ${cancelledJobs}</span></div>`;
-  html += '<div class="ops-copy">One edition + one channel + one email can be claimed only once. Pause and Disable are rechecked immediately before Gmail.</div>';
+  html += `<div class="ops-actions"><span class="status-pill status-active">Gmail accepted ${sentJobs}</span><span class="status-pill status-test">Claimed ${claimedJobs}</span><span class="status-pill status-suppressed">Failed ${failedJobs}</span><span class="status-pill status-paused">Cancelled ${cancelledJobs}</span></div>`;
+  html += '<div class="ops-copy">“Gmail accepted” means the provider returned a message ID; it does not confirm Inbox placement. One edition + one channel + one email can be claimed only once. Pause and Disable are rechecked immediately before Gmail.</div>';
   html += '</div>';
 
   html += '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
-  html += '<th>User</th><th>Briefing</th><th>Test</th><th>Language</th><th>Interests</th><th>Actions</th>';
+  html += '<th>User</th><th>Briefing</th><th>Test</th><th>Language</th><th>Effective audience</th><th>Today\'s provider result</th><th>Interests</th><th>Actions</th>';
   html += '</tr></thead><tbody>';
   platformUsersCache.forEach(u => {
     const sub = getUserBriefingSub(u);
+    const eligibility = subscriptionEligibility(sub, u, control);
     html += '<tr>';
     html += `<td><div style="font-weight:600;">${esc(u.full_name || '—')}</div><div class="tiny-muted">${esc(u.email)}</div></td>`;
     html += `<td>${briefingStatusBadge(sub.status, sub.legacy)}</td>`;
     html += `<td>${sub.include_in_tests ? '<span class="status-pill status-test">Test group</span>' : '<span class="tiny-muted">—</span>'}</td>`;
     html += `<td>${esc(sub.language_preference || 'en')}</td>`;
+    html += `<td>${eligibility.eligible ? '<span class="status-pill status-active">Eligible</span>' : '<span class="status-pill status-inactive">Not sending</span>'}<div class="tiny-muted">${esc(eligibility.reason)}</div></td>`;
+    html += `<td>${deliveryOutcome(todayJobByUser[u.id])}</td>`;
     html += `<td>${renderInterestTags(interestProfilesByUser[u.id] || {})}</td>`;
     html += '<td><div class="ops-actions" style="min-width:300px;">';
     html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','active')">Active</button>`;
