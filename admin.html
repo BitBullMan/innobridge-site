@@ -1414,6 +1414,30 @@ tbody td { padding:11px 14px; font-size:13px; }
 </div>
 
 <!-- ════ CONFIRM DIALOG ════ -->
+<div class="modal-overlay" id="deliveryEmailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Briefing Delivery Address</div>
+        <div class="modal-sub" id="deliveryEmailSub">Keep sign-in identity separate from email delivery.</div>
+      </div>
+      <button class="modal-close" onclick="closeDeliveryEmailModal()">&#215;</button>
+    </div>
+    <div id="deliveryEmailError" class="error-box"></div>
+    <div class="form-group">
+      <label class="form-label">Delivery email override</label>
+      <input type="email" class="form-input" id="deliveryEmailInput" placeholder="recipient@company.com" autocomplete="off">
+      <div class="form-hint">Leave blank to use the account email. This changes Daily Briefing delivery only; it does not change the user's login.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeDeliveryEmailModal()">Cancel</button>
+      <button class="btn btn-outline" onclick="clearDeliveryEmailOverride()">Use account email</button>
+      <button class="btn btn-primary" id="deliveryEmailSaveBtn" onclick="saveDeliveryEmailOverride()">Save delivery address</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════ USER 360 MODAL ════ -->
 <div class="modal-overlay" id="user360Modal">
   <div class="modal modal-lg">
     <div class="modal-header"><div><div class="modal-title" id="user360Title">User 360</div><div class="modal-sub" id="user360Sub">Account, access and observed operational history</div></div><button class="modal-close" onclick="closeUser360()">&#215;</button></div>
@@ -1513,6 +1537,7 @@ let searchDebounceTimer = null;
 let csvParsedData = [];
 let confirmCallback = null;
 let platformUsersCache = [];
+let editingDeliveryEmailUserId = null;
 let briefingSubsByUser = {};
 let interestProfilesByUser = {};
 let briefingControlCache = null;
@@ -3211,6 +3236,78 @@ function joinList(value) {
   return Array.isArray(value) ? value.join(', ') : '';
 }
 
+function effectiveBriefingEmail(subscription, user) {
+  return String(subscription?.delivery_email || user?.email || '').trim().toLowerCase();
+}
+
+function briefingDeliveryEmailHtml(subscription, user) {
+  const email = effectiveBriefingEmail(subscription, user);
+  const override = !!subscription?.delivery_email;
+  if (!email) return '<span class="status-pill status-suppressed">Missing</span>';
+  return `<strong>${esc(email)}</strong><div class="tiny-muted">${override ? 'Delivery override' : 'Uses account email'}</div>`;
+}
+
+function openDeliveryEmailModal(userId) {
+  const user = platformUsersCache.find(row => row.id === userId);
+  if (!user) return;
+  const subscription = getUserBriefingSub(user);
+  editingDeliveryEmailUserId = userId;
+  document.getElementById('deliveryEmailSub').textContent = `${user.email || 'Unknown account'} · current recipient: ${effectiveBriefingEmail(subscription, user) || 'missing'}`;
+  document.getElementById('deliveryEmailInput').value = subscription.delivery_email || '';
+  document.getElementById('deliveryEmailError').classList.remove('show');
+  document.getElementById('deliveryEmailError').textContent = '';
+  document.getElementById('deliveryEmailModal').classList.add('show');
+  requestAnimationFrame(() => document.getElementById('deliveryEmailInput').focus());
+}
+
+function closeDeliveryEmailModal() {
+  document.getElementById('deliveryEmailModal').classList.remove('show');
+  editingDeliveryEmailUserId = null;
+}
+
+function clearDeliveryEmailOverride() {
+  document.getElementById('deliveryEmailInput').value = '';
+  saveDeliveryEmailOverride();
+}
+
+async function saveDeliveryEmailOverride() {
+  const userId = editingDeliveryEmailUserId;
+  if (!userId) return;
+  const input = document.getElementById('deliveryEmailInput');
+  const errorBox = document.getElementById('deliveryEmailError');
+  const saveButton = document.getElementById('deliveryEmailSaveBtn');
+  const deliveryEmail = input.value.trim().toLowerCase();
+  input.value = deliveryEmail;
+  if (deliveryEmail && !input.checkValidity()) {
+    errorBox.textContent = 'Enter a valid email address or leave the field blank to use the account email.';
+    errorBox.classList.add('show');
+    return;
+  }
+
+  saveButton.disabled = true;
+  errorBox.classList.remove('show');
+  try {
+    const result = await invokeAdminControl('set_delivery_email', {
+      p_user_id: userId,
+      p_delivery_email: deliveryEmail || null,
+      p_briefing_key: DAILY_BRIEFING_KEY,
+      p_delivery_channel: 'email'
+    });
+    const subscription = result?.subscription;
+    if (!subscription || subscription.user_id !== userId) throw new Error('Delivery address change was not confirmed by the control plane.');
+    briefingSubsByUser[userId] = { ...subscription, legacy: false };
+    closeDeliveryEmailModal();
+    showToast(deliveryEmail ? 'Briefing delivery address updated' : 'Briefing now uses the account email', 'success');
+    await loadSubscriptions();
+    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+  } catch (err) {
+    errorBox.textContent = err.message || 'Could not update the delivery address.';
+    errorBox.classList.add('show');
+  } finally {
+    saveButton.disabled = false;
+  }
+}
+
 async function upsertBriefingSubscription(userId, changes) {
   const result = await invokeAdminControl('set_subscription', {
     p_user_id: userId,
@@ -3387,7 +3484,7 @@ async function openUser360(userId) {
   const sub = getUserBriefingSub(user);
   const timeline = [...(events.data || []).map(e => ({ at:e.created_at, label:e.event_type || e.action || 'Admin event', detail:e.reason || '' })), ...(deliveries.data || []).map(d => ({ at:d.created_at, label:d.status === 'sent' ? 'Briefing accepted by Gmail' : `Briefing ${d.status || 'job'}`, detail:[d.recipient_email, d.provider_message_id ? `Gmail ID ${String(d.provider_message_id).slice(-10)}` : ''].filter(Boolean).join(' · ') }))].sort((a,b)=>new Date(b.at)-new Date(a.at)).slice(0,12);
   const profile=interestProfilesByUser[userId]||{};
-  area.innerHTML = `<div class="user360-grid"><div class="ops-card"><div class="ops-card-title">Account Summary</div><div class="distribution-list"><div><span>Role</span><strong>${esc(user.role || 'public')}</strong></div><div><span>Joined</span><strong>${esc(opsDate(user.created_at))}</strong></div><div><span>Account status</span><strong>${user.is_active ? 'Active' : 'Disabled'}</strong></div><div><span>Last login</span><strong>${esc(opsDate(user.last_login_at||user.last_login))}</strong></div><div><span>Sessions</span><strong>Not tracked</strong></div><div><span>Total actions</span><strong>Not tracked</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Profile</div><div class="distribution-list"><div><span>Company</span><strong>${esc(user.company_name||user.organization||'Not set')}</strong></div><div><span>Job role</span><strong>${esc(user.job_role||'Not set')}</strong></div><div><span>Country</span><strong>${esc(user.country||'Not set')}</strong></div><div><span>Language</span><strong>${esc(user.language_preference||'en')}</strong></div><div><span>Target markets</span><strong>${esc(joinList(profile.countries)||'Not set')}</strong></div><div><span>Industries / interests</span><strong>${esc([...profile.sectors||[],...profile.regulatory_themes||[]].join(', ')||'Not set')}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Subscriptions</div><div class="distribution-list"><div><span>Daily Briefing</span><strong>${esc(sub.status || 'inactive')}</strong></div><div><span>Weekly Briefing</span><strong>No production record</strong></div><div><span>Real-time alerts</span><strong>No production record</strong></div><div><span>Last Gmail acceptance</span><strong>${esc(opsDate(sub.last_sent_at))}</strong></div></div><div class="tiny-muted" style="margin-top:10px;">Provider acceptance is not proof of Inbox placement.</div></div><div class="ops-card"><div class="ops-card-title">Access</div><div class="distribution-list"><div><span>Sanctions search</span><strong>${user.is_active?'Authenticated':'Preview'}</strong></div><div><span>Full sanctions list</span><strong>${user.is_active?'Allowed by active-profile rule':'No'}</strong></div><div><span>Freeze tracker</span><strong>Public</strong></div><div><span>Address screening</span><strong>${user.is_active?'Authenticated':'Unavailable'}</strong></div><div><span>Compliance</span><strong>Public</strong></div><div><span>Export</span><strong>Not modelled</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Engagement · 30 days</div><div class="ops-empty">Sessions, searches, content views, briefing opens and core actions are unavailable until product analytics is connected.</div></div><div class="ops-card"><div class="ops-card-title">Admin Notes</div><div class="tiny-muted">${esc(profile.admin_notes||'No admin notes.')}</div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openInterestProfileModal('${userId}')">Edit profile and notes</button></div></div></div><div class="ops-card" style="margin-top:14px;"><div class="ops-card-title">Activity</div>${timeline.length ? `<div class="timeline">${timeline.map(e => `<div><strong>${esc(e.label)}</strong><span>${esc(opsDate(e.at))}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>`).join('')}</div>` : '<div class="ops-empty">No product activity events are tracked. Admin and delivery events were also unavailable for this user.</div>'}</div>`;
+  area.innerHTML = `<div class="user360-grid"><div class="ops-card"><div class="ops-card-title">Account Summary</div><div class="distribution-list"><div><span>Role</span><strong>${esc(user.role || 'public')}</strong></div><div><span>Joined</span><strong>${esc(opsDate(user.created_at))}</strong></div><div><span>Account status</span><strong>${user.is_active ? 'Active' : 'Disabled'}</strong></div><div><span>Last login</span><strong>${esc(opsDate(user.last_login_at||user.last_login))}</strong></div><div><span>Sessions</span><strong>Not tracked</strong></div><div><span>Total actions</span><strong>Not tracked</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Profile</div><div class="distribution-list"><div><span>Company</span><strong>${esc(user.company_name||user.organization||'Not set')}</strong></div><div><span>Job role</span><strong>${esc(user.job_role||'Not set')}</strong></div><div><span>Country</span><strong>${esc(user.country||'Not set')}</strong></div><div><span>Language</span><strong>${esc(user.language_preference||'en')}</strong></div><div><span>Target markets</span><strong>${esc(joinList(profile.countries)||'Not set')}</strong></div><div><span>Industries / interests</span><strong>${esc([...profile.sectors||[],...profile.regulatory_themes||[]].join(', ')||'Not set')}</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Subscriptions</div><div class="distribution-list"><div><span>Daily Briefing</span><strong>${esc(sub.status || 'inactive')}</strong></div><div><span>Account email</span><strong>${esc(user.email || 'Missing')}</strong></div><div><span>Delivery email</span><strong>${esc(effectiveBriefingEmail(sub,user) || 'Missing')}</strong></div><div><span>Weekly Briefing</span><strong>No production record</strong></div><div><span>Real-time alerts</span><strong>No production record</strong></div><div><span>Last Gmail acceptance</span><strong>${esc(opsDate(sub.last_sent_at))}</strong></div></div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openDeliveryEmailModal('${userId}')">Edit delivery address</button></div><div class="tiny-muted" style="margin-top:10px;">Provider acceptance is not proof of Inbox placement.</div></div><div class="ops-card"><div class="ops-card-title">Access</div><div class="distribution-list"><div><span>Sanctions search</span><strong>${user.is_active?'Authenticated':'Preview'}</strong></div><div><span>Full sanctions list</span><strong>${user.is_active?'Allowed by active-profile rule':'No'}</strong></div><div><span>Freeze tracker</span><strong>Public</strong></div><div><span>Address screening</span><strong>${user.is_active?'Authenticated':'Unavailable'}</strong></div><div><span>Compliance</span><strong>Public</strong></div><div><span>Export</span><strong>Not modelled</strong></div></div></div><div class="ops-card"><div class="ops-card-title">Engagement · 30 days</div><div class="ops-empty">Sessions, searches, content views, briefing opens and core actions are unavailable until product analytics is connected.</div></div><div class="ops-card"><div class="ops-card-title">Admin Notes</div><div class="tiny-muted">${esc(profile.admin_notes||'No admin notes.')}</div><div style="margin-top:10px;"><button class="btn btn-xs btn-outline" onclick="closeUser360();openInterestProfileModal('${userId}')">Edit profile and notes</button></div></div></div><div class="ops-card" style="margin-top:14px;"><div class="ops-card-title">Activity</div>${timeline.length ? `<div class="timeline">${timeline.map(e => `<div><strong>${esc(e.label)}</strong><span>${esc(opsDate(e.at))}${e.detail ? ' · '+esc(e.detail) : ''}</span></div>`).join('')}</div>` : '<div class="ops-empty">No product activity events are tracked. Admin and delivery events were also unavailable for this user.</div>'}</div>`;
 }
 
 function closeUser360(){ document.getElementById('user360Modal').classList.remove('show'); }
@@ -3419,13 +3516,13 @@ async function loadSubscriptions() {
     const eligibilityHtml = eligibility.eligible
       ? `<span class="status-pill status-active">Eligible now</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`
       : `<span class="status-pill status-inactive">Not sending</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`;
-    return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${eligibilityHtml}</td><td>${deliveryOutcome(latestJobBySubscription[s.id])}</td><td>${isDaily?`<div class="ops-actions">${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`;
+    return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${briefingDeliveryEmailHtml(s,u)}</td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${eligibilityHtml}</td><td>${deliveryOutcome(latestJobBySubscription[s.id])}</td><td>${isDaily?`<div class="ops-actions"><button class="btn btn-xs btn-outline" onclick="openDeliveryEmailModal('${s.user_id}')">Edit delivery</button>${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`;
   }).join('');
   const policyState = policy
     ? `${briefingStatusBadge(policy.delivery_status)} <strong>${esc(policy.audience_mode || 'unknown')}</strong>`
     : '<span class="status-pill status-suppressed">Unavailable</span>';
   const warnings = [profiles.error, policies.error, jobs.error].filter(Boolean).map(error => error.message).join(' · ');
-  area.innerHTML = `${warnings ? `<div class="ops-warning">Some delivery diagnostics are unavailable: ${esc(warnings)}</div>` : ''}<div class="ops-panel" style="margin-bottom:18px;"><div class="ops-label">Effective delivery policy</div><div class="ops-value">${policyState}</div><div class="ops-copy">Active is a subscription state, not a promise of delivery. Under <strong>test_only</strong>, only users marked Test are eligible. Manage the policy and test audience in <button class="btn btn-xs btn-outline" onclick="showTab('briefing-ops')">Briefing Operations</button>.</div></div><div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${eligibleCount}</strong><span>Eligible now</span></div><div><strong>${todayJobs.filter(j=>j.status==='sent').length}</strong><span>Gmail accepted today</span></div><div><strong>${todayJobs.filter(j=>j.status==='failed').length}</strong><span>Failed today</span></div></div><div class="ops-empty" style="margin-bottom:14px;text-align:left;"><strong>Delivery meaning:</strong> “Accepted by Gmail” means the Gmail API returned a provider message ID. It does not prove Inbox placement. Confirm final delivery in Google Workspace Admin → Reporting → Email Log Search.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Effective audience</th><th>Latest provider result</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="8"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
+  area.innerHTML = `${warnings ? `<div class="ops-warning">Some delivery diagnostics are unavailable: ${esc(warnings)}</div>` : ''}<div class="ops-panel" style="margin-bottom:18px;"><div class="ops-label">Effective delivery policy</div><div class="ops-value">${policyState}</div><div class="ops-copy">Active is a subscription state, not a promise of delivery. Under <strong>test_only</strong>, only users marked Test are eligible. Manage the policy and test audience in <button class="btn btn-xs btn-outline" onclick="showTab('briefing-ops')">Briefing Operations</button>.</div></div><div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${eligibleCount}</strong><span>Eligible now</span></div><div><strong>${todayJobs.filter(j=>j.status==='sent').length}</strong><span>Gmail accepted today</span></div><div><strong>${todayJobs.filter(j=>j.status==='failed').length}</strong><span>Failed today</span></div></div><div class="ops-empty" style="margin-bottom:14px;text-align:left;"><strong>Delivery meaning:</strong> “Accepted by Gmail” means the Gmail API returned a provider message ID. It does not prove Inbox placement. Confirm final delivery in Google Workspace Admin → Reporting → Email Log Search. The delivery address may differ from the sign-in address and is shown explicitly below.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User account</th><th>Delivery address</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Effective audience</th><th>Latest provider result</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="9"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
 }
 
 async function loadEntitlements() {
@@ -3550,13 +3647,14 @@ async function loadBriefingOps() {
   html += '</div>';
 
   html += '<div class="table-card"><div class="table-wrapper"><table><thead><tr>';
-  html += '<th>User</th><th>Briefing</th><th>Test</th><th>Language</th><th>Effective audience</th><th>Today\'s provider result</th><th>Interests</th><th>Actions</th>';
+  html += '<th>User account</th><th>Delivery address</th><th>Briefing</th><th>Test</th><th>Language</th><th>Effective audience</th><th>Today\'s provider result</th><th>Interests</th><th>Actions</th>';
   html += '</tr></thead><tbody>';
   platformUsersCache.forEach(u => {
     const sub = getUserBriefingSub(u);
     const eligibility = subscriptionEligibility(sub, u, control);
     html += '<tr>';
     html += `<td><div style="font-weight:600;">${esc(u.full_name || '—')}</div><div class="tiny-muted">${esc(u.email)}</div></td>`;
+    html += `<td>${briefingDeliveryEmailHtml(sub,u)}</td>`;
     html += `<td>${briefingStatusBadge(sub.status, sub.legacy)}</td>`;
     html += `<td>${sub.include_in_tests ? '<span class="status-pill status-test">Test group</span>' : '<span class="tiny-muted">—</span>'}</td>`;
     html += `<td>${esc(sub.language_preference || 'en')}</td>`;
@@ -3564,6 +3662,7 @@ async function loadBriefingOps() {
     html += `<td>${deliveryOutcome(todayJobByUser[u.id])}</td>`;
     html += `<td>${renderInterestTags(interestProfilesByUser[u.id] || {})}</td>`;
     html += '<td><div class="ops-actions" style="min-width:300px;">';
+    html += `<button class="btn btn-xs btn-outline" onclick="openDeliveryEmailModal('${u.id}')">Edit delivery</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','active')">Active</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','paused')">Pause</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','suppressed')">Suppress</button>`;
