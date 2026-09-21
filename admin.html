@@ -1547,6 +1547,54 @@ let adminUsersCache = [];
 let adminInvitesCache = [];
 let adminAccessFilters = { query: '', role: 'all', status: 'all' };
 let productUserFilters = { query: '', segment: 'all', sort: 'newest' };
+let adminRealtimeChannel = null;
+let adminRealtimeRefreshTimer = null;
+
+function refreshActiveControlPlaneView() {
+  const activeTab = document.querySelector('.tab-panel.active')?.id || '';
+  if (activeTab === 'tab-overview') return loadOverview();
+  if (activeTab === 'tab-platform-users') return loadPlatformUsers();
+  if (activeTab === 'tab-subscriptions') return loadSubscriptions();
+  if (activeTab === 'tab-briefing-ops') return loadBriefingOps();
+  return Promise.resolve();
+}
+
+function scheduleControlPlaneRefresh() {
+  clearTimeout(adminRealtimeRefreshTimer);
+  adminRealtimeRefreshTimer = setTimeout(() => {
+    refreshActiveControlPlaneView().catch(error => {
+      console.warn('Realtime admin refresh failed:', error);
+    });
+  }, 350);
+}
+
+async function stopAdminRealtimeSync() {
+  clearTimeout(adminRealtimeRefreshTimer);
+  adminRealtimeRefreshTimer = null;
+  if (!adminRealtimeChannel) return;
+  const channel = adminRealtimeChannel;
+  adminRealtimeChannel = null;
+  await sb.removeChannel(channel);
+}
+
+async function startAdminRealtimeSync() {
+  await stopAdminRealtimeSync();
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.access_token) return;
+
+  await sb.realtime.setAuth(session.access_token);
+  adminRealtimeChannel = sb
+    .channel(`admin-control-plane-${currentUser.id}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'user_briefing_subscriptions' }, scheduleControlPlaneRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'briefing_delivery_policies' }, scheduleControlPlaneRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'briefing_delivery_jobs' }, scheduleControlPlaneRefresh)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'aml_user_profiles' }, scheduleControlPlaneRefresh)
+    .subscribe(status => {
+      if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+        console.warn('Admin realtime sync status:', status);
+      }
+    });
+}
 
 function opsDate(value) {
   if (!value) return 'Unavailable';
@@ -1706,6 +1754,7 @@ async function doLogin() {
 }
 
 async function doLogout() {
+  await stopAdminRealtimeSync();
   await sb.auth.signOut();
   currentUser = null;
   currentAdminUser = null;
@@ -1762,6 +1811,9 @@ function initApp() {
     if (addBtn) addBtn.style.display = 'none';
   }
 
+  startAdminRealtimeSync().catch(error => {
+    console.warn('Could not start admin realtime sync:', error);
+  });
   showTab('overview');
 }
 
