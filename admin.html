@@ -3323,19 +3323,49 @@ async function upsertBriefingSubscription(userId, changes) {
   return data;
 }
 
+async function refreshBriefingAdminViews() {
+  const tasks = [];
+  if (document.getElementById('tab-platform-users').classList.contains('active')) tasks.push(loadPlatformUsers());
+  if (document.getElementById('tab-subscriptions').classList.contains('active')) tasks.push(loadSubscriptions());
+  if (document.getElementById('tab-briefing-ops').classList.contains('active')) tasks.push(loadBriefingOps());
+  if (!tasks.length) tasks.push(loadPlatformUsers());
+  await Promise.all(tasks);
+}
+
 async function setUserBriefingStatus(userId, status) {
   const user = platformUsersCache.find(u => u.id === userId);
   if (status === 'suppressed' && !confirm(`Suppress Daily Briefing for ${user?.email || 'this user'}?`)) return;
 
   try {
+    let policy = briefingControlCache;
+    if (status === 'active' && !policy) {
+      const { data, error } = await sb.from('briefing_delivery_policies')
+        .select('*')
+        .eq('briefing_key', DAILY_BRIEFING_KEY)
+        .eq('delivery_channel', 'email')
+        .eq('environment', 'production')
+        .limit(1);
+      if (error) throw error;
+      policy = data?.[0] || null;
+      briefingControlCache = policy;
+    }
+
+    const requiresTestAudience = status === 'active' && (
+      policy?.delivery_status === 'test_only' || policy?.audience_mode === 'test_group'
+    );
     const payload = await upsertBriefingSubscription(userId, {
       status,
+      ...(requiresTestAudience ? { include_in_tests: true } : {}),
       admin_paused: status === 'paused' || status === 'suppressed',
       paused_reason: status === 'paused' ? 'Paused from admin panel' : status === 'suppressed' ? 'Suppressed from admin panel' : null
     });
-    showToast('Briefing status updated', 'success');
-    await loadPlatformUsers();
-    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+    showToast(
+      requiresTestAudience
+        ? 'Briefing delivery enabled for the current test audience'
+        : status === 'active' ? 'Briefing delivery enabled' : 'Briefing delivery updated',
+      'success'
+    );
+    await refreshBriefingAdminViews();
   } catch (err) {
     showToast('Could not update briefing status: ' + err.message, 'error');
   }
@@ -3346,8 +3376,7 @@ async function toggleUserBriefingTest(userId, includeInTests) {
     const payload = await upsertBriefingSubscription(userId, { include_in_tests: includeInTests });
     await logUserAdminEvent(userId, includeInTests ? 'briefing_test_added' : 'briefing_test_removed', null, payload);
     showToast(includeInTests ? 'User added to test group' : 'User removed from test group', 'success');
-    await loadPlatformUsers();
-    if (document.getElementById('tab-briefing-ops').classList.contains('active')) await loadBriefingOps();
+    await refreshBriefingAdminViews();
   } catch (err) {
     showToast('Could not update test group: ' + err.message, 'error');
   }
@@ -3502,6 +3531,7 @@ async function loadSubscriptions() {
   briefingSubsByUser = {}; (subscriptions.data || []).forEach(s => briefingSubsByUser[s.user_id] = s);
   const usersById = Object.fromEntries(platformUsersCache.map(u => [u.id,u]));
   const policy = policies.data?.[0] || null;
+  briefingControlCache = policy;
   const latestJobBySubscription = {};
   (jobs.data || []).forEach(job => { if (!latestJobBySubscription[job.subscription_id]) latestJobBySubscription[job.subscription_id] = job; });
   const counts = (subscriptions.data || []).reduce((a,s)=>{const key=s.briefing_key||'unknown';a[key]=(a[key]||0)+1;return a;},{});
@@ -3516,13 +3546,13 @@ async function loadSubscriptions() {
     const eligibilityHtml = eligibility.eligible
       ? `<span class="status-pill status-active">Eligible now</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`
       : `<span class="status-pill status-inactive">Not sending</span><div class="tiny-muted">${esc(eligibility.reason)}</div>`;
-    return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${briefingDeliveryEmailHtml(s,u)}</td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${eligibilityHtml}</td><td>${deliveryOutcome(latestJobBySubscription[s.id])}</td><td>${isDaily?`<div class="ops-actions"><button class="btn btn-xs btn-outline" onclick="openDeliveryEmailModal('${s.user_id}')">Edit delivery</button>${s.status==='active'?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Activate</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`;
+    return `<tr><td><strong>${esc(u.full_name || u.email || s.recipient_email || 'Unknown')}</strong><div class="tiny-muted">${esc(u.email || s.recipient_email || '')}</div></td><td>${briefingDeliveryEmailHtml(s,u)}</td><td>${esc(s.briefing_key||'Unspecified')}</td><td>${briefingStatusBadge(s.status,false)}</td><td>${esc(s.language_preference || 'en')}</td><td>${s.include_in_tests?'Yes':'No'}</td><td>${eligibilityHtml}</td><td>${deliveryOutcome(latestJobBySubscription[s.id])}</td><td>${isDaily?`<div class="ops-actions"><button class="btn btn-xs btn-outline" onclick="openDeliveryEmailModal('${s.user_id}')">Edit delivery</button>${eligibility.eligible?`<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','paused')">Pause delivery</button>`:`<button class="btn btn-xs btn-primary" onclick="setUserBriefingStatus('${s.user_id}','active')">Enable delivery</button>`}<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${s.user_id}','suppressed')">Suppress</button></div>`:'<span class="tiny-muted">Read only</span>'}</td></tr>`;
   }).join('');
   const policyState = policy
     ? `${briefingStatusBadge(policy.delivery_status)} <strong>${esc(policy.audience_mode || 'unknown')}</strong>`
     : '<span class="status-pill status-suppressed">Unavailable</span>';
   const warnings = [profiles.error, policies.error, jobs.error].filter(Boolean).map(error => error.message).join(' · ');
-  area.innerHTML = `${warnings ? `<div class="ops-warning">Some delivery diagnostics are unavailable: ${esc(warnings)}</div>` : ''}<div class="ops-panel" style="margin-bottom:18px;"><div class="ops-label">Effective delivery policy</div><div class="ops-value">${policyState}</div><div class="ops-copy">Active is a subscription state, not a promise of delivery. Under <strong>test_only</strong>, only users marked Test are eligible. Manage the policy and test audience in <button class="btn btn-xs btn-outline" onclick="showTab('briefing-ops')">Briefing Operations</button>.</div></div><div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${eligibleCount}</strong><span>Eligible now</span></div><div><strong>${todayJobs.filter(j=>j.status==='sent').length}</strong><span>Gmail accepted today</span></div><div><strong>${todayJobs.filter(j=>j.status==='failed').length}</strong><span>Failed today</span></div></div><div class="ops-empty" style="margin-bottom:14px;text-align:left;"><strong>Delivery meaning:</strong> “Accepted by Gmail” means the Gmail API returned a provider message ID. It does not prove Inbox placement. Confirm final delivery in Google Workspace Admin → Reporting → Email Log Search. The delivery address may differ from the sign-in address and is shown explicitly below.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User account</th><th>Delivery address</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Effective audience</th><th>Latest provider result</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="9"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
+  area.innerHTML = `${warnings ? `<div class="ops-warning">Some delivery diagnostics are unavailable: ${esc(warnings)}</div>` : ''}<div class="ops-panel" style="margin-bottom:18px;"><div class="ops-label">Effective delivery policy</div><div class="ops-value">${policyState}</div><div class="ops-copy"><strong>Enable delivery</strong> applies every setting needed by the current policy. In <strong>test_only</strong> mode it also adds the user to the test audience automatically. Advanced controls remain available in <button class="btn btn-xs btn-outline" onclick="showTab('briefing-ops')">Briefing Operations</button>.</div></div><div class="metric-strip"><div><strong>${counts[DAILY_BRIEFING_KEY]||0}</strong><span>Daily records</span></div><div><strong>${eligibleCount}</strong><span>Eligible now</span></div><div><strong>${todayJobs.filter(j=>j.status==='sent').length}</strong><span>Gmail accepted today</span></div><div><strong>${todayJobs.filter(j=>j.status==='failed').length}</strong><span>Failed today</span></div></div><div class="ops-empty" style="margin-bottom:14px;text-align:left;"><strong>Delivery meaning:</strong> “Accepted by Gmail” means the Gmail API returned a provider message ID. It does not prove Inbox placement. Confirm final delivery in Google Workspace Admin → Reporting → Email Log Search. The delivery address may differ from the sign-in address and is shown explicitly below.</div><div class="table-card"><div class="table-wrapper"><table><thead><tr><th>User account</th><th>Delivery address</th><th>Product</th><th>Status</th><th>Language</th><th>Test</th><th>Effective audience</th><th>Latest provider result</th><th>Actions</th></tr></thead><tbody>${rows || '<tr><td colspan="9"><div class="empty-state">No production subscription records.</div></td></tr>'}</tbody></table></div></div>`;
 }
 
 async function loadEntitlements() {
@@ -3663,8 +3693,8 @@ async function loadBriefingOps() {
     html += `<td>${renderInterestTags(interestProfilesByUser[u.id] || {})}</td>`;
     html += '<td><div class="ops-actions" style="min-width:300px;">';
     html += `<button class="btn btn-xs btn-outline" onclick="openDeliveryEmailModal('${u.id}')">Edit delivery</button>`;
-    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','active')">Active</button>`;
-    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','paused')">Pause</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','active')">Enable delivery</button>`;
+    html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','paused')">Pause delivery</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="setUserBriefingStatus('${u.id}','suppressed')">Suppress</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="toggleUserBriefingTest('${u.id}', ${sub.include_in_tests ? 'false' : 'true'})">${sub.include_in_tests ? 'Remove test' : 'Add test'}</button>`;
     html += `<button class="btn btn-xs btn-outline" onclick="openInterestProfileModal('${u.id}')">Profile</button>`;
