@@ -1,0 +1,158 @@
+{
+  "name": "Innobridge - Regulatory Enforcement Intelligence CN HK v1 - AnySearch AI",
+  "nodes": [
+    {
+      "parameters": {"rule": {"interval": [{"field": "hours", "hoursInterval": 3}]}},
+      "id": "f493b9c4-6ad5-4ae4-ae15-696a12528101",
+      "name": "Every 3 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [-1240, 240]
+    },
+    {
+      "parameters": {
+        "jsCode": "const sources = [\n  {source_code:'pbc',jurisdiction:'CN',regulator:'PBOC',url:'https://beijing.pbc.gov.cn/beijing/132030/132052/132059/index.html',mode:'html',language:'zh-CN',zone:'cn',allowedDomains:['beijing.pbc.gov.cn','pbc.gov.cn']},\n  {source_code:'nfra',jurisdiction:'CN',regulator:'NFRA',url:'https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=914&itemId=4113&itemUrl=ItemListRightList.html&itemName=%E8%A1%8C%E6%94%BF%E5%A4%84%E7%BD%9A',mode:'html',language:'zh-CN',zone:'cn',allowedDomains:['nfra.gov.cn']},\n  {source_code:'csrc',jurisdiction:'CN',regulator:'CSRC',url:'https://www.csrc.gov.cn/csrc/c101971/zfxxgk_zdgk.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f',mode:'html',language:'zh-CN',zone:'cn',allowedDomains:['csrc.gov.cn']},\n  {source_code:'safe',jurisdiction:'CN',regulator:'SAFE',url:'https://www.safe.gov.cn/www/punish',mode:'html',language:'zh-CN',zone:'cn',allowedDomains:['safe.gov.cn']},\n  {source_code:'hkma',jurisdiction:'HK',regulator:'HKMA',url:'https://api.hkma.gov.hk/public/press-releases?lang=en',mode:'json',language:'en',zone:'intl',allowedDomains:['api.hkma.gov.hk','hkma.gov.hk']},\n  {source_code:'sfc',jurisdiction:'HK',regulator:'SFC',url:'https://apps.sfc.hk/edistributionWeb/gateway/EN/news-and-announcements/news/enforcement-news/?searchByName=1',mode:'html',language:'en',zone:'intl',allowedDomains:['apps.sfc.hk','sfc.hk']},\n  {source_code:'ia',jurisdiction:'HK',regulator:'IA',url:'https://www.ia.org.hk/en/enforcement/enforcement_news/news.html',mode:'html',language:'en',zone:'intl',allowedDomains:['ia.org.hk']},\n  {source_code:'hkcustoms',jurisdiction:'HK',regulator:'C&ED',url:'https://eservices.customs.gov.hk/MSOS/common/enforcenew',mode:'html',language:'en',zone:'intl',allowedDomains:['eservices.customs.gov.hk','customs.gov.hk']}\n];\nreturn sources.filter(source => ['pbc','hkma','hkcustoms'].includes(source.source_code)).map(source => ({json: source}));"
+      },
+      "id": "a5f2d657-dd13-43d5-89fd-b8df45f5f102",
+      "name": "Official Source Registry",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-1020, 240]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {"timeout": 30000, "response": {"response": {"responseFormat": "text"}}}
+      },
+      "id": "92b2dd90-d2e0-429f-8c19-8f8c60a7d103",
+      "name": "Fetch Official Listing",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-800, 240],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const source = $('Official Source Registry').item.json;\nconst response = $input.item.json;\nconst raw = typeof response === 'string' ? response : String(response.data ?? response.body ?? JSON.stringify(response));\nconst out = []; const seen = new Set();\nconst allowed = /penalt|enforce|disciplin|sanction|contravention|anti[- ]?money|money[- ]?launder|administrative|prosecution|罚款|处罚|反洗钱|行政处罚|监管措施|纪律处分|执法/i;\nconst push = (urlValue,titleValue,dateValue=null) => {\n  let parsed; try { parsed = new URL(String(urlValue || ''), source.url); } catch { return; }\n  if (parsed.protocol !== 'https:') return;\n  const host = parsed.hostname.toLowerCase();\n  if (!source.allowedDomains.some(d => host === d || host === 'www.' + d || host.endsWith('.' + d))) return;\n  parsed.hash = '';\n  const url = parsed.href; const title = String(titleValue || '').replace(/<[^>]*>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/\\s+/g,' ').trim();\n  if (!title || !allowed.test(title + ' ' + url) || seen.has(url)) return;\n  seen.add(url);\n  out.push({json:{...source,source_page:source.url,url,title,publication_date:dateValue || null,discovered_at:new Date().toISOString(),pipeline_version:'regintel-n8n-v1'}});\n};\nif (source.mode === 'json') {\n  try {\n    const payload = typeof response === 'object' && response.result ? response : JSON.parse(raw);\n    const records = payload?.result?.records || payload?.data || payload?.records || [];\n    for (const record of records) push(record.url || record.link || record.hyperlink, record.title_en || record.title || record.name, record.press_release_date || record.publish_date || record.date);\n  } catch (error) { throw new Error('Official JSON adapter failed for ' + source.source_code + ': ' + error.message); }\n} else {\n  for (const match of raw.matchAll(/<a\\b[^>]*href\\s*=\\s*[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/gi)) push(match[1].replace(/&amp;/g,'&'), match[2]);\n}\nreturn out.slice(0, 60);"
+      },
+      "id": "659412fa-5fb8-4980-8f56-e2e24d420104",
+      "name": "Discover Official Candidates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-580, 240]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {"timeout": 30000, "response": {"response": {"responseFormat": "text"}}}
+      },
+      "id": "122cf5b0-e4da-428a-aefe-bc0ad0fbd105",
+      "name": "Fetch Official Candidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-360, 240],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const candidate = $('Discover Official Candidates').item.json;\nconst response = $input.item.json;\nconst raw = typeof response === 'string' ? response : String(response.data ?? response.body ?? '');\nconst officialText = raw.replace(/<script[\\s\\S]*?<\\/script>/gi,' ').replace(/<style[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/g,' ').replace(/&amp;/g,'&').replace(/\\s+/g,' ').trim().slice(0,50000);\nconst query = `${candidate.regulator} ${candidate.title} ${candidate.jurisdiction === 'CN' ? '行政处罚 监管 执法' : 'enforcement disciplinary penalty'}`.slice(0,500);\nreturn [{json:{...candidate,official_text:officialText,anysearch_query:query,document_type:'official_announcement',verification_status:'unverified'}}];"
+      },
+      "id": "4ce8b71f-d901-42cb-b513-256c54549106",
+      "name": "Build Verification Package",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-140, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anysearch.com/v1/search",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "={{ 'Bearer ' + $env.ANYSEARCH_API_KEY }}"}, {"name": "Content-Type", "value": "application/json"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ query: $json.anysearch_query, max_results: 5, zone: $json.zone, language: $json.language, format: 'json' }) }}",
+        "options": {"timeout": 30000}
+      },
+      "id": "50c6b888-c85d-4ad8-a95a-902551ef9107",
+      "name": "AnySearch Public Corroboration",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [80, 240],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const candidate = $('Build Verification Package').item.json;\nconst search = $input.item.json || {};\nconst results = search.results || search.data || search.items || [];\nconst evidence = (Array.isArray(results) ? results : []).slice(0,5).map(r => ({title:r.title || r.name || '',url:r.url || r.link || '',snippet:r.snippet || r.description || r.content || '',source:r.source || ''}));\nconst schema = {relevance:'enforcement|not_enforcement|uncertain',case_type:'fine|warning|improvement_order|suspension|revocation|prohibition|prosecution|other',entity_names:[],decision_date:null,publication_date:null,violations:[{verbatim_wording:'',normalized_category:'AML_CFT|KYC_CDD|EDD|BENEFICIAL_OWNERSHIP|SANCTIONS_SCREENING|TRANSACTION_MONITORING|STR_SAR|RECORDKEEPING|GOVERNANCE|MARKET_CONDUCT|FX|PAYMENTS|OTHER',legal_citation:'',classification_basis:'confirmed_by_regulator|analyst_inference',confidence:0}],penalties:[{penalty_type:'',currency:null,amount:null,original_amount_text:'',combined_amount:false,amount_allocation_status:'not_applicable|explicit|unallocated_composite|needs_review',evidence_span:''}],control_findings:[{control_domain:'',observed_failure:'',possible_root_cause:'',classification:'confirmed_by_regulator|analyst_inference',evidence_span:'',confidence:0}],summary_en:'',summary_cn:'',confidence:0,missing_fields:[],review_notes:''};\nconst instructions = `You are a regulatory enforcement intelligence analyst. Return JSON only. Treat the official regulator text as primary evidence. Search results are corroboration only and may be wrong. Do not invent facts, dates, legal citations, entities, amounts, currencies, or control failures. Preserve exact original-currency amounts. Never assign an entire composite fine to AML unless the regulator explicitly apportions it. Mark inferred control findings as analyst_inference. Do not set verified or published status. If the text is not a formal regulator/court/enforcement action, classify it not_enforcement. Required JSON shape: ${JSON.stringify(schema)}`;\nconst content = {source_code:candidate.source_code,jurisdiction:candidate.jurisdiction,regulator:candidate.regulator,official_url:candidate.url,title:candidate.title,publication_date:candidate.publication_date,official_text:candidate.official_text,corroboration:evidence};\nreturn [{json:{...candidate,anysearch_evidence:evidence,ai_request:{model:'deepseek-chat',temperature:0,response_format:{type:'json_object'},messages:[{role:'system',content:instructions},{role:'user',content:JSON.stringify(content)}]}}}];"
+      },
+      "id": "ca0a0ca7-e1aa-49ec-840e-15ac54282108",
+      "name": "Build Strict AI Analysis",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [300, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "={{ 'Bearer ' + $env.DEEPSEEK_API_KEY }}"}, {"name": "Content-Type", "value": "application/json"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.ai_request) }}",
+        "options": {"timeout": 60000}
+      },
+      "id": "726e94b7-30f5-42ae-b7f2-8007898d4109",
+      "name": "DeepSeek Structured Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [520, 240],
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "const base = $('Build Strict AI Analysis').item.json;\nconst response = $input.item.json || {};\nlet analysis = {};\ntry {\n  const text = response?.choices?.[0]?.message?.content ?? response?.output_text ?? '';\n  analysis = typeof text === 'object' ? text : JSON.parse(String(text).replace(/^```json\\s*|```$/g,'').trim());\n} catch (error) { analysis = {relevance:'uncertain',confidence:0,missing_fields:['ai_analysis'],review_notes:'AI analysis unavailable or invalid JSON: ' + error.message}; }\nconst allowedRelevance = ['enforcement','not_enforcement','uncertain'];\nif (!allowedRelevance.includes(analysis.relevance)) analysis.relevance = 'uncertain';\nanalysis.confidence = Math.max(0,Math.min(1,Number(analysis.confidence || 0)));\ndelete analysis.verification_status; delete analysis.review_status; delete analysis.published;\nreturn [{json:{source_code:base.source_code,jurisdiction:base.jurisdiction,regulator:base.regulator,source_page:base.source_page,url:base.url,title:base.title,publication_date:base.publication_date,discovered_at:base.discovered_at,language:base.language,official_text:base.official_text,document_type:'official_announcement',verification_status:'unverified',pipeline_version:'regintel-n8n-v1',workflow_execution_id:$execution.id,anysearch_evidence:base.anysearch_evidence,ai_analysis:analysis}}];"
+      },
+      "id": "081dfce0-bced-4d84-a26c-322f60b15110",
+      "name": "Validate Unverified Package",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [740, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.REGINTEL_INGEST_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api?action=candidates' }}",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Content-Type", "value": "application/json"}, {"name": "X-Ingest-Key", "value": "={{ $env.REGINTEL_INGEST_KEY }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {"timeout": 30000}
+      },
+      "id": "bb8cdfa6-b831-4909-93d9-f83059d44111",
+      "name": "Queue Unverified Candidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [960, 240]
+    }
+  ],
+  "connections": {
+    "Every 3 Hours": {"main": [[{"node": "Official Source Registry", "type": "main", "index": 0}]]},
+    "Official Source Registry": {"main": [[{"node": "Fetch Official Listing", "type": "main", "index": 0}]]},
+    "Fetch Official Listing": {"main": [[{"node": "Discover Official Candidates", "type": "main", "index": 0}]]},
+    "Discover Official Candidates": {"main": [[{"node": "Fetch Official Candidate", "type": "main", "index": 0}]]},
+    "Fetch Official Candidate": {"main": [[{"node": "Build Verification Package", "type": "main", "index": 0}]]},
+    "Build Verification Package": {"main": [[{"node": "AnySearch Public Corroboration", "type": "main", "index": 0}]]},
+    "AnySearch Public Corroboration": {"main": [[{"node": "Build Strict AI Analysis", "type": "main", "index": 0}]]},
+    "Build Strict AI Analysis": {"main": [[{"node": "DeepSeek Structured Analysis", "type": "main", "index": 0}]]},
+    "DeepSeek Structured Analysis": {"main": [[{"node": "Validate Unverified Package", "type": "main", "index": 0}]]},
+    "Validate Unverified Package": {"main": [[{"node": "Queue Unverified Candidate", "type": "main", "index": 0}]]}
+  },
+  "pinData": {},
+  "settings": {"executionOrder": "v1", "saveDataErrorExecution": "all", "saveDataSuccessExecution": "all", "saveManualExecutions": true},
+  "active": false,
+  "versionId": "3fe7f5f8-2354-4c66-a9d5-98038ab79112",
+  "meta": {"templateCredsSetupCompleted": false},
+  "tags": []
+}
