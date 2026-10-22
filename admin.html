@@ -680,6 +680,16 @@ tbody td { padding:11px 14px; font-size:13px; }
 .ready-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#dcfce7;color:#15803d;font-size:9px;font-weight:800; }
 .needs-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#fff7ed;color:#b45309;font-size:9px;font-weight:800; }
 .decision-badge { display:inline-flex;padding:3px 7px;border-radius:999px;background:#f1f5f9;color:#475569;font-size:9px;font-weight:800; }
+.regintel-review-list { display:grid;gap:12px; }
+.regintel-review-card { border:1px solid var(--border);border-radius:10px;background:#fff;padding:16px; }
+.regintel-review-head { display:flex;align-items:flex-start;justify-content:space-between;gap:16px; }
+.regintel-review-title { font-size:14px;font-weight:750;color:var(--text);line-height:1.35; }
+.regintel-review-meta { display:flex;flex-wrap:wrap;gap:7px;margin-top:6px;color:var(--text-3);font-size:10px; }
+.regintel-review-summary { margin-top:11px;color:var(--text-2);font-size:11px;line-height:1.55;white-space:pre-wrap; }
+.regintel-review-actions { display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:13px;padding-top:12px;border-top:1px solid var(--border); }
+.regintel-review-source { margin-left:auto;color:var(--accent);font-size:10px;font-weight:700;text-decoration:none; }
+.regintel-review-source:hover { text-decoration:underline; }
+.regintel-review-confidence { font-variant-numeric:tabular-nums; }
 
 @media (max-width:1200px) {
   .overview-kpis { grid-template-columns:repeat(3,minmax(0,1fr)); }
@@ -696,6 +706,8 @@ tbody td { padding:11px 14px; font-size:13px; }
   .user-toolbar { grid-template-columns:1fr; }
   .health-row { grid-template-columns:1fr auto; }
   .health-time { grid-column:1/-1; }
+  .regintel-review-head { flex-direction:column;gap:8px; }
+  .regintel-review-source { margin-left:0; }
 }
 
 /* ── Confirm Dialog ── */
@@ -816,6 +828,10 @@ tbody td { padding:11px 14px; font-size:13px; }
       <button class="nav-item" onclick="showTab('content-signals')" id="nav-content-signals">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M5 16l4-5 3 3 5-8 2 3"/></svg>
         <span>Content &amp; Signals</span>
+      </button>
+      <button class="nav-item admin-nav" onclick="showTab('regintel-review')" id="nav-regintel-review" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/><path d="M16 16l2 2 3-4"/></svg>
+        <span>Enforcement Review</span>
       </button>
       <button class="nav-item" onclick="showTab('sanctions')" id="nav-sanctions">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6l12.8 12.8"/></svg>
@@ -1158,6 +1174,15 @@ tbody td { padding:11px 14px; font-size:13px; }
         <div id="contentSignalsArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
       </div>
 
+      <!-- ── Regulatory Enforcement Review Tab ── -->
+      <div class="tab-panel" id="tab-regintel-review">
+        <div class="page-header">
+          <div><div class="page-title">Regulatory Enforcement Review</div><div class="page-sub">Verify source-linked CN/HK enforcement analysis before client publication</div></div>
+          <button class="btn btn-outline btn-sm" onclick="loadRegintelReview()">Refresh</button>
+        </div>
+        <div id="regintelReviewArea"><div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div></div>
+      </div>
+
       <!-- ── Sanctions Tab ── -->
       <div class="tab-panel" id="tab-sanctions">
         <div class="page-header"><div><div class="page-title">Sanctions</div><div class="page-sub">Operational coverage and recent designations; public access policy remains unchanged</div></div><button class="btn btn-outline btn-sm" onclick="loadSanctionsOps()">Refresh</button></div>
@@ -1470,6 +1495,7 @@ const SUPABASE_URL = 'https://hbfdelixtwkegxpmfyea.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiZmRlbGl4dHdrZWd4cG1meWVhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc0NjYxOTEsImV4cCI6MjA5MzA0MjE5MX0.FGjhNl_YuBHRmgzxF5L-XPHxL1TaPu0cmEULJ2ymHB4';
 const API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/aml-api';
 const ADMIN_CONTROL_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/admin-control';
+const REGINTEL_API_ENDPOINT = 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api';
 const PAGE_SIZE = 25;
 const DAILY_BRIEFING_KEY = 'daily_market_access';
 const ADMIN_ROLE_DEFINITIONS = Object.freeze({
@@ -1549,6 +1575,7 @@ let adminAccessFilters = { query: '', role: 'all', status: 'all' };
 let productUserFilters = { query: '', segment: 'all', sort: 'newest' };
 let adminRealtimeChannel = null;
 let adminRealtimeRefreshTimer = null;
+let regintelReviewCache = [];
 
 function refreshActiveControlPlaneView() {
   const activeTab = document.querySelector('.tab-panel.active')?.id || '';
@@ -1556,6 +1583,7 @@ function refreshActiveControlPlaneView() {
   if (activeTab === 'tab-platform-users') return loadPlatformUsers();
   if (activeTab === 'tab-subscriptions') return loadSubscriptions();
   if (activeTab === 'tab-briefing-ops') return loadBriefingOps();
+  if (activeTab === 'tab-regintel-review') return loadRegintelReview();
   return Promise.resolve();
 }
 
@@ -1839,6 +1867,7 @@ function showTab(name) {
   if (name === 'subscriptions') loadSubscriptions();
   if (name === 'entitlements') loadEntitlements();
   if (name === 'content-signals') loadContentSignals();
+  if (name === 'regintel-review') loadRegintelReview();
   if (name === 'sanctions') loadSanctionsOps();
   if (name === 'pipelines') loadPipelines();
   if (name === 'briefing-ops') loadBriefingOps();
@@ -3619,6 +3648,83 @@ async function loadContentSignals() {
   const [news,signals,objects,recent]=await Promise.all([safeCount('news'),safeCount('compliance_news_signals'),safeCount('intelligence_objects'),sb.from('compliance_news_signals').select('*').order('published_at',{ascending:false}).limit(12)]);
   const cards=(recent.data||[]).map(item=>`<div class="ops-card"><div class="tiny-muted">${esc(item.source_name||item.region||'Signal')} · ${esc(opsDate(item.published_at||item.created_at))}</div><div class="ops-card-title" style="margin-top:6px;">${esc(item.title_en||item.title_cn||item.title||'Untitled signal')}</div><div class="tiny-muted">${esc(item.summary_en||item.summary_cn||item.summary||'No summary')}</div></div>`).join('');
   area.innerHTML=`<div class="metric-strip"><div><strong>${news.available?news.value.toLocaleString():'Unavailable'}</strong><span>News records</span></div><div><strong>${signals.available?signals.value.toLocaleString():'Unavailable'}</strong><span>Compliance signals</span></div><div><strong>${objects.available?objects.value.toLocaleString():'Unavailable'}</strong><span>Intelligence objects</span></div></div><div class="source-grid">${cards||'<div class="ops-empty">No compliance signals returned.</div>'}</div>`;
+}
+
+function regintelReviewAnnouncement(item) {
+  return Array.isArray(item.announcement) ? (item.announcement[0] || {}) : (item.announcement || {});
+}
+
+function regintelReviewSubject(item) {
+  const subject = (item.subjects || [])[0] || {};
+  return subject.entity || {};
+}
+
+function renderRegintelReview() {
+  const area = document.getElementById('regintelReviewArea');
+  if (!regintelReviewCache.length) {
+    area.innerHTML = '<div class="ops-empty"><strong>Review queue is clear</strong><span>New AI-extracted cases will appear here after the n8n collection workflow runs.</span></div>';
+    return;
+  }
+  const counts = regintelReviewCache.reduce((result, item) => {
+    result[item.review_status] = (result[item.review_status] || 0) + 1;
+    return result;
+  }, {});
+  const cards = regintelReviewCache.map(item => {
+    const announcement = regintelReviewAnnouncement(item);
+    const entity = regintelReviewSubject(item);
+    const title = entity.original_name || entity.canonical_name || announcement.title || announcement.title_en || 'Unnamed enforcement case';
+    const summary = item.case_summary_en || item.case_summary || 'No structured summary supplied.';
+    const confidence = Math.round(Number(item.confidence || 0) * 100);
+    const status = esc(item.review_status || 'needs_review');
+    const approve = item.review_status === 'needs_review' || item.review_status === 'in_review'
+      ? `<button class="btn btn-xs btn-primary" onclick="confirmRegintelDecision('${item.id}','approve')">Approve analysis</button>` : '';
+    const publish = item.review_status === 'verified' && ['admin','super_admin'].includes(currentAdminUser?.role)
+      ? `<button class="btn btn-xs btn-primary" onclick="confirmRegintelDecision('${item.id}','publish')">Publish</button>` : '';
+    return `<article class="regintel-review-card"><div class="regintel-review-head"><div><div class="regintel-review-title">${esc(title)}</div><div class="regintel-review-meta"><span>${esc(item.jurisdiction || '—')}</span><span>${esc(item.regulator || '—')}</span><span>${esc(item.case_type || 'other')}</span><span>${esc(item.decision_date || item.publication_date || announcement.publication_date || 'Date unavailable')}</span><span class="regintel-review-confidence">Confidence ${confidence}%</span></div></div><span class="status-pill ${item.review_status === 'verified' ? 'status-active' : 'status-inactive'}">${status}</span></div><div class="regintel-review-summary">${esc(summary)}</div><div class="regintel-review-actions">${approve}${publish}<button class="btn btn-xs btn-outline" onclick="confirmRegintelDecision('${item.id}','request_changes')">Needs changes</button><button class="btn btn-xs btn-outline" onclick="confirmRegintelDecision('${item.id}','reject')">Reject</button>${announcement.canonical_url ? `<a class="regintel-review-source" href="${esc(announcement.canonical_url)}" target="_blank" rel="noopener noreferrer">Open official source</a>` : ''}</div></article>`;
+  }).join('');
+  area.innerHTML = `<div class="metric-strip"><div><strong>${regintelReviewCache.length}</strong><span>Total in queue</span></div><div><strong>${counts.needs_review || 0}</strong><span>Needs review</span></div><div><strong>${counts.verified || 0}</strong><span>Verified, not published</span></div><div><strong>${counts.in_review || 0}</strong><span>In review</span></div></div><div class="ops-empty" style="margin-bottom:14px;"><strong>Two-step publication:</strong><span>Editors verify the extraction first. Admins then publish verified cases to the public Compliance workspace.</span></div><div class="regintel-review-list">${cards}</div>`;
+}
+
+async function loadRegintelReview() {
+  const area = document.getElementById('regintelReviewArea');
+  area.innerHTML = '<div class="empty-state"><div class="loading-spinner" style="margin:0 auto;"></div></div>';
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error || !session?.access_token) throw new Error('Admin session expired.');
+    const response = await fetch(`${REGINTEL_API_ENDPOINT}?action=review_queue&limit=100`, {
+      headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY },
+      cache: 'no-store'
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.error) throw new Error(payload.error || `Request failed (${response.status})`);
+    regintelReviewCache = payload.items || [];
+    renderRegintelReview();
+  } catch (error) {
+    area.innerHTML = `<div class="ops-empty"><strong>Review queue unavailable</strong><span>${esc(error.message)}</span></div>`;
+  }
+}
+
+function confirmRegintelDecision(caseId, decision) {
+  const labels = { approve:'Approve this structured analysis?', publish:'Publish this verified case?', request_changes:'Return this case for changes?', reject:'Reject this candidate case?' };
+  showConfirm('&#9888;', labels[decision] || 'Confirm review decision', 'The decision is recorded in the regulatory intelligence audit trail.', () => performRegintelReview(caseId, decision));
+}
+
+async function performRegintelReview(caseId, decision) {
+  try {
+    const { data: { session }, error } = await sb.auth.getSession();
+    if (error || !session?.access_token) throw new Error('Admin session expired.');
+    const response = await fetch(`${REGINTEL_API_ENDPOINT}?action=review`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${session.access_token}`, apikey: SUPABASE_ANON_KEY, 'Content-Type':'application/json' },
+      body: JSON.stringify({ case_id:caseId, decision, rationale:'Decision recorded through Innobridge Admin control plane.' })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok || payload.error) throw new Error(payload.error || `Request failed (${response.status})`);
+    showToast(`Regulatory case ${decision} completed.`, 'success');
+    await loadRegintelReview();
+  } catch (error) {
+    showToast(`Review failed: ${error.message}`, 'error');
+  }
 }
 
 async function loadSanctionsOps() {

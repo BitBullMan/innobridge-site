@@ -5,17 +5,21 @@
 - China and Hong Kong official-source registry in Supabase.
 - Source-linked candidate ingestion through `regintel-api`.
 - AnySearch corroboration followed by schema-constrained DeepSeek analysis in n8n.
-- Human-review boundary: n8n can only create `unverified` announcements.
+- AI analysis is normalized into reviewable cases, subjects, violations, penalties, and control findings.
+- Human-review boundary: n8n cannot create `verified` or `published` records.
 - Public Compliance workspace reads only cases with `review_status = published`.
+- Admin `Enforcement Review` provides the two-step verify and publish workflow.
 
 No business-development, lead-generation, opportunity-scoring, or sales fields are included.
 
 ## Files
 
-- `supabase-regulatory-enforcement-intelligence-v1.sql`
+- `supabase/migrations/202610230001_regulatory_enforcement_intelligence_v1.sql`
+- `supabase/migrations/202610230002_seed_verified_hkma_enforcement_cases.sql`
 - `supabase/functions/regintel-api/index.ts`
-- `Innobridge_RegIntel_CN_HK_v1_AnySearch_AI.json`
-- `deploy-innobridge-site/compliance.html`
+- `n8n/Innobridge_RegIntel_CN_HK_v1_AnySearch_AI.json`
+- `compliance.html`
+- `admin.html`
 
 ## Required secrets
 
@@ -38,7 +42,7 @@ Do not put any of these secrets in workflow JSON or frontend files.
 2. Leave it inactive.
 3. Configure the four values above.
 4. Run each branch manually and inspect the official listing, official candidate, AnySearch, AI, validation, and ingestion outputs.
-5. Confirm every stored announcement remains `unverified`.
+5. Confirm formal enforcement candidates create normalized `needs_review` cases while uncertain or irrelevant items remain unpublished.
 6. Configure the n8n error workflow, execution retention, retry, and alert settings.
 7. Activate the three-hour schedule only after the manual run is clean.
 
@@ -62,7 +66,7 @@ The source-health view keeps these gaps visible. The current MVP does not claim 
 
 ## Review and publication
 
-Candidate ingestion does not create published cases automatically. A reviewer must:
+Candidate ingestion can create normalized `needs_review` cases but never publishes them automatically. In Admin → Enforcement Review, a reviewer must:
 
 1. Confirm the official document and decision reference.
 2. Preserve verbatim violation evidence.
@@ -71,9 +75,17 @@ Candidate ingestion does not create published cases automatically. A reviewer mu
 5. Leave missing amounts as `null`.
 6. Mark composite amounts as unallocated unless the source explicitly apportions them.
 7. Distinguish regulator-confirmed controls from analyst inference.
-8. Approve and publish the normalized case.
+8. Approve the normalized case. An `admin` or `super_admin` then publishes it.
 
 Only published cases appear in the Compliance page.
+
+## Verified seed cases
+
+The second migration adds five idempotent, published HKMA decisions that were
+manually checked against the regulator's official documents. Each decision keeps
+its own source URL, respondent, original HKD amount, legal citation, violation
+classification, and confirmed control findings. The migration does not combine
+penalties and does not substitute zero for an unstated amount.
 
 ## API smoke tests
 
@@ -97,9 +109,12 @@ Content-Type: application/json
 Review:
 
 ```text
+GET /functions/v1/regintel-api?action=review_queue&limit=100
+Authorization: Bearer <Supabase admin access token>
+
 POST /functions/v1/regintel-api?action=review
 Authorization: Bearer <Supabase admin access token>
 Content-Type: application/json
 ```
 
-The review endpoint accepts only active, unexpired `editor`, `admin`, or `super_admin` users.
+The review queue and decision endpoint accept only active, unexpired `editor`, `admin`, or `super_admin` users. Editors can verify; publishing and unpublishing require `admin` or `super_admin`.

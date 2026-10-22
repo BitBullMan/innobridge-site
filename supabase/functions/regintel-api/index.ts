@@ -90,6 +90,197 @@ async function sha256(value: string): Promise<string> {
   return Array.from(new Uint8Array(digest)).map((byte) => byte.toString(16).padStart(2, "0")).join("");
 }
 
+function objectValue(value: unknown): Record<string, unknown> {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as Record<string, unknown> : {};
+}
+
+function arrayValue(value: unknown, max = 50): unknown[] {
+  return Array.isArray(value) ? value.slice(0, max) : [];
+}
+
+function confidenceValue(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? Math.max(0, Math.min(1, parsed)) : 0;
+}
+
+function enumValue(value: unknown, allowed: string[], fallback: string): string {
+  const text = cleanText(value, 80);
+  return text && allowed.includes(text) ? text : fallback;
+}
+
+function amountValue(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const parsed = Number(String(value).replace(/,/g, ""));
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+}
+
+const CASE_TYPES = ["fine", "warning", "improvement_order", "suspension", "revocation", "prohibition", "prosecution", "other"];
+const SEVERITIES = ["low", "medium", "high", "critical"];
+const VIOLATION_CATEGORIES = ["AML_CFT", "KYC_CDD", "EDD", "BENEFICIAL_OWNERSHIP", "SANCTIONS_SCREENING", "TRANSACTION_MONITORING", "STR_SAR", "RECORDKEEPING", "GOVERNANCE", "MARKET_CONDUCT", "FX", "PAYMENTS", "OTHER"];
+const EVIDENCE_BASES = ["confirmed_by_regulator", "analyst_inference"];
+const ALLOCATION_STATUSES = ["not_applicable", "explicit", "unallocated_composite", "needs_review"];
+
+async function findOrCreateEntity(subject: Record<string, unknown>, jurisdiction: string): Promise<Record<string, unknown> | null> {
+  const originalName = cleanText(subject.original_name || subject.name || subject.canonical_name, 500);
+  if (!originalName) return null;
+  const canonicalName = cleanText(subject.canonical_name || subject.name_en || originalName, 500) || originalName;
+  const existing = await adminDb.from("regintel_entities").select("id,canonical_name,original_name").eq("original_name", originalName).limit(1);
+  if (existing.data?.[0]) return existing.data[0];
+  const entityType = enumValue(subject.entity_type || subject.type, ["organization", "person"], "organization");
+  const inserted = await adminDb.from("regintel_entities").insert({
+    canonical_name: canonicalName,
+    original_name: originalName,
+    aliases: arrayValue(subject.aliases, 20).map((item) => String(item).slice(0, 500)),
+    country: cleanText(subject.country, 80) || jurisdiction,
+    sector: cleanText(subject.sector, 120),
+    entity_type: entityType,
+    regulator_license_id: cleanText(subject.regulator_license_id, 160),
+  }).select("id,canonical_name,original_name").single();
+  return inserted.error ? null : inserted.data;
+}
+
+function analysisDecisions(analysis: Record<string, unknown>): Record<string, unknown>[] {
+  const decisions = arrayValue(analysis.decisions, 20).map(objectValue).filter((item) => Object.keys(item).length);
+  return decisions.length ? decisions : [analysis];
+}
+
+async function normalizeAnalysis(
+  announcement: Record<string, unknown>,
+  candidate: Record<string, unknown>,
+  source: Record<string, unknown>,
+): Promise<{ caseIds: string[]; status: string }> {
+  const analysis = objectValue(candidate.ai_analysis);
+  const relevance = enumValue(analysis.relevance || analysis.announcement_type, ["enforcement", "not_enforcement", "uncertain"], "uncertain");
+  if (relevance !== "enforcement") {
+    await adminDb.from("regintel_announcements").update({
+      relevance_class: relevance === "not_enforcement" ? "unrelated" : "unknown",
+      extraction_status: relevance === "not_enforcement" ? "ignored" : "extracted",
+      verification_status: relevance === "uncertain" ? "needs_review" : "unverified",
+    }).eq("id", announcement.id);
+    return { caseIds: [], status: relevance };
+  }
+
+  await adminDb.from("regintel_announcements").update({
+    relevance_class: "enforcement",
+    extraction_status: "extracted",
+    verification_status: "needs_review",
+  }).eq("id", announcement.id);
+
+  const caseIds: string[] = [];
+  const decisions = analysisDecisions(analysis);
+  for (let index = 0; index < decisions.length; index += 1) {
+    const decision = decisions[index];
+    const sequence = index + 1;
+    const existing = await adminDb.from("regintel_cases").select("id,review_status").eq("announcement_id", announcement.id).eq("case_sequence", sequence).maybeSingle();
+    if (existing.data && ["verified", "published"].includes(existing.data.review_status)) {
+      caseIds.push(existing.data.id);
+      continue;
+    }
+
+    const caseRow = {
+      announcement_id: announcement.id,
+      case_sequence: sequence,
+      regulator: cleanText(decision.regulator || source.regulator, 80) || String(source.regulator),
+      jurisdiction: enumValue(decision.jurisdiction || source.jurisdiction, ["CN", "HK"], String(source.jurisdiction)),
+      decision_number: cleanText(decision.decision_number, 200),
+      decision_date: cleanDate(decision.decision_date),
+      publication_date: cleanDate(decision.publication_date || candidate.publication_date),
+      case_type: enumValue(decision.case_type, CASE_TYPES, "other"),
+      case_summary: cleanText(decision.summary_cn || decision.case_summary, 12000),
+      case_summary_en: cleanText(decision.summary_en || decision.case_summary_en, 12000),
+      confidence: confidenceValue(decision.confidence || analysis.confidence),
+      review_status: "needs_review",
+      severity: enumValue(decision.severity, SEVERITIES, "medium"),
+    };
+    const caseResult = existing.data
+      ? await adminDb.from("regintel_cases").update(caseRow).eq("id", existing.data.id).select("id").single()
+      : await adminDb.from("regintel_cases").insert(caseRow).select("id").single();
+    if (caseResult.error || !caseResult.data) throw new Error(`case_normalization_failed:${caseResult.error?.message || "unknown"}`);
+    const caseId = caseResult.data.id;
+    caseIds.push(caseId);
+
+    await adminDb.from("regintel_control_findings").delete().eq("case_id", caseId);
+    await adminDb.from("regintel_penalties").delete().eq("case_id", caseId);
+    await adminDb.from("regintel_violations").delete().eq("case_id", caseId);
+    await adminDb.from("regintel_case_subjects").delete().eq("case_id", caseId);
+
+    let subjects = arrayValue(decision.subjects, 20);
+    if (!subjects.length) subjects = arrayValue(decision.entity_names || analysis.entity_names, 20);
+    const subjectIds = new Map<string, string>();
+    for (const subjectValue of subjects) {
+      const subject = typeof subjectValue === "string" ? { name: subjectValue } : objectValue(subjectValue);
+      const entity = await findOrCreateEntity(subject, String(caseRow.jurisdiction));
+      if (!entity) continue;
+      const entityType = enumValue(subject.entity_type || subject.type, ["organization", "person"], "organization");
+      const insertedSubject = await adminDb.from("regintel_case_subjects").insert({
+        case_id: caseId,
+        entity_id: entity.id,
+        subject_role: cleanText(subject.subject_role || subject.role, 80) || "respondent",
+        subject_type: entityType === "person" ? "person" : "institution",
+        evidence_span: cleanText(subject.evidence_span, 8000),
+      }).select("id").single();
+      if (!insertedSubject.error && insertedSubject.data) {
+        subjectIds.set(String(entity.original_name).toLowerCase(), insertedSubject.data.id);
+        subjectIds.set(String(entity.canonical_name).toLowerCase(), insertedSubject.data.id);
+      }
+    }
+
+    const violationIds: string[] = [];
+    for (const value of arrayValue(decision.violations || analysis.violations, 30)) {
+      const violation = objectValue(value);
+      const inserted = await adminDb.from("regintel_violations").insert({
+        case_id: caseId,
+        verbatim_wording: cleanText(violation.verbatim_wording || violation.verbatim, 12000),
+        normalized_category: enumValue(violation.normalized_category || violation.category, VIOLATION_CATEGORIES, "OTHER"),
+        legal_citation: cleanText(violation.legal_citation || violation.legal_basis, 2000),
+        source_span: cleanText(violation.source_span || violation.evidence_span, 12000),
+        source_page: Number.isInteger(Number(violation.source_page)) ? Math.max(1, Number(violation.source_page)) : null,
+        classification_basis: enumValue(violation.classification_basis || violation.basis, EVIDENCE_BASES, "analyst_inference"),
+        confidence: confidenceValue(violation.confidence),
+      }).select("id").single();
+      if (!inserted.error && inserted.data) violationIds.push(inserted.data.id);
+    }
+
+    for (const value of arrayValue(decision.penalties || analysis.penalties, 20)) {
+      const penalty = objectValue(value);
+      const subjectName = cleanText(penalty.subject_name, 500)?.toLowerCase() || "";
+      const currency = cleanText(penalty.currency, 3)?.toUpperCase() || null;
+      await adminDb.from("regintel_penalties").insert({
+        case_id: caseId,
+        subject_id: subjectIds.get(subjectName) || null,
+        penalty_type: cleanText(penalty.penalty_type || penalty.type, 120) || "other",
+        currency: currency && /^[A-Z]{3}$/.test(currency) ? currency : null,
+        amount: amountValue(penalty.amount),
+        original_amount_text: cleanText(penalty.original_amount_text, 1000),
+        joint_and_several: penalty.joint_and_several === true,
+        applies_to: enumValue(penalty.applies_to, ["institution", "person", "mixed", "unknown"], "unknown"),
+        combined_amount: penalty.combined_amount === true,
+        amount_allocation_status: enumValue(penalty.amount_allocation_status, ALLOCATION_STATUSES, penalty.combined_amount === true ? "needs_review" : "not_applicable"),
+        effective_date: cleanDate(penalty.effective_date),
+        evidence_span: cleanText(penalty.evidence_span, 12000),
+      });
+    }
+
+    for (const value of arrayValue(decision.control_findings || decision.key_issues || analysis.control_findings, 30)) {
+      const finding = objectValue(value);
+      const observedFailure = cleanText(finding.observed_failure || finding.issue, 12000);
+      if (!observedFailure) continue;
+      const violationIndex = Number(finding.violation_index);
+      await adminDb.from("regintel_control_findings").insert({
+        case_id: caseId,
+        violation_id: Number.isInteger(violationIndex) ? violationIds[violationIndex] || null : (violationIds.length === 1 ? violationIds[0] : null),
+        control_domain: cleanText(finding.control_domain || finding.domain, 160) || "OTHER",
+        observed_failure: observedFailure,
+        possible_root_cause: cleanText(finding.possible_root_cause, 12000),
+        classification: enumValue(finding.classification || finding.basis, EVIDENCE_BASES, "analyst_inference"),
+        evidence_span: cleanText(finding.evidence_span, 12000),
+        confidence: confidenceValue(finding.confidence),
+      });
+    }
+  }
+  return { caseIds, status: "needs_review" };
+}
+
 async function getSummary(req: Request): Promise<Response> {
   const { data: cases, error } = await adminDb
     .from("regintel_cases")
@@ -168,6 +359,21 @@ async function getSources(req: Request): Promise<Response> {
   return json(req, { items: data || [] });
 }
 
+async function getReviewQueue(req: Request, url: URL): Promise<Response> {
+  const admin = await requireAdmin(req);
+  if (!admin) return json(req, { error: "admin_authorization_required" }, 403);
+  const limit = Math.min(Math.max(Number(url.searchParams.get("limit") || 50), 1), 100);
+  const status = cleanText(url.searchParams.get("status"), 24);
+  const allowedStatuses = ["needs_review", "in_review", "verified"];
+  let query = adminDb.from("regintel_cases").select(CASE_SELECT, { count: "exact" });
+  query = status && allowedStatuses.includes(status) ? query.eq("review_status", status) : query.in("review_status", allowedStatuses);
+  const { data, error, count } = await query
+    .order("created_at", { ascending: false })
+    .limit(limit);
+  if (error) return json(req, { error: "review_queue_query_failed", detail: error.message }, 500);
+  return json(req, { items: data || [], total: count || 0, role: admin.role });
+}
+
 async function ingestCandidates(req: Request): Promise<Response> {
   if (!INGEST_KEY) return json(req, { error: "ingestion_not_configured" }, 503);
   if (req.headers.get("x-ingest-key") !== INGEST_KEY) return json(req, { error: "unauthorized" }, 401);
@@ -188,19 +394,20 @@ async function ingestCandidates(req: Request): Promise<Response> {
   }).filter(Boolean))];
   let sourceRows: Array<Record<string, any>> = [];
   if (sourceCodes.length) {
-    const sourceResult = await adminDb.from("regintel_sources").select("id,source_code,regulator,jurisdiction,allowed_domains,enabled").in("source_code", sourceCodes);
+    const sourceResult = await adminDb.from("regintel_sources").select("id,source_code,regulator,jurisdiction,allowed_domains,enabled,production_ready").in("source_code", sourceCodes);
     if (sourceResult.error) return json(req, { error: "source_lookup_failed" }, 500);
     sourceRows = sourceResult.data || [];
   }
   const sourceMap = new Map(sourceRows.map((source) => [source.source_code, source]));
   const rows: Array<Record<string, unknown>> = [];
+  const inputByUrl = new Map<string, Record<string, unknown>>();
   const rejected: Array<Record<string, unknown>> = [];
   for (let index = 0; index < candidates.length; index += 1) {
     const candidate = candidates[index] as Record<string, unknown>;
     const sourceCode = cleanText(candidate.source_code || candidate.source_id, 40);
     const source = sourceCode ? sourceMap.get(sourceCode) : null;
     const url = canonicalUrl(candidate.url || candidate.canonical_url);
-    if (!source || !source.enabled) { rejected.push({ index, reason: "unknown_or_disabled_source" }); continue; }
+    if (!source || !source.enabled || !source.production_ready) { rejected.push({ index, reason: "unknown_or_disabled_source" }); continue; }
     if (!url || !hostAllowed(url.hostname, source.allowed_domains || [])) { rejected.push({ index, reason: "url_not_allowed" }); continue; }
     const title = cleanText(candidate.title, 1000);
     const contentHash = await sha256(`${sourceCode}|${url.href}|${title || ""}`);
@@ -230,6 +437,7 @@ async function ingestCandidates(req: Request): Promise<Response> {
       anysearch_evidence: Array.isArray(candidate.anysearch_evidence) ? candidate.anysearch_evidence.slice(0, 10) : [],
       ai_analysis: typeof candidate.ai_analysis === "object" && candidate.ai_analysis !== null ? candidate.ai_analysis : {},
     });
+    inputByUrl.set(url.href, candidate);
   }
 
   let inserted: Array<Record<string, unknown>> = [];
@@ -238,15 +446,30 @@ async function ingestCandidates(req: Request): Promise<Response> {
     const result = await adminDb.from("regintel_announcements").upsert(rows, { onConflict: "canonical_url", ignoreDuplicates: true }).select("id,canonical_url,verification_status,extraction_status");
     if (result.error) return json(req, { error: "candidate_insert_failed", detail: result.error.message }, 500);
     inserted = result.data || [];
-    const acceptedResult = await adminDb.from("regintel_announcements").select("id,canonical_url,verification_status,extraction_status").in("canonical_url", rows.map((row) => row.canonical_url));
+    const acceptedResult = await adminDb.from("regintel_announcements").select("id,source_id,canonical_url,verification_status,extraction_status").in("canonical_url", rows.map((row) => row.canonical_url));
     if (!acceptedResult.error) acceptedRows = acceptedResult.data || [];
     const sourceIds = [...new Set(rows.map((row) => row.source_id))];
     await adminDb.from("regintel_sources").update({ last_checked_at: new Date().toISOString(), last_success_at: new Date().toISOString(), consecutive_failures: 0, error_status: null }).in("id", sourceIds);
   }
   const insertedUrls = new Set(inserted.map((row) => row.canonical_url));
   const records = acceptedRows.map((row) => ({ ...row, status: insertedUrls.has(row.canonical_url) ? "queued" : "duplicate" }));
+  const normalized: Array<Record<string, unknown>> = [];
+  const normalizationErrors: Array<Record<string, unknown>> = [];
+  for (const announcement of acceptedRows) {
+    const candidate = inputByUrl.get(String(announcement.canonical_url));
+    const source = sourceRows.find((item) => item.id === announcement.source_id);
+    if (!candidate || !source) continue;
+    try {
+      const result = await normalizeAnalysis(announcement, candidate, source);
+      normalized.push({ announcement_id: announcement.id, ...result });
+    } catch (error) {
+      const detail = error instanceof Error ? error.message : String(error);
+      normalizationErrors.push({ announcement_id: announcement.id, error: detail.slice(0, 500) });
+      await adminDb.from("regintel_announcements").update({ error_detail: detail.slice(0, 4000), verification_status: "needs_review" }).eq("id", announcement.id);
+    }
+  }
   const single = candidates.length === 1 && records.length === 1 ? { candidate_id: records[0].id, status: records[0].status } : {};
-  return json(req, { ...single, accepted: rows.length, inserted: inserted.length, duplicates: rows.length - inserted.length, rejected, records }, 202);
+  return json(req, { ...single, accepted: rows.length, inserted: inserted.length, duplicates: rows.length - inserted.length, rejected, records, normalized, normalization_errors: normalizationErrors }, normalizationErrors.length ? 207 : 202);
 }
 
 async function requireAdmin(req: Request): Promise<{ userId: string; role: string } | null> {
@@ -272,6 +495,14 @@ async function reviewCase(req: Request): Promise<Response> {
   if (!caseId || !decision || !["approve", "reject", "request_changes", "publish", "unpublish"].includes(decision)) {
     return json(req, { error: "valid_case_id_and_decision_required" }, 400);
   }
+  if (["publish", "unpublish"].includes(decision) && !["admin", "super_admin"].includes(admin.role)) {
+    return json(req, { error: "publisher_role_required" }, 403);
+  }
+  const current = await adminDb.from("regintel_cases").select("id,review_status").eq("id", caseId).maybeSingle();
+  if (current.error || !current.data) return json(req, { error: "case_not_found" }, 404);
+  if (decision === "publish" && current.data.review_status !== "verified") {
+    return json(req, { error: "case_must_be_verified_before_publish" }, 409);
+  }
   const statusMap: Record<string, string> = { approve: "verified", reject: "rejected", request_changes: "needs_review", publish: "published", unpublish: "verified" };
   const update: Record<string, unknown> = { review_status: statusMap[decision] };
   if (decision === "publish") update.published_at = new Date().toISOString();
@@ -292,6 +523,7 @@ Deno.serve(async (req: Request) => {
   try {
     if (req.method === "GET" && action === "summary") return await getSummary(req);
     if (req.method === "GET" && action === "sources") return await getSources(req);
+    if (req.method === "GET" && action === "review_queue") return await getReviewQueue(req, url);
     if (req.method === "GET" && action === "case") return await getCaseDetail(req, url);
     if (req.method === "GET" && action === "cases") return await getCases(req, url);
     if (req.method === "POST" && action === "candidates") return await ingestCandidates(req);
