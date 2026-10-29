@@ -1,0 +1,10 @@
+{
+  "header": { "success": true, "err_code": "0000" },
+  "result": {
+    "records": [
+      { "title": "HKMA takes disciplinary action against Example Bank", "link": "https://www.hkma.gov.hk/eng/news-and-media/press-releases/2026/10/example-bank/", "date": "2026-10-20" },
+      { "title": "HKMA welcomes visitors to its information centre", "link": "https://www.hkma.gov.hk/eng/news-and-media/press-releases/2026/10/information-centre/", "date": "2026-10-19" },
+      { "title": "Press releases", "link": "https://www.hkma.gov.hk/", "date": "2026-10-18" }
+    ]
+  }
+}

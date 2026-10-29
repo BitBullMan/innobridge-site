@@ -1,0 +1,109 @@
+{
+  "version": "p0-2026-10-27",
+  "sources": [
+    {
+      "source_code": "pbc",
+      "region": "CN",
+      "authority": "PBOC",
+      "base_domain": "pbc.gov.cn",
+      "listing_url": "https://beijing.pbc.gov.cn/beijing/132030/132052/132059/index.html",
+      "adapter_type": "pbc_beijing_html",
+      "language": "zh-CN",
+      "enabled": true,
+      "verified_at": "2026-10-27",
+      "health_status": "fixture_verified",
+      "coverage_scope": "Beijing branch administrative-penalty listing only"
+    },
+    {
+      "source_code": "hkma",
+      "region": "HK",
+      "authority": "HKMA",
+      "base_domain": "hkma.gov.hk",
+      "listing_url": "https://api.hkma.gov.hk/public/press-releases?lang=en",
+      "adapter_type": "hkma_press_release_api",
+      "language": "en",
+      "enabled": true,
+      "verified_at": "2026-10-27",
+      "health_status": "fixture_verified",
+      "coverage_scope": "Official press-release API with enforcement-specific title screening"
+    },
+    {
+      "source_code": "nfra",
+      "region": "CN",
+      "authority": "NFRA",
+      "base_domain": "nfra.gov.cn",
+      "listing_url": "https://www.nfra.gov.cn/cn/view/pages/ItemList.html?itemPId=914&itemId=4113&itemUrl=ItemListRightList.html&itemName=%E8%A1%8C%E6%94%BF%E5%A4%84%E7%BD%9A",
+      "adapter_type": "pending_dynamic_listing_adapter",
+      "language": "zh-CN",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "adapter_pending",
+      "coverage_scope": "Configured only; dynamic pagination not verified"
+    },
+    {
+      "source_code": "csrc",
+      "region": "CN",
+      "authority": "CSRC",
+      "base_domain": "csrc.gov.cn",
+      "listing_url": "https://www.csrc.gov.cn/csrc/c101971/zfxxgk_zdgk.shtml?channelid=17d5ff2fe43e488dba825807ae40d63f",
+      "adapter_type": "pending_html_adapter",
+      "language": "zh-CN",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "adapter_pending",
+      "coverage_scope": "Configured only"
+    },
+    {
+      "source_code": "safe",
+      "region": "CN",
+      "authority": "SAFE",
+      "base_domain": "safe.gov.cn",
+      "listing_url": "https://www.safe.gov.cn/www/punish",
+      "adapter_type": "pending_search_adapter",
+      "language": "zh-CN",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "adapter_pending",
+      "coverage_scope": "Configured only"
+    },
+    {
+      "source_code": "sfc",
+      "region": "HK",
+      "authority": "SFC",
+      "base_domain": "sfc.hk",
+      "listing_url": "https://apps.sfc.hk/edistributionWeb/gateway/EN/news-and-announcements/news/enforcement-news/?searchByName=1",
+      "adapter_type": "pending_listing_api_adapter",
+      "language": "en",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "adapter_pending",
+      "coverage_scope": "Configured only; client-rendered listing"
+    },
+    {
+      "source_code": "ia",
+      "region": "HK",
+      "authority": "Insurance Authority",
+      "base_domain": "ia.org.hk",
+      "listing_url": "https://www.ia.org.hk/en/enforcement/enforcement_news/news.html",
+      "adapter_type": "pending_access_review",
+      "language": "en",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "access_blocked",
+      "coverage_scope": "Configured only; do not bypass HTTP 403"
+    },
+    {
+      "source_code": "hkcustoms",
+      "region": "HK",
+      "authority": "Customs & Excise Department",
+      "base_domain": "customs.gov.hk",
+      "listing_url": "https://eservices.customs.gov.hk/MSOS/common/enforcenew",
+      "adapter_type": "pending_document_adapter",
+      "language": "en",
+      "enabled": false,
+      "verified_at": null,
+      "health_status": "adapter_pending",
+      "coverage_scope": "Configured only; document and pagination adapter not yet accepted"
+    }
+  ]
+}

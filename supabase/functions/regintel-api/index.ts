@@ -114,6 +114,31 @@ function amountValue(value: unknown): number | null {
   return Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
 }
 
+function integerValue(value: unknown, fallback = 0): number {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed >= 0 ? parsed : fallback;
+}
+
+function validSha256(value: unknown): string | null {
+  const text = cleanText(value, 64)?.toLowerCase() || "";
+  return /^[a-f0-9]{64}$/.test(text) ? text : null;
+}
+
+function ingestAuthorized(req: Request): boolean {
+  return Boolean(INGEST_KEY) && req.headers.get("x-ingest-key") === INGEST_KEY;
+}
+
+async function requestBody(req: Request): Promise<Record<string, unknown> | null> {
+  const contentLength = Number(req.headers.get("content-length") || 0);
+  if (contentLength > MAX_BODY_BYTES) return null;
+  try {
+    const body = await req.json();
+    return objectValue(body);
+  } catch {
+    return null;
+  }
+}
+
 const CASE_TYPES = ["fine", "warning", "improvement_order", "suspension", "revocation", "prohibition", "prosecution", "other"];
 const SEVERITIES = ["low", "medium", "high", "critical"];
 const VIOLATION_CATEGORIES = ["AML_CFT", "KYC_CDD", "EDD", "BENEFICIAL_OWNERSHIP", "SANCTIONS_SCREENING", "TRANSACTION_MONITORING", "STR_SAR", "RECORDKEEPING", "GOVERNANCE", "MARKET_CONDUCT", "FX", "PAYMENTS", "OTHER"];
@@ -281,6 +306,189 @@ async function normalizeAnalysis(
   return { caseIds, status: "needs_review" };
 }
 
+async function recordDiagnostics(req: Request): Promise<Response> {
+  if (!INGEST_KEY) return json(req, { error: "ingestion_not_configured" }, 503);
+  if (!ingestAuthorized(req)) return json(req, { error: "unauthorized" }, 401);
+  if (Number(req.headers.get("content-length") || 0) > MAX_BODY_BYTES) return json(req, { error: "payload_too_large" }, 413);
+  const body = await requestBody(req);
+  if (!body) return json(req, { error: "invalid_json_or_payload_too_large" }, 400);
+  const items = Array.isArray(body.items) ? body.items : [body];
+  if (!items.length || items.length > 100) return json(req, { error: "items_must_contain_1_to_100_diagnostics" }, 400);
+
+  const sourceCodes = [...new Set(items.map((value) => cleanText(objectValue(value).source_code, 40)).filter(Boolean))];
+  if (!sourceCodes.length) return json(req, { error: "source_code_required" }, 400);
+  const sourceResult = await adminDb
+    .from("regintel_sources")
+    .select("id,source_code,consecutive_failures")
+    .in("source_code", sourceCodes);
+  if (sourceResult.error) return json(req, { error: "source_lookup_failed" }, 500);
+  const sourceMap = new Map((sourceResult.data || []).map((source) => [source.source_code, source]));
+  const rows: Array<Record<string, unknown>> = [];
+  const rejected: Array<Record<string, unknown>> = [];
+  const sourceUpdates: Array<{ id: string; update: Record<string, unknown> }> = [];
+
+  for (let index = 0; index < items.length; index += 1) {
+    const item = objectValue(items[index]);
+    const sourceCode = cleanText(item.source_code, 40);
+    const source = sourceCode ? sourceMap.get(sourceCode) : null;
+    const runId = cleanText(item.run_id, 128);
+    const requestId = cleanText(item.request_id, 160);
+    const jurisdiction = enumValue(item.jurisdiction, ["CN", "HK"], "");
+    const method = enumValue(item.discovery_method, ["official", "anysearch"], "");
+    const fetchStatus = enumValue(item.fetch_status, ["succeeded", "empty", "failed", "partial"], "");
+    if (!source || !runId || !requestId || !jurisdiction || !method || !fetchStatus) {
+      rejected.push({ index, reason: "invalid_diagnostic_contract" });
+      continue;
+    }
+    const acceptedCount = integerValue(item.accepted_count);
+    const now = new Date().toISOString();
+    rows.push({
+      run_id: runId,
+      request_id: requestId,
+      source_id: source.id,
+      source_code: sourceCode,
+      jurisdiction,
+      discovery_method: method,
+      fetch_status: fetchStatus,
+      http_status: integerValue(item.http_status) || null,
+      raw_result_count: integerValue(item.raw_result_count),
+      parsed_count: integerValue(item.parsed_count),
+      accepted_count: acceptedCount,
+      rejected_count: integerValue(item.rejected_count),
+      rejection_reason_counts: objectValue(item.rejection_reason_counts),
+      last_successful_fetch: ["succeeded", "empty", "partial"].includes(fetchStatus) ? now : null,
+      last_valid_discovery: acceptedCount > 0 ? now : null,
+      error_message: cleanText(item.error_message, 4000),
+      workflow_execution_id: cleanText(item.workflow_execution_id, 128),
+      started_at: cleanText(item.started_at, 64),
+      finished_at: cleanText(item.finished_at, 64) || now,
+      metadata: objectValue(item.metadata),
+    });
+    const failed = fetchStatus === "failed";
+    sourceUpdates.push({
+      id: String(source.id),
+      update: {
+        last_checked_at: now,
+        ...(failed ? {} : { last_success_at: now }),
+        ...(acceptedCount > 0 ? { last_item_at: now } : {}),
+        error_status: failed ? (cleanText(item.error_message, 1000) || "collector_failed") : null,
+        consecutive_failures: failed ? integerValue(source.consecutive_failures) + 1 : 0,
+      },
+    });
+  }
+
+  if (rows.length) {
+    const result = await adminDb
+      .from("regintel_discovery_diagnostics")
+      .upsert(rows, { onConflict: "run_id,request_id,discovery_method" });
+    if (result.error) return json(req, { error: "diagnostic_write_failed", detail: result.error.message }, 500);
+    await Promise.all(sourceUpdates.map(({ id, update }) => adminDb.from("regintel_sources").update(update).eq("id", id)));
+  }
+  return json(req, { accepted: rows.length, rejected }, rejected.length ? 207 : 202);
+}
+
+async function preflightCandidates(req: Request): Promise<Response> {
+  if (!INGEST_KEY) return json(req, { error: "ingestion_not_configured" }, 503);
+  if (!ingestAuthorized(req)) return json(req, { error: "unauthorized" }, 401);
+  if (Number(req.headers.get("content-length") || 0) > MAX_BODY_BYTES) return json(req, { error: "payload_too_large" }, 413);
+  const body = await requestBody(req);
+  if (!body) return json(req, { error: "invalid_json_or_payload_too_large" }, 400);
+  const items = Array.isArray(body.items) ? body.items : [body];
+  if (!items.length || items.length > 100) return json(req, { error: "items_must_contain_1_to_100_candidates" }, 400);
+  const dryRun = body.dry_run === true;
+
+  const sourceCodes = [...new Set(items.map((value) => {
+    const item = objectValue(value);
+    return cleanText(item.source_code || item.source_id, 40);
+  }).filter(Boolean))];
+  if (!sourceCodes.length) return json(req, { error: "source_code_required" }, 400);
+  const sourceResult = await adminDb
+    .from("regintel_sources")
+    .select("id,source_code,regulator,jurisdiction,allowed_domains,enabled,production_ready")
+    .in("source_code", sourceCodes);
+  if (sourceResult.error) return json(req, { error: "source_lookup_failed" }, 500);
+  const sourceMap = new Map((sourceResult.data || []).map((source) => [source.source_code, source]));
+  const accepted: Array<Record<string, unknown>> = [];
+  const rejected: Array<Record<string, unknown>> = [];
+  const decisions: Array<Record<string, unknown>> = [];
+
+  for (let index = 0; index < items.length; index += 1) {
+    const candidate = objectValue(items[index]);
+    const sourceCode = cleanText(candidate.source_code || candidate.source_id, 40);
+    const source = sourceCode ? sourceMap.get(sourceCode) : null;
+    const url = canonicalUrl(candidate.official_url || candidate.url || candidate.canonical_url);
+    const title = cleanText(candidate.title, 1000);
+    if (!source || !source.enabled || !source.production_ready) {
+      rejected.push({ index, reason: "unknown_or_disabled_source" });
+      continue;
+    }
+    if (!url) { rejected.push({ index, reason: "invalid_url" }); continue; }
+    if (!hostAllowed(url.hostname, source.allowed_domains || [])) { rejected.push({ index, reason: "domain_mismatch" }); continue; }
+    if (!title) { rejected.push({ index, reason: "missing_title" }); continue; }
+    const candidateId = validSha256(candidate.candidate_id) || await sha256(`${sourceCode}|${url.href}`);
+    const suppliedHash = validSha256(candidate.content_hash);
+    const evidenceText = cleanText(candidate.official_text || candidate.raw_text, 100000) || "";
+    const contentHash = suppliedHash || await sha256(`${url.href}|${title}|${cleanDate(candidate.publication_date) || ""}|${evidenceText}`);
+    const existingResult = await adminDb
+      .from("regintel_discovery_candidates")
+      .select("candidate_id,content_hash,last_processed_hash,processing_status,next_retry_at,attempt_count")
+      .eq("candidate_id", candidateId)
+      .maybeSingle();
+    if (existingResult.error) return json(req, { error: "candidate_preflight_lookup_failed", detail: existingResult.error.message }, 500);
+    const existing = existingResult.data;
+    const retryDue = existing && ["failed", "retryable"].includes(existing.processing_status)
+      && (!existing.next_retry_at || new Date(existing.next_retry_at).getTime() <= Date.now());
+    const changed = Boolean(existing && contentHash !== existing.content_hash && contentHash !== existing.last_processed_hash);
+    const shouldProcess = !existing || changed || retryDue;
+    const reason = !existing ? "new" : changed ? "changed" : retryDue ? "retry" : "duplicate";
+    const normalized = {
+      ...candidate,
+      candidate_id: candidateId,
+      source_code: sourceCode,
+      jurisdiction: source.jurisdiction,
+      regulator: source.regulator,
+      official_url: url.href,
+      url: url.href,
+      content_hash: contentHash,
+      verification_status: "unverified",
+    };
+    decisions.push({ candidate_id: candidateId, official_url: url.href, process: shouldProcess, reason });
+    if (!shouldProcess) {
+      rejected.push({ index, candidate_id: candidateId, reason: "duplicate" });
+      if (!dryRun) await adminDb.from("regintel_discovery_candidates").update({ last_seen_at: new Date().toISOString() }).eq("candidate_id", candidateId);
+      continue;
+    }
+    accepted.push(normalized);
+    if (!dryRun) {
+      const now = new Date().toISOString();
+      const row = {
+        candidate_id: candidateId,
+        source_id: source.id,
+        source_code: sourceCode,
+        jurisdiction: source.jurisdiction,
+        regulator: source.regulator,
+        official_url: url.href,
+        source_listing_url: cleanText(candidate.source_listing_url || candidate.source_page, 2048),
+        discovery_method: enumValue(candidate.discovery_method, ["official", "anysearch"], "official"),
+        title,
+        publication_date: cleanDate(candidate.publication_date),
+        verification_status: "unverified",
+        processing_status: "queued",
+        content_hash: contentHash,
+        first_seen_at: existing ? undefined : now,
+        last_seen_at: now,
+        attempt_count: integerValue(existing?.attempt_count) + 1,
+        next_retry_at: null,
+        error_detail: null,
+        metadata: { request_id: cleanText(candidate.request_id, 160), run_id: cleanText(candidate.run_id, 128), reason },
+      };
+      const result = await adminDb.from("regintel_discovery_candidates").upsert(row, { onConflict: "candidate_id" });
+      if (result.error) return json(req, { error: "candidate_preflight_write_failed", detail: result.error.message }, 500);
+    }
+  }
+  return json(req, { dry_run: dryRun, accepted, rejected, decisions, paid_call_candidates: accepted.length }, 200);
+}
+
 async function getSummary(req: Request): Promise<Response> {
   const { data: cases, error } = await adminDb
     .from("regintel_cases")
@@ -352,11 +560,36 @@ async function getCaseDetail(req: Request, url: URL): Promise<Response> {
 async function getSources(req: Request): Promise<Response> {
   const { data, error } = await adminDb
     .from("regintel_sources")
-    .select("source_code,regulator,regulator_name_local,jurisdiction,listing_url,access_method,enabled,production_ready,last_checked_at,last_success_at,last_item_at,error_status,consecutive_failures,coverage_notes")
+    .select("source_code,regulator,regulator_name_local,jurisdiction,listing_url,access_method,adapter_type,enabled,production_ready,last_checked_at,last_success_at,last_item_at,error_status,consecutive_failures,coverage_notes")
     .order("jurisdiction")
     .order("regulator");
   if (error) return json(req, { error: "sources_query_failed" }, 500);
-  return json(req, { items: data || [] });
+  const diagnosticsResult = await adminDb
+    .from("regintel_latest_source_diagnostics")
+    .select("source_code,fetch_status,raw_result_count,parsed_count,accepted_count,rejected_count,rejection_reason_counts,last_successful_fetch,last_valid_discovery,created_at")
+    .order("source_code");
+  const candidateResult = await adminDb
+    .from("regintel_source_candidate_counts")
+    .select("source_code,queued,unverified,errors");
+  const latest = new Map<string, Record<string, unknown>>();
+  for (const item of diagnosticsResult.data || []) {
+    latest.set(item.source_code, item);
+  }
+  const queueCounts = new Map<string, Record<string, number>>();
+  for (const item of candidateResult.data || []) {
+    queueCounts.set(item.source_code, {
+      queued: integerValue(item.queued),
+      unverified: integerValue(item.unverified),
+      errors: integerValue(item.errors),
+    });
+  }
+  return json(req, {
+    items: (data || []).map((source) => ({
+      ...source,
+      latest_diagnostic: latest.get(source.source_code) || null,
+      queue_counts: queueCounts.get(source.source_code) || { unverified: 0, errors: 0, queued: 0 },
+    })),
+  });
 }
 
 async function getReviewQueue(req: Request, url: URL): Promise<Response> {
@@ -376,11 +609,10 @@ async function getReviewQueue(req: Request, url: URL): Promise<Response> {
 
 async function ingestCandidates(req: Request): Promise<Response> {
   if (!INGEST_KEY) return json(req, { error: "ingestion_not_configured" }, 503);
-  if (req.headers.get("x-ingest-key") !== INGEST_KEY) return json(req, { error: "unauthorized" }, 401);
-  const contentLength = Number(req.headers.get("content-length") || 0);
-  if (contentLength > MAX_BODY_BYTES) return json(req, { error: "payload_too_large" }, 413);
-  let body: Record<string, unknown>;
-  try { body = await req.json(); } catch { return json(req, { error: "invalid_json" }, 400); }
+  if (!ingestAuthorized(req)) return json(req, { error: "unauthorized" }, 401);
+  if (Number(req.headers.get("content-length") || 0) > MAX_BODY_BYTES) return json(req, { error: "payload_too_large" }, 413);
+  const body = await requestBody(req);
+  if (!body) return json(req, { error: "invalid_json_or_payload_too_large" }, 400);
   const candidates = Array.isArray(body.items) ? body.items : [body];
   if (!candidates.length || candidates.length > 100) return json(req, { error: "items_must_contain_1_to_100_candidates" }, 400);
 
@@ -410,7 +642,10 @@ async function ingestCandidates(req: Request): Promise<Response> {
     if (!source || !source.enabled || !source.production_ready) { rejected.push({ index, reason: "unknown_or_disabled_source" }); continue; }
     if (!url || !hostAllowed(url.hostname, source.allowed_domains || [])) { rejected.push({ index, reason: "url_not_allowed" }); continue; }
     const title = cleanText(candidate.title, 1000);
-    const contentHash = await sha256(`${sourceCode}|${url.href}|${title || ""}`);
+    const suppliedHash = validSha256(candidate.content_hash);
+    const evidenceText = cleanText(candidate.official_text || candidate.raw_text, 100000) || "";
+    const contentHash = suppliedHash || await sha256(`${sourceCode}|${url.href}|${title || ""}|${cleanDate(candidate.publication_date) || ""}|${evidenceText}`);
+    const candidateId = validSha256(candidate.candidate_id) || await sha256(`${sourceCode}|${url.href}`);
     rows.push({
       source_id: source.id,
       canonical_url: url.href,
@@ -427,6 +662,7 @@ async function ingestCandidates(req: Request): Promise<Response> {
       verification_status: "unverified",
       pipeline_version: cleanText(candidate.pipeline_version, 32) || "regintel-n8n-v1",
       source_trace: {
+        candidate_id: candidateId,
         source_code: sourceCode,
         regulator: source.regulator,
         jurisdiction: source.jurisdiction,
@@ -462,10 +698,36 @@ async function ingestCandidates(req: Request): Promise<Response> {
     try {
       const result = await normalizeAnalysis(announcement, candidate, source);
       normalized.push({ announcement_id: announcement.id, ...result });
+      const candidateId = validSha256(candidate.candidate_id);
+      if (candidateId) {
+        const usage = objectValue(candidate.usage);
+        await adminDb.from("regintel_discovery_candidates").update({
+          processing_status: "processed",
+          verification_status: result.status === "needs_review" ? "needs_review" : "unverified",
+          last_processed_hash: validSha256(candidate.content_hash),
+          processed_at: new Date().toISOString(),
+          next_retry_at: null,
+          error_detail: null,
+          search_call_count: integerValue(usage.search_calls),
+          model_call_count: integerValue(usage.model_calls),
+          prompt_tokens: integerValue(usage.prompt_tokens),
+          completion_tokens: integerValue(usage.completion_tokens),
+          total_tokens: integerValue(usage.total_tokens),
+        }).eq("candidate_id", candidateId);
+      }
     } catch (error) {
       const detail = error instanceof Error ? error.message : String(error);
       normalizationErrors.push({ announcement_id: announcement.id, error: detail.slice(0, 500) });
       await adminDb.from("regintel_announcements").update({ error_detail: detail.slice(0, 4000), verification_status: "needs_review" }).eq("id", announcement.id);
+      const candidateId = validSha256(candidate.candidate_id);
+      if (candidateId) {
+        await adminDb.from("regintel_discovery_candidates").update({
+          processing_status: "retryable",
+          verification_status: "needs_review",
+          next_retry_at: new Date(Date.now() + 60 * 60 * 1000).toISOString(),
+          error_detail: detail.slice(0, 4000),
+        }).eq("candidate_id", candidateId);
+      }
     }
   }
   const single = candidates.length === 1 && records.length === 1 ? { candidate_id: records[0].id, status: records[0].status } : {};
@@ -526,6 +788,8 @@ Deno.serve(async (req: Request) => {
     if (req.method === "GET" && action === "review_queue") return await getReviewQueue(req, url);
     if (req.method === "GET" && action === "case") return await getCaseDetail(req, url);
     if (req.method === "GET" && action === "cases") return await getCases(req, url);
+    if (req.method === "POST" && action === "diagnostics") return await recordDiagnostics(req);
+    if (req.method === "POST" && action === "preflight") return await preflightCandidates(req);
     if (req.method === "POST" && action === "candidates") return await ingestCandidates(req);
     if (req.method === "POST" && action === "review") return await reviewCase(req);
     return json(req, { error: "not_found" }, 404);

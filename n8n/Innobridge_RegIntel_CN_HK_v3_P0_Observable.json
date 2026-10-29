@@ -1,0 +1,1142 @@
+{
+  "name": "Innobridge - Regulatory Enforcement Intelligence CN HK v3 P0 Observable",
+  "nodes": [
+    {
+      "id": "fef1528d-0000-4000-8000-2b5f988bfc4a",
+      "typeVersion": 1.2,
+      "name": "Every 3 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "position": [
+        -1500,
+        360
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "23bc97cc-0000-4000-8000-ceff285b5e7c",
+      "typeVersion": 2,
+      "name": "Official Source Registry",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1280,
+        180
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst runId = 'regintel-' + $execution.id;\nconst sources = [\n  {source_code:'pbc',jurisdiction:'CN',regulator:'PBOC',listing_url:'https://beijing.pbc.gov.cn/beijing/132030/132052/132059/index.html',adapter_type:'pbc_beijing_html',language:'zh-CN',zone:'cn',allowed_domains:['beijing.pbc.gov.cn','pbc.gov.cn'],enabled:true},\n  {source_code:'hkma',jurisdiction:'HK',regulator:'HKMA',listing_url:'https://api.hkma.gov.hk/public/press-releases?lang=en',adapter_type:'hkma_press_release_api',language:'en',zone:'intl',allowed_domains:['api.hkma.gov.hk','hkma.gov.hk'],enabled:true},\n  {source_code:'nfra',jurisdiction:'CN',regulator:'NFRA',enabled:false},\n  {source_code:'csrc',jurisdiction:'CN',regulator:'CSRC',enabled:false},\n  {source_code:'safe',jurisdiction:'CN',regulator:'SAFE',enabled:false},\n  {source_code:'sfc',jurisdiction:'HK',regulator:'SFC',enabled:false},\n  {source_code:'ia',jurisdiction:'HK',regulator:'IA',enabled:false},\n  {source_code:'hkcustoms',jurisdiction:'HK',regulator:'C&ED',enabled:false},\n];\nreturn sources.filter(s=>s.enabled).map(s=>({json:{...s,url:s.listing_url,run_id:runId,request_id:'official:'+s.source_code+':'+$execution.id,started_at:new Date().toISOString(),workflow_execution_id:$execution.id}}));"
+      }
+    },
+    {
+      "id": "76954fe1-0000-4000-8000-dda41c18780b",
+      "typeVersion": 4.2,
+      "name": "Fetch Official Listing",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1060,
+        180
+      ],
+      "parameters": {
+        "url": "={{ $json.listing_url }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "66bea7a6-0000-4000-8000-e23804529292",
+      "typeVersion": 2,
+      "name": "Parse Official Response",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -840,
+        180
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst source = $('Official Source Registry').item.json;\nconst response = $json || {};\nconst status = Number(response.statusCode || response.status || (response.error ? 599 : 200));\nconst raw = typeof response.body === 'string' ? response.body : (typeof response === 'string' ? response : JSON.stringify(response.body ?? response));\n\nconst parseWebUrl=(value,base)=>{\n  let raw=String(value||'').trim().replace(/&amp;/gi,'&');\n  if(!raw||/[\\u0000-\\u001f\\u007f\\s]/.test(raw))return null;\n  const baseMatch=String(base||'').match(/^https?:\\/\\/([^\\/?#]+)/i);\n  if(raw.startsWith('//'))raw='https:'+raw;\n  else if(!/^https?:\\/\\//i.test(raw)){\n    if(!baseMatch)return null;\n    const origin='https://'+baseMatch[1];\n    if(raw.startsWith('/'))raw=origin+raw;\n    else {\n      const cleanBase=String(base||'').split(/[?#]/)[0];\n      raw=cleanBase.replace(/\\/[^/]*$/,'/')+raw;\n    }\n  }\n  const match=raw.match(/^https?:\\/\\/([^\\/?#]+)([^#]*)?(?:#.*)?$/i);\n  if(!match||!match[1]||match[1].includes('@'))return null;\n  const host=match[1].toLowerCase().replace(/\\.$/,'');\n  let tail=match[2]||'/';\n  const queryIndex=tail.indexOf('?');\n  let pathname=queryIndex>=0?tail.slice(0,queryIndex):tail;\n  const query=queryIndex>=0?tail.slice(queryIndex+1):'';\n  if(!pathname.startsWith('/'))pathname='/'+pathname;\n  const trailingSlash=pathname.endsWith('/');const parts=[];\n  for(const segment of pathname.split('/')){if(!segment||segment==='.')continue;if(segment==='..')parts.pop();else parts.push(segment);}\n  pathname='/'+parts.join('/')+(trailingSlash&&parts.length?'/':'');\n  const tracking=new Set(['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','fbclid']);\n  const kept=query.split('&').filter(Boolean).filter(pair=>{\n    const key=pair.split('=',1)[0];\n    try{return !tracking.has(decodeURIComponent(key).toLowerCase());}catch{return !tracking.has(key.toLowerCase());}\n  });\n  return {href:'https://'+host+pathname+(kept.length?'?'+kept.join('&'):''),host,pathname};\n};\nconst hostAllowed=(host,domains)=>(domains||[]).some(domain=>{\n  const safe=String(domain||'').toLowerCase().replace(/^www\\./,'').replace(/\\.$/,'');\n  return host===safe||host==='www.'+safe||host.endsWith('.'+safe);\n});\nconst reasons = {}; const candidates = []; const seen = new Set(); let rawCount=0, parsed=0;\nconst reject = r => { reasons[r]=(reasons[r]||0)+1; };\nconst clean = v => String(v||'').replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,' ').replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/\\s+/g,' ').trim();\nconst relevant = v => /(行政处罚|处罚决定|罚款|纪律处分|enforcement|disciplin|penalt|fine|prosecut|convict|reprimand|revocation|suspension)/i.test(String(v||''));\nconst push=(urlValue,titleValue,dateValue)=>{ parsed++; const parsedUrl=parseWebUrl(urlValue,source.listing_url); const title=clean(titleValue); if(!parsedUrl){reject('invalid_url');return;} if(!hostAllowed(parsedUrl.host,source.allowed_domains)){reject('domain_mismatch');return;} if(!title||!relevant(title)){reject('irrelevant_title');return;} if(seen.has(parsedUrl.href)){reject('duplicate');return;} seen.add(parsedUrl.href); candidates.push({candidate_id:source.source_code+'|'+parsedUrl.href,source_code:source.source_code,jurisdiction:source.jurisdiction,regulator:source.regulator,official_url:parsedUrl.href,url:parsedUrl.href,discovery_method:'official',title,publication_date:dateValue||null,source_listing_url:source.listing_url,source_page:source.listing_url,discovered_at:new Date().toISOString(),verification_status:'unverified',language:source.language,zone:source.zone,allowed_domains:source.allowed_domains,run_id:source.run_id,request_id:source.request_id,workflow_execution_id:$execution.id,pipeline_version:'regintel-n8n-v3-p0'}); };\nif(status < 400 && source.adapter_type==='hkma_press_release_api'){\n  try { const body=typeof response.body==='string'?JSON.parse(response.body):response.body; const records=body?.result?.records||[]; rawCount=records.length; for(const r of records) push(r.link||r.url,r.title,r.date||null); } catch(e){reject('parse_failed');}\n} else if(status < 400 && source.adapter_type==='pbc_beijing_html'){\n  for(const row of raw.matchAll(/<tr\\b[^>]*>([\\s\\S]*?)<\\/tr>/gi)){ const link=row[1].match(/<a\\b[^>]*href=[\"']([^\"']+)[\"'][^>]*>([\\s\\S]*?)<\\/a>/i); if(!link)continue; rawCount++; const d=clean(row[1]).match(/(20\\d{2})[-/.年](\\d{1,2})[-/.月](\\d{1,2})/); push(link[1],link[2],d?d[1]+'-'+d[2].padStart(2,'0')+'-'+d[3].padStart(2,'0'):null); }\n}\nconst rejected=Object.values(reasons).reduce((a,b)=>a+b,0);\nconst fetchStatus=status>=400?'failed':(candidates.length?(rejected?'partial':'succeeded'):'empty');\nreturn {json:{candidates,diagnostic:{source_code:source.source_code,jurisdiction:source.jurisdiction,request_id:source.request_id,run_id:source.run_id,discovery_method:'official',fetch_status:fetchStatus,http_status:status,raw_result_count:rawCount,parsed_count:parsed,accepted_count:candidates.length,rejected_count:rejected,rejection_reason_counts:reasons,error_message:status>=400?('http_'+status):null,started_at:source.started_at,finished_at:new Date().toISOString(),workflow_execution_id:$execution.id,metadata:{adapter_type:source.adapter_type}}}};"
+      }
+    },
+    {
+      "id": "6208f1d6-0000-4000-8000-872625263828",
+      "typeVersion": 4.2,
+      "name": "Save Official Diagnostics",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -620,
+        40
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.REGINTEL_API_BASE_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api') + '?action=diagnostics' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Ingest-Key",
+              "value": "={{ $env.REGINTEL_INGEST_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({items:[$json.diagnostic]}) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "16bc4830-0000-4000-8000-8891ce83fa16",
+      "typeVersion": 2,
+      "name": "Search Discovery Queries",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -1280,
+        600
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst runId='regintel-'+$execution.id;\nconst specs=[\n {source_code:'pbc',regulator:'PBOC',jurisdiction:'CN',listing_url:'https://beijing.pbc.gov.cn/beijing/132030/132052/132059/index.html',zone:'cn',language:'zh-CN',allowed_domains:['pbc.gov.cn'],enabled:true,query:'site:pbc.gov.cn (行政处罚 OR 处罚决定) 反洗钱 最近7天'},\n {source_code:'hkma',regulator:'HKMA',jurisdiction:'HK',listing_url:'https://api.hkma.gov.hk/public/press-releases?lang=en',zone:'intl',language:'en',allowed_domains:['hkma.gov.hk'],enabled:true,query:'site:hkma.gov.hk (disciplinary action OR enforcement OR penalty) last 7 days'},\n];\nreturn specs.filter(s=>s.enabled).map(s=>({json:{...s,run_id:runId,request_id:'search:'+s.source_code+':'+$execution.id,started_at:new Date().toISOString(),workflow_execution_id:$execution.id}}));"
+      }
+    },
+    {
+      "id": "37fcf38c-0000-4000-8000-b3ffb03917c4",
+      "typeVersion": 4.2,
+      "name": "AnySearch Independent Discovery",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -1060,
+        600
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anysearch.com/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({query:$json.query,max_results:10,zone:$json.zone,language:$json.language,format:'json'}) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANYSEARCH_CREDENTIAL_ID",
+          "name": "Anysearch"
+        }
+      }
+    },
+    {
+      "id": "3d0c9854-0000-4000-8000-87991877c6cb",
+      "typeVersion": 2,
+      "name": "Parse Search Response",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -840,
+        600
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst spec=$('Search Discovery Queries').item.json; const response=$json||{}; const status=Number(response.statusCode||response.status||(response.error?599:200));\nconst body=response.body??response; const records=body?.code===0&&Array.isArray(body?.data?.results)?body.data.results:[];\n\nconst parseWebUrl=(value,base)=>{\n  let raw=String(value||'').trim().replace(/&amp;/gi,'&');\n  if(!raw||/[\\u0000-\\u001f\\u007f\\s]/.test(raw))return null;\n  const baseMatch=String(base||'').match(/^https?:\\/\\/([^\\/?#]+)/i);\n  if(raw.startsWith('//'))raw='https:'+raw;\n  else if(!/^https?:\\/\\//i.test(raw)){\n    if(!baseMatch)return null;\n    const origin='https://'+baseMatch[1];\n    if(raw.startsWith('/'))raw=origin+raw;\n    else {\n      const cleanBase=String(base||'').split(/[?#]/)[0];\n      raw=cleanBase.replace(/\\/[^/]*$/,'/')+raw;\n    }\n  }\n  const match=raw.match(/^https?:\\/\\/([^\\/?#]+)([^#]*)?(?:#.*)?$/i);\n  if(!match||!match[1]||match[1].includes('@'))return null;\n  const host=match[1].toLowerCase().replace(/\\.$/,'');\n  let tail=match[2]||'/';\n  const queryIndex=tail.indexOf('?');\n  let pathname=queryIndex>=0?tail.slice(0,queryIndex):tail;\n  const query=queryIndex>=0?tail.slice(queryIndex+1):'';\n  if(!pathname.startsWith('/'))pathname='/'+pathname;\n  const trailingSlash=pathname.endsWith('/');const parts=[];\n  for(const segment of pathname.split('/')){if(!segment||segment==='.')continue;if(segment==='..')parts.pop();else parts.push(segment);}\n  pathname='/'+parts.join('/')+(trailingSlash&&parts.length?'/':'');\n  const tracking=new Set(['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','fbclid']);\n  const kept=query.split('&').filter(Boolean).filter(pair=>{\n    const key=pair.split('=',1)[0];\n    try{return !tracking.has(decodeURIComponent(key).toLowerCase());}catch{return !tracking.has(key.toLowerCase());}\n  });\n  return {href:'https://'+host+pathname+(kept.length?'?'+kept.join('&'):''),host,pathname};\n};\nconst hostAllowed=(host,domains)=>(domains||[]).some(domain=>{\n  const safe=String(domain||'').toLowerCase().replace(/^www\\./,'').replace(/\\.$/,'');\n  return host===safe||host==='www.'+safe||host.endsWith('.'+safe);\n});\nconst reasons={};const candidates=[];const seen=new Set();let parsed=0;const reject=r=>{reasons[r]=(reasons[r]||0)+1;};\nconst clean=v=>String(v||'').replace(/<[^>]+>/g,' ').replace(/\\s+/g,' ').trim(); const relevant=v=>/(行政处罚|处罚决定|罚款|纪律处分|enforcement|disciplin|penalt|fine|prosecut|convict|reprimand|revocation|suspension)/i.test(String(v||''));\nfor(const r of records){parsed++;const parsedUrl=parseWebUrl(r.url||r.link||r.href||'',spec.listing_url);if(!parsedUrl){reject('invalid_url');continue;}if(!hostAllowed(parsedUrl.host,spec.allowed_domains)){reject('domain_mismatch');continue;}if(/^\\/(?:en|eng|cn|zh|zh-cn|english)?\\/?$/i.test(parsedUrl.pathname)){reject('homepage_only');continue;}const title=clean(r.title||r.name);if(!title||!relevant(title+' '+clean(r.snippet||r.content))){reject('irrelevant_title');continue;}if(seen.has(parsedUrl.href)){reject('duplicate');continue;}seen.add(parsedUrl.href);candidates.push({candidate_id:spec.source_code+'|'+parsedUrl.href,source_code:spec.source_code,jurisdiction:spec.jurisdiction,regulator:spec.regulator,official_url:parsedUrl.href,url:parsedUrl.href,discovery_method:'anysearch',title,publication_date:r.published_date||r.published_at||r.date||null,source_listing_url:spec.listing_url,source_page:spec.listing_url,discovered_at:new Date().toISOString(),verification_status:'unverified',language:spec.language,zone:spec.zone,allowed_domains:spec.allowed_domains,search_evidence:[{title,url:parsedUrl.href,snippet:clean(r.snippet||r.description||r.content).slice(0,900)}],run_id:spec.run_id,request_id:spec.request_id,workflow_execution_id:$execution.id,pipeline_version:'regintel-n8n-v3-p0'});}\nconst rejected=Object.values(reasons).reduce((a,b)=>a+b,0);const responseValid=status<400&&body?.code===0&&Array.isArray(body?.data?.results);const fetchStatus=!responseValid?'failed':(candidates.length?(rejected?'partial':'succeeded'):'empty');\nreturn {json:{candidates,diagnostic:{source_code:spec.source_code,jurisdiction:spec.jurisdiction,request_id:spec.request_id,run_id:spec.run_id,discovery_method:'anysearch',fetch_status:fetchStatus,http_status:status,raw_result_count:records.length,parsed_count:parsed,accepted_count:candidates.length,rejected_count:rejected,rejection_reason_counts:reasons,error_message:responseValid?null:(body?.message||('http_'+status)),started_at:spec.started_at,finished_at:new Date().toISOString(),workflow_execution_id:$execution.id,metadata:{query:spec.query}}}};"
+      }
+    },
+    {
+      "id": "d155f7f7-0000-4000-8000-2e00b916d752",
+      "typeVersion": 4.2,
+      "name": "Save Search Diagnostics",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        -620,
+        500
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.REGINTEL_API_BASE_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api') + '?action=diagnostics' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Ingest-Key",
+              "value": "={{ $env.REGINTEL_INGEST_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({items:[$json.diagnostic]}) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "4c90889b-0000-4000-8000-0321bffb713a",
+      "typeVersion": 3.2,
+      "name": "Merge Discovery Candidates",
+      "type": "n8n-nodes-base.merge",
+      "position": [
+        -380,
+        420
+      ],
+      "parameters": {
+        "mode": "append"
+      }
+    },
+    {
+      "id": "71823486-0000-4000-8000-2e6ef3d329bc",
+      "typeVersion": 2,
+      "name": "Deduplicate Candidates",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        -160,
+        420
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\n\nconst parseWebUrl=(value,base)=>{\n  let raw=String(value||'').trim().replace(/&amp;/gi,'&');\n  if(!raw||/[\\u0000-\\u001f\\u007f\\s]/.test(raw))return null;\n  const baseMatch=String(base||'').match(/^https?:\\/\\/([^\\/?#]+)/i);\n  if(raw.startsWith('//'))raw='https:'+raw;\n  else if(!/^https?:\\/\\//i.test(raw)){\n    if(!baseMatch)return null;\n    const origin='https://'+baseMatch[1];\n    if(raw.startsWith('/'))raw=origin+raw;\n    else {\n      const cleanBase=String(base||'').split(/[?#]/)[0];\n      raw=cleanBase.replace(/\\/[^/]*$/,'/')+raw;\n    }\n  }\n  const match=raw.match(/^https?:\\/\\/([^\\/?#]+)([^#]*)?(?:#.*)?$/i);\n  if(!match||!match[1]||match[1].includes('@'))return null;\n  const host=match[1].toLowerCase().replace(/\\.$/,'');\n  let tail=match[2]||'/';\n  const queryIndex=tail.indexOf('?');\n  let pathname=queryIndex>=0?tail.slice(0,queryIndex):tail;\n  const query=queryIndex>=0?tail.slice(queryIndex+1):'';\n  if(!pathname.startsWith('/'))pathname='/'+pathname;\n  const trailingSlash=pathname.endsWith('/');const parts=[];\n  for(const segment of pathname.split('/')){if(!segment||segment==='.')continue;if(segment==='..')parts.pop();else parts.push(segment);}\n  pathname='/'+parts.join('/')+(trailingSlash&&parts.length?'/':'');\n  const tracking=new Set(['utm_source','utm_medium','utm_campaign','utm_content','utm_term','gclid','fbclid']);\n  const kept=query.split('&').filter(Boolean).filter(pair=>{\n    const key=pair.split('=',1)[0];\n    try{return !tracking.has(decodeURIComponent(key).toLowerCase());}catch{return !tracking.has(key.toLowerCase());}\n  });\n  return {href:'https://'+host+pathname+(kept.length?'?'+kept.join('&'):''),host,pathname};\n};\nconst hostAllowed=(host,domains)=>(domains||[]).some(domain=>{\n  const safe=String(domain||'').toLowerCase().replace(/^www\\./,'').replace(/\\.$/,'');\n  return host===safe||host==='www.'+safe||host.endsWith('.'+safe);\n});\nconst seen=new Set();const candidates=[];let inputCount=0,invalidCount=0,duplicateCount=0;\nfor(const item of $input.all())for(const c of (Array.isArray(item.json?.candidates)?item.json.candidates:[])){\n  inputCount++;if(!c.official_url||!c.title){invalidCount++;continue;}\n  const parsedUrl=parseWebUrl(c.official_url,c.source_listing_url);if(!parsedUrl||!hostAllowed(parsedUrl.host,c.allowed_domains)){invalidCount++;continue;}\n  const key=c.source_code+'|'+parsedUrl.href;if(seen.has(key)){duplicateCount++;continue;}seen.add(key);\n  candidates.push({...c,candidate_id:key,official_url:parsedUrl.href,url:parsedUrl.href});\n}\nreturn [{json:{candidates,candidate_count:candidates.length,input_candidate_count:inputCount,duplicate_count:duplicateCount,invalid_count:invalidCount,workflow_execution_id:$execution.id}}];"
+      }
+    },
+    {
+      "id": "611fffa5-0000-4000-8000-a11b508a2bd6",
+      "typeVersion": 2,
+      "name": "Has Discovery Candidates?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        60,
+        420
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "1528c31f-0000-4000-8000-02a957c289bf",
+              "leftValue": "={{ $json.candidate_count > 0 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "24e0d728-0000-4000-8000-f90da5f6e340",
+      "typeVersion": 2,
+      "name": "Expand Deduplicated Candidates",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        280,
+        320
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const bundle=$input.first().json;return (bundle.candidates||[]).map(candidate=>({json:candidate}));"
+      }
+    },
+    {
+      "id": "21e278b9-0000-4000-8000-9d7cf00cac34",
+      "typeVersion": 2,
+      "name": "No Candidates Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        280,
+        600
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const bundle=$input.first().json;return [{json:{stage:'discovery',status:'no_candidates',candidate_count:0,input_candidate_count:Number(bundle.input_candidate_count||0),duplicate_count:Number(bundle.duplicate_count||0),invalid_count:Number(bundle.invalid_count||0),paid_calls:0,workflow_execution_id:$execution.id,completed_at:new Date().toISOString()}}];"
+      }
+    },
+    {
+      "id": "9b55da80-0000-4000-8000-6d144e8a25cf",
+      "typeVersion": 4.2,
+      "name": "Fetch Official Evidence",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        500,
+        320
+      ],
+      "parameters": {
+        "url": "={{ $json.official_url }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "dc8ea8e2-0000-4000-8000-40f0052b28eb",
+      "typeVersion": 2,
+      "name": "Build Evidence Package",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        720,
+        320
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst candidate=$('Expand Deduplicated Candidates').item.json;const response=$json||{};const status=Number(response.statusCode||response.status||(response.error?599:200));const headers=response.headers||{};const contentType=String(headers['content-type']||headers['Content-Type']||'').toLowerCase();const raw=typeof response.body==='string'?response.body:'';const isPdf=contentType.includes('application/pdf')||/\\.pdf(?:$|\\?)/i.test(candidate.official_url);const text=isPdf?'':raw.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script>/gi,' ').replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&#160;/gi,' ').replace(/&amp;/gi,'&').replace(/\\s+/g,' ').trim();const truncated=text.length>50000;const officialText=text.slice(0,50000);const ready=status<400&&!isPdf&&officialText.length>=100;return {json:{...candidate,official_text:officialText,official_fetch_status:status,official_content_type:contentType||null,document_type:isPdf?'pdf':'official_announcement',pdf_requires_extraction:isPdf,text_truncated:truncated,analysis_ready:ready,fetch_warning:ready?null:(isPdf?'pdf_requires_extraction':status>=400?'fetch_failed':'missing_document')}};"
+      }
+    },
+    {
+      "id": "2cf2a018-0000-4000-8000-ac2b96fc64d5",
+      "typeVersion": 2,
+      "name": "Evidence Usable?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        940,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "7b79d128-0000-4000-8000-f9766774e4e7",
+              "leftValue": "={{ $json.analysis_ready }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "a3d3e087-0000-4000-8000-566098a633d5",
+      "typeVersion": 2,
+      "name": "Build Evidence Diagnostic",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1160,
+        620
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nreturn {json:{diagnostic:{source_code:$json.source_code,jurisdiction:$json.jurisdiction,request_id:'evidence:'+$json.candidate_id,run_id:$json.run_id,discovery_method:$json.discovery_method||'official',fetch_status:'failed',http_status:$json.official_fetch_status||null,raw_result_count:1,parsed_count:0,accepted_count:0,rejected_count:1,rejection_reason_counts:{[$json.fetch_warning||'missing_document']:1},error_message:$json.fetch_warning||'missing_document',started_at:$json.discovered_at,finished_at:new Date().toISOString(),workflow_execution_id:$execution.id,metadata:{official_url:$json.official_url,content_type:$json.official_content_type,pdf_requires_extraction:$json.pdf_requires_extraction===true}}}};"
+      }
+    },
+    {
+      "id": "ae01d759-0000-4000-8000-7fb7b739042f",
+      "typeVersion": 4.2,
+      "name": "Save Evidence Diagnostic",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1380,
+        620
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.REGINTEL_API_BASE_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api') + '?action=diagnostics' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Ingest-Key",
+              "value": "={{ $env.REGINTEL_INGEST_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({items:[$json.diagnostic]}) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "5bc9f279-0000-4000-8000-b86f99698d68",
+      "typeVersion": 4.2,
+      "name": "Preflight Candidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        1160,
+        320
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.REGINTEL_API_BASE_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api') + '?action=preflight' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Ingest-Key",
+              "value": "={{ $env.REGINTEL_INGEST_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({items:[$json],dry_run:String($env.REGINTEL_DRY_RUN || 'true').toLowerCase()==='true'}) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "ba079c07-0000-4000-8000-100b2cb39c8c",
+      "typeVersion": 2,
+      "name": "Collect Preflight Results",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1380,
+        320
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const accepted=[],rejected=[],decisions=[];let dryRun=false;for(const item of $input.all()){const body=item.json.body||item.json;dryRun=dryRun||body.dry_run===true;accepted.push(...(body.accepted||[]));rejected.push(...(body.rejected||[]));decisions.push(...(body.decisions||[]));}return [{json:{accepted,rejected,decisions,dry_run:dryRun,accepted_count:accepted.length,rejected_count:rejected.length}}];"
+      }
+    },
+    {
+      "id": "20825802-0000-4000-8000-30df71ceba53",
+      "typeVersion": 2,
+      "name": "Preflight Has Accepted?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        1600,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "71012e1c-0000-4000-8000-7355e3c9f02d",
+              "leftValue": "={{ $json.accepted_count > 0 }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "94e4a110-0000-4000-8000-35befd7c21c6",
+      "typeVersion": 2,
+      "name": "Expand Preflight Accepted",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1820,
+        320
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const bundle=$input.first().json;return (bundle.accepted||[]).map(candidate=>({json:{...candidate,_dry_run:bundle.dry_run===true}}));"
+      }
+    },
+    {
+      "id": "c58424f2-0000-4000-8000-6d92324272c5",
+      "typeVersion": 2,
+      "name": "No Paid Candidates Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        1820,
+        600
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const bundle=$input.first().json;return [{json:{stage:'preflight',status:'no_new_or_changed_candidates',candidate_count:0,rejected_count:Number(bundle.rejected_count||0),paid_calls:0,workflow_execution_id:$execution.id,completed_at:new Date().toISOString()}}];"
+      }
+    },
+    {
+      "id": "bb1337cd-0000-4000-8000-2156e6d5cc9b",
+      "typeVersion": 2,
+      "name": "Dry Run?",
+      "type": "n8n-nodes-base.if",
+      "position": [
+        2040,
+        320
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "43d8385a-0000-4000-8000-5d990ee43510",
+              "leftValue": "={{ $json._dry_run }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "f9682833-0000-4000-8000-c73d28486023",
+      "typeVersion": 2,
+      "name": "Dry Run Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2260,
+        160
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return [{json:{stage:'preflight',status:'dry_run_complete',candidate_count:$input.all().length,paid_calls:0,workflow_execution_id:$execution.id,completed_at:new Date().toISOString()}}];"
+      }
+    },
+    {
+      "id": "7d588b1c-0000-4000-8000-0c89f5af0dbe",
+      "typeVersion": 2,
+      "name": "Limit Paid Calls",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2260,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "return $input.all().slice(0,Math.max(1,Math.min(Number($env.REGINTEL_PAID_CALL_CAP||20),20)));"
+      }
+    },
+    {
+      "id": "32109940-0000-4000-8000-d42c2e5508ae",
+      "typeVersion": 4.2,
+      "name": "AnySearch Corroboration",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2480,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anysearch.com/v1/search",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({query:($json.regulator+' '+$json.title+' enforcement penalty').slice(0,500),max_results:5,zone:$json.zone,language:$json.language,format:'json'}) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANYSEARCH_CREDENTIAL_ID",
+          "name": "Anysearch"
+        }
+      }
+    },
+    {
+      "id": "b5032054-0000-4000-8000-f7f0451b4d2a",
+      "typeVersion": 2,
+      "name": "Build AI Request",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        2700,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst candidate=$('Limit Paid Calls').item.json;const response=$json||{};const body=response.body??response;const records=body?.code===0&&Array.isArray(body?.data?.results)?body.data.results:[];const evidence=records.slice(0,5).map(r=>({title:r.title||'',url:r.url||r.link||'',snippet:r.snippet||r.description||''}));\nconst shape={relevance:'enforcement|not_enforcement|uncertain',announcement_type:'enforcement|guidance|policy|consultation|unrelated',decisions:[{decision_number:null,decision_date:null,publication_date:null,case_type:'fine|warning|improvement_order|suspension|revocation|prohibition|prosecution|other',severity:'low|medium|high|critical',subjects:[{original_name:'',canonical_name:'',entity_type:'organization|person',sector:'',subject_role:'respondent',evidence_span:''}],violations:[{verbatim_wording:'',normalized_category:'AML_CFT|KYC_CDD|EDD|BENEFICIAL_OWNERSHIP|SANCTIONS_SCREENING|TRANSACTION_MONITORING|STR_SAR|RECORDKEEPING|GOVERNANCE|MARKET_CONDUCT|FX|PAYMENTS|OTHER',legal_citation:'',source_span:'',classification_basis:'confirmed_by_regulator|analyst_inference',confidence:0}],penalties:[{subject_name:'',penalty_type:'',currency:null,amount:null,original_amount_text:'',applies_to:'institution|person|mixed|unknown',combined_amount:false,amount_allocation_status:'not_applicable|explicit|unallocated_composite|needs_review',evidence_span:''}],control_findings:[{control_domain:'',observed_failure:'',possible_root_cause:'',classification:'confirmed_by_regulator|analyst_inference',evidence_span:'',confidence:0}],summary_en:'',summary_cn:'',confidence:0}],confidence:0,missing_fields:[],review_notes:''};\nconst instructions='Return JSON only. Official regulator text is primary evidence; search is corroboration only. Never invent facts, dates, entities, legal citations, amounts or currencies. If official text is missing, return relevance uncertain and decisions empty. Composite penalties must use unallocated_composite or needs_review unless the source explicitly apportions them. Inference must be labelled analyst_inference. Never return verified or published state. Non-enforcement material must return not_enforcement with decisions empty. Required shape: '+JSON.stringify(shape);\nreturn {json:{...candidate,anysearch_evidence:evidence,usage:{search_calls:1,model_calls:1},ai_request:{model:'deepseek-chat',temperature:0,response_format:{type:'json_object'},messages:[{role:'system',content:instructions},{role:'user',content:JSON.stringify({source_code:candidate.source_code,jurisdiction:candidate.jurisdiction,regulator:candidate.regulator,official_url:candidate.official_url,title:candidate.title,publication_date:candidate.publication_date,official_text:candidate.official_text,text_truncated:candidate.text_truncated,corroboration:evidence})}]}}};"
+      }
+    },
+    {
+      "id": "47642ffc-0000-4000-8000-f6e3a9403482",
+      "typeVersion": 4.2,
+      "name": "DeepSeek Structured Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        2920,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.deepseek.com/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "deepSeekApi",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json.ai_request) }}",
+        "options": {
+          "timeout": 60000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput",
+      "credentials": {
+        "deepSeekApi": {
+          "id": "DEEPSEEK_CREDENTIAL_ID",
+          "name": "DeepSeek account"
+        }
+      }
+    },
+    {
+      "id": "f11558c0-0000-4000-8000-e1129124a09a",
+      "typeVersion": 2,
+      "name": "Validate Unverified Package",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        3140,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst base=$('Build AI Request').item.json;const response=$json||{};const body=response.body??response;let analysis;const reasons=[];try{let text=body?.choices?.[0]?.message?.content??body?.output_text??'';if(typeof text==='string')text=text.replace(/^\\x60\\x60\\x60json\\s*|\\x60\\x60\\x60$/g,'').trim();analysis=typeof text==='object'?text:JSON.parse(text);}catch(e){analysis={relevance:'uncertain',decisions:[],confidence:0,missing_fields:['ai_analysis'],review_notes:'Malformed or unavailable model JSON'};reasons.push('malformed_json');}\nif(!['enforcement','not_enforcement','uncertain'].includes(analysis.relevance)){analysis.relevance='uncertain';reasons.push('invalid_relevance');}if(analysis.relevance==='not_enforcement')analysis.decisions=[];if(analysis.relevance==='enforcement'&&!Array.isArray(analysis.decisions)){analysis.decisions=[];reasons.push('missing_decisions');}\nfor(const d of (analysis.decisions||[])){if(!Array.isArray(d.subjects)||!d.subjects.length)reasons.push('missing_subjects');for(const p of (Array.isArray(d.penalties)?d.penalties:[])){if(p.combined_amount===true&&!['unallocated_composite','needs_review'].includes(p.amount_allocation_status)){p.amount_allocation_status='needs_review';reasons.push('unsafe_composite_penalty_allocation');}if(p.amount!==null&&p.amount!==undefined&&!Number.isFinite(Number(p.amount))){p.amount=null;reasons.push('invalid_penalty_amount');}}}\ndelete analysis.verification_status;delete analysis.review_status;delete analysis.published;analysis.confidence=Math.max(0,Math.min(1,Number(analysis.confidence||0)));if(reasons.length){analysis.missing_fields=[...new Set([...(analysis.missing_fields||[]),...reasons])];analysis.review_notes=[analysis.review_notes,'Schema validation: '+[...new Set(reasons)].join(', ')].filter(Boolean).join(' | ');}\nconst modelUsage=body?.usage||{};const usage={...base.usage,prompt_tokens:Number(modelUsage.prompt_tokens||0),completion_tokens:Number(modelUsage.completion_tokens||0),total_tokens:Number(modelUsage.total_tokens||0)};\nreturn {json:{candidate_id:base.candidate_id,source_code:base.source_code,jurisdiction:base.jurisdiction,regulator:base.regulator,source_page:base.source_listing_url,official_url:base.official_url,url:base.official_url,title:base.title,publication_date:base.publication_date,discovered_at:base.discovered_at,language:base.language,official_text:base.official_text,content_hash:base.content_hash,document_type:base.document_type,verification_status:'unverified',pipeline_version:'regintel-n8n-v3-p0',workflow_execution_id:$execution.id,anysearch_evidence:base.anysearch_evidence,usage,validation_reasons:[...new Set(reasons)],ai_analysis:analysis}};"
+      }
+    },
+    {
+      "id": "ba1f4b12-0000-4000-8000-d66c4a4ad5b6",
+      "typeVersion": 4.2,
+      "name": "Queue Unverified Candidate",
+      "type": "n8n-nodes-base.httpRequest",
+      "position": [
+        3360,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.REGINTEL_API_BASE_URL || 'https://hbfdelixtwkegxpmfyea.supabase.co/functions/v1/regintel-api') + '?action=candidates' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "X-Ingest-Key",
+              "value": "={{ $env.REGINTEL_INGEST_KEY }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "id": "b8a1857b-0000-4000-8000-e3b2ea8e0573",
+      "typeVersion": 2,
+      "name": "Collect Ingest Metrics",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        3580,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "\nconst base=$('Validate Unverified Package').item.json;const response=$json||{};const body=response.body??response;return {json:{ok:!body.error&&Number(response.statusCode||0)<400,response:body,usage:base.usage||{},candidate_id:base.candidate_id}};"
+      }
+    },
+    {
+      "id": "818bde8c-0000-4000-8000-2a920bc7d160",
+      "typeVersion": 2,
+      "name": "Execution Summary",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        3800,
+        400
+      ],
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "\nconst items=$input.all();let accepted=0,inserted=0,duplicates=0,rejected=0,errors=0,searchCalls=0,modelCalls=0,promptTokens=0,completionTokens=0,totalTokens=0;for(const item of items){const row=item.json||{};const r=row.response||{};if(!row.ok){errors++;}accepted+=Number(r.accepted||0);inserted+=Number(r.inserted||0);duplicates+=Number(r.duplicates||0);rejected+=(r.rejected||[]).length;searchCalls+=Number(row.usage?.search_calls||0);modelCalls+=Number(row.usage?.model_calls||0);promptTokens+=Number(row.usage?.prompt_tokens||0);completionTokens+=Number(row.usage?.completion_tokens||0);totalTokens+=Number(row.usage?.total_tokens||0);}return [{json:{stage:'completed',responses:items.length,accepted,inserted,duplicates,rejected,errors,usage:{search_calls:searchCalls,model_calls:modelCalls,prompt_tokens:promptTokens,completion_tokens:completionTokens,total_tokens:totalTokens},workflow_execution_id:$execution.id,completed_at:new Date().toISOString(),note:'Green nodes are not publication proof; cases remain unverified until review.'}}];"
+      }
+    }
+  ],
+  "connections": {
+    "Every 3 Hours": {
+      "main": [
+        [
+          {
+            "node": "Official Source Registry",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Discovery Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Official Source Registry": {
+      "main": [
+        [
+          {
+            "node": "Fetch Official Listing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Official Listing": {
+      "main": [
+        [
+          {
+            "node": "Parse Official Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Official Response": {
+      "main": [
+        [
+          {
+            "node": "Save Official Diagnostics",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Discovery Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Discovery Queries": {
+      "main": [
+        [
+          {
+            "node": "AnySearch Independent Discovery",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AnySearch Independent Discovery": {
+      "main": [
+        [
+          {
+            "node": "Parse Search Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Search Response": {
+      "main": [
+        [
+          {
+            "node": "Save Search Diagnostics",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge Discovery Candidates",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge Discovery Candidates": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate Candidates": {
+      "main": [
+        [
+          {
+            "node": "Has Discovery Candidates?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Discovery Candidates?": {
+      "main": [
+        [
+          {
+            "node": "Expand Deduplicated Candidates",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Candidates Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Deduplicated Candidates": {
+      "main": [
+        [
+          {
+            "node": "Fetch Official Evidence",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Official Evidence": {
+      "main": [
+        [
+          {
+            "node": "Build Evidence Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Evidence Package": {
+      "main": [
+        [
+          {
+            "node": "Evidence Usable?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Evidence Usable?": {
+      "main": [
+        [
+          {
+            "node": "Preflight Candidate",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Evidence Diagnostic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Evidence Diagnostic": {
+      "main": [
+        [
+          {
+            "node": "Save Evidence Diagnostic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preflight Candidate": {
+      "main": [
+        [
+          {
+            "node": "Collect Preflight Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Preflight Results": {
+      "main": [
+        [
+          {
+            "node": "Preflight Has Accepted?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Preflight Has Accepted?": {
+      "main": [
+        [
+          {
+            "node": "Expand Preflight Accepted",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Paid Candidates Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Expand Preflight Accepted": {
+      "main": [
+        [
+          {
+            "node": "Dry Run?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dry Run?": {
+      "main": [
+        [
+          {
+            "node": "Dry Run Summary",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Limit Paid Calls",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit Paid Calls": {
+      "main": [
+        [
+          {
+            "node": "AnySearch Corroboration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AnySearch Corroboration": {
+      "main": [
+        [
+          {
+            "node": "Build AI Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build AI Request": {
+      "main": [
+        [
+          {
+            "node": "DeepSeek Structured Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "DeepSeek Structured Analysis": {
+      "main": [
+        [
+          {
+            "node": "Validate Unverified Package",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Unverified Package": {
+      "main": [
+        [
+          {
+            "node": "Queue Unverified Candidate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Queue Unverified Candidate": {
+      "main": [
+        [
+          {
+            "node": "Collect Ingest Metrics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Collect Ingest Metrics": {
+      "main": [
+        [
+          {
+            "node": "Execution Summary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "tags": [],
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false,
+    "reviewNotes": "P0 dry-run defaults on. Bind Anysearch and DeepSeek account credentials, apply the additive migration and deploy regintel-api before testing. Only PBOC Beijing and HKMA are enabled."
+  }
+}
