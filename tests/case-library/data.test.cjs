@@ -37,5 +37,10 @@ test('case library totals and missing monetary outcomes are data-driven', () => 
   assert.doesNotMatch(ui, /全库 50/);
   assert.match(html, /Explore 100 cases across four jurisdictions/);
   assert.match(html, /100 个独立案例 · 4 个辖区 · 400 张学习卡/);
-  assert.match(html, /compliance-case-library\.js\?v=20261105/);
+  assert.match(html, /compliance-case-library\.js\?v=20261105-2/);
+});
+
+test('case explorer sorts filtered results by date descending', () => {
+  assert.match(ui, /sort\(\(a,b\)=>b\.date\.localeCompare\(a\.date\)\|\|a\.case_id\.localeCompare\(b\.case_id\)\)/);
+  assert.match(html, /<span>最新优先<\/span>/);
 });
